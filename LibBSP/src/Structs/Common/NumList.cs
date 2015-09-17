@@ -81,5 +81,15 @@ namespace LibBSP {
 				}
 			}
 		}
+
+		/// <summary>
+		/// Creates a new <c>NumList</c> object from a <c>byte</c> array and returns it.
+		/// </summary>
+		/// <param name="data"><c>byte</c> array to parse</param>
+		/// <param name="type">The type of number to store</param>
+		/// <returns>The resulting <c>NumList</c></returns>
+		public static NumList LumpFactory(byte[] data, DataType type) {
+			return new NumList(data, type);
+		}
 	}
 }
