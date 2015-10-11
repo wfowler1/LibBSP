@@ -179,28 +179,6 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Creates a new <c>Vector3d</c> instance by parsing a <c>byte</c> array representing either <c>float</c>s or <c>double</c>s.
-		/// </summary>
-		/// <param name="data"><c>Byte</c> array to parse</param>
-		/// <exception cref="ArgumentException">The passed byte array was not 12 or 24 elements long</exception>
-		public Vector3d(params byte[] data) {
-			if (data == null) {
-				throw new ArgumentNullException();
-			}
-			if (data.Length == 12) {
-				x = Convert.ToDouble(BitConverter.ToSingle(data, 0));
-				y = Convert.ToDouble(BitConverter.ToSingle(data, 4));
-				z = Convert.ToDouble(BitConverter.ToSingle(data, 8));
-			} else if (data.Length == 24) {
-				x = BitConverter.ToDouble(data, 0);
-				y = BitConverter.ToDouble(data, 8);
-				z = BitConverter.ToDouble(data, 16);
-			} else {
-				throw new System.ArgumentException("Byte array passed to Vector3d Ctor must have 12 or 24 items", "data");
-			}
-		}
-
-		/// <summary>
 		/// Adds two vectors together componentwise. This operation is commutative.
 		/// </summary>
 		/// <param name="v1">First vector to add</param>

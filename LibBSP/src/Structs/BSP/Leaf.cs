@@ -50,7 +50,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
-				case MapType.TacticalIntervention:
+				case MapType.TacticalInterventionEncrypted:
 				case MapType.DMoMaM:
 				case MapType.Daikatana: {
 					contents = BitConverter.ToInt32(data, 0);
@@ -120,7 +120,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
-				case MapType.TacticalIntervention:
+				case MapType.TacticalInterventionEncrypted:
 				case MapType.SoF:
 				case MapType.Daikatana:
 				case MapType.DMoMaM: {
@@ -164,6 +164,50 @@ namespace LibBSP {
 				lump.Add(new Leaf(bytes, type));
 			}
 			return lump;
+		}
+
+		/// <summary>
+		/// Gets the index for this lump in the BSP file for a specific map format.
+		/// </summary>
+		/// <param name="type">The map type</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump</returns>
+		public static int GetIndexForLump(MapType type) {
+			switch (type) {
+				case MapType.Raven:
+				case MapType.Quake3: {
+					return 4;
+				}
+				case MapType.MOHAA:
+				case MapType.FAKK:
+				case MapType.Quake2:
+				case MapType.SiN:
+				case MapType.Daikatana:
+				case MapType.SoF: {
+					return 8;
+				}
+				case MapType.STEF2:
+				case MapType.STEF2Demo:
+				case MapType.Quake:
+				case MapType.Vindictus:
+				case MapType.TacticalInterventionEncrypted:
+				case MapType.Source17:
+				case MapType.Source18:
+				case MapType.Source19:
+				case MapType.Source20:
+				case MapType.Source21:
+				case MapType.Source22:
+				case MapType.Source23:
+				case MapType.Source27:
+				case MapType.DMoMaM: {
+					return 10;
+				}
+				case MapType.Nightfire: {
+					return 11;
+				}
+				default: {
+					return -1;
+				}
+			}
 		}
 	}
 }

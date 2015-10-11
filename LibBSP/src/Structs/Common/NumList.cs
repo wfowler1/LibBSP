@@ -8,13 +8,14 @@ namespace LibBSP {
 	public class NumList : List<long> {
 
 		public enum DataType : int {
-			SByte = 0,
-			Byte = 1,
-			Int16 = 2,
-			UInt16 = 3,
-			Int32 = 4,
-			UInt32 = 5,
-			Int64 = 6,
+			Invalid = 0,
+			SByte = 1,
+			Byte = 2,
+			Int16 = 3,
+			UInt16 = 4,
+			Int32 = 5,
+			UInt32 = 6,
+			Int64 = 7,
 		}
 
 		public DataType type { get; private set; }
@@ -91,5 +92,229 @@ namespace LibBSP {
 		public static NumList LumpFactory(byte[] data, DataType type) {
 			return new NumList(data, type);
 		}
+
+		#region IndicesForLumps
+		/// <summary>
+		/// Gets the index for the Mark Surfaces lump in the BSP file for a specific map format, and the type of data the format uses.
+		/// </summary>
+		/// <param name="type">The map type</param>
+		/// <param name="dataType"><c>out</c> parameter for the data type this version uses</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented</returns>
+		public static int GetIndexForMarkSurfacesLump(MapType version, out DataType dataType) {
+			switch (version) {
+				case MapType.Raven:
+				case MapType.Quake3: {
+					dataType = DataType.Int32;
+					return 5;
+				}
+				case MapType.FAKK:
+				case MapType.MOHAA: {
+					dataType = DataType.Int32;
+					return 7;
+				}
+				case MapType.Quake2:
+				case MapType.SiN:
+				case MapType.Daikatana:
+				case MapType.SoF: {
+					dataType = DataType.UInt16;
+					return 9;
+				}
+				case MapType.STEF2:
+				case MapType.STEF2Demo: {
+					dataType = DataType.UInt32;
+					return 9;
+				}
+				case MapType.Quake: {
+					dataType = DataType.UInt16;
+					return 11;
+				}
+				case MapType.Nightfire: {
+					dataType = DataType.UInt32;
+					return 12;
+				}
+				case MapType.Vindictus: {
+					dataType = DataType.UInt32;
+					return 16;
+				}
+				case MapType.TacticalInterventionEncrypted:
+				case MapType.Source17:
+				case MapType.Source18:
+				case MapType.Source19:
+				case MapType.Source20:
+				case MapType.Source21:
+				case MapType.Source22:
+				case MapType.Source23:
+				case MapType.Source27:
+				case MapType.DMoMaM: {
+					dataType = DataType.UInt16;
+					return 16;
+				}
+			}
+			dataType = DataType.Invalid;
+			return -1;
+		}
+
+		/// <summary>
+		/// Gets the index for the Surface Edges lump in the BSP file for a specific map format, and the type of data the format uses.
+		/// </summary>
+		/// <param name="type">The map type</param>
+		/// <param name="dataType"><c>out</c> parameter for the data type this version uses</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented</returns>
+		public static int GetIndexForSurfEdgesLump(MapType version, out DataType dataType) {
+			switch (version) {
+				case MapType.Quake2:
+				case MapType.SiN:
+				case MapType.Daikatana:
+				case MapType.SoF: {
+					dataType = DataType.Int32;
+					return 12;
+				}
+				case MapType.Quake:
+				case MapType.Vindictus:
+				case MapType.TacticalInterventionEncrypted:
+				case MapType.Source17:
+				case MapType.Source18:
+				case MapType.Source19:
+				case MapType.Source20:
+				case MapType.Source21:
+				case MapType.Source22:
+				case MapType.Source23:
+				case MapType.Source27:
+				case MapType.DMoMaM: {
+					dataType = DataType.Int32;
+					return 13;
+				}
+			}
+			dataType = DataType.Invalid;
+			return -1;
+		}
+
+		/// <summary>
+		/// Gets the index for the Mark Brushes lump in the BSP file for a specific map format, and the type of data the format uses.
+		/// </summary>
+		/// <param name="type">The map type</param>
+		/// <param name="dataType"><c>out</c> parameter for the data type this version uses</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented</returns>
+		public static int GetIndexForMarkBrushesLump(MapType version, out DataType dataType) {
+			switch (version) {
+				case MapType.Quake2:
+				case MapType.SiN:
+				case MapType.Daikatana:
+				case MapType.SoF: {
+					dataType = DataType.UInt16;
+					return 10;
+				}
+				case MapType.Nightfire: {
+					dataType = DataType.UInt32;
+					return 13;
+				}
+				case MapType.Vindictus: {
+					dataType = DataType.UInt32;
+					return 17;
+				}
+				case MapType.TacticalInterventionEncrypted:
+				case MapType.Source17:
+				case MapType.Source18:
+				case MapType.Source19:
+				case MapType.Source20:
+				case MapType.Source21:
+				case MapType.Source22:
+				case MapType.Source23:
+				case MapType.Source27:
+				case MapType.DMoMaM: {
+					dataType = DataType.UInt16;
+					return 17;
+				}
+			}
+			dataType = DataType.Invalid;
+			return -1;
+		}
+
+		/// <summary>
+		/// Gets the index for the indices lump in the BSP file for a specific map format, and the type of data the format uses.
+		/// </summary>
+		/// <param name="type">The map type</param>
+		/// <param name="dataType"><c>out</c> parameter for the data type this version uses</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented</returns>
+		public static int GetIndexForIndicesLump(MapType version, out DataType dataType) {
+			switch (version) {
+				case MapType.FAKK:
+				case MapType.MOHAA: {
+					dataType = DataType.UInt32;
+					return 5;
+				}
+				case MapType.Nightfire: {
+					dataType = DataType.UInt32;
+					return 6;
+				}
+				case MapType.STEF2:
+				case MapType.STEF2Demo: {
+					dataType = DataType.UInt32;
+					return 7;
+				}
+				case MapType.Raven:
+				case MapType.Quake3: {
+					dataType = DataType.UInt32;
+					return 11;
+				}
+			}
+			dataType = DataType.Invalid;
+			return -1;
+		}
+
+		/// <summary>
+		/// Gets the index for the texture table lump in the BSP file for a specific map format, and the type of data the format uses.
+		/// </summary>
+		/// <param name="type">The map type</param>
+		/// <param name="dataType"><c>out</c> parameter for the data type this version uses</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented</returns>
+		public static int GetIndexForTexTableLump(MapType version, out DataType dataType) {
+			switch (version) {
+				case MapType.Vindictus:
+				case MapType.TacticalInterventionEncrypted:
+				case MapType.Source17:
+				case MapType.Source18:
+				case MapType.Source19:
+				case MapType.Source20:
+				case MapType.Source21:
+				case MapType.Source22:
+				case MapType.Source23:
+				case MapType.Source27:
+				case MapType.DMoMaM: {
+					dataType = DataType.Int32;
+					return 44;
+				}
+			}
+			dataType = DataType.Invalid;
+			return -1;
+		}
+
+		/// <summary>
+		/// Gets the index for the displacement triangles lump in the BSP file for a specific map format, and the type of data the format uses.
+		/// </summary>
+		/// <param name="type">The map type</param>
+		/// <param name="dataType"><c>out</c> parameter for the data type this version uses</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented</returns>
+		public static int GetIndexForDisplacementTrianglesLump(MapType version, out DataType dataType) {
+			switch (version) {
+				case MapType.Vindictus:
+				case MapType.TacticalInterventionEncrypted:
+				case MapType.Source17:
+				case MapType.Source18:
+				case MapType.Source19:
+				case MapType.Source20:
+				case MapType.Source21:
+				case MapType.Source22:
+				case MapType.Source23:
+				case MapType.Source27:
+				case MapType.DMoMaM: {
+					dataType = DataType.UInt16;
+					return 48;
+				}
+			}
+			dataType = DataType.Invalid;
+			return -1;
+		}
+		#endregion
 	}
 }

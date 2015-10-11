@@ -2,6 +2,8 @@
 #define UNITY
 #endif
 
+using System;
+using System.Collections.Generic;
 #if UNITY
 using UnityEngine;
 #endif
@@ -153,6 +155,113 @@ namespace LibBSP {
 		/// <returns>Line of intersection where this <c>Plane</c> intersects "<paramref name="p2" />", ((NaN, NaN, NaN) + p(NaN, NaN, NaN)) otherwise</returns>
 		public static Ray Intersect(this Plane p1, Plane p2) {
 			return Intersection(p1, p2);
+		}
+
+		/// <summary>
+		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <c>Plane</c> objects.
+		/// </summary>
+		/// <param name="data">The data to parse</param>
+		/// <param name="type">The map type</param>
+		/// <returns>A <c>List</c> of <c>Plane</c> objects</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
+		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype</exception>
+		/// <remarks>This function goes here since it can't go into Unity's Plane class, and so can't depend
+		/// on having a constructor taking a byte array.</remarks>
+		public static List<Plane> LumpFactory(byte[] data, MapType type) {
+			if (data == null) {
+				throw new ArgumentNullException();
+			}
+			int structLength = 0;
+			switch (type) {
+				case MapType.Quake:
+				case MapType.Nightfire:
+				case MapType.SiN:
+				case MapType.SoF:
+				case MapType.Source17:
+				case MapType.Source18:
+				case MapType.Source19:
+				case MapType.Source20:
+				case MapType.Source21:
+				case MapType.Source22:
+				case MapType.Source23:
+				case MapType.Source27:
+				case MapType.DMoMaM:
+				case MapType.Vindictus:
+				case MapType.Quake2:
+				case MapType.Daikatana:
+				case MapType.TacticalInterventionEncrypted: {
+					structLength = 20;
+					break;
+				}
+				case MapType.STEF2:
+				case MapType.MOHAA:
+				case MapType.STEF2Demo:
+				case MapType.Raven:
+				case MapType.Quake3:
+				case MapType.FAKK:
+				case MapType.CoD:
+				case MapType.CoD2:
+				case MapType.CoD4: {
+					structLength = 16;
+					break;
+				}
+				default: {
+					throw new ArgumentException("Map type " + type + " isn't supported by the Plane class.");
+				}
+			}
+			List<Plane> lump = new List<Plane>(data.Length / structLength);
+			byte[] bytes = new byte[structLength];
+			for (int i = 0; i < data.Length / structLength; ++i) {
+				Vector3 normal = new Vector3(BitConverter.ToSingle(data, data.Length * i), BitConverter.ToSingle(data, (data.Length * i) + 4), BitConverter.ToSingle(data, (data.Length * i) + 8));
+				float distance = BitConverter.ToSingle(data, (data.Length * i) + 12);
+				lump.Add(new Plane(normal, distance));
+			}
+			return lump;
+		}
+
+		/// <summary>
+		/// Gets the index for this lump in the BSP file for a specific map format.
+		/// </summary>
+		/// <param name="type">The map type</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented</returns>
+		public static int GetIndexForLump(MapType type) {
+			switch (type) {
+				case MapType.FAKK:
+				case MapType.MOHAA:
+				case MapType.STEF2:
+				case MapType.STEF2Demo:
+				case MapType.Quake:
+				case MapType.Quake2:
+				case MapType.SiN:
+				case MapType.Daikatana:
+				case MapType.SoF:
+				case MapType.Nightfire:
+				case MapType.Vindictus:
+				case MapType.TacticalInterventionEncrypted:
+				case MapType.Source17:
+				case MapType.Source18:
+				case MapType.Source19:
+				case MapType.Source20:
+				case MapType.Source21:
+				case MapType.Source22:
+				case MapType.Source23:
+				case MapType.Source27:
+				case MapType.DMoMaM: {
+					return 1;
+				}
+				case MapType.CoD:
+				case MapType.Raven:
+				case MapType.Quake3: {
+					return 2;
+				}
+				case MapType.CoD4:
+				case MapType.CoD2: {
+					return 4;
+				}
+				default: {
+					return -1;
+				}
+			}
 		}
 	}
 }

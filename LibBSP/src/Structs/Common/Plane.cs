@@ -19,7 +19,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// The a component of this <c>Plane</c>
+		/// The <c>a</c> component of this <c>Plane</c>
 		/// </summary>
 		public double a {
 			get {
@@ -28,7 +28,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// The b component of this <c>Plane</c>
+		/// The <c>b</c> component of this <c>Plane</c>
 		/// </summary>
 		public double b {
 			get {
@@ -37,7 +37,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// The c component of this <c>Plane</c>
+		/// The <c>c</c> component of this <c>Plane</c>
 		/// </summary>
 		public double c {
 			get {
@@ -138,28 +138,6 @@ namespace LibBSP {
 			_normal = ((point0 - point2) ^ (point0 - point1));
 			_normal.Normalize();
 			distance = point0 * _normal;
-		}
-
-		/// <summary>
-		/// Creates a new <c>Plane</c> object from a <c>byte</c> array.
-		/// </summary>
-		/// <param name="data"><c>byte</c> array to parse</param>
-		/// <param name="type">The map type</param>
-		/// <remarks>
-		/// This constructor is intended for use with BSP reading. The <c>byte</c> array must have a length of at least 16, all components are read as <c>float</c>s.
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		/// <exception cref="ArgumentException">There was not enough bytes in the <paramref name="data" /> array</exception>
-		public Plane(byte[] data, MapType type) {
-			if (data == null) {
-				throw new ArgumentNullException();
-			}
-			if (data.Length < 16) {
-				throw new ArgumentException("Not enough data in provided array");
-			}
-			_normal = new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
-			_normal.Normalize();
-			distance = Convert.ToDouble(BitConverter.ToSingle(data, 12));
 		}
 
 		/// <summary>
@@ -361,62 +339,6 @@ namespace LibBSP {
 				}
 			}
 			return plane;
-		}
-
-		/// <summary>
-		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <c>Plane</c> objects.
-		/// </summary>
-		/// <param name="data">The data to parse</param>
-		/// <param name="type">The map type</param>
-		/// <returns>A <c>List</c> of <c>Plane</c> objects</returns>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype</exception>
-		public static List<Plane> LumpFactory(byte[] data, MapType type) {
-			if (data == null) {
-				throw new ArgumentNullException();
-			}
-			int structLength = 0;
-			switch (type) {
-				case MapType.Quake:
-				case MapType.Nightfire:
-				case MapType.SiN:
-				case MapType.SoF:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.DMoMaM:
-				case MapType.Vindictus:
-				case MapType.Quake2:
-				case MapType.Daikatana:
-				case MapType.TacticalIntervention:
-					structLength = 20;
-					break;
-				case MapType.STEF2:
-				case MapType.MOHAA:
-				case MapType.STEF2Demo:
-				case MapType.Raven:
-				case MapType.Quake3:
-				case MapType.FAKK:
-				case MapType.CoD:
-				case MapType.CoD2:
-				case MapType.CoD4:
-					structLength = 16;
-					break;
-				default:
-					throw new ArgumentException("Map type " + type + " isn't supported by the Plane class.");
-			}
-			List<Plane> lump = new List<Plane>(data.Length / structLength);
-			byte[] bytes = new byte[structLength];
-			for (int i = 0; i < data.Length / structLength; ++i) {
-				Array.Copy(data, i * structLength, bytes, 0, structLength);
-				lump.Add(new Plane(bytes, type));
-			}
-			return lump;
 		}
 	}
 }

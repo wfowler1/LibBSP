@@ -106,9 +106,10 @@ namespace LibBSP {
 						if (ContainsKey("model")) {
 							string st = this["model"];
 							if (st[0] == '*') {
-								try {
-									return System.Int32.Parse(st.Substring(1));
-								} catch (System.FormatException) {
+								int ret = -1;
+								if (Int32.TryParse(st.Substring(1), out ret)) {
+									return ret;
+								} else {
 									return -1;
 								}
 							} else {
@@ -695,6 +696,57 @@ namespace LibBSP {
 		/// <returns>An <c>Entities</c> object, which is a <c>List</c> of <c>Entity</c>s</returns>
 		public static Entities LumpFactory(byte[] data, MapType type) {
 			return new Entities(data, type);
+		}
+
+		/// <summary>
+		/// Gets the index for this lump in the BSP file for a specific map format.
+		/// </summary>
+		/// <param name="type">The map type</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented</returns>
+		public static int GetIndexForLump(MapType type) {
+			switch (type) {
+				case MapType.Raven:
+				case MapType.Quake3:
+				case MapType.Quake:
+				case MapType.Quake2:
+				case MapType.SiN:
+				case MapType.Daikatana:
+				case MapType.SoF:
+				case MapType.Nightfire:
+				case MapType.Vindictus:
+				case MapType.TacticalInterventionEncrypted:
+				case MapType.Source17:
+				case MapType.Source18:
+				case MapType.Source19:
+				case MapType.Source20:
+				case MapType.Source21:
+				case MapType.Source22:
+				case MapType.Source23:
+				case MapType.Source27:
+				case MapType.DMoMaM: {
+					return 0;
+				}
+				case MapType.FAKK:
+				case MapType.MOHAA: {
+					return 14;
+				}
+				case MapType.STEF2:
+				case MapType.STEF2Demo: {
+					return 16;
+				}
+				case MapType.CoD: {
+					return 29;
+				}
+				case MapType.CoD2: {
+					return 37;
+				}
+				case MapType.CoD4: {
+					return 39;
+				}
+				default: {
+					return -1;
+				}
+			}
 		}
 
 		/// <summary>

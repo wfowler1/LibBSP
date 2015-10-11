@@ -41,7 +41,7 @@ namespace LibBSP {
 				case MapType.Source23:
 				case MapType.Source27:
 				case MapType.Vindictus:
-				case MapType.TacticalIntervention:
+				case MapType.TacticalInterventionEncrypted:
 				case MapType.DMoMaM: {
 					firstSide = BitConverter.ToInt32(data, 0);
 					numSides = BitConverter.ToInt32(data, 4);
@@ -109,7 +109,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
-				case MapType.TacticalIntervention:
+				case MapType.TacticalInterventionEncrypted:
 				case MapType.Vindictus:
 				case MapType.DMoMaM:
 				case MapType.Nightfire:
@@ -139,6 +139,62 @@ namespace LibBSP {
 				lump.Add(new Brush(bytes, type));
 			}
 			return lump;
+		}
+
+		/// <summary>
+		/// Gets the index for this lump in the BSP file for a specific map format.
+		/// </summary>
+		/// <param name="type">The map type</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented</returns>
+		public static int GetIndexForLump(MapType type) {
+			switch (type) {
+				case MapType.CoD: {
+					return 4;
+				}
+				case MapType.CoD2: {
+					return 6;
+				}
+				case MapType.CoD4:
+				case MapType.Raven:
+				case MapType.Quake3: {
+					return 8;
+				}
+				case MapType.FAKK: {
+					return 11;
+				}
+				case MapType.MOHAA: {
+					return 12;
+				}
+				case MapType.STEF2:
+				case MapType.STEF2Demo: {
+					return 13;
+				}
+				case MapType.Quake2:
+				case MapType.SiN:
+				case MapType.Daikatana:
+				case MapType.SoF: {
+					return 14;
+				}
+				case MapType.Nightfire: {
+					return 15;
+				}
+				case MapType.Vindictus:
+				case MapType.TacticalInterventionEncrypted:
+				case MapType.Source17:
+				case MapType.Source18:
+				case MapType.Source19:
+				case MapType.Source20:
+				case MapType.Source21:
+				case MapType.Source22:
+				case MapType.Source23:
+				case MapType.Source27:
+				case MapType.DMoMaM: {
+					return 18;
+				}
+				default: {
+					return -1;
+				}
+			}
 		}
 
 	}

@@ -35,7 +35,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
-				case MapType.TacticalIntervention:
+				case MapType.TacticalInterventionEncrypted:
 				case MapType.DMoMaM:
 				case MapType.Quake2:
 				case MapType.SoF: {
@@ -85,7 +85,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
-				case MapType.TacticalIntervention:
+				case MapType.TacticalInterventionEncrypted:
 				case MapType.DMoMaM:
 				case MapType.Quake2:
 				case MapType.SoF: {
@@ -112,6 +112,39 @@ namespace LibBSP {
 				lump.Add(new Edge(bytes, type));
 			}
 			return lump;
+		}
+
+		/// <summary>
+		/// Gets the index for this lump in the BSP file for a specific map format.
+		/// </summary>
+		/// <param name="type">The map type</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump</returns>
+		public static int GetIndexForLump(MapType type) {
+			switch (type) {
+				case MapType.Quake2:
+				case MapType.SiN:
+				case MapType.Daikatana:
+				case MapType.SoF: {
+					return 11;
+				}
+				case MapType.Quake:
+				case MapType.Vindictus:
+				case MapType.TacticalInterventionEncrypted:
+				case MapType.Source17:
+				case MapType.Source18:
+				case MapType.Source19:
+				case MapType.Source20:
+				case MapType.Source21:
+				case MapType.Source22:
+				case MapType.Source23:
+				case MapType.Source27:
+				case MapType.DMoMaM: {
+					return 12;
+				}
+				default: {
+					return -1;
+				}
+			}
 		}
 	}
 }

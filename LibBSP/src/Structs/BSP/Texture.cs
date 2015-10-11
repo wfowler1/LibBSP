@@ -86,7 +86,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
-				case MapType.TacticalIntervention:
+				case MapType.TacticalInterventionEncrypted:
 				case MapType.Vindictus:
 				case MapType.DMoMaM: {
 					name = data.ToRawString();
@@ -99,7 +99,7 @@ namespace LibBSP {
 					break;
 				}
 				default: {
-					throw new ArgumentException("Map type " + type + " isn't supported by the Node class.");
+					throw new ArgumentException("Map type " + type + " isn't supported by the Texture class.");
 				}
 			}
 		}
@@ -112,6 +112,71 @@ namespace LibBSP {
 		/// <returns>A <c>Textures</c> object</returns>
 		public static Textures LumpFactory(byte[] data, MapType type) {
 			return new Textures(data, type);
+		}
+
+		/// <summary>
+		/// Gets the index for this lump in the BSP file for a specific map format.
+		/// </summary>
+		/// <param name="type">The map type</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump</returns>
+		public static int GetIndexForLump(MapType type) {
+			switch (type) {
+				case MapType.CoD:
+				case MapType.CoD2:
+				case MapType.CoD4:
+				case MapType.FAKK:
+				case MapType.MOHAA:
+				case MapType.STEF2:
+				case MapType.STEF2Demo: {
+					return 0;
+				}
+				case MapType.Raven:
+				case MapType.Quake3: {
+					return 1;
+				}
+				case MapType.Quake:
+				case MapType.Nightfire: {
+					return 2;
+				}
+				case MapType.Quake2:
+				case MapType.SiN:
+				case MapType.Daikatana:
+				case MapType.SoF: {
+					return 5;
+				}
+				case MapType.Vindictus:
+				case MapType.TacticalInterventionEncrypted:
+				case MapType.Source17:
+				case MapType.Source18:
+				case MapType.Source19:
+				case MapType.Source20:
+				case MapType.Source21:
+				case MapType.Source22:
+				case MapType.Source23:
+				case MapType.Source27:
+				case MapType.DMoMaM: {
+					return 43;
+				}
+				default: {
+					return -1;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the index for the materials lump in the BSP file for a specific map format.
+		/// </summary>
+		/// <param name="type">The map type</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump</returns>
+		public static int GetIndexForMaterialLump(MapType type) {
+			switch (type) {
+				case MapType.Nightfire: {
+					return 3;
+				}
+				default: {
+					return -1;
+				}
+			}
 		}
 	}
 }

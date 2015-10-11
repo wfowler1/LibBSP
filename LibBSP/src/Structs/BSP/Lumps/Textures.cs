@@ -58,7 +58,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
-				case MapType.TacticalIntervention:
+				case MapType.TacticalInterventionEncrypted:
 				case MapType.Vindictus:
 				case MapType.DMoMaM: {
 					int offset = 0;

@@ -52,6 +52,7 @@
     <Compile Include="src\Structs\BSP\Edge.cs" />
     <Compile Include="src\Structs\BSP\Face.cs" />
     <Compile Include="src\Structs\BSP\Leaf.cs" />
+    <Compile Include="src\Structs\BSP\Lumps\GameLump.cs" />
     <Compile Include="src\Structs\BSP\Lumps\SourceStaticProps.cs" />
     <Compile Include="src\Structs\BSP\Lumps\Textures.cs" />
     <Compile Include="src\Structs\BSP\Model.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="src\Structs\Common\Vector2d.cs" />
     <Compile Include="src\Structs\Common\Vector4d.cs" />
     <Compile Include="src\Structs\Common\Vector3d.cs" />
+    <Compile Include="src\Util\BSPReader.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
