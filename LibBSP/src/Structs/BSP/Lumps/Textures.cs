@@ -66,9 +66,10 @@ namespace LibBSP {
 					for (int i = 0; i < data.Length; ++i) {
 						if (data[i] == (byte)0x00) {
 							// They are null-terminated strings, of non-constant length (not padded)
-							bytes = new byte[i - offset - 1];
-							Array.Copy(data, offset, bytes, 0, i - offset - 1);
+							bytes = new byte[i - offset];
+							Array.Copy(data, offset, bytes, 0, i - offset);
 							Add(new Texture(bytes, type));
+							offset = i + 1;
 						}
 					}
 					return;
