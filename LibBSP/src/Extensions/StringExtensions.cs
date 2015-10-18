@@ -87,17 +87,17 @@ namespace LibBSP {
 					if (c == separator) {
 						switch (options) {
 							case StringSplitOptions.RemoveEmptyEntries: {
-									if (current.Length > 0) {
-										results.Add(current.ToString());
-									}
-									current.Length = 0;
-									break;
-								}
-							case StringSplitOptions.None: {
+								if (current.Length > 0) {
 									results.Add(current.ToString());
-									current.Length = 0;
-									break;
 								}
+								current.Length = 0;
+								break;
+							}
+							case StringSplitOptions.None: {
+								results.Add(current.ToString());
+								current.Length = 0;
+								break;
+							}
 						}
 					} else {
 						current.Append(c);

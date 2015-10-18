@@ -127,7 +127,7 @@ namespace LibBSP {
 
 		/// <summary>
 		/// Allows an attribute to be accessed easily using <c>Entity</c>["<paramref name="key" />"] notation.
-		/// If an attribute doesn't exist, it returns the empty string. This emulates the behavior of the engines.
+		/// If an attribute doesn't exist, it returns the empty <c>string</c>. This emulates the behavior of the engines.
 		/// </summary>
 		/// <remarks>
 		/// It's up to the developer to ensure the empty string doesn't cause problems, rather than returning null!
@@ -328,19 +328,10 @@ namespace LibBSP {
 					}
 				} else {
 					if (!ContainsKey(key)) {
-						Add(key, val);
+						this[key] = val;
 					}
 				}
 			}
-		}
-
-		/// <summary>
-		/// Adds the key/value pair to this <c>Entity</c>
-		/// </summary>
-		/// <param name="key">Name of the attribute to add</param>
-		/// <param name="value">Value of the attribute to add</param>
-		public new void Add(string key, string value) {
-			this[key] = value;
 		}
 
 		/// <summary>
@@ -411,9 +402,8 @@ namespace LibBSP {
 		/// <summary>
 		/// Tries to determine what Source engine input this entity would perform when "fired".
 		/// "Firing" an entity is used in practically all other engines for entity I/O, but
-		/// Source replaced it with the input/output system which, while more powerful, makes
-		/// my job that much harder. There is no generic "Fire" input, so I need to give a
-		/// best guess as to the action that will actually be performed.
+		/// Source replaced it with the input/output system which is more powerful. A best match
+		/// action must be found for the action the entity would have taken in other enignes.
 		/// </summary>
 		/// <returns>The best match action for what this entity would do when fired in other engines</returns>
 		public string OnFire() {
@@ -476,7 +466,7 @@ namespace LibBSP {
 
 		/// <summary>
 		/// Tries to determine what action in Source Engine's Entity I/O would be equivalent
-		/// to "enabling" the entity in prior engines
+		/// to "enabling" the entity in prior engines.
 		/// </summary>
 		/// <returns>The best match action for what this entity would do when enabled in other engines</returns>
 		public string OnEnable() {
@@ -525,7 +515,7 @@ namespace LibBSP {
 
 		/// <summary>
 		/// Tries to determine what action in Source Engine's Entity I/O would be equivalent
-		/// to "disabling" the entity in prior engines
+		/// to "disabling" the entity in prior engines.
 		/// </summary>
 		/// <returns>The best match action for what this entity would do when disabled in other engines</returns>
 		public string OnDisable() {
@@ -573,8 +563,8 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Tries to determine which "Output" in Source Engine this <c>Entity</c> would use 
-		/// to "fire" its targets in prior engines
+		/// Tries to determine which "Output" in Source Engine an <c>Entity</c> would use 
+		/// to "fire" its targets in prior engines.
 		/// </summary>
 		/// <returns>The best match "Output" for this <c>Entity</c></returns>
 		public string FireAction() {
@@ -607,7 +597,8 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets a numeric value as a <c>float</c>.
+		/// Gets a numeric attribute as a <c>float</c>. Throws if the attribute could not be converted to a numerical value
+		/// and no <paramref name="failDefault"/> was provided.
 		/// </summary>
 		/// <param name="key">Name of the attribute to retrieve</param>
 		/// <param name="failDefault">Value to return if <paramref name="key" /> doesn't exist, or couldn't be converted</param>
@@ -624,7 +615,8 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets a numeric value as an <c>int</c>.
+		/// Gets a numeric attribute as an <c>int</c>. Throws if the attribute could not be converted to a numerical value
+		/// and no <paramref name="failDefault"/> was provided.
 		/// </summary>
 		/// <param name="key">Name of the attribute to retrieve</param>
 		/// <param name="failDefault">Value to return if <paramref name="key" /> doesn't exist, or couldn't be converted</param>
@@ -641,8 +633,8 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets a Vector value as a <c>Vector4</c>. This will only read as many values as are in the value, and can be
-		/// implicitly converted to Vector3, Vector2, or Color.
+		/// Gets a Vector attribute as a <c>Vector4</c>. This will only read as many values as are in the attribute, and can be
+		/// implicitly converted to Vector3, Vector2, or Color. Throws if the attribute could not be converted to a Vector.
 		/// </summary>
 		/// <param name="key">Name of the attribute to retrieve</param>
 		/// <returns>Vector representation of the components of the attribute</returns>
@@ -667,6 +659,7 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="obj"><c>Object</c> to compare to</param>
 		/// <returns>Less than zero if this entity is first, 0 if they occur at the same time, greater than zero otherwise</returns>
+		/// <exception cref="ArgumentException"><paramref name="obj"/> was not of type <c>Entity</c></exception>
 		public int CompareTo(object obj) {
 			if (obj == null) { return 1; }
 			Entity other = obj as Entity;
@@ -689,7 +682,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Factory method for a <c>Lump</c>.
+		/// Factory method for an <c>Entities</c> object from a <c>byte</c> array.
 		/// </summary>
 		/// <param name="data">The data to parse</param>
 		/// <param name="type">The map type</param>
@@ -759,7 +752,7 @@ namespace LibBSP {
 			public string param;
 			public double delay;
 			public int fireOnce;
-			// As I recall, these are Dark Messiah only. I have no idea what they are for.
+			// As I recall, these exist in Dark Messiah only. I have no idea what they are for.
 			public string unknown0;
 			public string unknown1;
 		}
