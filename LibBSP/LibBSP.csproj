@@ -40,7 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\Attributes\CountAttribute.cs" />
+    <Compile Include="src\Attributes\IndexAttribute.cs" />
     <Compile Include="src\Extensions\Color32Extensions.cs" />
+    <Compile Include="src\Extensions\CustomAttributeExtensions.cs" />
     <Compile Include="src\Extensions\PlaneExtensions.cs" />
     <Compile Include="src\Extensions\RectExtensions.cs" />
     <Compile Include="src\Extensions\StringExtensions.cs" />
@@ -67,7 +70,7 @@
     <Compile Include="src\Structs\BSP\Texture.cs" />
     <Compile Include="src\Structs\Common\Entity.cs" />
     <Compile Include="src\Structs\Common\Lumps\Entities.cs" />
-    <Compile Include="src\Structs\Common\NumList.cs" />
+    <Compile Include="src\Structs\Common\Lumps\NumList.cs" />
     <Compile Include="src\Structs\Common\Rect.cs" />
     <Compile Include="src\Structs\Doom\Linedef.cs" />
     <Compile Include="src\Structs\Doom\DoomMap.cs" />

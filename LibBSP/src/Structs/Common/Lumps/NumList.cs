@@ -197,6 +197,17 @@ namespace LibBSP {
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented</returns>
 		public static int GetIndexForMarkBrushesLump(MapType version, out DataType dataType) {
 			switch (version) {
+				case MapType.Quake3:
+				case MapType.MOHAA:
+				case MapType.FAKK: {
+					dataType = DataType.UInt32;
+					return 6;
+				}
+				case MapType.STEF2:
+				case MapType.STEF2Demo: {
+					dataType = DataType.UInt32;
+					return 8;
+				}
 				case MapType.Quake2:
 				case MapType.SiN:
 				case MapType.Daikatana:

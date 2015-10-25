@@ -7,7 +7,6 @@ namespace LibBSP {
 	/// Handles reading of a BSP file on-demand.
 	/// </summary>
 	public class BSPReader {
-		private FileInfo bspFile;
 		private FileStream stream;
 		private BinaryReader binaryReader;
 
@@ -26,7 +25,6 @@ namespace LibBSP {
 			if (!File.Exists(file.FullName)) {
 				throw new FileNotFoundException("Unable to open BSP file; file " + file.FullName + " not found.");
 			} else {
-				this.bspFile = file;
 				this.stream = new FileStream(file.FullName, FileMode.Open);
 				this.binaryReader = new BinaryReader(this.stream);
 			}
