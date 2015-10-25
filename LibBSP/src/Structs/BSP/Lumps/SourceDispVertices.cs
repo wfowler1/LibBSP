@@ -31,7 +31,7 @@ namespace LibBSP {
 		/// <param name="first">The first vertex to get</param>
 		/// <param name="power">The power of the displacement</param>
 		/// <returns>Array of <c>SourceDispVertex</c> objects containing all the vertices in this displacement</returns>
-		public virtual SourceDispVertex[] GetVertsInDisp(int first, int power) {
+		public virtual SourceDispVertex[] GetVerticesInDisplacement(int first, int power) {
 			int numVerts = 0;
 			switch (power) {
 				case 2: {

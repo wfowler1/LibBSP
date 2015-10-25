@@ -5,6 +5,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Reflection;
 #if UNITY
 using UnityEngine;
 #endif
@@ -434,6 +435,67 @@ namespace LibBSP {
 		public BSP(FileInfo file) {
 			reader = new BSPReader(file);
 			this.filePath = file.FullName;
+		}
+
+		/// <summary>
+		/// Gets all objects of type <typeparamref name="T"/> referenced through passed object <paramref name="o"/>
+		/// contained in the lump <paramref name="lumpName"/> stored in this <c>BSP</c> class. This is done by
+		/// reflecting the <c>Type</c> of <paramref name="o"/> and looping through its public properties to find
+		/// a member with an <c>IndexAttribute</c> attribute and a member with <c>CountAttribute</c> attribute
+		/// both corresponding to <paramref name="lumpName"/>. The index and count are obtained and used to construct
+		/// a new <c>List&lt;<typeparamref name="T"/>&gt;</c> object containing the corresponding objects.
+		/// </summary>
+		/// <typeparam name="T">The type of <c>object</c> stored in the lump <paramref name="lumpName"/>.</typeparam>
+		/// <param name="o">The <c>object</c> which contains and index and count corresponding to <paramref name="lumpName"/>.</param>
+		/// <param name="lumpName">The name of the property in this <c>BSP</c> object to get a <c>List</c> of objects from.</param>
+		/// <returns>The <c>List&lt;<typeparamref name="T"/>&gt;</c> of objects in the lump from the index and length specified in <paramref name="o"/>.</returns>
+		/// <exception cref="ArgumentException">The <c>BSP</c> class contains no property corresponding to <paramref name="lumpName"/>.</exception>
+		/// <exception cref="ArgumentException">The <c>object</c> referenced by <paramref name="o"/> is missing one or both members with <c>IndexAttribute</c> or <c>CountAttribute</c> attributes corresponding to <paramref name="lumpName"/>.</exception>
+		public List<T> GetReferencedObjects<T>(object o, string lumpName)
+		{
+			// First, find the property in this class corresponding to lumpName, and grab its "get" method
+			PropertyInfo targetLump = typeof(BSP).GetProperty(lumpName, BindingFlags.Public | BindingFlags.Instance);
+			if (targetLump == null) {
+				throw new ArgumentException("The lump " + lumpName + " does not exist in the BSP class");
+			}
+
+			// Next, find the properties in the passed object corresponding to lumpName, through the Index and Length custom attributes
+			Type objectType = o.GetType();
+			PropertyInfo[] objectProperties = objectType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+			PropertyInfo indexProperty = null;
+			PropertyInfo countProperty = null;
+			foreach (PropertyInfo info in objectProperties) {
+				IndexAttribute indexAttribute = info.GetCustomAttribute<IndexAttribute>();
+				if (indexAttribute != null) {
+					if (indexAttribute.lumpName == lumpName) {
+						indexProperty = info;
+						if (indexProperty != null && countProperty != null) {
+							break;
+						}
+					}
+				}
+				CountAttribute lengthAttribute = info.GetCustomAttribute<CountAttribute>();
+				if (lengthAttribute != null) {
+					if (lengthAttribute.lumpName == lumpName) {
+						countProperty = info;
+						if (indexProperty != null && countProperty != null) {
+							break;
+						}
+					}
+				}
+			}
+			if (indexProperty == null || countProperty == null) {
+				throw new ArgumentException("An object of type " + objectType.Name + " does not implement both an Index and Count for lump " + lumpName);
+			}
+
+			// Get the index and length from the object
+			int index = (int)indexProperty.GetGetMethod().Invoke(o, null);
+			int count = (int)countProperty.GetGetMethod().Invoke(o, null);
+
+			// Get the lump from this class
+			List<T> theLump = targetLump.GetGetMethod().Invoke(this, null) as List<T>;
+			
+			return theLump.GetRange(index, count);
 		}
 	}
 }

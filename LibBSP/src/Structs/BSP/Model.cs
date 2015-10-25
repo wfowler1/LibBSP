@@ -17,12 +17,12 @@ namespace LibBSP {
 	public struct Model {
 
 		public int headNode { get; private set; } // Quake, Half-life, Quake 2, SiN
-		public int firstLeaf { get; private set; } // 007 nightfire
-		public int numLeaves { get; private set; }
-		public int firstBrush { get; private set; } // Quake 3 and derivatives
-		public int numBrushes { get; private set; }
-		public int firstFace { get; private set; } // Quake/GoldSrc
-		public int numFaces { get; private set; }
+		[Index("leaves")] public int firstLeaf { get; private set; } // 007 nightfire
+		[Count("leaves")] public int numLeaves { get; private set; }
+		[Index("brushes")] public int firstBrush { get; private set; } // Quake 3 and derivatives
+		[Count("brushes")] public int numBrushes { get; private set; }
+		[Index("faces")] public int firstFace { get; private set; } // Quake/GoldSrc
+		[Count("faces")] public int numFaces { get; private set; }
 
 		/// <summary>
 		/// Creates a new <c>Model</c> object from a <c>byte</c> array.

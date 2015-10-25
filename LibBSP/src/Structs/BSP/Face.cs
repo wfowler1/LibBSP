@@ -26,18 +26,18 @@ namespace LibBSP {
 
 		public int plane { get; private set; }
 		public int side { get; private set; }
-		public int firstEdge { get; private set; }
-		public int numEdges { get; private set; }
+		[Index("edges")] public int firstEdge { get; private set; }
+		[Count("edges")] public int numEdges { get; private set; }
 		public int texture { get; private set; }
-		public int firstVertex { get; private set; }
-		public int numVertices { get; private set; }
+		[Index("vertices")] public int firstVertex { get; private set; }
+		[Count("vertices")] public int numVertices { get; private set; }
 		public int material { get; private set; }
 		public int textureScale { get; private set; }
 		public int displacement { get; private set; }
 		public int original { get; private set; }
 		public int flags { get; private set; }
-		public int firstIndex { get; private set; }
-		public int numIndices { get; private set; }
+		[Index("indices")] public int firstIndex { get; private set; }
+		[Count("indices")] public int numIndices { get; private set; }
 		public int unknown { get; private set; }
 		public int lightStyles { get; private set; }
 		public int lightMaps { get; private set; }

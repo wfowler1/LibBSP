@@ -8,10 +8,10 @@ namespace LibBSP {
 	public struct Leaf {
 
 		public int contents { get; private set; }
-		public int firstMarkBrush { get; private set; }
-		public int numMarkBrushes { get; private set; }
-		public int firstMarkFace { get; private set; }
-		public int numMarkFaces { get; private set; }
+		[Index("markBrushes")] public int firstMarkBrush { get; private set; }
+		[Count("markBrushes")] public int numMarkBrushes { get; private set; }
+		[Index("markSurfaces")] public int firstMarkFace { get; private set; }
+		[Count("markSurfaces")] public int numMarkFaces { get; private set; }
 		public int pvs { get; private set; }
 
 		/// <summary>

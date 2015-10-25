@@ -7,8 +7,8 @@ namespace LibBSP {
 	/// </summary>
 	public struct Brush {
 
-		public int firstSide { get; private set; }
-		public int numSides { get; private set; }
+		[Index("brushSides")] public int firstSide { get; private set; }
+		[Count("brushSides")] public int numSides { get; private set; }
 		public int texture { get; private set; }
 		public int contents { get; private set; }
 
