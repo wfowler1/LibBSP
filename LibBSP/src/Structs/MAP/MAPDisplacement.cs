@@ -16,7 +16,7 @@ namespace LibBSP {
 	/// <summary>
 	/// Class containing all data necessary to render a displacement from Source engine.
 	/// </summary>
-	public struct MAPDisplacement {
+	public class MAPDisplacement {
 
 		public int power;
 		public Vector3 start;
@@ -25,15 +25,15 @@ namespace LibBSP {
 		public float[][] alphas;
 
 		/// <summary>
+		/// Creates a new empty <c>MAPDisplacement</c> object. Internal data will have to be set manually.
+		/// </summary>
+		public MAPDisplacement() { }
+
+		/// <summary>
 		/// Constructs a <c>MAPDisplacement</c> object using the provided <c>string</c> array as the data.
 		/// </summary>
-		/// <param name="lines">Data to parse</param>
+		/// <param name="lines">Data to parse.</param>
 		public MAPDisplacement(string[] lines) {
-			power = 0;
-			start = new Vector3(Single.NaN, Single.NaN, Single.NaN);
-			normals = null;
-			distances = null;
-			alphas = null;
 			Dictionary<int, string[]> normalsTokens = new Dictionary<int, string[]>(5);
 			Dictionary<int, string[]> distancesTokens = new Dictionary<int, string[]>(5);
 			Dictionary<int, string[]> alphasTokens = new Dictionary<int, string[]>(5);

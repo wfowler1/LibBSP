@@ -25,9 +25,14 @@ namespace LibBSP {
 		public string texture;
 
 		/// <summary>
+		/// Creates a new empty <c>MAPPatch</c> object. Internal data will have to be set manually.
+		/// </summary>
+		public MAPPatch() { }
+
+		/// <summary>
 		/// Constructs a new <c>MAPPatch</c> object using the supplied string array as data.
 		/// </summary>
-		/// <param name="lines">Data to parse</param>
+		/// <param name="lines">Data to parse.</param>
 		public MAPPatch(string[] lines) {
 
 			texture = lines[2];

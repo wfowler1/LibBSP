@@ -6,19 +6,25 @@ using System.Collections.Generic;
 
 namespace LibBSP {
 	/// <summary>
-	/// Class containing all data for a single brush, including side definitions or a patch definition
+	/// Class containing all data for a single brush, including side definitions or a patch definition.
 	/// </summary>
 	public class MAPBrush {
 
 		public List<MAPBrushSide> sides = new List<MAPBrushSide>(6);
 		public MAPPatch patch;
 
-		public bool isDetail { get; private set; }
+		public bool isDetail = false;
+		public bool isWater = false;
 
 		/// <summary>
-		/// Creates a new <c>MAPBrush</c> object using the supplied <c>string</c> array as data
+		/// Creates a new empty <c>MAPBrush</c> object. Internal data will have to be set manually.
 		/// </summary>
-		/// <param name="lines">Data to parse</param>
+		public MAPBrush() { }
+
+		/// <summary>
+		/// Creates a new <c>MAPBrush</c> object using the supplied <c>string</c> array as data.
+		/// </summary>
+		/// <param name="lines">Data to parse.</param>
 		public MAPBrush(string[] lines) {
 			int braceCount = 0;
 			bool brushDef3 = false;

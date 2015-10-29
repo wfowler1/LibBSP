@@ -13,7 +13,7 @@ namespace LibBSP {
 	using Vector3 = Vector3d;
 #endif
 	/// <summary>
-	/// Class containing data for a brush side. Please note vertices must be set manually or generated through CSG
+	/// Class containing data for a brush side. Please note vertices must be set manually or generated through CSG.
 	/// </summary>
 	public class MAPBrushSide {
 
@@ -35,9 +35,14 @@ namespace LibBSP {
 		public MAPDisplacement displacement;
 
 		/// <summary>
+		/// Creates a new empty <c>MAPBrushSide</c> object. Internal data will have to be set manually.
+		/// </summary>
+		public MAPBrushSide() { }
+
+		/// <summary>
 		/// Constructs a <c>MAPBrushSide</c> object using the provided <c>string</c> array as the data.
 		/// </summary>
-		/// <param name="lines">Data to parse</param>
+		/// <param name="lines">Data to parse.</param>
 		public MAPBrushSide(string[] lines) {
 			// If lines.Length is 1, then this line contains all data for a brush side
 			if (lines.Length == 1) {
