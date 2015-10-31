@@ -158,6 +158,76 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Generates three points which can be used to define this <c>Plane</c>.
+		/// </summary>
+		/// <param name="p">This <c>Plane</c>.</param>
+		/// <param name="planePointCoef">Scale of distance between the generated points. The points will define the same <c>Plane</c> but will be farther apart the larger this value is. May not be zero.</param>
+		/// <returns>Three points which define this <c>Plane</c>.</returns>
+		public static Vector3[] GenerateThreePoints(this Plane p, float planePointCoef = 16) {
+			Vector3[] points = new Vector3[3];
+			// Figure out if the plane is parallel to two of the axes. If so it can be reproduced easily
+			if (p.normal.y == 0 && p.normal.z == 0) {
+				// parallel to plane YZ
+				points[0] = new Vector3(p.distance / p.normal.x, -planePointCoef, planePointCoef);
+				points[1] = new Vector3(p.distance / p.normal.x, 0, 0);
+				points[2] = new Vector3(p.distance / p.normal.x, planePointCoef, planePointCoef);
+				if (p.normal.x > 0) {
+					Array.Reverse(points);
+				}
+			} else if (p.normal.x == 0 && p.normal.z == 0) {
+				// parallel to plane XZ
+				points[0] = new Vector3(planePointCoef, p.distance / p.normal.y, -planePointCoef);
+				points[1] = new Vector3(0, p.distance / p.normal.y, 0);
+				points[2] = new Vector3(planePointCoef, p.distance / p.normal.y, planePointCoef);
+				if (p.normal.y > 0) {
+					Array.Reverse(points);
+				}
+			} else if (p.normal.x == 0 && p.normal.y == 0) {
+				// parallel to plane XY
+				points[0] = new Vector3(-planePointCoef, planePointCoef, p.distance / p.normal.z);
+				points[1] = new Vector3(0, 0, p.distance / p.normal.z);
+				points[2] = new Vector3(planePointCoef, planePointCoef, p.distance / p.normal.z);
+				if (p.normal.z > 0) {
+					Array.Reverse(points);
+				}
+			} else if (p.normal.x == 0) {
+				// If you reach this point the plane is not parallel to any two-axis plane.
+				// parallel to X axis
+				points[0] = new Vector3(-planePointCoef, planePointCoef * planePointCoef, (-(planePointCoef * planePointCoef * p.normal.y - p.distance)) / p.normal.z);
+				points[1] = new Vector3(0, 0, p.distance / p.normal.z);
+				points[2] = new Vector3(planePointCoef, planePointCoef * planePointCoef, (-(planePointCoef * planePointCoef * p.normal.y - p.distance)) / p.normal.z);
+				if (p.normal.z > 0) {
+					Array.Reverse(points);
+				}
+			} else if (p.normal.y == 0) {
+				// parallel to Y axis
+				points[0] = new Vector3((-(planePointCoef * planePointCoef * p.normal.z - p.distance)) / p.normal.x, -planePointCoef, planePointCoef * planePointCoef);
+				points[1] = new Vector3(p.distance / p.normal.x, 0, 0);
+				points[2] = new Vector3((-(planePointCoef * planePointCoef * p.normal.z - p.distance)) / p.normal.x, planePointCoef, planePointCoef * planePointCoef);
+				if (p.normal.x > 0) {
+					Array.Reverse(points);
+				}
+			} else if (p.normal.z == 0) {
+				// parallel to Z axis
+				points[0] = new Vector3(planePointCoef * planePointCoef, (-(planePointCoef * planePointCoef * p.normal.x - p.distance)) / p.normal.y, -planePointCoef);
+				points[1] = new Vector3(0, p.distance / p.normal.y, 0);
+				points[2] = new Vector3(planePointCoef * planePointCoef, (-(planePointCoef * planePointCoef * p.normal.x - p.distance)) / p.normal.y, planePointCoef);
+				if (p.normal.y > 0) {
+					Array.Reverse(points);
+				}
+			} else {
+				// If you reach this point the plane is not parallel to any axis. Therefore, any two coordinates will give a third.
+				points[0] = new Vector3(-planePointCoef, planePointCoef * planePointCoef, -(-planePointCoef * p.normal.x + planePointCoef * planePointCoef * p.normal.y - p.distance) / p.normal.z);
+				points[1] = new Vector3(0, 0, p.distance / p.normal.z);
+				points[2] = new Vector3(planePointCoef, planePointCoef * planePointCoef, -(planePointCoef * p.normal.x + planePointCoef * planePointCoef * p.normal.y - p.distance) / p.normal.z);
+				if (p.normal.z > 0) {
+					Array.Reverse(points);
+				}
+			}
+			return points;
+		}
+
+		/// <summary>
 		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <c>Plane</c> objects.
 		/// </summary>
 		/// <param name="data">The data to parse</param>
