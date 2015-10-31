@@ -281,8 +281,8 @@ namespace LibBSP {
 			}
 			List<Plane> lump = new List<Plane>(data.Length / structLength);
 			for (int i = 0; i < data.Length / structLength; ++i) {
-				Vector3 normal = new Vector3(BitConverter.ToSingle(data, data.Length * i), BitConverter.ToSingle(data, (data.Length * i) + 4), BitConverter.ToSingle(data, (data.Length * i) + 8));
-				float distance = BitConverter.ToSingle(data, (data.Length * i) + 12);
+				Vector3 normal = new Vector3(BitConverter.ToSingle(data, structLength * i), BitConverter.ToSingle(data, (structLength * i) + 4), BitConverter.ToSingle(data, (structLength * i) + 8));
+				float distance = BitConverter.ToSingle(data, (structLength * i) + 12);
 				lump.Add(new Plane(normal, distance));
 			}
 			return lump;
