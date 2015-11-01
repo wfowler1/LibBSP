@@ -7,7 +7,7 @@ using System.Drawing;
 namespace LibBSP {
 	using Color32 = Color;
 	/// <summary>
-	/// Holds an array of three <c>double</c>s representing a 3-dimensional vector.
+	/// Holds three <c>double</c>s representing a 3-dimensional vector.
 	/// </summary>
 	[Serializable] public struct Vector3d : IEquatable<Vector3d>, IEnumerable, IEnumerable<double> {
 

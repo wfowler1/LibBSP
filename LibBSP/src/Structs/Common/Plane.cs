@@ -134,10 +134,13 @@ namespace LibBSP {
 		/// <param name="point0">A point on the <c>Plane</c></param>
 		/// <param name="point1">A point on the <c>Plane</c></param>
 		/// <param name="point2">A point on the <c>Plane</c></param>
-		public Plane(Vector3d point0, Vector3d point1, Vector3d point2) {
-			_normal = ((point0 - point2) ^ (point0 - point1));
+		public Plane(params Vector3d[] points) {
+			if (points.Length < 3) {
+				throw new ArgumentException("Plane constructor was not given enough points to define a plane");
+			}
+			_normal = ((points[0] - points[2]) ^ (points[0] - points[1]));
 			_normal.Normalize();
-			distance = point0 * _normal;
+			distance = points[0] * _normal;
 		}
 
 		/// <summary>

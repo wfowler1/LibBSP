@@ -7,7 +7,7 @@ using System.Drawing;
 namespace LibBSP {
 	using Color32 = Color;
 	/// <summary>
-	/// Holds an array of four <c>double</c>s representing a 4-dimensional vector.
+	/// Holds four <c>double</c>s representing a 4-dimensional vector.
 	/// </summary>
 	[Serializable] public struct Vector4d : IEquatable<Vector4d>, IEnumerable, IEnumerable<double> {
 

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace LibBSP {
 	/// <summary>
-	/// Holds an array of two <c>double</c>s representing a 2-dimensional vector.
+	/// Holds two <c>double</c>s representing a 2-dimensional vector.
 	/// </summary>
 	[Serializable] public struct Vector2d : IEquatable<Vector2d>, IEnumerable, IEnumerable<double> {
 

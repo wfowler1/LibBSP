@@ -31,7 +31,6 @@ namespace LibBSP {
 		public string material;
 		public double lgtScale;
 		public double lgtRot;
-		public int id;
 		public MAPDisplacement displacement;
 
 		/// <summary>
