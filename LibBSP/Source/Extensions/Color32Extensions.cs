@@ -13,18 +13,18 @@ namespace LibBSP {
 	using Color32 = Color;
 #endif
 	/// <summary>
-	/// Static class containing helper methods for <c>Color32</c> objects.
+	/// Static class containing helper methods for <see cref="UnityEngine.Color32"/> objects.
 	/// </summary>
 	public static class Color32Extensions {
 		
 		/// <summary>
-		/// Constructs a new <c>Color32</c> from the passed values.
+		/// Constructs a new <see cref="UnityEngine.Color32"/> from the passed values.
 		/// </summary>
-		/// <param name="a">A component</param>
-		/// <param name="r">R component</param>
-		/// <param name="g">G component</param>
-		/// <param name="b">B component</param>
-		/// <returns>The resulting <c>Color32</c> object</returns>
+		/// <param name="a">A component.</param>
+		/// <param name="r">R component.</param>
+		/// <param name="g">G component.</param>
+		/// <param name="b">B component.</param>
+		/// <returns>The resulting <see cref="UnityEngine.Color32"/> object.</returns>
 		public static Color32 FromArgb(int a, int r, int g, int b) {
 #if UNITY
 			return new Color32((byte)r, (byte)g, (byte)b, (byte)a);

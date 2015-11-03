@@ -13,16 +13,16 @@ namespace LibBSP {
 	using Vector3 = Vector3d;
 #endif
 	/// <summary>
-	/// Static class containing helper methods for <c>Plane</c> objects.
+	/// Static class containing helper methods for <see cref="Plane"/> objects.
 	/// </summary>
 	public static class PlaneExtensions {
 		/// <summary>
-		/// Intersects three <c>Plane</c>s at a <c>Vector3</c>. Returns NaN for all components if two or more <c>Plane</c>s are parallel.
+		/// Intersects three <see cref="Plane"/>s at a <see cref="Vector3"/>. Returns NaN for all components if two or more <see cref="Plane"/>s are parallel.
 		/// </summary>
-		/// <param name="p1"><c>Plane</c> to intersect</param>
-		/// <param name="p2"><c>Plane</c> to intersect</param>
-		/// <param name="p3"><c>Plane</c> to intersect</param>
-		/// <returns>Point of intersection if all three <c>Plane</c>s meet at a point, (NaN, NaN, NaN) otherwise</returns>
+		/// <param name="p1"><see cref="Plane"/> to intersect.</param>
+		/// <param name="p2"><see cref="Plane"/> to intersect.</param>
+		/// <param name="p3"><see cref="Plane"/> to intersect.</param>
+		/// <returns>Point of intersection if all three <see cref="Plane"/>s meet at a point, (NaN, NaN, NaN) otherwise.</returns>
 		public static Vector3 Intersection(Plane p1, Plane p2, Plane p3) {
 			Vector3 aN = p1.normal;
 			Vector3 bN = p2.normal;
@@ -49,22 +49,22 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Intersects this <c>Plane</c> with two other <c>Plane</c>s at a <c>Vector3</c>. Returns NaN for all components if two or more <c>Plane</c>s are parallel.
+		/// Intersects this <see cref="Plane"/> with two other <see cref="Plane"/>s at a <see cref="Vector3"/>. Returns NaN for all components if two or more <see cref="Plane"/>s are parallel.
 		/// </summary>
-		/// <param name="p1">This <c>Plane</c></param>
-		/// <param name="p2"><c>Plane</c> to intersect</param>
-		/// <param name="p3"><c>Plane</c> to intersect</param>
-		/// <returns>Point of intersection if all three <c>Plane</c>s meet at a point, (NaN, NaN, NaN) otherwise</returns>
+		/// <param name="p1">This <see cref="Plane"/>.</param>
+		/// <param name="p2"><see cref="Plane"/> to intersect</param>
+		/// <param name="p3"><see cref="Plane"/> to intersect</param>
+		/// <returns>Point of intersection if all three <see cref="Plane"/>s meet at a point, (NaN, NaN, NaN) otherwise</returns>
 		public static Vector3 Intersect(this Plane p1, Plane p2, Plane p3) {
 			return Intersection(p1, p2, p3);
 		}
 
 		/// <summary>
-		/// Intersects a <c>Plane</c> "<paramref name="p" />" with a <c>Ray</c> "<paramref name="r" />" at a <c>Vector3</c>. Returns NaN for all components if they do not intersect.
+		/// Intersects a <see cref="Plane"/> "<paramref name="p" />" with a <see cref="Ray"/> "<paramref name="r" />" at a <see cref="Vector3"/>. Returns NaN for all components if they do not intersect.
 		/// </summary>
-		/// <param name="p"><c>Plane</c> to intersect with</param>
-		/// <param name="r"><c>Ray</c> to intersect</param>
-		/// <returns>Point of intersection if "<paramref name="r" />" intersects "<paramref name="p" />", (NaN, NaN, NaN) otherwise</returns>
+		/// <param name="p"><see cref="Plane"/> to intersect with.</param>
+		/// <param name="r"><see cref="Ray"/> to intersect.</param>
+		/// <returns>Point of intersection if "<paramref name="r" />" intersects "<paramref name="p" />", (NaN, NaN, NaN) otherwise.</returns>
 		public static Vector3 Intersection(Plane p, Ray r) {
 #if UNITY
 			float enter;
@@ -80,31 +80,31 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Intersects this <c>Plane</c> with a <c>Ray</c> "<paramref name="r" />" at a <c>Vector3</c>. Returns NaN for all components if they do not intersect.
+		/// Intersects this <see cref="Plane"/> with a <see cref="Ray"/> "<paramref name="r" />" at a <see cref="Vector3"/>. Returns NaN for all components if they do not intersect.
 		/// </summary>
-		/// <param name="p">This <c>Plane</c></param>
-		/// <param name="r"><c>Ray</c> to intersect</param>
-		/// <returns>Point of intersection if "<paramref name="r" />" intersects this <c>Plane</c>, (NaN, NaN, NaN) otherwise</returns>
+		/// <param name="p">This <see cref="Plane"/>.</param>
+		/// <param name="r"><see cref="Ray"/> to intersect.</param>
+		/// <returns>Point of intersection if "<paramref name="r" />" intersects this <see cref="Plane"/>, (NaN, NaN, NaN) otherwise.</returns>
 		public static Vector3 Intersect(this Plane p, Ray r) {
 			return Intersection(p, r);
 		}
 
 		/// <summary>
-		/// Intersects a <c>Plane</c> "<paramref name="p" />" with this <c>Ray</c> at a <c>Vector3</c>. Returns NaN for all components if they do not intersect.
+		/// Intersects a <see cref="Plane"/> "<paramref name="p" />" with this <see cref="Ray"/> at a <see cref="Vector3"/>. Returns NaN for all components if they do not intersect.
 		/// </summary>
-		/// <param name="r">This <c>Ray</c></param>
-		/// <param name="p"><c>Plane</c> to intersect with</param>
-		/// <returns>Point of intersection if this <c>Ray</c> intersects "<paramref name="p" />", (NaN, NaN, NaN) otherwise</returns>
+		/// <param name="r">This <see cref="Ray"/>.</param>
+		/// <param name="p"><see cref="Plane"/> to intersect with.</param>
+		/// <returns>Point of intersection if this <see cref="Ray"/> intersects "<paramref name="p" />", (NaN, NaN, NaN) otherwise.</returns>
 		public static Vector3 Intersect(this Ray r, Plane p) {
 			return Intersection(p, r);
 		}
 
 		/// <summary>
-		/// Intersects two <c>Plane</c>s at a <c>Ray</c>. Returns NaN for all components of both <c>Vector3</c>s of the <c>Ray</c> if the <c>Plane</c>s are parallel.
+		/// Intersects two <see cref="Plane"/>s at a <see cref="Ray"/>. Returns NaN for all components of both <see cref="Vector3"/>s of the <see cref="Ray"/> if the <see cref="Plane"/>s are parallel.
 		/// </summary>
-		/// <param name="p1"><c>Plane</c> to intersect</param>
-		/// <param name="p2"><c>Plane</c> to intersect</param>
-		/// <returns>Line of intersection where "<paramref name="p1" />" intersects "<paramref name="p2" />", ((NaN, NaN, NaN) + p(NaN, NaN, NaN)) otherwise</returns>
+		/// <param name="p1"><see cref="Plane"/> to intersect.</param>
+		/// <param name="p2"><see cref="Plane"/> to intersect.</param>
+		/// <returns>Line of intersection where "<paramref name="p1" />" intersects "<paramref name="p2" />", ((NaN, NaN, NaN) + p(NaN, NaN, NaN)) otherwise.</returns>
 		public static Ray Intersection(Plane p1, Plane p2) {
 			Vector3 direction = Vector3.Cross(p1.normal, p2.normal);
 			if (direction == Vector3.zero) {
@@ -148,21 +148,21 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Intersects this <c>Plane</c> with another <c>Plane</c> at a <c>Ray</c>. Returns NaN for all components of both <c>Vector3</c>s of the <c>Ray</c> if the <c>Plane</c>s are parallel.
+		/// Intersects this <see cref="Plane"/> with another <see cref="Plane"/> at a <see cref="Ray"/>. Returns NaN for all components of both <see cref="Vector3"/>s of the <see cref="Ray"/> if the <see cref="Plane"/>s are parallel.
 		/// </summary>
-		/// <param name="p1">This <c>Plane</c></param>
-		/// <param name="p2"><c>Plane</c> to intersect</param>
-		/// <returns>Line of intersection where this <c>Plane</c> intersects "<paramref name="p2" />", ((NaN, NaN, NaN) + p(NaN, NaN, NaN)) otherwise</returns>
+		/// <param name="p1">This <see cref="Plane"/>.</param>
+		/// <param name="p2"><see cref="Plane"/> to intersect.</param>
+		/// <returns>Line of intersection where this <see cref="Plane"/> intersects "<paramref name="p2" />", ((NaN, NaN, NaN) + p(NaN, NaN, NaN)) otherwise.</returns>
 		public static Ray Intersect(this Plane p1, Plane p2) {
 			return Intersection(p1, p2);
 		}
 
 		/// <summary>
-		/// Generates three points which can be used to define this <c>Plane</c>.
+		/// Generates three points which can be used to define this <see cref="Plane"/>.
 		/// </summary>
-		/// <param name="p">This <c>Plane</c>.</param>
-		/// <param name="planePointCoef">Scale of distance between the generated points. The points will define the same <c>Plane</c> but will be farther apart the larger this value is. May not be zero.</param>
-		/// <returns>Three points which define this <c>Plane</c>.</returns>
+		/// <param name="p">This <see cref="Plane"/>.</param>
+		/// <param name="planePointCoef">Scale of distance between the generated points. The points will define the same <see cref="Plane"/> but will be farther apart the larger this value is. May not be zero.</param>
+		/// <returns>Three points which define this <see cref="Plane"/>.</returns>
 		public static Vector3[] GenerateThreePoints(this Plane p, float planePointCoef = 16) {
 			Vector3[] points = new Vector3[3];
 			// Figure out if the plane is parallel to two of the axes. If so it can be reproduced easily
@@ -228,13 +228,13 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <c>Plane</c> objects.
+		/// Factory method to parse a <c>byte</c> array into a <see cref="List"/> of <see cref="Plane"/> objects.
 		/// </summary>
-		/// <param name="data">The data to parse</param>
-		/// <param name="type">The map type</param>
-		/// <returns>A <c>List</c> of <c>Plane</c> objects</returns>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype</exception>
+		/// <param name="data">The data to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <returns>A <see cref="List"/> of <see cref="Plane"/> objects.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null.</exception>
+		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
 		/// <remarks>This function goes here since it can't go into Unity's Plane class, and so can't depend
 		/// on having a constructor taking a byte array.</remarks>
 		public static List<Plane> LumpFactory(byte[] data, MapType type) {
@@ -291,8 +291,8 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the index for this lump in the BSP file for a specific map format.
 		/// </summary>
-		/// <param name="type">The map type</param>
-		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented</returns>
+		/// <param name="type">The map type.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForLump(MapType type) {
 			switch (type) {
 				case MapType.FAKK:

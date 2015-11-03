@@ -13,7 +13,7 @@ namespace LibBSP {
 		public string lumpName;
 		
 		/// <summary>
-		/// Constructs a new instance of an <c>CountAttribute</c> object. The member this Attribute
+		/// Constructs a new instance of an <see cref="LibBSP.CountAttribute"/> object. The member this Attribute
 		/// is applied to will be used as a count of objects in the lump referenced by <paramref name="lumpName"/>.
 		/// </summary>
 		/// <param name="lumpName">The lump the member is an count for. Corresponds to the public properties in the <c>BSP</c> class.</param>
