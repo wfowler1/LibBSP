@@ -21,7 +21,7 @@ namespace LibBSP {
 				throw new ArgumentNullException();
 			}
 			int structLength = 0;
-			string[] dictionary = new string[0];
+			dictionary = new string[0];
 			if (data.Length > 0) {
 				int offset = 0;
 				dictionary = new string[BitConverter.ToInt32(data, 0)];

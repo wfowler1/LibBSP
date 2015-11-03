@@ -87,8 +87,8 @@ namespace LibBSP {
 					GameLumpInfo info = new GameLumpInfo {
 						flags = BitConverter.ToUInt16(data, (i * structLength) + 8),
 						version = BitConverter.ToUInt16(data, (i * structLength) + 10),
-						offset = BitConverter.ToInt32(data, (i * structLength) + 14),
-						length = BitConverter.ToInt32(data, (i * structLength) + 18),
+						offset = BitConverter.ToInt32(data, (i * structLength) + 12),
+						length = BitConverter.ToInt32(data, (i * structLength) + 16),
 					};
 					this[(GameLumpType)BitConverter.ToInt32(data, (i * structLength) + 4)] = info;
 
