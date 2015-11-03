@@ -120,7 +120,10 @@ namespace LibBSP {
 		public Entities entities {
 			get {
 				if (_entities == null) {
-					_entities = Entity.LumpFactory(reader.ReadLumpNum(Entity.GetIndexForLump(version), version), version);
+					int index = Entity.GetIndexForLump(version);
+					if (index >= 0) {
+						_entities = Entity.LumpFactory(reader.ReadLumpNum(index, version), version);
+					}
 				}
 				return _entities;
 			}
@@ -129,7 +132,10 @@ namespace LibBSP {
 		public List<Plane> planes {
 			get {
 				if (_planes == null) {
-					_planes = PlaneExtensions.LumpFactory(reader.ReadLumpNum(PlaneExtensions.GetIndexForLump(version), version), version);
+					int index = PlaneExtensions.GetIndexForLump(version);
+					if (index >= 0) {
+						_planes = PlaneExtensions.LumpFactory(reader.ReadLumpNum(index, version), version);
+					}
 				}
 				return _planes;
 			}
@@ -138,7 +144,10 @@ namespace LibBSP {
 		public Textures textures {
 			get {
 				if (_textures == null) {
-					_textures = Texture.LumpFactory(reader.ReadLumpNum(Texture.GetIndexForLump(version), version), version);
+					int index = Texture.GetIndexForLump(version);
+					if (index >= 0) {
+						_textures = Texture.LumpFactory(reader.ReadLumpNum(index, version), version);
+					}
 				}
 				return _textures;
 			}
@@ -147,7 +156,10 @@ namespace LibBSP {
 		public List<UIVertex> vertices {
 			get {
 				if (_vertices == null) {
-					_vertices = UIVertexExtensions.LumpFactory(reader.ReadLumpNum(UIVertexExtensions.GetIndexForLump(version), version), version);
+					int index = UIVertexExtensions.GetIndexForLump(version);
+					if (index >= 0) {
+						_vertices = UIVertexExtensions.LumpFactory(reader.ReadLumpNum(index, version), version);
+					}
 				}
 				return _vertices;
 			}
@@ -156,7 +168,10 @@ namespace LibBSP {
 		public List<Node> nodes {
 			get {
 				if (_nodes == null) {
-					_nodes = Node.LumpFactory(reader.ReadLumpNum(Node.GetIndexForLump(version), version), version);
+					int index = Node.GetIndexForLump(version);
+					if (index >= 0) {
+						_nodes = Node.LumpFactory(reader.ReadLumpNum(index, version), version);
+					}
 				}
 				return _nodes;
 			}
@@ -165,7 +180,10 @@ namespace LibBSP {
 		public List<TexInfo> texInfo {
 			get {
 				if (_texInfo == null) {
-					_texInfo = TexInfo.LumpFactory(reader.ReadLumpNum(TexInfo.GetIndexForLump(version), version), version);
+					int index = TexInfo.GetIndexForLump(version);
+					if (index >= 0) {
+						_texInfo = TexInfo.LumpFactory(reader.ReadLumpNum(index, version), version);
+					}
 				}
 				return _texInfo;
 			}
@@ -174,7 +192,10 @@ namespace LibBSP {
 		public List<Face> faces {
 			get {
 				if (_faces == null) {
-					_faces = Face.LumpFactory(reader.ReadLumpNum(Face.GetIndexForLump(version), version), version);
+					int index = Face.GetIndexForLump(version);
+					if (index >= 0) {
+						_faces = Face.LumpFactory(reader.ReadLumpNum(index, version), version);
+					}
 				}
 				return _faces;
 			}
@@ -183,7 +204,10 @@ namespace LibBSP {
 		public List<Leaf> leaves {
 			get {
 				if (_leaves == null) {
-					_leaves = Leaf.LumpFactory(reader.ReadLumpNum(Leaf.GetIndexForLump(version), version), version);
+					int index = Leaf.GetIndexForLump(version);
+					if (index >= 0) {
+						_leaves = Leaf.LumpFactory(reader.ReadLumpNum(index, version), version);
+					}
 				}
 				return _leaves;
 			}
@@ -192,7 +216,10 @@ namespace LibBSP {
 		public List<Edge> edges {
 			get {
 				if (_edges == null) {
-					_edges = Edge.LumpFactory(reader.ReadLumpNum(Edge.GetIndexForLump(version), version), version);
+					int index = Edge.GetIndexForLump(version);
+					if (index >= 0) {
+						_edges = Edge.LumpFactory(reader.ReadLumpNum(index, version), version);
+					}
 				}
 				return _edges;
 			}
@@ -201,7 +228,10 @@ namespace LibBSP {
 		public List<Model> models {
 			get {
 				if (_models == null) {
-					_models = Model.LumpFactory(reader.ReadLumpNum(Model.GetIndexForLump(version), version), version);
+					int index = Model.GetIndexForLump(version);
+					if (index >= 0) {
+						_models = Model.LumpFactory(reader.ReadLumpNum(index, version), version);
+					}
 				}
 				return _models;
 			}
@@ -210,7 +240,10 @@ namespace LibBSP {
 		public List<Brush> brushes {
 			get {
 				if (_brushes == null) {
-					_brushes = Brush.LumpFactory(reader.ReadLumpNum(Brush.GetIndexForLump(version), version), version);
+					int index = Brush.GetIndexForLump(version);
+					if (index >= 0) {
+						_brushes = Brush.LumpFactory(reader.ReadLumpNum(index, version), version);
+					}
 				}
 				return _brushes;
 			}
@@ -219,7 +252,10 @@ namespace LibBSP {
 		public List<BrushSide> brushSides {
 			get {
 				if (_brushSides == null) {
-					_brushSides = BrushSide.LumpFactory(reader.ReadLumpNum(BrushSide.GetIndexForLump(version), version), version);
+					int index = BrushSide.GetIndexForLump(version);
+					if (index >= 0) {
+						_brushSides = BrushSide.LumpFactory(reader.ReadLumpNum(index, version), version);
+					}
 				}
 				return _brushSides;
 			}
@@ -228,7 +264,10 @@ namespace LibBSP {
 		public Textures materials {
 			get {
 				if (_materials == null) {
-					_materials = Texture.LumpFactory(reader.ReadLumpNum(Texture.GetIndexForMaterialLump(version), version), version);
+					int index = Texture.GetIndexForMaterialLump(version);
+					if (index >= 0) {
+						_materials = Texture.LumpFactory(reader.ReadLumpNum(index, version), version);
+					}
 				}
 				return _materials;
 			}
@@ -237,7 +276,10 @@ namespace LibBSP {
 		public List<Face> originalFaces {
 			get {
 				if (_originalFaces == null) {
-					_originalFaces = Face.LumpFactory(reader.ReadLumpNum(Face.GetIndexForOriginalFacesLump(version), version), version);
+					int index = Face.GetIndexForOriginalFacesLump(version);
+					if (index >= 0) {
+						_originalFaces = Face.LumpFactory(reader.ReadLumpNum(index, version), version);
+					}
 				}
 				return _originalFaces;
 			}
@@ -246,7 +288,10 @@ namespace LibBSP {
 		public List<SourceTexData> texDatas {
 			get {
 				if (_texDatas == null) {
-					_texDatas = SourceTexData.LumpFactory(reader.ReadLumpNum(SourceTexData.GetIndexForLump(version), version), version);
+					int index = SourceTexData.GetIndexForLump(version);
+					if (index >= 0) {
+						_texDatas = SourceTexData.LumpFactory(reader.ReadLumpNum(index, version), version);
+					}
 				}
 				return _texDatas;
 			}
@@ -255,7 +300,10 @@ namespace LibBSP {
 		public List<SourceDispInfo> dispInfos {
 			get {
 				if (_dispInfos == null) {
-					_dispInfos = SourceDispInfo.LumpFactory(reader.ReadLumpNum(SourceDispInfo.GetIndexForLump(version), version), version);
+					int index = SourceDispInfo.GetIndexForLump(version);
+					if (index >= 0) {
+						_dispInfos = SourceDispInfo.LumpFactory(reader.ReadLumpNum(index, version), version);
+					}
 				}
 				return _dispInfos;
 			}
@@ -264,7 +312,10 @@ namespace LibBSP {
 		public SourceDispVertices dispVerts {
 			get {
 				if (_dispVerts == null) {
-					_dispVerts = SourceDispVertex.LumpFactory(reader.ReadLumpNum(SourceDispVertex.GetIndexForLump(version), version), version);
+					int index = SourceDispVertex.GetIndexForLump(version);
+					if (index >= 0) {
+						_dispVerts = SourceDispVertex.LumpFactory(reader.ReadLumpNum(index, version), version);
+					}
 				}
 				return _dispVerts;
 			}
@@ -273,7 +324,10 @@ namespace LibBSP {
 		public List<SourceCubemap> cubemaps {
 			get {
 				if (_cubemaps == null) {
-					_cubemaps = SourceCubemap.LumpFactory(reader.ReadLumpNum(SourceCubemap.GetIndexForLump(version), version), version);
+					int index = SourceCubemap.GetIndexForLump(version);
+					if (index >= 0) {
+						_cubemaps = SourceCubemap.LumpFactory(reader.ReadLumpNum(index, version), version);
+					}
 				}
 				return _cubemaps;
 			}
@@ -283,7 +337,10 @@ namespace LibBSP {
 			get {
 				if (_markSurfaces == null) {
 					NumList.DataType type;
-					_markSurfaces = NumList.LumpFactory(reader.ReadLumpNum(NumList.GetIndexForMarkSurfacesLump(version, out type), version), type);
+					int index = NumList.GetIndexForMarkSurfacesLump(version, out type);
+					if (index >= 0) {
+						_markSurfaces = NumList.LumpFactory(reader.ReadLumpNum(index, version), type);
+					}
 				}
 				return _markSurfaces;
 			}
@@ -293,7 +350,10 @@ namespace LibBSP {
 			get {
 				if (_surfEdges == null) {
 					NumList.DataType type;
-					_surfEdges = NumList.LumpFactory(reader.ReadLumpNum(NumList.GetIndexForSurfEdgesLump(version, out type), version), type);
+					int index = NumList.GetIndexForSurfEdgesLump(version, out type);
+					if (index >= 0) {
+						_surfEdges = NumList.LumpFactory(reader.ReadLumpNum(index, version), type);
+					}
 				}
 				return _surfEdges;
 			}
@@ -303,7 +363,10 @@ namespace LibBSP {
 			get {
 				if (_markBrushes == null) {
 					NumList.DataType type;
-					_markBrushes = NumList.LumpFactory(reader.ReadLumpNum(NumList.GetIndexForMarkBrushesLump(version, out type), version), type);
+					int index = NumList.GetIndexForMarkBrushesLump(version, out type);
+					if (index >= 0) {
+						_markBrushes = NumList.LumpFactory(reader.ReadLumpNum(index, version), type);
+					}
 				}
 				return _markBrushes;
 			}
@@ -313,7 +376,10 @@ namespace LibBSP {
 			get {
 				if (_indices == null) {
 					NumList.DataType type;
-					_indices = NumList.LumpFactory(reader.ReadLumpNum(NumList.GetIndexForIndicesLump(version, out type), version), type);
+					int index = NumList.GetIndexForIndicesLump(version, out type);
+					if (index >= 0) {
+						_indices = NumList.LumpFactory(reader.ReadLumpNum(index, version), type);
+					}
 				}
 				return _indices;
 			}
@@ -323,7 +389,10 @@ namespace LibBSP {
 			get {
 				if (_texTable == null) {
 					NumList.DataType type;
-					_texTable = NumList.LumpFactory(reader.ReadLumpNum(NumList.GetIndexForTexTableLump(version, out type), version), type);
+					int index = NumList.GetIndexForTexTableLump(version, out type);
+					if (index >= 0) {
+						_texTable = NumList.LumpFactory(reader.ReadLumpNum(index, version), type);
+					}
 				}
 				return _texTable;
 			}
@@ -333,7 +402,10 @@ namespace LibBSP {
 			get {
 				if (_displacementTriangles == null) {
 					NumList.DataType type;
-					_displacementTriangles = NumList.LumpFactory(reader.ReadLumpNum(NumList.GetIndexForDisplacementTrianglesLump(version, out type), version), type);
+					int index = NumList.GetIndexForDisplacementTrianglesLump(version, out type);
+					if (index >= 0) {
+						_displacementTriangles = NumList.LumpFactory(reader.ReadLumpNum(index, version), type);
+					}
 				}
 				return _displacementTriangles;
 			}
@@ -342,7 +414,10 @@ namespace LibBSP {
 		public GameLump gameLump {
 			get {
 				if (_gameLump == null) {
-					_gameLump = GameLump.LumpFactory(reader.ReadLumpNum(GameLump.GetIndexForLump(version), version), version);
+					int index = GameLump.GetIndexForLump(version);
+					if (index >= 0) {
+						_gameLump = GameLump.LumpFactory(reader.ReadLumpNum(index, version), version);
+					}
 				}
 				return _gameLump;
 			}
@@ -351,10 +426,12 @@ namespace LibBSP {
 		public SourceStaticProps staticProps {
 			get {
 				if (_staticProps == null) {
-					GameLump.GameLumpInfo info = gameLump[GameLumpType.sprp];
-					byte[] thisLump = new byte[info.length];
-					Array.Copy(gameLump.rawData, info.offset - gameLump.gameLumpOffset, thisLump, 0, info.length);
-					_staticProps = SourceStaticProp.LumpFactory(thisLump, version, info.version);
+					if (gameLump != null && gameLump.ContainsKey(GameLumpType.sprp)) {
+						GameLump.GameLumpInfo info = gameLump[GameLumpType.sprp];
+						byte[] thisLump = new byte[info.length];
+						Array.Copy(gameLump.rawData, info.offset - gameLump.gameLumpOffset, thisLump, 0, info.length);
+						_staticProps = SourceStaticProp.LumpFactory(thisLump, version, info.version);
+					}
 				}
 				return _staticProps;
 			}
@@ -435,6 +512,13 @@ namespace LibBSP {
 		public BSP(FileInfo file) {
 			reader = new BSPReader(file);
 			this.filePath = file.FullName;
+		}
+
+		/// <summary>
+		/// Tells the <see cref="BSPReader"/> object to release file handles for the BSP file.
+		/// </summary>
+		public void Close() {
+			reader.Close();
 		}
 
 		/// <summary>

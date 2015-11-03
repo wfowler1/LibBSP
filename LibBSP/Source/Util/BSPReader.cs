@@ -412,5 +412,12 @@ namespace LibBSP {
 			}
 			return current;
 		}
+
+		/// <summary>
+		/// Disposes of the <see cref="FileStream"/> and releases the handle to the File.
+		/// </summary>
+		public void Close() {
+			stream.Dispose();
+		}
 	}
 }
