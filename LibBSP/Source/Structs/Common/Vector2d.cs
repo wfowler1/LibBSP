@@ -80,6 +80,7 @@ namespace LibBSP {
 		/// </summary>
 		public Vector2d normalized {
 			get {
+				if (this == Vector2d.zero) { return Vector2d.zero; }
 				double magnitude = this.magnitude;
 				return new Vector2d(x / magnitude, y / magnitude);
 			}
@@ -356,6 +357,7 @@ namespace LibBSP {
 		/// Changes this vector to its normalized version (it will have a magnitude of 1).
 		/// </summary>
 		public void Normalize() {
+			if (this == Vector2d.zero) { return; }
 			double magnitude = this.magnitude;
 			x /= magnitude;
 			y /= magnitude;
