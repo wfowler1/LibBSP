@@ -90,6 +90,7 @@ namespace LibBSP {
 		/// </summary>
 		public Vector4d normalized {
 			get {
+				if (this == Vector4d.zero) { return Vector4d.zero; }
 				double magnitude = this.magnitude;
 				return new Vector4d(x / magnitude, y / magnitude, z / magnitude, w / magnitude);
 			}
@@ -401,6 +402,7 @@ namespace LibBSP {
 		/// Changes this vector to its normalized version (it will have a magnitude of 1).
 		/// </summary>
 		public void Normalize() {
+			if (this == Vector4d.zero) { return; }
 			double magnitude = this.magnitude;
 			x /= magnitude;
 			y /= magnitude;
