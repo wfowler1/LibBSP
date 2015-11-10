@@ -169,7 +169,7 @@ namespace LibBSP {
 				x = Convert.ToDouble(point[0]);
 				y = Convert.ToDouble(point[1]);
 				z = Convert.ToDouble(point[2]);
-				w = Convert.ToDouble(point[2]);
+				w = Convert.ToDouble(point[3]);
 			} else if (point.Length == 3) {
 				x = Convert.ToDouble(point[0]);
 				y = Convert.ToDouble(point[1]);
