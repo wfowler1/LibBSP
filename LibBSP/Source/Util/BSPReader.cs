@@ -25,7 +25,7 @@ namespace LibBSP {
 			if (!File.Exists(file.FullName)) {
 				throw new FileNotFoundException("Unable to open BSP file; file " + file.FullName + " not found.");
 			} else {
-				this.stream = new FileStream(file.FullName, FileMode.Open);
+				this.stream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read);
 				this.binaryReader = new BinaryReader(this.stream);
 			}
 		}

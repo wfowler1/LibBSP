@@ -437,7 +437,7 @@ namespace LibBSP {
 
 		/// <summary>
 		/// Gets a Vector attribute as a <c>Vector4</c>. This will only read as many values as are in the attribute, and can be
-		/// implicitly converted to Vector3, Vector2, or Color. Throws if the attribute could not be converted to a Vector.
+		/// implicitly converted to Vector3, Vector2, or Color.
 		/// </summary>
 		/// <param name="key">Name of the attribute to retrieve</param>
 		/// <returns>Vector representation of the components of the attribute</returns>
