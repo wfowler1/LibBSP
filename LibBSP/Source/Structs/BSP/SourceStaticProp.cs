@@ -84,7 +84,7 @@ namespace LibBSP {
 						}
 						case 4: {
 							origin = new Vector3(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
-							origin = new Vector3(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20));
+							angles = new Vector3(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20));
 							dictionaryEntry = BitConverter.ToInt16(data, 24);
 							solidity = data[30];
 							flags = data[31];
