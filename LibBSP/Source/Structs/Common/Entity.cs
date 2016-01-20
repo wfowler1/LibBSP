@@ -70,6 +70,8 @@ namespace LibBSP {
 			get {
 				if (ContainsKey("targetname")) {
 					return this["targetname"];
+				} else if (ContainsKey("name")) {
+					return this["name"];
 				} else {
 					return "";
 				}
@@ -335,10 +337,9 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets a string representation of this <c>Entity</c>.
+		/// Gets a <c>string</c> representation of this <c>Entity</c>.
 		/// </summary>
-		/// <remarks>Don't use this to export the entity to a file</remarks>
-		/// <returns>String representation of this <c>Entity</c></returns>
+		/// <returns><c>string</c> representation of this <c>Entity</c>.</returns>
 		public override string ToString() {
 			StringBuilder output = new StringBuilder();
 			output.Append("{\n");
@@ -356,45 +357,45 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Checks if the attribute named "<paramref name="key" />" has the value "<paramref name="value" />"
+		/// Checks if the attribute named "<paramref name="key" />" has the value "<paramref name="value" />".
 		/// </summary>
-		/// <param name="key">The attribute to check</param>
-		/// <param name="value">The value to compare</param>
-		/// <returns><c>true</c> if the values match</returns>
+		/// <param name="key">The attribute to check.</param>
+		/// <param name="value">The value to compare.</param>
+		/// <returns><c>true</c> if the values match.</returns>
 		public bool ValueIs(string key, string value) {
 			return value.Equals(this[key], StringComparison.InvariantCultureIgnoreCase);
 		}
 
 		/// <summary>
-		/// Checks if the bits in "spawnflags" corresponding to the set bits set in <paramref name="bits" /> are set
+		/// Checks if the bits in "spawnflags" corresponding to the set bits set in <paramref name="bits" /> are set.
 		/// </summary>
-		/// <param name="bits">The bits to compare spawnflags to</param>
-		/// <returns><c>true</c> if all bits that were set in <paramref name="bits" /> were set in spawnflags</returns>
+		/// <param name="bits">The bits to compare spawnflags to.</param>
+		/// <returns><c>true</c> if all bits that were set in <paramref name="bits" /> were set in spawnflags.</returns>
 		public bool SpawnflagsSet(uint bits) {
 			return ((spawnflags & bits) == bits);
 		}
 
 		/// <summary>
-		/// Toggles the bits in "spawnflags" which are set in <paramref name="bits" />
+		/// Toggles the bits in "spawnflags" which are set in <paramref name="bits" />.
 		/// </summary>
-		/// <param name="bits">Bitmask of bits to toggle</param>
+		/// <param name="bits">Bitmask of bits to toggle.</param>
 		public void ToggleSpawnflags(uint bits) {
 			this["spawnflags"] = (spawnflags ^ bits).ToString();
 		}
 
 		/// <summary>
-		/// Clears the bits in "spawnflags" which are set in <paramref name="bits" />
-		/// Equivalent to spawnflags = (<paramref name="bits" /> ^ 0xFFFFFFFF) & spawnflags
+		/// Clears the bits in "spawnflags" which are set in <paramref name="bits" />.
+		/// Equivalent to spawnflags = (<paramref name="bits" /> ^ 0xFFFFFFFF) & spawnflags.
 		/// </summary>
-		/// <param name="bits">Bitmask of bits to clear</param>
+		/// <param name="bits">Bitmask of bits to clear.</param>
 		public void ClearSpawnflags(uint bits) {
 			ToggleSpawnflags(spawnflags & bits);
 		}
 
 		/// <summary>
-		/// Sets the bits in "spawnflags" which are set in <paramref name="bits" />
+		/// Sets the bits in "spawnflags" which are set in <paramref name="bits" />.
 		/// </summary>
-		/// <param name="bits">Bitmask of bits to set</param>
+		/// <param name="bits">Bitmask of bits to set.</param>
 		public void SetSpawnflags(uint bits) {
 			this["spawnflags"] = (spawnflags | bits).ToString();
 		}
@@ -403,9 +404,9 @@ namespace LibBSP {
 		/// Gets a numeric attribute as a <c>float</c>. Throws if the attribute could not be converted to a numerical value
 		/// and no <paramref name="failDefault"/> was provided.
 		/// </summary>
-		/// <param name="key">Name of the attribute to retrieve</param>
-		/// <param name="failDefault">Value to return if <paramref name="key" /> doesn't exist, or couldn't be converted</param>
-		/// <returns>The numeric value of the value corresponding to <paramref name="key" /></returns>
+		/// <param name="key">Name of the attribute to retrieve.</param>
+		/// <param name="failDefault">Value to return if <paramref name="key" /> doesn't exist, or couldn't be converted.</param>
+		/// <returns>The numeric value of the value corresponding to <paramref name="key" />.</returns>
 		public float GetFloat(string key, float? failDefault = null) {
 			try {
 				return Single.Parse(this[key]);
@@ -421,9 +422,9 @@ namespace LibBSP {
 		/// Gets a numeric attribute as an <c>int</c>. Throws if the attribute could not be converted to a numerical value
 		/// and no <paramref name="failDefault"/> was provided.
 		/// </summary>
-		/// <param name="key">Name of the attribute to retrieve</param>
-		/// <param name="failDefault">Value to return if <paramref name="key" /> doesn't exist, or couldn't be converted</param>
-		/// <returns>The numeric value of the value corresponding to <paramref name="key" /></returns>
+		/// <param name="key">Name of the attribute to retrieve.</param>
+		/// <param name="failDefault">Value to return if <paramref name="key" /> doesn't exist, or couldn't be converted.</param>
+		/// <returns>The numeric value of the value corresponding to <paramref name="key" />.</returns>
 		public int GetInt(string key, int? failDefault = null) {
 			try {
 				return Int32.Parse(this[key]);
@@ -437,10 +438,10 @@ namespace LibBSP {
 
 		/// <summary>
 		/// Gets a Vector attribute as a <c>Vector4</c>. This will only read as many values as are in the attribute, and can be
-		/// implicitly converted to Vector3, Vector2, or Color.
+		/// implicitly converted to <c>Vector3</c>, <c>Vector2</c>, or <c>Color</c>.
 		/// </summary>
-		/// <param name="key">Name of the attribute to retrieve</param>
-		/// <returns>Vector representation of the components of the attribute</returns>
+		/// <param name="key">Name of the attribute to retrieve.</param>
+		/// <returns>Vector representation of the components of the attribute.</returns>
 		public Vector4 GetVector(string key) {
 			float[] results = new float[4];
 			if (ContainsKey(key) && !string.IsNullOrEmpty(this[key])) {
@@ -460,9 +461,9 @@ namespace LibBSP {
 		/// Compares this <c>Entity</c> to another object. First "classname" attributes are compared, then "targetname".
 		/// Attributes are compared alphabetically. Targetnames are only compared if classnames match.
 		/// </summary>
-		/// <param name="obj"><c>Object</c> to compare to</param>
-		/// <returns>Less than zero if this entity is first, 0 if they occur at the same time, greater than zero otherwise</returns>
-		/// <exception cref="ArgumentException"><paramref name="obj"/> was not of type <c>Entity</c></exception>
+		/// <param name="obj"><c>Object</c> to compare to.</param>
+		/// <returns>Less than zero if this entity is first, 0 if they occur at the same time, greater than zero otherwise.</returns>
+		/// <exception cref="ArgumentException"><paramref name="obj"/> was not of type <c>Entity</c>.</exception>
 		public int CompareTo(object obj) {
 			if (obj == null) { return 1; }
 			Entity other = obj as Entity;
@@ -476,8 +477,8 @@ namespace LibBSP {
 		/// Compares this <c>Entity</c> to another <c>Entity</c>. First "classname" attributes are compared, then "targetname".
 		/// Attributes are compared alphabetically. Targetnames are only compared if classnames match.
 		/// </summary>
-		/// <param name="other"><c>Entity</c> to compare to</param>
-		/// <returns>Less than zero if this entity is first, 0 if they occur at the same time, greater than zero otherwise</returns>
+		/// <param name="other"><c>Entity</c> to compare to.</param>
+		/// <returns>Less than zero if this entity is first, 0 if they occur at the same time, greater than zero otherwise.</returns>
 		public int CompareTo(Entity other) {
 			if (other == null) { return 1; }
 			int firstTry = className.CompareTo(other.className);
@@ -487,9 +488,9 @@ namespace LibBSP {
 		/// <summary>
 		/// Factory method for an <c>Entities</c> object from a <c>byte</c> array.
 		/// </summary>
-		/// <param name="data">The data to parse</param>
-		/// <param name="type">The map type</param>
-		/// <returns>An <c>Entities</c> object, which is a <c>List</c> of <c>Entity</c>s</returns>
+		/// <param name="data">The data to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <returns>An <c>Entities</c> object, which is a <c>List</c> of <c>Entity</c>s.</returns>
 		public static Entities LumpFactory(byte[] data, MapType type) {
 			return new Entities(data, type);
 		}
@@ -497,8 +498,8 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the index for this lump in the BSP file for a specific map format.
 		/// </summary>
-		/// <param name="type">The map type</param>
-		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented</returns>
+		/// <param name="type">The map type.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForLump(MapType type) {
 			switch (type) {
 				case MapType.Raven:
@@ -546,7 +547,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Struct containing the fields necessary for Source entity I/O
+		/// Struct containing the fields necessary for Source entity I/O.
 		/// </summary>
 		public struct EntityConnection {
 			public string name;

@@ -3,14 +3,12 @@ using System.Collections.Generic;
 
 namespace LibBSP {
 	/// <summary>
-	/// Holds all the data for an edge in a BSP map. Doubles as a subsector class for Doom maps, and has accessors for them.
+	/// Holds all the data for an edge in a BSP map.
 	/// </summary>
-	public class Edge {
+	public struct Edge {
 
 		public int firstVertex { get; private set; }
 		public int secondVertex { get; private set; }
-		public int NumSegs { get { return firstVertex; } private set { firstVertex = value; } }
-		public int FirstSeg { get { return secondVertex; } private set { secondVertex = value; } }
 
 		/// <summary>
 		/// Creates a new <c>Edge</c> object from a <c>byte</c> array.
@@ -19,7 +17,7 @@ namespace LibBSP {
 		/// <param name="type">The map type</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
 		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype</exception>
-		public Edge(byte[] data, MapType type) {
+		public Edge(byte[] data, MapType type) : this() {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -46,12 +44,6 @@ namespace LibBSP {
 				case MapType.Vindictus: {
 					firstVertex = BitConverter.ToInt32(data, 0);
 					secondVertex = BitConverter.ToInt32(data, 4);
-					break;
-				}
-				case MapType.Doom:
-				case MapType.Hexen: {
-					firstVertex = BitConverter.ToUInt16(data, 0);
-					secondVertex = BitConverter.ToUInt16(data, 2);
 					break;
 				}
 				default: {
@@ -94,11 +86,6 @@ namespace LibBSP {
 				}
 				case MapType.Vindictus: {
 					structLength = 8;
-					break;
-				}
-				case MapType.Doom:
-				case MapType.Hexen: {
-					structLength = 4;
 					break;
 				}
 				default: {

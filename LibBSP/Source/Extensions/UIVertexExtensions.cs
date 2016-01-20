@@ -82,11 +82,6 @@ namespace LibBSP {
 			}
 			UIVertex result = new UIVertex();
 			switch (type) {
-				case MapType.Doom:
-				case MapType.Hexen: {
-					result.position = new Vector3(BitConverter.ToInt16(data, 0), BitConverter.ToInt16(data, 2));
-					break;
-				}
 				case MapType.MOHAA:
 				case MapType.Quake3:
 				case MapType.CoD:
@@ -151,11 +146,6 @@ namespace LibBSP {
 			}
 			int structLength = 0;
 			switch (type) {
-				case MapType.Doom:
-				case MapType.Hexen: {
-					structLength = 4;
-					break;
-				}
 				case MapType.Quake:
 				case MapType.Nightfire:
 				case MapType.SiN:

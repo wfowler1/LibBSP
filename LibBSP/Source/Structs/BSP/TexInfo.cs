@@ -125,10 +125,10 @@ namespace LibBSP {
 					bestaxis = i;
 				}
 			}
-			Vector3[] out_Renamed = new Vector3[2];
-			out_Renamed[0] = new Vector3(baseAxes[bestaxis * 3 + 1][0], baseAxes[bestaxis * 3 + 1][1], baseAxes[bestaxis * 3 + 1][2]);
-			out_Renamed[1] = new Vector3(baseAxes[bestaxis * 3 + 2][0], baseAxes[bestaxis * 3 + 2][1], baseAxes[bestaxis * 3 + 2][2]);
-			return out_Renamed;
+			Vector3[] newAxes = new Vector3[2];
+			newAxes[0] = new Vector3(baseAxes[bestaxis * 3 + 1][0], baseAxes[bestaxis * 3 + 1][1], baseAxes[bestaxis * 3 + 1][2]);
+			newAxes[1] = new Vector3(baseAxes[bestaxis * 3 + 2][0], baseAxes[bestaxis * 3 + 2][1], baseAxes[bestaxis * 3 + 2][2]);
+			return newAxes;
 		}
 
 		/// <summary>

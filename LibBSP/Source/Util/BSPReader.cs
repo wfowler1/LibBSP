@@ -12,15 +12,20 @@ namespace LibBSP {
 
 		private bool _bigEndian = false;
 
-		// Decryption key for Tactical Intervention; should be 32 bytes
+		/// <summary>
+		/// An XOr encryption key for encrypted map formats. Must be read and set.
+		/// </summary>
 		private byte[] key = new byte[0];
 
-		public bool bigEndian { get { return _bigEndian; } }
+		/// <summary>
+		/// Was this map determined to be in big endian format?
+		/// </summary>
+		public bool bigEndian { get { return _bigEndian; } set { _bigEndian = value; } }
 
 		/// <summary>
 		/// Creates a new instance of a <c>BSPReader</c> class to read the specified file.
 		/// </summary>
-		/// <param name="file"></param>
+		/// <param name="file">The <c>FileInfo</c> representing the file this <c>BSPReader</c> should read.</param>
 		public BSPReader(FileInfo file) {
 			if (!File.Exists(file.FullName)) {
 				throw new FileNotFoundException("Unable to open BSP file; file " + file.FullName + " not found.");
@@ -33,9 +38,9 @@ namespace LibBSP {
 		/// <summary>
 		/// Reads this lump in the map.
 		/// </summary>
-		/// <param name="index">The index of the lump to get</param>
-		/// <param name="version">The version of BSP this is</param>
-		/// <returns>Array of bytes read from the BSP file</returns>
+		/// <param name="index">The index of the lump to get.</param>
+		/// <param name="version">The version of BSP this is.</param>
+		/// <returns>Array of bytes read from the BSP file.</returns>
 		public byte[] ReadLumpNum(int index, MapType version) {
 			switch (version) {
 				case MapType.Quake:
@@ -105,9 +110,9 @@ namespace LibBSP {
 		/// Returns the lump referenced by the offset/length pair at the specified <paramref name="offset"/>,
 		/// read as two Int32.
 		/// </summary>
-		/// <param name="offset">The byte offset for the offset/length pair</param>
-		/// <param name="version">The version of BSP this is</param>
-		/// <returns>Array of bytes read from the BSP file</returns>
+		/// <param name="offset">The byte offset for the offset/length pair.</param>
+		/// <param name="version">The version of BSP this is.</param>
+		/// <returns>Array of bytes read from the BSP file.</returns>
 		private byte[] ReadLumpFromOffsetLengthPairAtOffset(int offset, MapType version) {
 			stream.Seek(offset, SeekOrigin.Begin);
 			byte[] input = binaryReader.ReadBytes(12);
@@ -135,12 +140,12 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Reads the lump <paramref name="length"/> bytes long at <paramref name="offset"/> in the file
+		/// Reads the lump <paramref name="length"/> bytes long at <paramref name="offset"/> in the file.
 		/// </summary>
-		/// <param name="offset">Offset to start reading from</param>
-		/// <param name="length">Length of the lump to read</param>
-		/// <param name="version">The version of BSP this is</param>
-		/// <returns>Array of bytes read from the BSP file</returns>
+		/// <param name="offset">Offset to start reading from.</param>
+		/// <param name="length">Length of the lump to read.</param>
+		/// <param name="version">The version of BSP this is.</param>
+		/// <returns>Array of bytes read from the BSP file.</returns>
 		public byte[] ReadLump(int offset, int length, MapType version) {
 			stream.Seek(offset, SeekOrigin.Begin);
 			byte[] input = binaryReader.ReadBytes(length);
@@ -153,10 +158,10 @@ namespace LibBSP {
 		/// <summary>
 		/// Xors the <paramref name="data"/> <c>byte</c> array with the localls stored key <c>byte</c> array, starting at a certain <paramref name="index"/> in the key.
 		/// </summary>
-		/// <param name="data">The byte array to Xor</param>
-		/// <param name="index">The index in the key byte array to start reading from</param>
-		/// <returns>The input <c>byte</c> array Xored with the key <c>byte</c> array</returns>
-		/// <exception cref="ArgumentNullException">The passed <paramref name="data"/> parameter was null</exception>
+		/// <param name="data">The byte array to Xor.</param>
+		/// <param name="index">The index in the key byte array to start reading from.</param>
+		/// <returns>The input <c>byte</c> array Xored with the key <c>byte</c> array.</returns>
+		/// <exception cref="ArgumentNullException">The passed <paramref name="data"/> parameter was null.</exception>
 		private byte[] XorWithKeyStartingAtIndex(byte[] data, int index = 0) {
 			if (data == null) {
 				throw new ArgumentNullException();
@@ -175,7 +180,7 @@ namespace LibBSP {
 		/// Tries to get the <c>MapType</c> member most closely represented by the referenced file. If the file is 
 		/// found to be big-endian, this will set <c>bigEndian</c> to <c>true</c>.
 		/// </summary>
-		/// <returns>The <c>MapType</c> of this BSP, <c>MapType.Undefined</c> if it could not be determined</returns>
+		/// <returns>The <c>MapType</c> of this BSP, <c>MapType.Undefined</c> if it could not be determined.</returns>
 		public MapType GetVersion() {
 			MapType ret = GetVersion(false);
 			if (ret == MapType.Undefined) {
@@ -190,8 +195,8 @@ namespace LibBSP {
 		/// <summary>
 		/// Tries to get the <c>MapType</c> member most closely represented by the referenced file.
 		/// </summary>
-		/// <param name="bigEndian">Set to <c>true</c> to attempt reading the data in big-endian byte order</param>
-		/// <returns>The <c>MapType</c> of this BSP, <c>MapType.Undefined</c> if it could not be determined</returns>
+		/// <param name="bigEndian">Set to <c>true</c> to attempt reading the data in big-endian byte order.</param>
+		/// <returns>The <c>MapType</c> of this BSP, <c>MapType.Undefined</c> if it could not be determined.</returns>
 		private MapType GetVersion(bool bigEndian) {
 			MapType current = MapType.Undefined;
 			stream.Seek(0, SeekOrigin.Begin);

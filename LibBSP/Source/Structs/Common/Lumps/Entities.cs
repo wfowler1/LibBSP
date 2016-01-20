@@ -3,20 +3,20 @@ using System.Collections.Generic;
 
 namespace LibBSP {
 	/// <summary>
-	/// Class representing a group of <c>Entity</c> objects. Contains helpful methods to handle Entities in the <c>List</c>
+	/// Class representing a group of <c>Entity</c> objects. Contains helpful methods to handle Entities in the <c>List</c>.
 	/// </summary>
 	public class Entities : List<Entity> {
 
 		/// <summary>
 		/// Initializes a new instance of an <c>Entities</c> object copying a passed <c>IEnumerable</c> of <c>Entity</c> objects.
 		/// </summary>
-		/// <param name="data">Collection of <c>Entity</c> objects to copy</param>
+		/// <param name="data">Collection of <c>Entity</c> objects to copy.</param>
 		public Entities(IEnumerable<Entity> data) : base(data) { }
 
 		/// <summary>
 		/// Initializes a new instance of an <c>Entities</c> object with a specified initial capacity.
 		/// </summary>
-		/// <param name="initialCapacity">Initial capacity of the <c>List</c> of <c>Entity</c> objects</param>
+		/// <param name="initialCapacity">Initial capacity of the <c>List</c> of <c>Entity</c> objects.</param>
 		public Entities(int initialCapacity) : base(initialCapacity) { }
 
 		/// <summary>
@@ -27,7 +27,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Initializes a new <c>Entities</c> object, and parses the passed <c>byte</c> array into the <c>List</c>.
 		/// </summary>
-		/// <param name="data"><c>Byte</c>s read from a file</param>
+		/// <param name="data"><c>Byte</c>s read from a file.</param>
 		public Entities(byte[] data, MapType type) : base() {
 			// Keep track of whether or not we're currently in a set of quotation marks.
 			// I came across a map where the idiot map maker used { and } within a value. This broke the code before.
@@ -86,49 +86,48 @@ namespace LibBSP {
 		/// <summary>
 		/// Deletes all <c>Entity</c> with "<paramref name="key" />" set to "<paramref name="value" />".
 		/// </summary>
-		/// <param name="key">Attribute to match</param>
-		/// <param name="value">Desired value of attribute</param>
+		/// <param name="key">Attribute to match.</param>
+		/// <param name="value">Desired value of attribute.</param>
 		public void RemoveAllWithAttribute(string key, string value) {
-			//DeleteEnts(FindAllWithAttribute(key, value));
-			this.RemoveAll(entity => { return entity[key] == value; });
+			this.RemoveAll(entity => { return entity[key].Equals(value, StringComparison.InvariantCultureIgnoreCase); });
 		}
 
 		/// <summary>
 		/// Gets a <c>List</c> of all <c>Entity</c>s with "<paramref name="key" />" set to "<paramref name="value" />".
 		/// </summary>
-		/// <param name="key">Name of the attribute to search for</param>
-		/// <param name="value">Value of the attribute to search for</param>
-		/// <returns><c>List</c>(<c>Entity</c>) that have the specified key/value pair</returns>
+		/// <param name="key">Name of the attribute to search for.</param>
+		/// <param name="value">Value of the attribute to search for.</param>
+		/// <returns><c>List</c>(<c>Entity</c>) that have the specified key/value pair.</returns>
 		public List<Entity> GetAllWithAttribute(string key, string value) {
-			return FindAll(entity => { return entity[key] == value; });
+			return FindAll(entity => { return entity[key].Equals(value, StringComparison.InvariantCultureIgnoreCase); });
 		}
 
 		/// <summary>
-		/// Gets a <c>List</c> of <c>Entity</c>s objects with the specified targetname
+		/// Gets a <c>List</c> of <c>Entity</c>s objects with the specified targetname.
 		/// </summary>
-		/// <param name="targetname">Targetname attribute to find</param>
-		/// <returns><c>List</c>(<c>Entity</c>) with the specified targetname</returns>
+		/// <param name="targetname">Targetname attribute to find.</param>
+		/// <returns><c>List</c>(<c>Entity</c>) with the specified targetname.</returns>
 		public List<Entity> GetAllWithName(string targetname) {
-			return GetAllWithAttribute("targetname", targetname);
+			return FindAll(entity => { return entity.name.Equals(targetname, StringComparison.InvariantCultureIgnoreCase); });
 		}
 
 		/// <summary>
 		/// Gets the first <c>Entity</c> with "<paramref name="key" />" set to "<paramref name="value" />".
 		/// </summary>
-		/// <param name="key">Name of the attribute to search for</param>
-		/// <param name="value">Value of the attribute to search for</param>
-		/// <returns><c>Entity</c> with the specified key/value pair, or null if none exists</returns>
+		/// <param name="key">Name of the attribute to search for.</param>
+		/// <param name="value">Value of the attribute to search for.</param>
+		/// <returns><c>Entity</c> with the specified key/value pair, or null if none exists.</returns>
 		public Entity GetWithAttribute(string key, string value) {
-			return Find(entity => { return entity[key] == value; });
+			return Find(entity => { return entity[key].Equals(value, StringComparison.InvariantCultureIgnoreCase); });
 		}
 
 		/// <summary>
 		/// Gets the first <c>Entity</c> with the specified targetname.
 		/// </summary>
-		/// <param name="targetname">Targetname attribute to find</param>
-		/// <returns>Entity object with the specified targetname</returns>
+		/// <param name="targetname">Targetname attribute to find.</param>
+		/// <returns>Entity object with the specified targetname.</returns>
 		public Entity GetWithName(string targetname) {
-			return GetWithAttribute("targetname", targetname);
+			return Find(entity => { return entity.name.Equals(targetname, StringComparison.InvariantCultureIgnoreCase); });
 		}
 	}
 }

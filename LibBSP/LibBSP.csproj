@@ -72,13 +72,6 @@
     <Compile Include="Source\Structs\Common\Lumps\Entities.cs" />
     <Compile Include="Source\Structs\Common\Lumps\NumList.cs" />
     <Compile Include="Source\Structs\Common\Rect.cs" />
-    <Compile Include="Source\Structs\Doom\Linedef.cs" />
-    <Compile Include="Source\Structs\Doom\DoomMap.cs" />
-    <Compile Include="Source\Structs\Doom\Node.cs" />
-    <Compile Include="Source\Structs\Doom\Sector.cs" />
-    <Compile Include="Source\Structs\Doom\Segment.cs" />
-    <Compile Include="Source\Structs\Doom\Sidedef.cs" />
-    <Compile Include="Source\Structs\Doom\Thing.cs" />
     <Compile Include="Source\Structs\MAP\MAPBrush.cs" />
     <Compile Include="Source\Structs\MAP\MAPBrushSide.cs" />
     <Compile Include="Source\Structs\MAP\MAPDisplacement.cs" />
