@@ -3,18 +3,18 @@ using System.Collections.Generic;
 
 namespace LibBSP {
 	/// <summary>
-	/// <c>List</c>&lt;<c>Texture</c>&gt; with some useful methods for manipulating <c>Texture</c> objects,
+	/// <c>List</c>&lt;<see cref="Texture"/>&gt; with some useful methods for manipulating <see cref="Texture"/> objects,
 	/// especially when handling them as a group.
 	/// </summary>
 	public class Textures : List<Texture> {
 
 		/// <summary>
-		/// Parses a <c>byte</c> array into this <c>List</c> of <c>Texture</c> objects
+		/// Parses a <c>byte</c> array into this <c>List</c> of <see cref="Texture"/> objects.
 		/// </summary>
-		/// <param name="data">The data to parse</param>
-		/// <param name="type">The map type</param>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype</exception>
+		/// <param name="data">The data to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
+		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
 		public Textures(byte[] data, MapType type) {
 			if (data == null) {
 				throw new ArgumentNullException();
@@ -101,8 +101,8 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the name of the texture at the specified offset.
 		/// </summary>
-		/// <param name="offset">Lump offset of the texture name to find</param>
-		/// <returns>The name of the texture at offset <paramref name="offset" />, or null if it doesn't exist</returns>
+		/// <param name="offset">Lump offset of the texture name to find.</param>
+		/// <returns>The name of the texture at offset <paramref name="offset" />, or null if it doesn't exist.</returns>
 		public string GetTextureAtOffset(uint offset) {
 			int current = 0;
 			for (int i = 0; i < Count; ++i) {
@@ -120,12 +120,12 @@ namespace LibBSP {
 		/// <summary>
 		/// Finds the offset of the specified texture name.
 		/// </summary>
-		/// <param name="inTexture">The texture name to find in the lump</param>
-		/// <returns>The offset of the specified texture, or -1 if it wasn't found</returns>
-		public int GetOffsetOf(string inTexture) {
+		/// <param name="name">The texture name to find in the lump.</param>
+		/// <returns>The offset of the specified texture, or -1 if it wasn't found.</returns>
+		public int GetOffsetOf(string name) {
 			int offset = 0;
 			for (int i = 0; i < Count; ++i) {
-				if (this[i].name.Equals(inTexture, StringComparison.CurrentCultureIgnoreCase)) {
+				if (this[i].name.Equals(name, StringComparison.CurrentCultureIgnoreCase)) {
 					return offset;
 				} else {
 					offset += this[i].name.Length + 1;

@@ -21,12 +21,12 @@ namespace LibBSP {
 		public DataType type { get; private set; }
 
 		/// <summary>
-		/// Creates a new <c>NumList</c> object from a <c>byte</c> array.
+		/// Creates a new <see cref="NumList"/> object from a <c>byte</c> array.
 		/// </summary>
-		/// <param name="data"><c>byte</c> array to parse</param>
-		/// <param name="type">The type of number to store</param>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		/// <exception cref="ArgumentException"><paramref name="type" /> was not a member of the DataType enum</exception>
+		/// <param name="data"><c>byte</c> array to parse.</param>
+		/// <param name="type">The type of number to store.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
+		/// <exception cref="ArgumentException"><paramref name="type"/> was not a member of the DataType enum.</exception>
 		public NumList(byte[] data, DataType type) {
 			if (data == null) {
 				throw new ArgumentNullException();
@@ -84,11 +84,11 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Creates a new <c>NumList</c> object from a <c>byte</c> array and returns it.
+		/// Creates a new <see cref="NumList"/> object from a <c>byte</c> array and returns it.
 		/// </summary>
-		/// <param name="data"><c>byte</c> array to parse</param>
-		/// <param name="type">The type of number to store</param>
-		/// <returns>The resulting <c>NumList</c></returns>
+		/// <param name="data"><c>byte</c> array to parse.</param>
+		/// <param name="type">The type of number to store.</param>
+		/// <returns>The resulting <see cref="NumList"/>.</returns>
 		public static NumList LumpFactory(byte[] data, DataType type) {
 			return new NumList(data, type);
 		}
@@ -97,9 +97,9 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the index for the Mark Surfaces lump in the BSP file for a specific map format, and the type of data the format uses.
 		/// </summary>
-		/// <param name="type">The map type</param>
-		/// <param name="dataType"><c>out</c> parameter for the data type this version uses</param>
-		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented</returns>
+		/// <param name="version">The map type.</param>
+		/// <param name="dataType"><c>out</c> parameter that will contain the data type this version uses.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForMarkSurfacesLump(MapType version, out DataType dataType) {
 			switch (version) {
 				case MapType.Raven:
@@ -157,9 +157,9 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the index for the Surface Edges lump in the BSP file for a specific map format, and the type of data the format uses.
 		/// </summary>
-		/// <param name="type">The map type</param>
-		/// <param name="dataType"><c>out</c> parameter for the data type this version uses</param>
-		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented</returns>
+		/// <param name="version">The map type.</param>
+		/// <param name="dataType"><c>out</c> parameter that will contain data type this version uses.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForSurfEdgesLump(MapType version, out DataType dataType) {
 			switch (version) {
 				case MapType.Quake2:
@@ -192,9 +192,9 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the index for the Mark Brushes lump in the BSP file for a specific map format, and the type of data the format uses.
 		/// </summary>
-		/// <param name="type">The map type</param>
-		/// <param name="dataType"><c>out</c> parameter for the data type this version uses</param>
-		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented</returns>
+		/// <param name="version">The map type.</param>
+		/// <param name="dataType"><c>out</c> parameter that will contain the data type this version uses.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForMarkBrushesLump(MapType version, out DataType dataType) {
 			switch (version) {
 				case MapType.Quake3:
@@ -244,9 +244,9 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the index for the indices lump in the BSP file for a specific map format, and the type of data the format uses.
 		/// </summary>
-		/// <param name="type">The map type</param>
-		/// <param name="dataType"><c>out</c> parameter for the data type this version uses</param>
-		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented</returns>
+		/// <param name="version">The map type.</param>
+		/// <param name="dataType"><c>out</c> parameter that will contain the data type this version uses.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForIndicesLump(MapType version, out DataType dataType) {
 			switch (version) {
 				case MapType.FAKK:
@@ -276,9 +276,9 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the index for the texture table lump in the BSP file for a specific map format, and the type of data the format uses.
 		/// </summary>
-		/// <param name="type">The map type</param>
-		/// <param name="dataType"><c>out</c> parameter for the data type this version uses</param>
-		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented</returns>
+		/// <param name="version">The map type.</param>
+		/// <param name="dataType"><c>out</c> parameter that will contain the data type this version uses.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForTexTableLump(MapType version, out DataType dataType) {
 			switch (version) {
 				case MapType.Vindictus:
@@ -303,9 +303,9 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the index for the displacement triangles lump in the BSP file for a specific map format, and the type of data the format uses.
 		/// </summary>
-		/// <param name="type">The map type</param>
-		/// <param name="dataType"><c>out</c> parameter for the data type this version uses</param>
-		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented</returns>
+		/// <param name="version">The map type.</param>
+		/// <param name="dataType"><c>out</c> parameter that will contain the data type this version uses.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForDisplacementTrianglesLump(MapType version, out DataType dataType) {
 			switch (version) {
 				case MapType.Vindictus:

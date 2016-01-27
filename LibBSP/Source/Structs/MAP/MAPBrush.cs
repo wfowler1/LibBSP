@@ -17,12 +17,12 @@ namespace LibBSP {
 		public bool isWater = false;
 
 		/// <summary>
-		/// Creates a new empty <c>MAPBrush</c> object. Internal data will have to be set manually.
+		/// Creates a new empty <see cref="MAPBrush"/> object. Internal data will have to be set manually.
 		/// </summary>
 		public MAPBrush() { }
 
 		/// <summary>
-		/// Creates a new <c>MAPBrush</c> object using the supplied <c>string</c> array as data.
+		/// Creates a new <see cref="MAPBrush"/> object using the supplied <c>string</c> array as data.
 		/// </summary>
 		/// <param name="lines">Data to parse.</param>
 		public MAPBrush(string[] lines) {

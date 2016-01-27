@@ -11,20 +11,21 @@ namespace LibBSP {
 	using Vector2 = Vector2d;
 #endif
 	/// <summary>
-	/// Static class containing helper methods for <c>Rect</c> objects.
+	/// Static class containing helper methods for <see cref="Rect"/> objects.
 	/// </summary>
 	public static class RectExtensions {
 		
-		// Determines if this node's partition vector (as a line segment) intersects the passed box.
-		// Seems rather esoteric, no? But it's needed. Algorithm adapted from top answer at 
-		// http://stackoverflow.com/questions/99353/how-to-test-if-a-line-segment-intersects-an-axis-aligned-rectange-in-2d
 		/// <summary>
-		/// Determines if this <c>Rect</c> is intersected by the line segment defined by <paramref name="head"/> and <paramref name="tail"/>.
+		/// Determines if this <see cref="Rect"/> is intersected by the line segment defined by <paramref name="head"/> and <paramref name="tail"/>.
 		/// </summary>
-		/// <param name="rect">This <c>Rect</c></param>
-		/// <param name="head">First point defining the line segment</param>
-		/// <param name="tail">The change and x and y for the coordinates of the tail</param>
-		/// <returns><c>true</c> if the line segment intersects this <c>Rect</c> at any point</returns>
+		/// <remarks>
+		/// Adapted from top answer at 
+		/// http://stackoverflow.com/questions/99353/how-to-test-if-a-line-segment-intersects-an-axis-aligned-rectange-in-2d
+		/// </remarks>
+		/// <param name="rect">This <see cref="Rect"/>.</param>
+		/// <param name="head">First point defining the line segment.</param>
+		/// <param name="tail">The change and x and y for the coordinates of the tail.</param>
+		/// <returns><c>true</c> if the line segment intersects this <see cref="Rect"/> at any point.</returns>
 		public static bool IntersectsSegment(Rect rect, Vector2 head, Vector2 tail) {
 			// Compute the signed distance from the line to each corner of the box
 			double[] dist = new double[4];

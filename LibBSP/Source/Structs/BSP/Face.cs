@@ -19,8 +19,8 @@ namespace LibBSP {
 	/// <remarks>
 	/// Faces is one of the more different lumps between versions. Some of these fields
 	/// are only used by one format. However, there are some commonalities which make
-	/// it worthwhile to unify these. All formats use a plane, a texture, and vertices
-	/// in some way. Also (unused for the decompiler) they all use lightmaps.
+	/// it worthwhile to unify these. All formats use a plane, a texture, vertices,
+	/// and lightmaps in some way.
 	/// </remarks>
 	public struct Face {
 
@@ -44,12 +44,12 @@ namespace LibBSP {
 		public Vector2 patchSize { get; private set; }
 
 		/// <summary>
-		/// Creates a new <c>Face</c> object from a <c>byte</c> array.
+		/// Creates a new <see cref="Face"/> object from a <c>byte</c> array.
 		/// </summary>
-		/// <param name="data"><c>byte</c> array to parse</param>
-		/// <param name="type">The map type</param>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype</exception>
+		/// <param name="data"><c>byte</c> array to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
+		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
 		public Face(byte[] data, MapType type) : this() {
 			if (data == null) {
 				throw new ArgumentNullException();
@@ -160,13 +160,13 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <c>Face</c> objects.
+		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <see cref="Face"/> objects.
 		/// </summary>
-		/// <param name="data">The data to parse</param>
-		/// <param name="type">The map type</param>
-		/// <returns>A <c>List</c> of <c>Face</c> objects</returns>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype</exception>
+		/// <param name="data">The data to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <returns>A <c>List</c> of <see cref="Face"/> objects.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
+		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
 		public static List<Face> LumpFactory(byte[] data, MapType type) {
 			if (data == null) {
 				throw new ArgumentNullException();
@@ -244,8 +244,8 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the index for this lump in the BSP file for a specific map format.
 		/// </summary>
-		/// <param name="type">The map type</param>
-		/// <returns>Index for this lump, or -1 if the format doesn't have this lump</returns>
+		/// <param name="type">The map type.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
 		public static int GetIndexForLump(MapType type) {
 			switch (type) {
 				case MapType.FAKK:
@@ -292,8 +292,8 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the index for the original faces lump in the BSP file for a specific map format.
 		/// </summary>
-		/// <param name="type">The map type</param>
-		/// <returns>Index for this lump, or -1 if the format doesn't have this lump</returns>
+		/// <param name="type">The map type.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
 		public static int GetIndexForOriginalFacesLump(MapType type) {
 			switch (type) {
 				case MapType.Vindictus:

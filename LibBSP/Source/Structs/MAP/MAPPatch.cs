@@ -25,12 +25,12 @@ namespace LibBSP {
 		public string texture;
 
 		/// <summary>
-		/// Creates a new empty <c>MAPPatch</c> object. Internal data will have to be set manually.
+		/// Creates a new empty <see cref="MAPPatch"/> object. Internal data will have to be set manually.
 		/// </summary>
 		public MAPPatch() { }
 
 		/// <summary>
-		/// Constructs a new <c>MAPPatch</c> object using the supplied string array as data.
+		/// Constructs a new <see cref="MAPPatch"/> object using the supplied string array as data.
 		/// </summary>
 		/// <param name="lines">Data to parse.</param>
 		public MAPPatch(string[] lines) {

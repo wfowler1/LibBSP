@@ -15,19 +15,24 @@ namespace LibBSP {
 
 	/// <summary>
 	/// This class contains the texture scaling information for certain formats.
-	/// Some BSP formats lack this lump (or it is contained in a different one)
-	/// so their cases will be left out.
+	/// Some BSP formats lack this lump (or the information is contained in a
+	/// different lump) so their cases will be left out.
 	/// </summary>
-	public class TexInfo {
+	public struct TextureInfo {
 
 		public const int S = 0;
 		public const int T = 1;
-		public static readonly Vector3[] baseAxes = new Vector3[] { new Vector3(0, 0, 1), new Vector3(1, 0, 0), new Vector3(0, -1, 0),
-		                                                            new Vector3(0, 0, -1), new Vector3(1, 0, 0), new Vector3(0, -1, 0),
-		                                                            new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, -1),
-		                                                            new Vector3(-1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, -1),
-		                                                            new Vector3(0, 1, 0), new Vector3(1, 0, 0), new Vector3(0, 0, -1),
-		                                                            new Vector3(0, -1, 0), new Vector3(1, 0, 0), new Vector3(0, 0, -1) };
+		/// <summary>
+		/// Array of base texture axes. When referenced properly, provides a good default texture axis for any given plane.
+		/// </summary>
+		public static readonly Vector3[] baseAxes = new Vector3[] { 
+			new Vector3(0, 0, 1), new Vector3(1, 0, 0), new Vector3(0, -1, 0),
+			new Vector3(0, 0, -1), new Vector3(1, 0, 0), new Vector3(0, -1, 0),
+			new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, -1),
+			new Vector3(-1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, -1),
+			new Vector3(0, 1, 0), new Vector3(1, 0, 0), new Vector3(0, 0, -1),
+			new Vector3(0, -1, 0), new Vector3(1, 0, 0), new Vector3(0, 0, -1)
+		};
 
 		public Vector3[] axes { get; private set; }
 		public float[] shifts { get; private set; }
@@ -35,16 +40,18 @@ namespace LibBSP {
 		public int texture { get; private set; }
 
 		/// <summary>
-		/// Creates a new <c>TexInfo</c> object from a <c>byte</c> array.
+		/// Creates a new <see cref="TextureInfo"/> object from a <c>byte</c> array.
 		/// </summary>
-		/// <param name="data"><c>byte</c> array to parse</param>
-		/// <param name="type">The map type</param>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype</exception>
-		public TexInfo(byte[] data, MapType type) {
+		/// <param name="data"><c>byte</c> array to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
+		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
+		public TextureInfo(byte[] data, MapType type) : this() {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
+			texture = -1;
+			flags = -1;
 			axes = new Vector3[2];
 			shifts = new float[2];
 			axes[S] = new Vector3(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
@@ -87,15 +94,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Creates a new <c>TexInfo</c> object using the passed data.
+		/// Creates a new <see cref="TextureInfo"/> object using the passed data.
 		/// </summary>
-		/// <param name="s">The S texture axis</param>
-		/// <param name="SShift">The texture shift on the S axis</param>
-		/// <param name="t">The T texture axis</param>
-		/// <param name="TShift">The texture shift on the T axis</param>
-		/// <param name="flags">The flags for this <c>TexInfo</c></param>
-		/// <param name="texture">Index into the texture list for the texture this <c>TexInfo</c> uses</param>
-		public TexInfo(Vector3 s, float SShift, Vector3 t, float TShift, int flags, int texture) {
+		/// <param name="s">The S texture axis.</param>
+		/// <param name="SShift">The texture shift on the S axis.</param>
+		/// <param name="t">The T texture axis.</param>
+		/// <param name="TShift">The texture shift on the T axis.</param>
+		/// <param name="flags">The flags for this <see cref="TextureInfo"/>.</param>
+		/// <param name="texture">Index into the texture list for the texture this <see cref="TextureInfo"/> uses.</param>
+		public TextureInfo(Vector3 s, float SShift, Vector3 t, float TShift, int flags, int texture) : this() {
 			axes = new Vector3[2];
 			axes[S] = s;
 			axes[T] = t;
@@ -111,15 +118,14 @@ namespace LibBSP {
 		/// permission because it falls under the terms of the GPL v2 license, because I'm not making
 		/// any money, just awesome tools.
 		/// </summary>
-		/// <param name="p"><c>Plane</c> of the surface</param>
-		/// <returns>The best matching texture axes for the given <c>Plane</c></returns>
+		/// <param name="p"><see cref="Plane"/> of the surface.</param>
+		/// <returns>The best matching texture axes for the given <see cref="Plane"/>.</returns>
 		public static Vector3[] TextureAxisFromPlane(Plane p) {
 			int bestaxis = 0;
-			double dot; // Current dot product
 			double best = 0; // "Best" dot product so far
 			for (int i = 0; i < 6; ++i) {
 				// For all possible axes, positive and negative
-				dot = Vector3.Dot(p.normal, new Vector3(baseAxes[i * 3][0], baseAxes[i * 3][1], baseAxes[i * 3][2]));
+				double dot = Vector3.Dot(p.normal, new Vector3(baseAxes[i * 3][0], baseAxes[i * 3][1], baseAxes[i * 3][2]));
 				if (dot > best) {
 					best = dot;
 					bestaxis = i;
@@ -132,14 +138,14 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <c>TexInfo</c> objects.
+		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <see cref="TextureInfo"/> objects.
 		/// </summary>
-		/// <param name="data">The data to parse</param>
-		/// <param name="type">The map type</param>
-		/// <returns>A <c>List</c> of <c>TexInfo</c> objects</returns>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype</exception>
-		public static List<TexInfo> LumpFactory(byte[] data, MapType type) {
+		/// <param name="data">The data to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <returns>A <c>List</c> of <see cref="TextureInfo"/> objects.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> was null.</exception>
+		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
+		public static List<TextureInfo> LumpFactory(byte[] data, MapType type) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -174,11 +180,11 @@ namespace LibBSP {
 					throw new ArgumentException("Map type " + type + " isn't supported by the Leaf lump factory.");
 				}
 			}
-			List<TexInfo> lump = new List<TexInfo>(data.Length / structLength);
+			List<TextureInfo> lump = new List<TextureInfo>(data.Length / structLength);
 			byte[] bytes = new byte[structLength];
 			for (int i = 0; i < data.Length / structLength; ++i) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
-				lump.Add(new TexInfo(bytes, type));
+				lump.Add(new TextureInfo(bytes, type));
 			}
 			return lump;
 		}
@@ -186,8 +192,8 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the index for this lump in the BSP file for a specific map format.
 		/// </summary>
-		/// <param name="type">The map type</param>
-		/// <returns>Index for this lump, or -1 if the format doesn't have this lump</returns>
+		/// <param name="type">The map type.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
 		public static int GetIndexForLump(MapType type) {
 			switch (type) {
 				case MapType.Quake:

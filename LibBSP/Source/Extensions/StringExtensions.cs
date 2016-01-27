@@ -5,16 +5,16 @@ using System.Text;
 
 namespace LibBSP {
 	/// <summary>
-	/// Static class containing helper methods for <c>string</c> objects
+	/// Static class containing helper methods for <c>string</c> objects.
 	/// </summary>
 	public static class StringExtensions {
 		/// <summary>
 		/// Splits a <c>string</c> using a Unicode character, unless that character is between two instances of a container.
 		/// </summary>
-		/// <param name="st">The <c>string</c> to split</param>
-		/// <param name="separator">Unicode character that delimits the substrings in this instance</param>
-		/// <param name="container">Container character. Any <paramref name="separator"/> characters that occur between two instances of this character will be ignored</param>
-		/// <returns>Array of <c>string</c> objects that are the resulting substrings</returns>
+		/// <param name="st">The <c>string</c> to split.</param>
+		/// <param name="separator">Unicode <c>char</c> that delimits the substrings in this instance.</param>
+		/// <param name="container">Container <c>char</c>. Any <paramref name="separator"/> characters that occur between two instances of this character will be ignored.</param>
+		/// <returns>Array of <c>string</c> objects that are the resulting substrings.</returns>
 		public static string[] SplitUnlessInContainer(this string st, char separator, char container, StringSplitOptions options = StringSplitOptions.None) {
 			List<string> results = new List<string>();
 			bool inContainer = false;
@@ -57,13 +57,13 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Splits a <c>string</c> using a Unicode character, unless that character is contained between matching <paramref name="start" /> and <paramref name="end" /> Unicode characters.
+		/// Splits a <c>string</c> using a Unicode character, unless that character is contained between matching <paramref name="start"/> and <paramref name="end"/> Unicode characters.
 		/// </summary>
-		/// <param name="st">The <c>string</c> to split</param>
-		/// <param name="separator">Unicode character that delimits the substrings in this instance</param>
-		/// <param name="start">The starting (left) container character. EX: '('</param>
-		/// <param name="end">The ending (right) container character. EX: ')'</param>
-		/// <returns>Array of <c>string</c> objects that are the resulting substrings</returns>
+		/// <param name="st">The <c>string</c> to split.</param>
+		/// <param name="separator">Unicode <c>char</c> that delimits the substrings in this instance.</param>
+		/// <param name="start">The starting (left) container character. EX: '('.</param>
+		/// <param name="end">The ending (right) container character. EX: ')'.</param>
+		/// <returns>Array of <c>string</c> objects that are the resulting substrings.</returns>
 		public static string[] SplitUnlessBetweenDelimiters(this string st, char separator, char start, char end, StringSplitOptions options = StringSplitOptions.None) {
 			List<string> results = new List<string>();
 			int containerLevel = 0;
@@ -115,12 +115,12 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Parses the <c>bytes</c> in a <c>byte</c> array into an ASCII <c>string</c> up until the first null byte (0x00).
+		/// Parses the <c>byte</c>s in a <c>byte</c> array into an ASCII <c>string</c> up until the first null byte (0x00).
 		/// </summary>
-		/// <param name="bytes"><c>Byte</c>s to parse</param>
-		/// <param name="offset">Position in the array to start copying from</param>
+		/// <param name="bytes"><c>byte</c>s to parse.</param>
+		/// <param name="offset">Position in the array to start copying from.</param>
 		/// <param name="length">Number of bytes to read before stopping. Negative values will read to the end of the array.</param>
-		/// <returns>The resulting <c>string</c></returns>
+		/// <returns>The resulting <c>string</c>.</returns>
 		public static string ToNullTerminatedString(this byte[] bytes, int offset = 0, int length = -1) {
 			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < bytes.Length; ++i) {
@@ -138,8 +138,8 @@ namespace LibBSP {
 		/// <summary>
 		/// Parses the <c>bytes</c> in a <c>byte</c> array into an ASCII <c>string</c>.
 		/// </summary>
-		/// <param name="bytes"><c>Byte</c>s to parse</param>
-		/// <returns>The resulting <c>string</c></returns>
+		/// <param name="bytes"><c>byte</c>s to parse.</param>
+		/// <returns>The resulting <c>string</c>.</returns>
 		public static string ToRawString(this byte[] bytes) {
 			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < bytes.Length; ++i) {

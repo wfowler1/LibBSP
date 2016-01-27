@@ -17,27 +17,27 @@ namespace LibBSP {
 	using Vector3 = Vector3d;
 #endif
 	/// <summary>
-	/// Static class containing helper methods for <c>UIVertex</c> objects.
+	/// Static class containing helper methods for <see cref="UIVertex"/> objects.
 	/// </summary>
 	public static class UIVertexExtensions {
 
 		/// <summary>
-		/// Scales the position of this <c>UIVertex</c> by a number
+		/// Scales the position of this <see cref="UIVertex"/> by a number.
 		/// </summary>
-		/// <param name="v1">This <c>UIVertex</c></param>
-		/// <param name="scalar">Scalar</param>
-		/// <returns>The scaled <c>UIVertex</c></returns>
+		/// <param name="v1">This <see cref="UIVertex"/>.</param>
+		/// <param name="scalar">Scalar value.</param>
+		/// <returns>The scaled <see cref="UIVertex"/>.</returns>
 		public static UIVertex Scale(this UIVertex v1, float scalar) {
 			v1.position *= scalar;
 			return v1;
 		}
 
 		/// <summary>
-		/// Adds the position of this <c>UIVertex</c> to another <c>UIVertex</c>.
+		/// Adds the position of this <see cref="UIVertex"/> to another <see cref="UIVertex"/>.
 		/// </summary>
-		/// <param name="v1">This <c>UIVertex</c></param>
-		/// <param name="v2">The other <c>UIVertex</c></param>
-		/// <returns>The resulting <c>UIVertex</c></returns>
+		/// <param name="v1">This <see cref="UIVertex"/>.</param>
+		/// <param name="v2">The other <see cref="UIVertex"/>.</param>
+		/// <returns>The resulting <see cref="UIVertex"/>.</returns>
 		public static UIVertex Add(this UIVertex v1, UIVertex v2) {
 			return new UIVertex {
 				color = v1.color,
@@ -50,11 +50,11 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Adds the position of a <c>Vector3</c> to this <c>UIVertex</c>.
+		/// Adds the position of a <c>Vector3</c> to this <see cref="UIVertex"/>.
 		/// </summary>
-		/// <param name="v1">This <c>UIVertex</c></param>
-		/// <param name="v2">The <c>Vector3</c></param>
-		/// <returns>The resulting <c>UIVertex</c></returns>
+		/// <param name="v1">This <see cref="UIVertex"/>.</param>
+		/// <param name="v2">The <see cref="Vector3"/>.</param>
+		/// <returns>The resulting <see cref="UIVertex"/>.</returns>
 		public static UIVertex Translate(this UIVertex v1, Vector3 v2) {
 			return new UIVertex {
 				color = v1.color,
@@ -67,14 +67,14 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Creates a new <c>UIVertex</c> object from a <c>byte</c> array.
+		/// Creates a new <see cref="UIVertex"/> object from a <c>byte</c> array.
 		/// </summary>
-		/// <param name="data"><c>byte</c> array to parse</param>
-		/// <param name="type">The map type</param>
-		/// <returns>The resulting <c>UIVertex</c> object</returns>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype</exception>
-		/// <remarks><c>UIVertex</c> has no constructor, so the object must be initialized field-by-field. Even if it
+		/// <param name="data"><c>byte</c> array to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <returns>The resulting <see cref="UIVertex"/> object.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> was null.</exception>
+		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
+		/// <remarks><see cref="UIVertex"/> has no constructor, so the object must be initialized field-by-field. Even if it
 		/// did have a constructor, the way data needs to be read wouldn't allow use of it.</remarks>
 		public static UIVertex CreateVertex(byte[] data, MapType type) {
 			if (data == null) {
@@ -131,13 +131,13 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <c>UIVertex</c> objects.
+		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <see cref="UIVertex"/> objects.
 		/// </summary>
-		/// <param name="data">The data to parse</param>
-		/// <param name="type">The map type</param>
-		/// <returns>A <c>List</c> of <c>UIVertex</c> objects</returns>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype</exception>
+		/// <param name="data">The data to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <returns>A <c>List</c> of <see cref="UIVertex"/> objects.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
+		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
 		/// <remarks>This function goes here since I can't put it into Unity's <c>UIVertex</c> class, and so I can't
 		/// depend on having a constructor taking a byte array.</remarks>
 		public static List<UIVertex> LumpFactory(byte[] data, MapType type) {
@@ -195,8 +195,8 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the index for this lump in the BSP file for a specific map format.
 		/// </summary>
-		/// <param name="type">The map type</param>
-		/// <returns>Index for this lump, or -1 if the format doesn't have this lump</returns>
+		/// <param name="type">The map type.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
 		public static int GetIndexForLump(MapType type) {
 			switch (type) {
 				case MapType.Quake2:

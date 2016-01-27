@@ -14,9 +14,9 @@ namespace LibBSP {
 #endif
 
 	/// <summary>
-	/// Contains all the information for a single SourceTexData object
+	/// Contains all the information for a single Texture Data object.
 	/// </summary>
-	public struct SourceTexData {
+	public struct TextureData {
 
 		public Vector3 reflectivity { get; private set; }
 		public int stringTableIndex { get; private set; }
@@ -26,12 +26,12 @@ namespace LibBSP {
 		public int view_height { get; private set; }
 
 		/// <summary>
-		/// Creates a new <c>SourceTexData</c> object from a <c>byte</c> array.
+		/// Creates a new <see cref="TextureData"/> object from a <c>byte</c> array.
 		/// </summary>
-		/// <param name="data"><c>byte</c> array to parse</param>
-		/// <param name="type">The map type</param>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		public SourceTexData(byte[] data, MapType type) : this() {
+		/// <param name="data"><c>byte</c> array to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
+		public TextureData(byte[] data, MapType type) : this() {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -44,22 +44,22 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <c>SourceTexData</c> objects.
+		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <see cref="TextureData"/> objects.
 		/// </summary>
-		/// <param name="data">The data to parse</param>
-		/// <param name="type">The map type</param>
-		/// <returns>A <c>List</c> of <c>SourceTexData</c> objects</returns>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		public static List<SourceTexData> LumpFactory(byte[] data, MapType type) {
+		/// <param name="data">The data to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <returns>A <c>List</c> of <see cref="TextureData"/> objects.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
+		public static List<TextureData> LumpFactory(byte[] data, MapType type) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
 			int structLength = 32;
-			List<SourceTexData> lump = new List<SourceTexData>(data.Length / structLength);
+			List<TextureData> lump = new List<TextureData>(data.Length / structLength);
 			byte[] bytes = new byte[structLength];
 			for (int i = 0; i < data.Length / structLength; i++) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
-				lump.Add(new SourceTexData(bytes, type));
+				lump.Add(new TextureData(bytes, type));
 			}
 			return lump;
 		}
@@ -67,8 +67,8 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the index for this lump in the BSP file for a specific map format.
 		/// </summary>
-		/// <param name="type">The map type</param>
-		/// <returns>Index for this lump, or -1 if the format doesn't have this lump</returns>
+		/// <param name="type">The map type.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
 		public static int GetIndexForLump(MapType type) {
 			switch (type) {
 				case MapType.Vindictus:

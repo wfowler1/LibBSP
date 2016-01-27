@@ -25,12 +25,12 @@ namespace LibBSP {
 		public float[][] alphas;
 
 		/// <summary>
-		/// Creates a new empty <c>MAPDisplacement</c> object. Internal data will have to be set manually.
+		/// Creates a new empty <see cref="MAPDisplacement"/> object. Internal data will have to be set manually.
 		/// </summary>
 		public MAPDisplacement() { }
 
 		/// <summary>
-		/// Constructs a <c>MAPDisplacement</c> object using the provided <c>string</c> array as the data.
+		/// Constructs a <see cref="MAPDisplacement"/> object using the provided <c>string</c> array as the data.
 		/// </summary>
 		/// <param name="lines">Data to parse.</param>
 		public MAPDisplacement(string[] lines) {

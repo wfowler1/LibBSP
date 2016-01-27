@@ -3,20 +3,20 @@ using System.Collections.Generic;
 
 namespace LibBSP {
 	/// <summary>
-	/// List of <c>SourceStaticProp</c> objects containing data relevant to Static Props, like the dictionary of actual model paths.
+	/// List of <see cref="StaticProp"/> objects containing data relevant to Static Props, like the dictionary of actual model paths.
 	/// </summary>
-	public class SourceStaticProps : List<SourceStaticProp> {
+	public class StaticProps : List<StaticProp> {
 
 		public string[] dictionary { get; private set; }
 
 		/// <summary>
-		/// Parses the passed <c>byte</c> array into a <c>List</c> of <c>SourceStaticProp</c> objects
+		/// Parses the passed <c>byte</c> array into a <c>List</c> of <see cref="StaticProp"/> objects.
 		/// </summary>
-		/// <param name="data">Array of <c>byte</c>s to parse</param>
-		/// <param name="type">Format identifier</param>
-		/// <param name="version">Version of static prop lump this is</param>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		public SourceStaticProps(byte[] data, MapType type, int version) {
+		/// <param name="data">Array of <c>byte</c>s to parse.</param>
+		/// <param name="type">Format identifier.</param>
+		/// <param name="version">Version of static prop lump this is.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
+		public StaticProps(byte[] data, MapType type, int version) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -37,7 +37,7 @@ namespace LibBSP {
 					byte[] bytes = new byte[structLength];
 					for (int i = 0; i < numProps; ++i) {
 						Array.Copy(data, (dictionary.Length * 128) + (numLeafDefinitions * 2) + 12 + (i * structLength), bytes, 0, structLength);
-						Add(new SourceStaticProp(bytes, type, version));
+						Add(new StaticProp(bytes, type, version));
 						offset += structLength;
 					}
 				}

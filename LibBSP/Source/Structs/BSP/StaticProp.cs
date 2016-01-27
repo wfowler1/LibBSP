@@ -13,9 +13,9 @@ namespace LibBSP {
 	using Vector3 = Vector3d;
 #endif
 	/// <summary>
-	/// Handles the data needed for one static prop.
+	/// Handles the data needed for a static prop object.
 	/// </summary>
-	public struct SourceStaticProp {
+	public struct StaticProp {
 
 		public Vector3 origin { get; private set; }
 		public Vector3 angles { get; private set; }
@@ -29,13 +29,14 @@ namespace LibBSP {
 		public string targetname { get; private set; }
 
 		/// <summary>
-		/// Creates a new <c>SourceStaticProp</c> object from a <c>byte</c> array.
+		/// Creates a new <see cref="StaticProp"/> object from a <c>byte</c> array.
 		/// </summary>
-		/// <param name="data"><c>byte</c> array to parse</param>
-		/// <param name="type">The map type</param>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype</exception>
-		public SourceStaticProp(byte[] data, MapType type, int version) : this() {
+		/// <param name="data"><c>byte</c> array to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of static prop lump this object is a member of.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
+		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
+		public StaticProp(byte[] data, MapType type, int version) : this() {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -103,14 +104,14 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Factory method to create a <c>SourceStaticProps</c> object.
+		/// Factory method to create a <see cref="StaticProps"/> object.
 		/// </summary>
-		/// <param name="data">The data to parse</param>
-		/// <param name="type">The map type</param>
-		/// <param name="version">The version of the Static Prop lump</param>
-		/// <returns>A <c>SourceStaticProps</c> object</returns>
-		public static SourceStaticProps LumpFactory(byte[] data, MapType type, int version) {
-			return new SourceStaticProps(data, type, version);
+		/// <param name="data">The data to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of the Static Prop lump.</param>
+		/// <returns>A <see cref="StaticProps"/> object.</returns>
+		public static StaticProps LumpFactory(byte[] data, MapType type, int version) {
+			return new StaticProps(data, type, version);
 		}
 	}
 }

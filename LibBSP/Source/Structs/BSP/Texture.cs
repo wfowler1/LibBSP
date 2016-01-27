@@ -29,15 +29,15 @@ namespace LibBSP {
 		public string mask { get; private set; } // Only used by MoHAA, "ignore" means it's unused
 		public int flags { get; private set; }
 		public int contents { get; private set; }
-		public TexInfo texAxes { get; private set; }
+		public TextureInfo texAxes { get; private set; }
 
 		/// <summary>
-		/// Creates a new <c>Texture</c> object from a <c>byte</c> array.
+		/// Creates a new <see cref="Texture"/> object from a <c>byte</c> array.
 		/// </summary>
-		/// <param name="data"><c>byte</c> array to parse</param>
-		/// <param name="type">The map type</param>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype</exception>
+		/// <param name="data"><c>byte</c> array to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
+		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
 		public Texture(byte[] data, MapType type) : this() {
 			if (data == null) {
 				throw new ArgumentNullException();
@@ -46,7 +46,7 @@ namespace LibBSP {
 			mask = "ignore";
 			flags = 0;
 			contents = 0;
-			texAxes = null;
+			texAxes = new TextureInfo();
 			switch (type) {
 				case MapType.Quake:
 				case MapType.Nightfire: {
@@ -56,7 +56,7 @@ namespace LibBSP {
 				case MapType.Quake2:
 				case MapType.SoF:
 				case MapType.Daikatana: {
-					texAxes = new TexInfo(new Vector3(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8)), BitConverter.ToSingle(data, 12), new Vector3(BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24)), BitConverter.ToSingle(data, 28), -1, -1);
+					texAxes = new TextureInfo(new Vector3(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8)), BitConverter.ToSingle(data, 12), new Vector3(BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24)), BitConverter.ToSingle(data, 28), -1, -1);
 					flags = BitConverter.ToInt32(data, 32);
 					name = data.ToNullTerminatedString(40, 32);
 					break;
@@ -93,7 +93,7 @@ namespace LibBSP {
 					break;
 				}
 				case MapType.SiN: {
-					texAxes = new TexInfo(new Vector3(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8)), BitConverter.ToSingle(data, 12), new Vector3(BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24)), BitConverter.ToSingle(data, 28), -1, -1);
+					texAxes = new TextureInfo(new Vector3(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8)), BitConverter.ToSingle(data, 12), new Vector3(BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24)), BitConverter.ToSingle(data, 28), -1, -1);
 					flags = BitConverter.ToInt32(data, 32);
 					name = data.ToNullTerminatedString(36, 64);
 					break;
@@ -105,11 +105,11 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Factory method to parse a <c>byte</c> array into a <c>Textures</c> object.
+		/// Factory method to parse a <c>byte</c> array into a <see cref="Textures"/> object.
 		/// </summary>
-		/// <param name="data">The data to parse</param>
-		/// <param name="type">The map type</param>
-		/// <returns>A <c>Textures</c> object</returns>
+		/// <param name="data">The data to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <returns>A <see cref="Textures"/> object.</returns>
 		public static Textures LumpFactory(byte[] data, MapType type) {
 			return new Textures(data, type);
 		}
@@ -117,8 +117,8 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the index for this lump in the BSP file for a specific map format.
 		/// </summary>
-		/// <param name="type">The map type</param>
-		/// <returns>Index for this lump, or -1 if the format doesn't have this lump</returns>
+		/// <param name="type">The map type.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
 		public static int GetIndexForLump(MapType type) {
 			switch (type) {
 				case MapType.CoD:
@@ -166,8 +166,8 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the index for the materials lump in the BSP file for a specific map format.
 		/// </summary>
-		/// <param name="type">The map type</param>
-		/// <returns>Index for this lump, or -1 if the format doesn't have this lump</returns>
+		/// <param name="type">The map type.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
 		public static int GetIndexForMaterialLump(MapType type) {
 			switch (type) {
 				case MapType.Nightfire: {

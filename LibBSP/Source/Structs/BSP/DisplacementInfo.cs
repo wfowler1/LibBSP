@@ -15,7 +15,7 @@ namespace LibBSP {
 	/// <summary>
 	/// Holds all data for a Displacement from Source engine.
 	/// </summary>
-	public struct SourceDispInfo {
+	public struct DisplacementInfo {
 
 		public Vector3 startPosition { get; private set; }
 		public int dispVertStart { get; private set; }
@@ -24,13 +24,13 @@ namespace LibBSP {
 		public uint[] allowedVerts { get; private set; }
 
 		/// <summary>
-		/// Creates a new <c>SourceDispInfo</c> object from a <c>byte</c> array.
+		/// Creates a new <see cref="DisplacementInfo"/> object from a <c>byte</c> array.
 		/// </summary>
-		/// <param name="data"><c>byte</c> array to parse</param>
-		/// <param name="type">The map type</param>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype</exception>
-		public SourceDispInfo(byte[] data, MapType type) : this() {
+		/// <param name="data"><c>byte</c> array to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
+		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
+		public DisplacementInfo(byte[] data, MapType type) : this() {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -74,14 +74,14 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <c>SourceDispInfo</c> objects.
+		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <see cref="DisplacementInfo"/> objects.
 		/// </summary>
-		/// <param name="data">The data to parse</param>
-		/// <param name="type">The map type</param>
-		/// <returns>A <c>List</c> of <c>SourceDispInfo</c> objects</returns>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype</exception>
-		public static List<SourceDispInfo> LumpFactory(byte[] data, MapType type) {
+		/// <param name="data">The data to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <returns>A <c>List</c> of <see cref="DisplacementInfo"/> objects.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
+		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
+		public static List<DisplacementInfo> LumpFactory(byte[] data, MapType type) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -115,11 +115,11 @@ namespace LibBSP {
 				}
 			}
 			int offset = 0;
-			List<SourceDispInfo> lump = new List<SourceDispInfo>(data.Length / structLength);
+			List<DisplacementInfo> lump = new List<DisplacementInfo>(data.Length / structLength);
 			byte[] bytes = new byte[structLength];
 			for (int i = 0; i < data.Length / structLength; ++i) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
-				lump.Add(new SourceDispInfo(bytes, type));
+				lump.Add(new DisplacementInfo(bytes, type));
 				offset += structLength;
 			}
 			return lump;
@@ -128,8 +128,8 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the index for this lump in the BSP file for a specific map format.
 		/// </summary>
-		/// <param name="type">The map type</param>
-		/// <returns>Index for this lump, or -1 if the format doesn't have this lump</returns>
+		/// <param name="type">The map type.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
 		public static int GetIndexForLump(MapType type) {
 			switch (type) {
 				case MapType.Vindictus:

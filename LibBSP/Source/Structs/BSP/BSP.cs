@@ -14,22 +14,25 @@ namespace LibBSP {
 #if !UNITY
 	using Vector3 = Vector3d;
 #endif
+	/// <summary>
+	/// Enum of the known different map formats.
+	/// </summary>
 	public enum MapType : int {
 		Undefined = 0,
 		Quake = 29,
-		// TYPE_GOLDSRC = 30, // Uses same algorithm and structures as Quake
+		// TYPE_GOLDSRC = 30, // Uses mostly the same structures as Quake
 		Nightfire = 42,
 		Vindictus = 346131372,
 		STEF2 = 556942937,
 		MOHAA = 892416069,
-		// TYPE_MOHBT = 1095516506, // Similar enough to MOHAA to use the same structures and algorithm
+		// TYPE_MOHBT = 1095516506, // Similar enough to MOHAA to use the same structures
 		STEF2Demo = 1263223129,
 		FAKK = 1263223152,
 		TacticalInterventionEncrypted = 1268885814,
-		CoD2 = 1347633741, // Uses same algorithm and structures as COD1. Read differently.
+		CoD2 = 1347633741,
 		SiN = 1347633747, // The headers for SiN and Jedi Outcast are exactly the same
 		Raven = 1347633748,
-		CoD4 = 1347633759, // Uses same algorithm and structures as COD1. Read differently.
+		CoD4 = 1347633759,
 		Source17 = 1347633767,
 		Source18 = 1347633768,
 		Source19 = 1347633769,
@@ -43,9 +46,20 @@ namespace LibBSP {
 		Daikatana = 1347633778,
 		SoF = 1347633782, // Uses the same header as Q3.
 		Quake3 = 1347633783,
-		// TYPE_RTCW = 1347633784, // Uses same algorithm and structures as Quake 3
+		// TYPE_RTCW = 1347633784, // Uses same structures as Quake 3
 		CoD = 1347633796,
 		DMoMaM = 1347895914,
+	}
+
+	/// <summary>
+	/// Struct containing basic information for a lump in a BSP file.
+	/// </summary>
+	public struct LumpInfo {
+		public int ident;
+		public int flags;
+		public int version;
+		public int offset;
+		public int length;
 	}
 
 	/// <summary>
@@ -65,7 +79,7 @@ namespace LibBSP {
 		private Textures _textures;
 		private List<UIVertex> _vertices;
 		private List<Node> _nodes;
-		private List<TexInfo> _texInfo;
+		private List<TextureInfo> _texInfo;
 		private List<Face> _faces;
 		private List<Leaf> _leaves;
 		private NumList _markSurfaces;
@@ -83,17 +97,17 @@ namespace LibBSP {
 		// Source
 		private List<Face> _originalFaces;
 		private NumList _texTable;
-		private List<SourceTexData> _texDatas;
-		private List<SourceDispInfo> _dispInfos;
-		private SourceDispVertices _dispVerts;
+		private List<TextureData> _texDatas;
+		private List<DisplacementInfo> _dispInfos;
+		private DisplacementVertices _dispVerts;
 		private NumList _displacementTriangles;
 		// public SourceOverlays overlays;
-		private List<SourceCubemap> _cubemaps;
+		private List<Cubemap> _cubemaps;
 		private GameLump _gameLump;
-		private SourceStaticProps _staticProps;
+		private StaticProps _staticProps;
 
 		/// <summary>
-		/// The version of this BSP. DO NOT CHANGE THIS unless you want to force reading a BSP as a certain format.
+		/// The version of this BSP. Do not change this unless you want to force reading a BSP as a certain format.
 		/// </summary>
 		public MapType version {
 			get {
@@ -107,8 +121,14 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// Is the BSP file in big endian format?
+		/// </summary>
 		public bool bigEndian { get { return _reader.bigEndian; } }
 
+		/// <summary>
+		/// The <see cref="Entities"/> object in the BSP file, if available.
+		/// </summary>
 		public Entities entities {
 			get {
 				if (_entities == null) {
@@ -121,6 +141,9 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// A <c>List</c> of <see cref="Plane"/> objects in the BSP file, if available.
+		/// </summary>
 		public List<Plane> planes {
 			get {
 				if (_planes == null) {
@@ -133,6 +156,9 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// The <see cref="Textures"/> object in the BSP file, if available.
+		/// </summary>
 		public Textures textures {
 			get {
 				if (_textures == null) {
@@ -145,6 +171,9 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// A <c>List</c> of <see cref="UIVertex"/> objects in the BSP file representing the vertices of the BSP, if available.
+		/// </summary>
 		public List<UIVertex> vertices {
 			get {
 				if (_vertices == null) {
@@ -157,6 +186,9 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// A <c>List</c> of <see cref="Node"/> objects in the BSP file, if available.
+		/// </summary>
 		public List<Node> nodes {
 			get {
 				if (_nodes == null) {
@@ -169,18 +201,24 @@ namespace LibBSP {
 			}
 		}
 
-		public List<TexInfo> texInfo {
+		/// <summary>
+		/// A <c>List</c> of <see cref="TextureInfo"/> objects in the BSP file, if available.
+		/// </summary>
+		public List<TextureInfo> texInfo {
 			get {
 				if (_texInfo == null) {
-					int index = TexInfo.GetIndexForLump(version);
+					int index = TextureInfo.GetIndexForLump(version);
 					if (index >= 0) {
-						_texInfo = TexInfo.LumpFactory(_reader.ReadLumpNum(index, version), version);
+						_texInfo = TextureInfo.LumpFactory(_reader.ReadLumpNum(index, version), version);
 					}
 				}
 				return _texInfo;
 			}
 		}
 
+		/// <summary>
+		/// A <c>List</c> of <see cref="Face"/> objects in the BSP file, if available.
+		/// </summary>
 		public List<Face> faces {
 			get {
 				if (_faces == null) {
@@ -193,6 +231,9 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// A <c>List</c> of <see cref="Leaf"/> objects in the BSP file, if available.
+		/// </summary>
 		public List<Leaf> leaves {
 			get {
 				if (_leaves == null) {
@@ -205,6 +246,9 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// A <c>List</c> of <see cref="Edge"/> objects in the BSP file, if available.
+		/// </summary>
 		public List<Edge> edges {
 			get {
 				if (_edges == null) {
@@ -217,6 +261,9 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// A <c>List</c> of <see cref="Model"/> objects in the BSP file, if available.
+		/// </summary>
 		public List<Model> models {
 			get {
 				if (_models == null) {
@@ -229,6 +276,9 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// A <c>List</c> of <see cref="Brush"/> objects in the BSP file, if available.
+		/// </summary>
 		public List<Brush> brushes {
 			get {
 				if (_brushes == null) {
@@ -241,6 +291,9 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// A <c>List</c> of <see cref="BrushSide"/> objects in the BSP file, if available.
+		/// </summary>
 		public List<BrushSide> brushSides {
 			get {
 				if (_brushSides == null) {
@@ -253,6 +306,9 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// A <c>List</c> of <see cref="Texture"/> objects in the BSP file representing Materials (shaders), if available.
+		/// </summary>
 		public Textures materials {
 			get {
 				if (_materials == null) {
@@ -265,6 +321,9 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// A <c>List</c> of <see cref="Face"/> objects in the BSP file representing the Original Faces, if available.
+		/// </summary>
 		public List<Face> originalFaces {
 			get {
 				if (_originalFaces == null) {
@@ -277,54 +336,69 @@ namespace LibBSP {
 			}
 		}
 
-		public List<SourceTexData> texDatas {
+		/// <summary>
+		/// A <c>List</c> of <see cref="TextureData"/> objects in the BSP file, if available.
+		/// </summary>
+		public List<TextureData> texDatas {
 			get {
 				if (_texDatas == null) {
-					int index = SourceTexData.GetIndexForLump(version);
+					int index = TextureData.GetIndexForLump(version);
 					if (index >= 0) {
-						_texDatas = SourceTexData.LumpFactory(_reader.ReadLumpNum(index, version), version);
+						_texDatas = TextureData.LumpFactory(_reader.ReadLumpNum(index, version), version);
 					}
 				}
 				return _texDatas;
 			}
 		}
 
-		public List<SourceDispInfo> dispInfos {
+		/// <summary>
+		/// A <c>List</c> of <see cref="DisplacementInfo"/> objects in the BSP file, if available.
+		/// </summary>
+		public List<DisplacementInfo> dispInfos {
 			get {
 				if (_dispInfos == null) {
-					int index = SourceDispInfo.GetIndexForLump(version);
+					int index = DisplacementInfo.GetIndexForLump(version);
 					if (index >= 0) {
-						_dispInfos = SourceDispInfo.LumpFactory(_reader.ReadLumpNum(index, version), version);
+						_dispInfos = DisplacementInfo.LumpFactory(_reader.ReadLumpNum(index, version), version);
 					}
 				}
 				return _dispInfos;
 			}
 		}
 
-		public SourceDispVertices dispVerts {
+		/// <summary>
+		/// The <see cref="DisplacementVertices"/> object in the BSP file, if available.
+		/// </summary>
+		public DisplacementVertices dispVerts {
 			get {
 				if (_dispVerts == null) {
-					int index = SourceDispVertex.GetIndexForLump(version);
+					int index = DisplacementVertex.GetIndexForLump(version);
 					if (index >= 0) {
-						_dispVerts = SourceDispVertex.LumpFactory(_reader.ReadLumpNum(index, version), version);
+						_dispVerts = DisplacementVertex.LumpFactory(_reader.ReadLumpNum(index, version), version);
 					}
 				}
 				return _dispVerts;
 			}
 		}
 
-		public List<SourceCubemap> cubemaps {
+		/// <summary>
+		/// A <c>List</c> of <see cref="Cubemap"/> objects in the BSP file, if available.
+		/// </summary>
+		public List<Cubemap> cubemaps {
 			get {
 				if (_cubemaps == null) {
-					int index = SourceCubemap.GetIndexForLump(version);
+					int index = Cubemap.GetIndexForLump(version);
 					if (index >= 0) {
-						_cubemaps = SourceCubemap.LumpFactory(_reader.ReadLumpNum(index, version), version);
+						_cubemaps = Cubemap.LumpFactory(_reader.ReadLumpNum(index, version), version);
 					}
 				}
 				return _cubemaps;
 			}
 		}
 
+		/// <summary>
+		/// A <see cref="NumList"/> object containing the Mark Surfaces (Leaf Surfaces) lump, if available.
+		/// </summary>
 		public NumList markSurfaces {
 			get {
 				if (_markSurfaces == null) {
@@ -338,6 +412,9 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// A <see cref="NumList"/> object containing the Surface Edges lump, if available.
+		/// </summary>
 		public NumList surfEdges {
 			get {
 				if (_surfEdges == null) {
@@ -351,6 +428,9 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// A <see cref="NumList"/> object containing the Mark Brushes (Leaf Brushes) lump, if available.
+		/// </summary>
 		public NumList markBrushes {
 			get {
 				if (_markBrushes == null) {
@@ -364,6 +444,9 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// A <see cref="NumList"/> object containing the Face Vertex Indices lump, if available.
+		/// </summary>
 		public NumList indices {
 			get {
 				if (_indices == null) {
@@ -377,6 +460,9 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// A <see cref="NumList"/> object containing the Texture offsets table lump, if available.
+		/// </summary>
 		public NumList texTable {
 			get {
 				if (_texTable == null) {
@@ -390,6 +476,9 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// A <see cref="NumList"/> object containing the Displacement Triangles lump, if available.
+		/// </summary>
 		public NumList displacementTriangles {
 			get {
 				if (_displacementTriangles == null) {
@@ -403,6 +492,9 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// The <see cref="GameLump"/> object in the BSP file containing internal lumps, if available.
+		/// </summary>
 		public GameLump gameLump {
 			get {
 				if (_gameLump == null) {
@@ -415,14 +507,17 @@ namespace LibBSP {
 			}
 		}
 
-		public SourceStaticProps staticProps {
+		/// <summary>
+		/// The <see cref="StaticProps"/> object in the BSP file extracted from the <see cref="BSP.gameLump"/>, if available.
+		/// </summary>
+		public StaticProps staticProps {
 			get {
 				if (_staticProps == null) {
 					if (gameLump != null && gameLump.ContainsKey(GameLumpType.sprp)) {
-						GameLump.GameLumpInfo info = gameLump[GameLumpType.sprp];
+						LumpInfo info = gameLump[GameLumpType.sprp];
 						byte[] thisLump = new byte[info.length];
 						Array.Copy(gameLump.rawData, info.offset - gameLump.gameLumpOffset, thisLump, 0, info.length);
-						_staticProps = SourceStaticProp.LumpFactory(thisLump, version, info.version);
+						_staticProps = StaticProp.LumpFactory(thisLump, version, info.version);
 					}
 				}
 				return _staticProps;
@@ -487,7 +582,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Creates a new <c>BSP</c> instance pointing to the file at <paramref name="filePath"/>. The
+		/// Creates a new <see cref="BSP"/> instance pointing to the file at <paramref name="filePath"/>. The
 		/// <c>List</c>s in this class will be read and populated when accessed through their properties.
 		/// </summary>
 		/// <param name="filePath">The path to the .BSP file.</param>
@@ -497,7 +592,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Creates a new <c>BSP</c> instance using the file referenced by <paramref name="file"/>. The
+		/// Creates a new <see cref="BSP"/> instance using the file referenced by <paramref name="file"/>. The
 		/// <c>List</c>s in this class will be read and populated when accessed through their properties.
 		/// </summary>
 		/// <param name="file">A reference to the .BSP file.</param>
@@ -515,23 +610,30 @@ namespace LibBSP {
 
 		/// <summary>
 		/// Gets all objects of type <typeparamref name="T"/> referenced through passed object <paramref name="o"/>
-		/// contained in the lump <paramref name="lumpName"/> stored in this <c>BSP</c> class. This is done by
+		/// contained in the lump <paramref name="lumpName"/> stored in this <see cref="BSP"/> class. This is done by
 		/// reflecting the <c>Type</c> of <paramref name="o"/> and looping through its public properties to find
-		/// a member with an <c>IndexAttribute</c> attribute and a member with <c>CountAttribute</c> attribute
+		/// a member with an <see cref="IndexAttribute"/> attribute and a member with a <see cref="CountAttribute"/> attribute
 		/// both corresponding to <paramref name="lumpName"/>. The index and count are obtained and used to construct
 		/// a new <c>List&lt;<typeparamref name="T"/>&gt;</c> object containing the corresponding objects.
 		/// </summary>
 		/// <typeparam name="T">The type of <c>object</c> stored in the lump <paramref name="lumpName"/>.</typeparam>
 		/// <param name="o">The <c>object</c> which contains and index and count corresponding to <paramref name="lumpName"/>.</param>
-		/// <param name="lumpName">The name of the property in this <c>BSP</c> object to get a <c>List</c> of objects from.</param>
+		/// <param name="lumpName">The name of the property in this <see cref="BSP"/> object to get a <c>List</c> of objects from.</param>
 		/// <returns>The <c>List&lt;<typeparamref name="T"/>&gt;</c> of objects in the lump from the index and length specified in <paramref name="o"/>.</returns>
-		/// <exception cref="ArgumentException">The <c>BSP</c> class contains no property corresponding to <paramref name="lumpName"/>.</exception>
+		/// <exception cref="ArgumentException">The <see cref="BSP"/> class contains no property corresponding to <paramref name="lumpName"/>.</exception>
 		/// <exception cref="ArgumentException">The <c>object</c> referenced by <paramref name="o"/> is missing one or both members with <c>IndexAttribute</c> or <c>CountAttribute</c> attributes corresponding to <paramref name="lumpName"/>.</exception>
+		/// <exception cref="ArgumentNullException">One or both of <paramref name="o"/> or <paramref name="lumpName"/> is null.</exception>
 		public List<T> GetReferencedObjects<T>(object o, string lumpName) {
+			if (o == null) {
+				throw new ArgumentNullException("Object cannot be null.");
+			}
+			if (lumpName == null) {
+				throw new ArgumentNullException("Lump name cannot be null.");
+			}
 			// First, find the property in this class corresponding to lumpName, and grab its "get" method
 			PropertyInfo targetLump = typeof(BSP).GetProperty(lumpName, BindingFlags.Public | BindingFlags.Instance);
 			if (targetLump == null) {
-				throw new ArgumentException("The lump " + lumpName + " does not exist in the BSP class");
+				throw new ArgumentException("The lump " + lumpName + " does not exist in the BSP class.");
 			}
 
 			// Next, find the properties in the passed object corresponding to lumpName, through the Index and Length custom attributes
@@ -560,7 +662,7 @@ namespace LibBSP {
 				}
 			}
 			if (indexProperty == null || countProperty == null) {
-				throw new ArgumentException("An object of type " + objectType.Name + " does not implement both an Index and Count for lump " + lumpName);
+				throw new ArgumentException("An object of type " + objectType.Name + " does not implement both an Index and Count for lump " + lumpName + ".");
 			}
 
 			// Get the index and length from the object

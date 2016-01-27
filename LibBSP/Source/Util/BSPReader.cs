@@ -23,9 +23,9 @@ namespace LibBSP {
 		public bool bigEndian { get { return _bigEndian; } set { _bigEndian = value; } }
 
 		/// <summary>
-		/// Creates a new instance of a <c>BSPReader</c> class to read the specified file.
+		/// Creates a new instance of a <see cref="BSPReader"/> class to read the specified file.
 		/// </summary>
-		/// <param name="file">The <c>FileInfo</c> representing the file this <c>BSPReader</c> should read.</param>
+		/// <param name="file">The <c>FileInfo</c> representing the file this <see cref="BSPReader"/> should read.</param>
 		public BSPReader(FileInfo file) {
 			if (!File.Exists(file.FullName)) {
 				throw new FileNotFoundException("Unable to open BSP file; file " + file.FullName + " not found.");
@@ -96,12 +96,6 @@ namespace LibBSP {
 				case MapType.DMoMaM: {
 					return ReadLumpFromOffsetLengthPairAtOffset(8 + (16 * index), version);
 				}
-				/*
-				case MapType.Doom:
-				case MapType.Hexen: {
-					int[] ol = getLumpInfo(index);
-					return readLump(ol[0], ol[1]);
-				}*/
 			}
 			return new byte[0];
 		}
@@ -161,7 +155,7 @@ namespace LibBSP {
 		/// <param name="data">The byte array to Xor.</param>
 		/// <param name="index">The index in the key byte array to start reading from.</param>
 		/// <returns>The input <c>byte</c> array Xored with the key <c>byte</c> array.</returns>
-		/// <exception cref="ArgumentNullException">The passed <paramref name="data"/> parameter was null.</exception>
+		/// <exception cref="ArgumentNullException">The passed <paramref name="data"/> parameter was <c>null</c>.</exception>
 		private byte[] XorWithKeyStartingAtIndex(byte[] data, int index = 0) {
 			if (data == null) {
 				throw new ArgumentNullException();
@@ -177,10 +171,10 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Tries to get the <c>MapType</c> member most closely represented by the referenced file. If the file is 
-		/// found to be big-endian, this will set <c>bigEndian</c> to <c>true</c>.
+		/// Tries to get the <see cref="MapType"/> member most closely represented by the referenced file. If the file is 
+		/// found to be big-endian, this will set <see cref="BSPReader.bigEndian"/> to <c>true</c>.
 		/// </summary>
-		/// <returns>The <c>MapType</c> of this BSP, <c>MapType.Undefined</c> if it could not be determined.</returns>
+		/// <returns>The <see cref="MapType"/> of this BSP, <see cref="MapType.Undefined"/> if it could not be determined.</returns>
 		public MapType GetVersion() {
 			MapType ret = GetVersion(false);
 			if (ret == MapType.Undefined) {
@@ -193,10 +187,10 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Tries to get the <c>MapType</c> member most closely represented by the referenced file.
+		/// Tries to get the <see cref="MapType"/> member most closely represented by the referenced file.
 		/// </summary>
 		/// <param name="bigEndian">Set to <c>true</c> to attempt reading the data in big-endian byte order.</param>
-		/// <returns>The <c>MapType</c> of this BSP, <c>MapType.Undefined</c> if it could not be determined.</returns>
+		/// <returns>The <see cref="MapType"/> of this BSP, <see cref="MapType.Undefined"/> if it could not be determined.</returns>
 		private MapType GetVersion(bool bigEndian) {
 			MapType current = MapType.Undefined;
 			stream.Seek(0, SeekOrigin.Begin);
@@ -419,7 +413,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Disposes of the <see cref="FileStream"/> and releases the handle to the File.
+		/// Disposes of the <c>FileStream</c> and releases the handle to the File.
 		/// </summary>
 		public void Close() {
 			stream.Dispose();

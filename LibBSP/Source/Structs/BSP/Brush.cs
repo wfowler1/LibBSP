@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LibBSP {
 	/// <summary>
-	/// Holds the data used by the brush structures of all formats of BSP
+	/// Holds the data used by the brush structures of all formats of BSP.
 	/// </summary>
 	public struct Brush {
 
@@ -13,12 +13,12 @@ namespace LibBSP {
 		public int contents { get; private set; }
 
 		/// <summary>
-		/// Creates a new <c>Brush</c> object from a <c>byte</c> array.
+		/// Creates a new <see cref="Brush"/> object from a <c>byte</c> array.
 		/// </summary>
-		/// <param name="data"><c>byte</c> array to parse</param>
-		/// <param name="type">The map type</param>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype</exception>
+		/// <param name="data"><c>byte</c> array to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
+		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
 		public Brush(byte[] data, MapType type) : this() {
 			if (data == null) {
 				throw new ArgumentNullException();
@@ -84,13 +84,13 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <c>Brush</c> objects.
+		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <see cref="Brush"/> objects.
 		/// </summary>
-		/// <param name="data">The data to parse</param>
-		/// <param name="type">The map type</param>
-		/// <returns>A <c>List</c> of <c>Brush</c> objects</returns>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype</exception>
+		/// <param name="data">The data to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <returns>A <c>List</c> of <see cref="Brush"/> objects.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
+		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
 		public static List<Brush> LumpFactory(byte[] data, MapType type) {
 			if (data == null) {
 				throw new ArgumentNullException();
@@ -144,8 +144,8 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the index for this lump in the BSP file for a specific map format.
 		/// </summary>
-		/// <param name="type">The map type</param>
-		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented</returns>
+		/// <param name="type">The map type.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForLump(MapType type) {
 			switch (type) {
 				case MapType.CoD: {

@@ -3,13 +3,16 @@ using System;
 using System.Collections.Generic;
 
 namespace LibBSP {
+	/// <summary>
+	/// Struct defining a rectangle in 2D space.
+	/// </summary>
 	public struct Rect : IEquatable<Rect> {
 
 		public Vector2d position;
 		public Vector2d size;
 
 		/// <summary>
-		/// Gets the center point of this <c>Rect</c>
+		/// Gets the center point of this <see cref="Rect"/>.
 		/// </summary>
 		public Vector2d center {
 			get {
@@ -18,7 +21,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets the width of this <c>Rect</c>
+		/// Gets the width of this <see cref="Rect"/>.
 		/// </summary>
 		public double width {
 			get {
@@ -30,7 +33,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets the height of this <c>Rect</c>
+		/// Gets the height of this <see cref="Rect"/>.
 		/// </summary>
 		public double height {
 			get {
@@ -42,7 +45,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets the bottom-left coordinate of this <c>Rect</c>
+		/// Gets the bottom-left coordinate of this <see cref="Rect"/>.
 		/// </summary>
 		public Vector2d min {
 			get {
@@ -55,7 +58,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets the top-right coordinate of this <c>Rect</c>
+		/// Gets the top-right coordinate of this <see cref="Rect"/>.
 		/// </summary>
 		public Vector2d max {
 			get {
@@ -68,7 +71,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets the left bound of this <c>Rect</c>
+		/// Gets the left bound of this <see cref="Rect"/>.
 		/// </summary>
 		public double x {
 			get {
@@ -80,7 +83,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets the left bound of this <c>Rect</c>
+		/// Gets the left bound of this <see cref="Rect"/>.
 		/// </summary>
 		public double xMin {
 			get {
@@ -92,7 +95,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets the right bound of this <c>Rect</c>
+		/// Gets the right bound of this <see cref="Rect"/>.
 		/// </summary>
 		public double xMax {
 			get {
@@ -104,7 +107,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets the upper bound of this <c>Rect</c>
+		/// Gets the upper bound of this <see cref="Rect"/>.
 		/// </summary>
 		public double y {
 			get {
@@ -116,7 +119,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets the upper bound of this <c>Rect</c>
+		/// Gets the upper bound of this <see cref="Rect"/>.
 		/// </summary>
 		public double yMin {
 			get {
@@ -128,7 +131,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets the lower bound of this <c>Rect</c>
+		/// Gets the lower bound of this <see cref="Rect"/>.
 		/// </summary>
 		public double yMax {
 			get {
@@ -140,35 +143,35 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Creates a new <c>Rect</c> object.
+		/// Creates a new <see cref="Rect"/> object.
 		/// </summary>
-		/// <param name="left">Left bound</param>
-		/// <param name="top">Upper bound</param>
-		/// <param name="width">Width</param>
-		/// <param name="height">Height</param>
+		/// <param name="left">Left bound.</param>
+		/// <param name="top">Upper bound.</param>
+		/// <param name="width">Width.</param>
+		/// <param name="height">Height.</param>
 		public Rect(double left, double top, double width, double height) : this() {
 			position = new Vector2d(left, top);
 			size = new Vector2d(width, height);
 		}
 
 		/// <summary>
-		/// Creates a new <c>Rect</c> object from the specified bounds
+		/// Creates a new <see cref="Rect"/> object from the specified bounds.
 		/// </summary>
-		/// <param name="left">Left bound</param>
-		/// <param name="top">Upper bound</param>
-		/// <param name="right">Right bound</param>
-		/// <param name="bottom">Lower bound</param>
-		/// <returns>The resulting <c>Rect</c></returns>
+		/// <param name="left">Left bound.</param>
+		/// <param name="top">Upper bound.</param>
+		/// <param name="right">Right bound.</param>
+		/// <param name="bottom">Lower bound.</param>
+		/// <returns>The resulting <see cref="Rect"/></returns>
 		public static Rect MinMaxRect(double left, double top, double right, double bottom) {
 			return new Rect(left, top, right - left, bottom - top);
 		}
 
 		/// <summary>
-		/// Gets whether this <c>Rect</c> contains the specified point.
+		/// Gets whether this <see cref="Rect"/> contains the specified point.
 		/// </summary>
-		/// <param name="point">The point to check</param>
-		/// <param name="allowInverse">If the <c>Rect</c>'s size is negative, should the check allow this?</param>
-		/// <returns><c>true</c> if the point is contained in the <C>Rect</C></returns>
+		/// <param name="point">The point to check.</param>
+		/// <param name="allowInverse">If the <see cref="Rect"/>'s size is negative, should the check allow this?</param>
+		/// <returns><c>true</c> if the point is contained in the <see cref="Rect"/>.</returns>
 		public bool Contains(Vector2d point, bool allowInverse = false) {
 			if (allowInverse) {
 				return point.x > position.x && point.x < position.x + size.x && point.y > position.y && point.y < position.y + size.y;
@@ -181,11 +184,11 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets whether this <c>Rect</c> overlaps the specified <c>Rect</c>.
+		/// Gets whether this <see cref="Rect"/> overlaps the specified <see cref="Rect"/>.
 		/// </summary>
-		/// <param name="other">The <c>Rect</c> to check</param>
-		/// <param name="allowInverse">If either <c>Rect</c>'s size is negative, should the check allow this?</param>
-		/// <returns><c>true</c> if the other <c>Rect</c> overlaps this <C>Rect</C></returns>
+		/// <param name="other">The <see cref="Rect"/> to check.</param>
+		/// <param name="allowInverse">If either <see cref="Rect"/>'s size is negative, should the check allow this?</param>
+		/// <returns><c>true</c> if the other <see cref="Rect"/> overlaps this <see cref="Rect"/>.</returns>
 		public bool Overlaps(Rect other, bool allowInverse = false) {
 			if (allowInverse) {
 				return Contains(other.position, true) || Contains(other.position + other.size, true) || Contains(other.min, true) || Contains(other.max, true) ||
@@ -201,12 +204,12 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Sets this <c>Rect</c>'s components
+		/// Sets this <see cref="Rect"/>'s components.
 		/// </summary>
-		/// <param name="left">The left bound to set</param>
-		/// <param name="top">The upper bound to set</param>
-		/// <param name="width">The width to set</param>
-		/// <param name="height">The height to set</param>
+		/// <param name="left">The left bound to set.</param>
+		/// <param name="top">The upper bound to set.</param>
+		/// <param name="width">The width to set.</param>
+		/// <param name="height">The height to set.</param>
 		public void Set(double left, double top, double width, double height) {
 			position.x = left;
 			position.y = top;
@@ -215,21 +218,21 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Given a normalized point, returns a coordinate point inside the <c>Rect</c>.
+		/// Given a normalized point, returns a coordinate point inside the <see cref="Rect"/>.
 		/// </summary>
-		/// <param name="rect">The <c>Rect</c></param>
-		/// <param name="normalizedCoordinates">The normalized coordinates</param>
-		/// <returns>The denormalized coordinates</returns>
+		/// <param name="rect">The <see cref="Rect"/>.</param>
+		/// <param name="normalizedCoordinates">The normalized coordinates.</param>
+		/// <returns>The denormalized coordinates.</returns>
 		public static Vector2d NormalizedToPoint(Rect rect, Vector2d normalizedCoordinates) {
 			return new Vector2d(rect.x + (rect.width * normalizedCoordinates.x), rect.y + (rect.height * normalizedCoordinates.y));
 		}
 
 		/// <summary>
-		/// Given a point, returns a normalized point relative to the <c>Rect</c>.
+		/// Given a point, returns a normalized point relative to the <see cref="Rect"/>.
 		/// </summary>
-		/// <param name="rect">The <c>Rect</c></param>
-		/// <param name="point">The coordinates</param>
-		/// <returns>The normalized coordinates</returns>
+		/// <param name="rect">The <see cref="Rect"/>.</param>
+		/// <param name="point">The coordinates.</param>
+		/// <returns>The normalized coordinates.</returns>
 		public static Vector2d PointToNormalized(Rect rect, Vector2d point) {
 			if (rect.width != 0 && rect.height != 0) {
 				return new Vector2d((point.x - rect.x) / rect.width, (point.y - rect.y) / rect.height);
@@ -239,27 +242,28 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gives a nicely formatted <c>string</c> for this <c>Rect</c>.
+		/// Gives a nicely formatted <c>string</c> for this <see cref="Rect"/>.
 		/// </summary>
-		/// <returns>Nicely formatted <c>string</c> for this <c>Rect</c></returns>
+		/// <returns>Nicely formatted <c>string</c> for this <see cref="Rect"/>.</returns>
 		public override string ToString() {
 			return string.Format("(x:{1}, y:{2}, width:{3}, height:{4})", x, y, width, height);
 		}
 
+		#region IEquatable
 		/// <summary>
-		/// Determines whether this <c>Rect</c> equals another
+		/// Determines whether this <see cref="Rect"/> equals another.
 		/// </summary>
-		/// <param name="other">The <c>Rect</c> to compare to</param>
-		/// <returns><c>true</c> if the <c>Rect</c>s are equal</returns>
+		/// <param name="other">The <see cref="Rect"/> to compare to.</param>
+		/// <returns><c>true</c> if the <see cref="Rect"/>s are equal.</returns>
 		public bool Equals(Rect other) {
 			return position == other.position && size == other.size;
 		}
 
 		/// <summary>
-		/// Determines whether this <c>Rect</c> equals another <c>object</c>
+		/// Determines whether this <see cref="Rect"/> equals another <c>object</c>.
 		/// </summary>
-		/// <param name="other">The <c>object</c> to compare to</param>
-		/// <returns><c>true</c> if the other <c>object</c> is not null and a <c>Rect</c>, and the <c>Rect</c>s are equal</returns>
+		/// <param name="other">The <c>object</c> to compare to.</param>
+		/// <returns><c>true</c> if the other <c>object</c> is not null and a <see cref="Rect"/>, and the <see cref="Rect"/>s are equal.</returns>
 		public override bool Equals(object obj) {
 			if (object.ReferenceEquals(obj, null)) { return false; }
 			if (!(obj is Rect)) { return false; }
@@ -267,19 +271,19 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Determines whether this <c>Rect</c> equals another
+		/// Determines whether this <see cref="Rect"/> equals another.
 		/// </summary>
-		/// <param name="other">The <c>Rect</c> to compare to</param>
-		/// <returns><c>true</c> if the <c>Rect</c>s are equal</returns>
+		/// <param name="other">The <see cref="Rect"/> to compare to.</param>
+		/// <returns><c>true</c> if the <see cref="Rect"/>s are equal.</returns>
 		public static bool operator ==(Rect r1, Rect r2) {
 			return r1.Equals(r2);
 		}
 
 		/// <summary>
-		/// Determines whether this <c>Rect</c> does not equal another
+		/// Determines whether this <see cref="Rect"/> does not equal another.
 		/// </summary>
-		/// <param name="other">The <c>Rect</c> to compare to</param>
-		/// <returns><c>true</c> if the <c>Rect</c>s are not equal</returns>
+		/// <param name="other">The <see cref="Rect"/> to compare to.</param>
+		/// <returns><c>true</c> if the <see cref="Rect"/>s are not equal.</returns>
 		public static bool operator !=(Rect r1, Rect r2) {
 			return !r1.Equals(r2);
 		}
@@ -287,10 +291,11 @@ namespace LibBSP {
 		/// <summary>
 		/// Generates a hash code for this instance based on instance data.
 		/// </summary>
-		/// <returns>The hash code for this instance</returns>
+		/// <returns>The hash code for this instance.</returns>
 		public override int GetHashCode() {
 			return position.GetHashCode() ^ size.GetHashCode();
 		}
+		#endregion
 
 	}
 }

@@ -34,12 +34,12 @@ namespace LibBSP {
 		public MAPDisplacement displacement;
 
 		/// <summary>
-		/// Creates a new empty <c>MAPBrushSide</c> object. Internal data will have to be set manually.
+		/// Creates a new empty <see cref="MAPBrushSide"/> object. Internal data will have to be set manually.
 		/// </summary>
 		public MAPBrushSide() { }
 
 		/// <summary>
-		/// Constructs a <c>MAPBrushSide</c> object using the provided <c>string</c> array as the data.
+		/// Constructs a <see cref="MAPBrushSide"/> object using the provided <c>string</c> array as the data.
 		/// </summary>
 		/// <param name="lines">Data to parse.</param>
 		public MAPBrushSide(string[] lines) {

@@ -15,19 +15,19 @@ namespace LibBSP {
 	/// <summary>
 	/// Holds all data for a Cubemap from Source engine.
 	/// </summary>
-	public struct SourceCubemap {
+	public struct Cubemap {
 
 		public Vector3 origin { get; private set; }
 		public int size { get; private set; }
 
 		/// <summary>
-		/// Creates a new <c>SourceCubemap</c> object from a <c>byte</c> array.
+		/// Creates a new <see cref="Cubemap"/> object from a <c>byte</c> array.
 		/// </summary>
-		/// <param name="data"><c>byte</c> array to parse</param>
-		/// <param name="type">The map type</param>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype</exception>
-		public SourceCubemap(byte[] data, MapType type) : this() {
+		/// <param name="data"><c>byte</c> array to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
+		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
+		public Cubemap(byte[] data, MapType type) : this() {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -54,14 +54,14 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <c>SourceCubemap</c> objects.
+		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <see cref="Cubemap"/> objects.
 		/// </summary>
-		/// <param name="data">The data to parse</param>
-		/// <param name="type">The map type</param>
-		/// <returns>A <c>List</c> of <c>SourceCubemap</c> objects</returns>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype</exception>
-		public static List<SourceCubemap> LumpFactory(byte[] data, MapType type) {
+		/// <param name="data">The data to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <returns>A <c>List</c> of <see cref="Cubemap"/> objects.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
+		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
+		public static List<Cubemap> LumpFactory(byte[] data, MapType type) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -86,11 +86,11 @@ namespace LibBSP {
 				}
 			}
 			int offset = 0;
-			List<SourceCubemap> lump = new List<SourceCubemap>(data.Length / structLength);
+			List<Cubemap> lump = new List<Cubemap>(data.Length / structLength);
 			byte[] bytes = new byte[structLength];
 			for (int i = 0; i < data.Length / structLength; ++i) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
-				lump.Add(new SourceCubemap(bytes, type));
+				lump.Add(new Cubemap(bytes, type));
 				offset += structLength;
 			}
 			return lump;
@@ -99,8 +99,8 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the index for this lump in the BSP file for a specific map format.
 		/// </summary>
-		/// <param name="type">The map type</param>
-		/// <returns>Index for this lump, or -1 if the format doesn't have this lump</returns>
+		/// <param name="type">The map type.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
 		public static int GetIndexForLump(MapType type) {
 			switch (type) {
 				case MapType.Vindictus:

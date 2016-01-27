@@ -2,28 +2,28 @@ using System;
 using System.Collections.Generic;
 
 namespace LibBSP {
+	/// <summary>
+	/// Enum containing known game lumps.
+	/// </summary>
 	public enum GameLumpType : int {
+		hlpd = 1685089384,
+		tlpd = 1685089396,
+		prpd = 1685090928,
 		sprp = 1936749168,
+
 	}
 
 	/// <summary>
 	/// Class containing the identification and information for the various Game Lumps in Source
 	/// engine BSPs. The only one we're really concerned with is the Static Props.
 	/// </summary>
-	public class GameLump : Dictionary<GameLumpType, GameLump.GameLumpInfo> {
-
-		public struct GameLumpInfo {
-			public ushort flags;
-			public ushort version;
-			public int offset;
-			public int length;
-		}
+	public class GameLump : Dictionary<GameLumpType, LumpInfo> {
 
 		private byte[] _rawData;
 		private int _gameLumpOffset;
 
 		/// <summary>
-		/// Byte array representing the raw data read from the BSP for the game lump
+		/// Byte array representing the raw data read from the BSP for the game lump.
 		/// </summary>
 		public byte[] rawData {
 			get {
@@ -32,7 +32,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// The amount to subtract from all the <c>GameLumpInfo.offset</c> values to find the offset relative to the start of the Game Lump data. May be 0.
+		/// The amount to subtract from all the <see cref="LumpInfo.offset"/> values to find the offset relative to the start of the Game Lump data. May be 0.
 		/// </summary>
 		public int gameLumpOffset {
 			get {
@@ -41,13 +41,13 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Creates a new <c>GameLump</c> object by parsing a <c>byte</c> array into a <c>Dictionary</c> of <c>GameLumpInfo</c> objects.
+		/// Creates a new <see cref="GameLump"/> object by parsing a <c>byte</c> array into a <c>Dictionary</c> of <see cref="LumpInfo"/> objects.
 		/// These objects contain offsets, lengths and versions of the GameLump lumps.
 		/// </summary>
-		/// <param name="data">The data to parse</param>
-		/// <param name="type">The map type</param>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype</exception>
+		/// <param name="data">The data to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
+		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
 		public GameLump(byte[] data, MapType type) {
 			if (data == null) {
 				throw new ArgumentNullException();
@@ -84,13 +84,14 @@ namespace LibBSP {
 				int lowestLumpOffset = Int32.MaxValue;
 
 				for (int i = 0; i < numGameLumps; ++i) {
-					GameLumpInfo info = new GameLumpInfo {
+					LumpInfo info = new LumpInfo {
+						ident = BitConverter.ToInt32(data, (i * structLength) + 4),
 						flags = BitConverter.ToUInt16(data, (i * structLength) + 8),
 						version = BitConverter.ToUInt16(data, (i * structLength) + 10),
 						offset = BitConverter.ToInt32(data, (i * structLength) + 12),
 						length = BitConverter.ToInt32(data, (i * structLength) + 16),
 					};
-					this[(GameLumpType)BitConverter.ToInt32(data, (i * structLength) + 4)] = info;
+					this[(GameLumpType)info.ident] = info;
 
 					if (info.offset < lowestLumpOffset) {
 						lowestLumpOffset = info.offset;
@@ -103,11 +104,11 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Passes a <c>byte</c> array into the constructor for <c>GameLump</c>.
+		/// Passes a <c>byte</c> array into the constructor for <see cref="GameLump"/>.
 		/// </summary>
-		/// <param name="data">The data to parse</param>
-		/// <param name="type">The map type</param>
-		/// <returns>A new <c>GameLump</c> object</returns>
+		/// <param name="data">The data to parse.</param>
+		/// <param name="type">The map type.</param>
+		/// <returns>A new <see cref="GameLump"/> object.</returns>
 		/// <remarks>This is only here for consistency with the other lump structures.</remarks>
 		public static GameLump LumpFactory(byte[] data, MapType type) {
 			return new GameLump(data, type);
@@ -116,8 +117,8 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the index for this lump in the BSP file for a specific map format.
 		/// </summary>
-		/// <param name="type">The map type</param>
-		/// <returns>Index for this lump, or -1 if the format doesn't have this lump</returns>
+		/// <param name="type">The map type.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
 		public static int GetIndexForLump(MapType type) {
 			switch (type) {
 				case MapType.Vindictus:
