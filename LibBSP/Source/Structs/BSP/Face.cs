@@ -215,6 +215,7 @@ namespace LibBSP {
 					structLength = 104;
 					break;
 				}
+				case MapType.FAKK:
 				case MapType.MOHAA: {
 					structLength = 108;
 					break;
