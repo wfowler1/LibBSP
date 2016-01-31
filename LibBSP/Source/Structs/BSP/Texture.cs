@@ -46,7 +46,6 @@ namespace LibBSP {
 			mask = "ignore";
 			flags = 0;
 			contents = 0;
-			texAxes = new TextureInfo();
 			switch (type) {
 				case MapType.Quake:
 				case MapType.Nightfire: {

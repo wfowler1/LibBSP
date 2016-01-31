@@ -18,7 +18,7 @@ namespace LibBSP {
 	/// Some BSP formats lack this lump (or the information is contained in a
 	/// different lump) so their cases will be left out.
 	/// </summary>
-	public struct TextureInfo {
+	public class TextureInfo {
 
 		public const int S = 0;
 		public const int T = 1;
@@ -46,7 +46,7 @@ namespace LibBSP {
 		/// <param name="type">The map type.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
 		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
-		public TextureInfo(byte[] data, MapType type) : this() {
+		public TextureInfo(byte[] data, MapType type) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -102,7 +102,7 @@ namespace LibBSP {
 		/// <param name="TShift">The texture shift on the T axis.</param>
 		/// <param name="flags">The flags for this <see cref="TextureInfo"/>.</param>
 		/// <param name="texture">Index into the texture list for the texture this <see cref="TextureInfo"/> uses.</param>
-		public TextureInfo(Vector3 s, float SShift, Vector3 t, float TShift, int flags, int texture) : this() {
+		public TextureInfo(Vector3 s, float SShift, Vector3 t, float TShift, int flags, int texture) {
 			axes = new Vector3[2];
 			axes[S] = s;
 			axes[T] = t;
