@@ -16,7 +16,7 @@ namespace LibBSP {
 	/// <summary>
 	/// Class containing all data necessary to render a displacement from Source engine.
 	/// </summary>
-	public class MAPDisplacement {
+	[Serializable] public class MAPDisplacement {
 
 		public int power;
 		public Vector3 start;

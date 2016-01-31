@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Runtime.Serialization;
 #if UNITY
 using UnityEngine;
 #endif
@@ -18,7 +19,7 @@ namespace LibBSP {
 	/// <summary>
 	/// Class containing all data for a single <see cref="Entity"/>, including attributes, Source Entity I/O connections and solids.
 	/// </summary>
-	[Serializable] public class Entity : Dictionary<string, string>, IComparable, IComparable<Entity> {
+	[Serializable] public class Entity : Dictionary<string, string>, IComparable, IComparable<Entity>, ISerializable {
 
 		public const char ConnectionMemberSeparater = (char)0x1B;
 
@@ -142,7 +143,7 @@ namespace LibBSP {
 				if (ContainsKey(key)) {
 					return base[key];
 				} else {
-					return string.Empty;
+					return "";
 				}
 			}
 			set { base[key] = value; }
@@ -246,6 +247,16 @@ namespace LibBSP {
 
 				Add(current);
 			}
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Entity"/> class with serialized data.
+		/// </summary>
+		/// <param name="info">A <c>SerializationInfo</c> object containing the information required to serialize the <see cref="Entity"/>.</param>
+		/// <param name="context">A <c>StreamingContext</c> structure containing the source and destination of the serialized stream associated with the <see cref="Entity"/>.</param>
+		protected Entity(SerializationInfo info, StreamingContext context) : base(info, context) {
+			connections = (List<EntityConnection>)info.GetValue("connections", typeof(List<EntityConnection>));
+			brushes = (List<MAPBrush>)info.GetValue("brushes", typeof(List<MAPBrush>));
 		}
 
 		/// <summary>
@@ -457,6 +468,7 @@ namespace LibBSP {
 			return new Vector4(results[0], results[1], results[2], results[3]);
 		}
 
+		#region IComparable
 		/// <summary>
 		/// Compares this <see cref="Entity"/> to another object. First "classname" attributes are compared, then "targetname".
 		/// Attributes are compared alphabetically. Targetnames are only compared if classnames match.
@@ -484,6 +496,22 @@ namespace LibBSP {
 			int firstTry = className.CompareTo(other.className);
 			return firstTry != 0 ? firstTry : name.CompareTo(other.name);
 		}
+		#endregion
+
+		#region ISerializable
+		/// <summary>
+		/// Implements the <c>ISerializable</c> interface and returns the data needed
+		/// to serialize the <see cref="Entity"> instance.
+		/// </summary>
+		/// <param name="info">A <c>SerializationInfo</c> object that contains the information required to serialize the <see cref="Entity"> instance.</param>
+		/// <param name="context">A <c>StreamingContext</c> structure that contains the source and destination of the serialized stream associated with the <see cref="Entity"/> instance.</param>
+		public override void GetObjectData(SerializationInfo info, StreamingContext context) {
+			base.GetObjectData(info, context);
+			info.AddValue("connections", connections, typeof(List<EntityConnection>));
+			info.AddValue("brushes", brushes, typeof(List<MAPBrush>));
+
+		}
+		#endregion
 
 		/// <summary>
 		/// Factory method for an <see cref="Entities"/> object from a <c>byte</c> array.
@@ -549,7 +577,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Struct containing the fields necessary for Source entity I/O.
 		/// </summary>
-		public struct EntityConnection {
+		[Serializable] public struct EntityConnection {
 			public string name;
 			public string target;
 			public string action;

@@ -2,13 +2,14 @@
 #define UNITY
 #endif
 
+using System;
 using System.Collections.Generic;
 
 namespace LibBSP {
 	/// <summary>
 	/// Class containing all data for a single brush, including side definitions or a patch definition.
 	/// </summary>
-	public class MAPBrush {
+	[Serializable] public class MAPBrush {
 
 		public List<MAPBrushSide> sides = new List<MAPBrushSide>(6);
 		public MAPPatch patch;

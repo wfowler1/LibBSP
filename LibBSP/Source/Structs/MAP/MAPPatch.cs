@@ -18,7 +18,7 @@ namespace LibBSP {
 	/// <summary>
 	/// Class containing all data necessary to render a Bezier patch.
 	/// </summary>
-	public class MAPPatch {
+	[Serializable] public class MAPPatch {
 
 		public UIVertex[] points;
 		public Vector2 dims;

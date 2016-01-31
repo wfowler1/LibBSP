@@ -5,7 +5,7 @@ namespace LibBSP {
 	/// <summary>
 	/// Class representing a group of <see cref="Entity"/> objects. Contains helpful methods to handle Entities in the <c>List</c>.
 	/// </summary>
-	public class Entities : List<Entity> {
+	[Serializable] public class Entities : List<Entity> {
 
 		/// <summary>
 		/// Initializes a new instance of an <see cref="Entities"/> object copying a passed <c>IEnumerable</c> of <see cref="Entity"/> objects.

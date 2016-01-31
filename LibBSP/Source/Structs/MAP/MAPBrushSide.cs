@@ -15,7 +15,7 @@ namespace LibBSP {
 	/// <summary>
 	/// Class containing data for a brush side. Please note vertices must be set manually or generated through CSG.
 	/// </summary>
-	public class MAPBrushSide {
+	[Serializable] public class MAPBrushSide {
 
 		public Vector3[] vertices;
 		public Plane plane;
