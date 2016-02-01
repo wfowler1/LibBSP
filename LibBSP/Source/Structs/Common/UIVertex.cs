@@ -17,10 +17,10 @@ namespace LibBSP {
 	using Vector4 = Vector4d;
 #endif
 	/// <summary>
-	/// Replacement UIVertex struct for Unity versions before 4.6, and standalone projects.
+	/// Replacement <c>UIVertex</c> struct for Unity versions before 4.6, and standalone projects.
 	/// </summary>
-	/// <remarks>4.5 had UIVertex but the implementation was incomplete.</remarks>
-	public struct UIVertex {
+	/// <remarks>Unity 4.5 had UIVertex but the implementation was incomplete.</remarks>
+	[Serializable] public struct UIVertex {
 		public Color32 color;
 		public Vector3 normal;
 		public Vector3 position;
@@ -28,6 +28,9 @@ namespace LibBSP {
 		public Vector2 uv0;
 		public Vector2 uv1;
 
+		/// <summary>
+		/// Simple UIVertex with sensible settings.
+		/// </summary>
 		public static UIVertex simpleVert {
 			get {
 				return new UIVertex {
