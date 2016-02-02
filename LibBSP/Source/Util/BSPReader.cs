@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 
@@ -7,8 +8,10 @@ namespace LibBSP {
 	/// Handles reading of a BSP file on-demand.
 	/// </summary>
 	public class BSPReader {
+		private FileInfo bspFile;
 		private FileStream stream;
 		private BinaryReader binaryReader;
+		private Dictionary<int, FileInfo> lumpFiles = null;
 
 		private bool _bigEndian = false;
 
@@ -30,6 +33,7 @@ namespace LibBSP {
 			if (!File.Exists(file.FullName)) {
 				throw new FileNotFoundException("Unable to open BSP file; file " + file.FullName + " not found.");
 			} else {
+				this.bspFile = file;
 				this.stream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read);
 				this.binaryReader = new BinaryReader(this.stream);
 			}
@@ -94,10 +98,63 @@ namespace LibBSP {
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Vindictus:
 				case MapType.DMoMaM: {
+					if (lumpFiles == null) {
+						LoadLumpFiles();
+					}
+					if (lumpFiles.ContainsKey(index)) { return ReadLumpFile(index); }
 					return ReadLumpFromOffsetLengthPairAtOffset(8 + (16 * index), version);
 				}
 			}
 			return new byte[0];
+		}
+
+		/// <summary>
+		/// Loads any lump files associated with the BSP.
+		/// </summary>
+		private void LoadLumpFiles() {
+			lumpFiles = new Dictionary<int, FileInfo>();
+			// Scan the BSP's directory for lump files
+			DirectoryInfo dir = bspFile.Directory;
+			List<FileInfo> files = dir.GetFiles(bspFile.Name.Substring(0, bspFile.Name.Length - 4) + "_?_*.lmp").ToList();
+			// Sort the list by the number on the file
+			files.Sort((f1, f2) => {
+				int startIndex = bspFile.Name.Length - 1;
+				int f1EndIndex = f1.Name.LastIndexOf('.');
+				int f2EndIndex = f2.Name.LastIndexOf('.');
+				int f1Position = Int32.Parse(f1.Name.Substring(startIndex, f1EndIndex - startIndex));
+				int f2Position = Int32.Parse(f2.Name.Substring(startIndex, f2EndIndex - startIndex));
+				return f1Position - f2Position;
+			});
+			// Read the files in order. The last file in the list for a specific lump will replace that lump.
+			foreach (FileInfo file in files) {
+				FileStream fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read);
+				BinaryReader br = new BinaryReader(fs);
+				fs.Seek(4, SeekOrigin.Begin);
+				int lumpIndex = BitConverter.ToInt32(br.ReadBytes(4), 0);
+				lumpFiles[lumpIndex] = file;
+				br.Dispose();
+				fs.Dispose();
+			}
+		}
+
+		/// <summary>
+		/// Returns the data contained in the lump file for the lump <paramref name="index"/>.
+		/// </summary>
+		/// <param name="index">Index of the lump to get data from the lump file.</param>
+		/// <returns>The lump data in the lump file.</returns>
+		private byte[] ReadLumpFile(int index) {
+			FileInfo file = lumpFiles[index];
+			FileStream fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read);
+			BinaryReader br = new BinaryReader(fs);
+			fs.Seek(0, SeekOrigin.Begin);
+			byte[] input = br.ReadBytes(20);
+			int offset = BitConverter.ToInt32(input, 0);
+			int length = BitConverter.ToInt32(input, 12);
+			fs.Seek(offset, SeekOrigin.Begin);
+			byte[] output = br.ReadBytes(length);
+			br.Dispose();
+			fs.Dispose();
+			return output;
 		}
 
 		/// <summary>
