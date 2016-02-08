@@ -59,6 +59,7 @@ namespace LibBSP {
 					Vector3 v1 = new Vector3(Single.Parse(tokens[1]), Single.Parse(tokens[2]), Single.Parse(tokens[3]));
 					Vector3 v2 = new Vector3(Single.Parse(tokens[6]), Single.Parse(tokens[7]), Single.Parse(tokens[8]));
 					Vector3 v3 = new Vector3(Single.Parse(tokens[11]), Single.Parse(tokens[12]), Single.Parse(tokens[13]));
+					vertices = new Vector3[] { v1, v2, v3 };
 					plane = new Plane(v1, v2, v3);
 					texture = tokens[15];
 					// GearCraft
