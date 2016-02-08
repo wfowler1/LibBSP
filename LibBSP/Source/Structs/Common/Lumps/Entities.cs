@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 
 namespace LibBSP {
@@ -25,9 +26,17 @@ namespace LibBSP {
 		public Entities() : base() { }
 
 		/// <summary>
+		/// Initializes a new <see cref="Entities"/> object, parsing all the bytes in the passed <paramref name="file"/>.
+		/// </summary>
+		/// <param name="file">The file to read.</param>
+		/// <param name="type">The <see cref="MapType"/> of the source map.</param>
+		public Entities(FileInfo file, MapType type) : this(File.ReadAllBytes(file.FullName), type) { }
+
+		/// <summary>
 		/// Initializes a new <see cref="Entities"/> object, and parses the passed <c>byte</c> array into the <c>List</c>.
 		/// </summary>
 		/// <param name="data"><c>Byte</c>s read from a file.</param>
+		/// <param name="type">The <see cref="MapType"/> of the source map.</param>
 		public Entities(byte[] data, MapType type) : base() {
 			// Keep track of whether or not we're currently in a set of quotation marks.
 			// I came across a map where the idiot map maker used { and } within a value. This broke the code before.
