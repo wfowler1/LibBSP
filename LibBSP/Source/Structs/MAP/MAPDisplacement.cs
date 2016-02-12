@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
 #if UNITY
 using UnityEngine;
 #endif
@@ -17,6 +18,8 @@ namespace LibBSP {
 	/// Class containing all data necessary to render a displacement from Source engine.
 	/// </summary>
 	[Serializable] public class MAPDisplacement {
+
+		private static IFormatProvider _format = CultureInfo.CreateSpecificCulture("en-US");
 
 		public int power;
 		public Vector3 start;
@@ -82,7 +85,7 @@ namespace LibBSP {
 						}
 						case "startposition": {
 							string[] point = tokens[1].Substring(1, tokens[1].Length - 2).Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-							start = new Vector3(Single.Parse(point[0]), Single.Parse(point[1]), Single.Parse(point[2]));
+							start = new Vector3(Single.Parse(point[0], _format), Single.Parse(point[1], _format), Single.Parse(point[2], _format));
 							break;
 						}
 					}
@@ -116,9 +119,9 @@ namespace LibBSP {
 
 			foreach (int i in normalsTokens.Keys) {
 				for (int j = 0; j < normalsTokens[i].Length / 3; j++) {
-					normals[i][j] = new Vector3(Single.Parse(normalsTokens[i][j * 3]), Single.Parse(normalsTokens[i][(j * 3) + 1]), Single.Parse(normalsTokens[i][(j * 3) + 2]));
-					distances[i][j] = Single.Parse(distancesTokens[i][j]);
-					alphas[i][j] = Single.Parse(alphasTokens[i][j]);
+					normals[i][j] = new Vector3(Single.Parse(normalsTokens[i][j * 3], _format), Single.Parse(normalsTokens[i][(j * 3) + 1], _format), Single.Parse(normalsTokens[i][(j * 3) + 2], _format));
+					distances[i][j] = Single.Parse(distancesTokens[i][j], _format);
+					alphas[i][j] = Single.Parse(alphasTokens[i][j], _format);
 				}
 			}
 

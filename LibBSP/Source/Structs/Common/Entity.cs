@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.Serialization;
+using System.Globalization;
 #if UNITY
 using UnityEngine;
 #endif
@@ -20,6 +21,8 @@ namespace LibBSP {
 	/// Class containing all data for a single <see cref="Entity"/>, including attributes, Source Entity I/O connections and solids.
 	/// </summary>
 	[Serializable] public class Entity : Dictionary<string, string>, IComparable, IComparable<Entity>, ISerializable {
+
+		private static IFormatProvider _format = CultureInfo.CreateSpecificCulture("en-US");
 
 		public const char ConnectionMemberSeparater = (char)0x1B;
 
@@ -334,7 +337,7 @@ namespace LibBSP {
 							target = connection[0],
 							action = connection[1],
 							param = connection[2],
-							delay = Double.Parse(connection[3]),
+							delay = Double.Parse(connection[3], _format),
 							fireOnce = Int32.Parse(connection[4]),
 							unknown0 = connection.Length > 5 ? connection[5] : "",
 							unknown1 = connection.Length > 6 ? connection[6] : "",
@@ -361,7 +364,7 @@ namespace LibBSP {
 			if (connections.Count > 0) {
 				output.Append("connections\n{\n");
 				foreach (EntityConnection c in connections) {
-					output.Append(string.Format("\"{0}\" \"{1},{2},{3},{4},{5},{6},{7}\"\n", c.name, c.target, c.action, c.param, c.delay, c.fireOnce, c.unknown0, c.unknown1));
+					output.Append(string.Format("\"{0}\" \"{1},{2},{3},{4},{5},{6},{7}\"\n", c.name, c.target, c.action, c.param, c.delay.ToString(_format), c.fireOnce, c.unknown0, c.unknown1));
 				}
 				output.Append("}\n");
 			}
@@ -421,7 +424,7 @@ namespace LibBSP {
 		/// <returns>The numeric value of the value corresponding to <paramref name="key"/>.</returns>
 		public float GetFloat(string key, float? failDefault = null) {
 			try {
-				return Single.Parse(this[key]);
+				return Single.Parse(this[key], _format);
 			} catch (Exception e) {
 				if (!failDefault.HasValue) {
 					throw e;
@@ -439,7 +442,7 @@ namespace LibBSP {
 		/// <returns>The numeric value of the value corresponding to <paramref name="key"/>.</returns>
 		public int GetInt(string key, int? failDefault = null) {
 			try {
-				return Int32.Parse(this[key]);
+				return Int32.Parse(this[key], _format);
 			} catch (Exception e) {
 				if (!failDefault.HasValue) {
 					throw e;
@@ -459,7 +462,7 @@ namespace LibBSP {
 				string[] nums = this[key].Split(' ');
 				for (int i = 0; i < results.Length && i < nums.Length; ++i) {
 					try {
-						results[i] = System.Single.Parse(nums[i]);
+						results[i] = Single.Parse(nums[i], _format);
 					} catch {
 						results[i] = 0;
 					}
