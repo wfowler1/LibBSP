@@ -56,7 +56,6 @@ namespace LibBSP {
 
 			int structLength = 0;
 			switch (type) {
-				case MapType.Vindictus:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Source17:
 				case MapType.Source18:
@@ -69,6 +68,7 @@ namespace LibBSP {
 					structLength = 16;
 					break;
 				}
+				case MapType.Vindictus:
 				case MapType.DMoMaM: {
 					structLength = 20;
 					break;
@@ -84,12 +84,28 @@ namespace LibBSP {
 				int lowestLumpOffset = Int32.MaxValue;
 
 				for (int i = 0; i < numGameLumps; ++i) {
+					int ident = BitConverter.ToInt32(data, (i * structLength) + 4);
+					int flags;
+					int version;
+					int offset;
+					int length;
+					if (type == MapType.Vindictus) {
+						flags = BitConverter.ToInt32(data, (i * structLength) + 8);
+						version = BitConverter.ToInt32(data, (i * structLength) + 12);
+						offset = BitConverter.ToInt32(data, (i * structLength) + 16);
+						length = BitConverter.ToInt32(data, (i * structLength) + 20);
+					} else {
+						flags = BitConverter.ToUInt16(data, (i * structLength) + 8);
+						version = BitConverter.ToUInt16(data, (i * structLength) + 10);
+						offset = BitConverter.ToInt32(data, (i * structLength) + 12);
+						length = BitConverter.ToInt32(data, (i * structLength) + 16);
+					}
 					LumpInfo info = new LumpInfo {
-						ident = BitConverter.ToInt32(data, (i * structLength) + 4),
-						flags = BitConverter.ToUInt16(data, (i * structLength) + 8),
-						version = BitConverter.ToUInt16(data, (i * structLength) + 10),
-						offset = BitConverter.ToInt32(data, (i * structLength) + 12),
-						length = BitConverter.ToInt32(data, (i * structLength) + 16),
+						ident = ident,
+						flags = flags,
+						version = version,
+						offset = offset,
+						length = length,
 					};
 					this[(GameLumpType)info.ident] = info;
 
