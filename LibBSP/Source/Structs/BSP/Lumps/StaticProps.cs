@@ -16,7 +16,7 @@ namespace LibBSP {
 		/// <param name="type">Format identifier.</param>
 		/// <param name="version">Version of static prop lump this is.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
-		public StaticProps(byte[] data, MapType type, int version) {
+		public StaticProps(byte[] data, MapType type, int version = 0) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}

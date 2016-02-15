@@ -28,9 +28,10 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data"><c>byte</c> array to parse.</param>
 		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of this lump.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
 		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
-		public DisplacementInfo(byte[] data, MapType type) : this() {
+		public DisplacementInfo(byte[] data, MapType type, int version = 0) : this() {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -78,10 +79,11 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
 		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of this lump.</param>
 		/// <returns>A <c>List</c> of <see cref="DisplacementInfo"/> objects.</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
 		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
-		public static List<DisplacementInfo> LumpFactory(byte[] data, MapType type) {
+		public static List<DisplacementInfo> LumpFactory(byte[] data, MapType type, int version = 0) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -119,7 +121,7 @@ namespace LibBSP {
 			byte[] bytes = new byte[structLength];
 			for (int i = 0; i < data.Length / structLength; ++i) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
-				lump.Add(new DisplacementInfo(bytes, type));
+				lump.Add(new DisplacementInfo(bytes, type, version));
 				offset += structLength;
 			}
 			return lump;

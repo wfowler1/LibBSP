@@ -71,12 +71,13 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data"><c>byte</c> array to parse.</param>
 		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of this lump.</param>
 		/// <returns>The resulting <see cref="UIVertex"/> object.</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was null.</exception>
 		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
 		/// <remarks><see cref="UIVertex"/> has no constructor, so the object must be initialized field-by-field. Even if it
 		/// did have a constructor, the way data needs to be read wouldn't allow use of it.</remarks>
-		public static UIVertex CreateVertex(byte[] data, MapType type) {
+		public static UIVertex CreateVertex(byte[] data, MapType type, int version = 0) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -135,12 +136,13 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
 		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of this lump.</param>
 		/// <returns>A <c>List</c> of <see cref="UIVertex"/> objects.</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
 		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
 		/// <remarks>This function goes here since I can't put it into Unity's <c>UIVertex</c> class, and so I can't
 		/// depend on having a constructor taking a byte array.</remarks>
-		public static List<UIVertex> LumpFactory(byte[] data, MapType type) {
+		public static List<UIVertex> LumpFactory(byte[] data, MapType type, int version = 0) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -187,7 +189,7 @@ namespace LibBSP {
 			byte[] bytes = new byte[structLength];
 			for (int i = 0; i < data.Length / structLength; ++i) {
 				Array.Copy(data, i * structLength, bytes, 0, structLength);
-				lump.Add(CreateVertex(bytes, type));
+				lump.Add(CreateVertex(bytes, type, version));
 			}
 			return lump;
 		}

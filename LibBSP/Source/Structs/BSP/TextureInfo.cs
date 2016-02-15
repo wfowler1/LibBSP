@@ -44,9 +44,10 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data"><c>byte</c> array to parse.</param>
 		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of this lump.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
 		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
-		public TextureInfo(byte[] data, MapType type) {
+		public TextureInfo(byte[] data, MapType type, int version = 0) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -142,10 +143,11 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
 		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of this lump.</param>
 		/// <returns>A <c>List</c> of <see cref="TextureInfo"/> objects.</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was null.</exception>
 		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
-		public static List<TextureInfo> LumpFactory(byte[] data, MapType type) {
+		public static List<TextureInfo> LumpFactory(byte[] data, MapType type, int version = 0) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -184,7 +186,7 @@ namespace LibBSP {
 			byte[] bytes = new byte[structLength];
 			for (int i = 0; i < data.Length / structLength; ++i) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
-				lump.Add(new TextureInfo(bytes, type));
+				lump.Add(new TextureInfo(bytes, type, version));
 			}
 			return lump;
 		}

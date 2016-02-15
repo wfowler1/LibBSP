@@ -232,12 +232,13 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
 		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of this lump.</param>
 		/// <returns>A <c>List</c> of <see cref="Plane"/> objects.</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null.</exception>
 		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
 		/// <remarks>This function goes here since it can't go into Unity's Plane class, and so can't depend
 		/// on having a constructor taking a byte array.</remarks>
-		public static List<Plane> LumpFactory(byte[] data, MapType type) {
+		public static List<Plane> LumpFactory(byte[] data, MapType type, int version = 0) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}

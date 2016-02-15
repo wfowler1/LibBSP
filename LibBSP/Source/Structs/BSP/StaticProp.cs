@@ -36,7 +36,7 @@ namespace LibBSP {
 		/// <param name="version">The version of static prop lump this object is a member of.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
 		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
-		public StaticProp(byte[] data, MapType type, int version) : this() {
+		public StaticProp(byte[] data, MapType type, int version = 0) : this() {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -110,7 +110,7 @@ namespace LibBSP {
 		/// <param name="type">The map type.</param>
 		/// <param name="version">The version of the Static Prop lump.</param>
 		/// <returns>A <see cref="StaticProps"/> object.</returns>
-		public static StaticProps LumpFactory(byte[] data, MapType type, int version) {
+		public static StaticProps LumpFactory(byte[] data, MapType type, int version = 0) {
 			return new StaticProps(data, type, version);
 		}
 	}

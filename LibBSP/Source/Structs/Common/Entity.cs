@@ -156,7 +156,9 @@ namespace LibBSP {
 		/// Initializes a new instance of an <see cref="Entity"/>, parsing the given <c>byte</c> array into an <see cref="Entity"/> structure.
 		/// </summary>
 		/// <param name="data">Array to parse.</param>
-		public Entity(byte[] data, MapType type) : this(Encoding.ASCII.GetString(data).Split('\n')) { }
+		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of this lump.</param>
+		public Entity(byte[] data, MapType type, int version = 0) : this(Encoding.ASCII.GetString(data).Split('\n')) { }
 
 		/// <summary>
 		/// Initializes a new instance of an <see cref="Entity"/> with the given classname.
@@ -521,8 +523,9 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
 		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of this lump.</param>
 		/// <returns>An <see cref="Entities"/> object, which is a <c>List</c> of <see cref="Entity"/>s.</returns>
-		public static Entities LumpFactory(byte[] data, MapType type) {
+		public static Entities LumpFactory(byte[] data, MapType type, int version = 0) {
 			return new Entities(data, type);
 		}
 
