@@ -69,6 +69,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Vindictus: {
 					texture = BitConverter.ToInt32(data, 68);
@@ -169,6 +170,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Vindictus: {
 					structLength = 72;
@@ -209,6 +211,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.DMoMaM: {
 					return 6;
 				}

@@ -69,6 +69,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.DMoMaM: {
 					this.displacement = BitConverter.ToInt16(data, 4);
@@ -140,6 +141,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.DMoMaM:
 				case MapType.FAKK: {
@@ -215,6 +217,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.DMoMaM: {
 					return 19;
 				}

@@ -118,6 +118,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.DMoMaM: {
 					plane = BitConverter.ToUInt16(data, 0);
@@ -208,6 +209,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.DMoMaM: {
 					structLength = 56;
@@ -283,6 +285,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.DMoMaM:
 				case MapType.Quake: {
 					return 7;
@@ -317,6 +320,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.DMoMaM: {
 					return 27;
 				}

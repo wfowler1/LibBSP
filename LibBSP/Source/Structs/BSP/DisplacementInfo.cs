@@ -48,6 +48,7 @@ namespace LibBSP {
 				case MapType.Source20:
 				case MapType.Source21:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.DMoMaM: {
 					offset = 136;
@@ -95,6 +96,7 @@ namespace LibBSP {
 				case MapType.Source20:
 				case MapType.Source21:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.DMoMaM: {
 					structLength = 176;
@@ -144,6 +146,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.DMoMaM: {
 					return 26;
 				}

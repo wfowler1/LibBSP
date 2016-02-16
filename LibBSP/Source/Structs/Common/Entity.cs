@@ -546,6 +546,7 @@ namespace LibBSP {
 				case MapType.Nightfire:
 				case MapType.Vindictus:
 				case MapType.TacticalInterventionEncrypted:
+				case MapType.L4D2:
 				case MapType.Source17:
 				case MapType.Source18:
 				case MapType.Source19:

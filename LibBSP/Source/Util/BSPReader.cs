@@ -76,6 +76,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Vindictus:
 				case MapType.DMoMaM: {
