@@ -161,7 +161,7 @@ namespace LibBSP {
 				lumpLength = BitConverter.ToInt32(input, 4);
 				lumpVersion = BitConverter.ToInt32(input, 8);
 				lumpIdent = BitConverter.ToInt32(input, 12);
-			} else if (version == MapType.CoD2) {
+			} else if (version == MapType.CoD || version == MapType.CoD2) {
 				lumpLength = BitConverter.ToInt32(input, 0);
 				lumpOffset = BitConverter.ToInt32(input, 4);
 			} else {
