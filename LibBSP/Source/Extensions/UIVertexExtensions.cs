@@ -170,13 +170,16 @@ namespace LibBSP {
 					structLength = 12;
 					break;
 				}
-				case MapType.STEF2:
 				case MapType.MOHAA:
-				case MapType.STEF2Demo:
 				case MapType.Quake3:
 				case MapType.CoD:
 				case MapType.FAKK: {
 					structLength = 44;
+					break;
+				}
+				case MapType.STEF2:
+				case MapType.STEF2Demo: {
+					structLength = 48;
 					break;
 				}
 				case MapType.Raven: {
