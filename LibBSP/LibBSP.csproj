@@ -82,6 +82,7 @@
     <Compile Include="Source\Structs\Common\Vector2d.cs" />
     <Compile Include="Source\Structs\Common\Vector4d.cs" />
     <Compile Include="Source\Structs\Common\Vector3d.cs" />
+    <Compile Include="Source\Structs\MAP\MAPTerrain.cs" />
     <Compile Include="Source\Util\BSPReader.cs" />
   </ItemGroup>
   <ItemGroup />
