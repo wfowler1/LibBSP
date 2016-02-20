@@ -145,6 +145,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.DMoMaM: {
 					dataType = DataType.UInt16;
 					return 16;
@@ -180,6 +181,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.DMoMaM: {
 					dataType = DataType.Int32;
 					return 13;
@@ -232,6 +234,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.DMoMaM: {
 					dataType = DataType.UInt16;
 					return 17;
@@ -291,6 +294,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.DMoMaM: {
 					dataType = DataType.Int32;
 					return 44;
@@ -318,6 +322,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.DMoMaM: {
 					dataType = DataType.UInt16;
 					return 48;

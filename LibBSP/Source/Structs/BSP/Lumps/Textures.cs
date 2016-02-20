@@ -13,9 +13,10 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
 		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of this lump.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
 		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
-		public Textures(byte[] data, MapType type) {
+		public Textures(byte[] data, MapType type, int version = 0) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -58,6 +59,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Vindictus:
 				case MapType.DMoMaM: {
@@ -68,7 +70,7 @@ namespace LibBSP {
 							// They are null-terminated strings, of non-constant length (not padded)
 							bytes = new byte[i - offset];
 							Array.Copy(data, offset, bytes, 0, i - offset);
-							Add(new Texture(bytes, type));
+							Add(new Texture(bytes, type, version));
 							offset = i + 1;
 						}
 					}
@@ -80,7 +82,7 @@ namespace LibBSP {
 					byte[] bytes = new byte[structLength];
 					for (int i = 0; i < numElements; ++i) {
 						Array.Copy(data, BitConverter.ToInt32(data, (i + 1) * 4), bytes, 0, structLength);
-						Add(new Texture(bytes, type));
+						Add(new Texture(bytes, type, version));
 					}
 					return;
 				}
@@ -93,7 +95,7 @@ namespace LibBSP {
 				byte[] bytes = new byte[structLength];
 				for (int i = 0; i < data.Length / structLength; ++i) {
 					Array.Copy(data, (i * structLength), bytes, 0, structLength);
-					Add(new Texture(bytes, type));
+					Add(new Texture(bytes, type, version));
 				}
 			}
 		}

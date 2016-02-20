@@ -26,8 +26,9 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data"><c>byte</c> array to parse.</param>
 		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of this lump.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
-		public DisplacementVertex(byte[] data, MapType type) : this() {
+		public DisplacementVertex(byte[] data, MapType type, int version = 0) : this() {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -41,13 +42,14 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
 		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of this lump.</param>
 		/// <returns>A <see cref="DisplacementVertices"/> object.</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
-		public static DisplacementVertices LumpFactory(byte[] data, MapType type) {
+		public static DisplacementVertices LumpFactory(byte[] data, MapType type, int version = 0) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			return new DisplacementVertices(data, type);
+			return new DisplacementVertices(data, type, version);
 		}
 
 		/// <summary>
@@ -67,6 +69,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.DMoMaM: {
 					return 33;
 				}

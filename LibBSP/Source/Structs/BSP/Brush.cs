@@ -17,9 +17,10 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data"><c>byte</c> array to parse.</param>
 		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of this lump.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
 		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
-		public Brush(byte[] data, MapType type) : this() {
+		public Brush(byte[] data, MapType type, int version = 0) : this() {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -40,6 +41,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.Vindictus:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.DMoMaM: {
@@ -88,10 +90,11 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
 		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of this lump.</param>
 		/// <returns>A <c>List</c> of <see cref="Brush"/> objects.</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
 		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
-		public static List<Brush> LumpFactory(byte[] data, MapType type) {
+		public static List<Brush> LumpFactory(byte[] data, MapType type, int version = 0) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -109,6 +112,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Vindictus:
 				case MapType.DMoMaM:
@@ -136,7 +140,7 @@ namespace LibBSP {
 			byte[] bytes = new byte[structLength];
 			for (int i = 0; i < data.Length / structLength; ++i) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
-				lump.Add(new Brush(bytes, type));
+				lump.Add(new Brush(bytes, type, version));
 			}
 			return lump;
 		}
@@ -188,6 +192,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.DMoMaM: {
 					return 18;
 				}

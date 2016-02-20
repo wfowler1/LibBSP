@@ -36,9 +36,10 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data"><c>byte</c> array to parse.</param>
 		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of this lump.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
 		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
-		public Texture(byte[] data, MapType type) : this() {
+		public Texture(byte[] data, MapType type, int version = 0) : this() {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -85,6 +86,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Vindictus:
 				case MapType.DMoMaM: {
@@ -108,9 +110,10 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
 		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of this lump.</param>
 		/// <returns>A <see cref="Textures"/> object.</returns>
-		public static Textures LumpFactory(byte[] data, MapType type) {
-			return new Textures(data, type);
+		public static Textures LumpFactory(byte[] data, MapType type, int version = 0) {
+			return new Textures(data, type, version);
 		}
 
 		/// <summary>
@@ -153,6 +156,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.DMoMaM: {
 					return 43;
 				}

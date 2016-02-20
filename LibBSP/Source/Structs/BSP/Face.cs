@@ -48,9 +48,10 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data"><c>byte</c> array to parse.</param>
 		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of this lump.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
 		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
-		public Face(byte[] data, MapType type) : this() {
+		public Face(byte[] data, MapType type, int version = 0) : this() {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -117,6 +118,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.DMoMaM: {
 					plane = BitConverter.ToUInt16(data, 0);
@@ -135,7 +137,11 @@ namespace LibBSP {
 					numEdges = BitConverter.ToInt32(data, 12);
 					textureScale = BitConverter.ToInt32(data, 16);
 					displacement = BitConverter.ToInt32(data, 20);
-					original = BitConverter.ToInt32(data, 56);
+					if (version == 2) {
+						original = BitConverter.ToInt32(data, 60);
+					} else {
+						original = BitConverter.ToInt32(data, 56);
+					}
 					break;
 				}
 				case MapType.Nightfire: {
@@ -164,10 +170,11 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
 		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of this lump.</param>
 		/// <returns>A <c>List</c> of <see cref="Face"/> objects.</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
 		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
-		public static List<Face> LumpFactory(byte[] data, MapType type) {
+		public static List<Face> LumpFactory(byte[] data, MapType type, int version = 0) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -202,13 +209,18 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.DMoMaM: {
 					structLength = 56;
 					break;
 				}
 				case MapType.Vindictus: {
-					structLength = 72;
+					if (version == 2) {
+						structLength = 76;
+					} else {
+						structLength = 72;
+					}
 					break;
 				}
 				case MapType.Quake3: {
@@ -237,7 +249,7 @@ namespace LibBSP {
 			byte[] bytes = new byte[structLength];
 			for (int i = 0; i < data.Length / structLength; ++i) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
-				lump.Add(new Face(bytes, type));
+				lump.Add(new Face(bytes, type, version));
 			}
 			return lump;
 		}
@@ -273,6 +285,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.DMoMaM:
 				case MapType.Quake: {
 					return 7;
@@ -307,6 +320,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.DMoMaM: {
 					return 27;
 				}

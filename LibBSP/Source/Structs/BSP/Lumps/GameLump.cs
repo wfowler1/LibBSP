@@ -46,9 +46,10 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
 		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of this lump.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
 		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
-		public GameLump(byte[] data, MapType type) {
+		public GameLump(byte[] data, MapType type, int version = 0) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -56,7 +57,6 @@ namespace LibBSP {
 
 			int structLength = 0;
 			switch (type) {
-				case MapType.Vindictus:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Source17:
 				case MapType.Source18:
@@ -65,10 +65,12 @@ namespace LibBSP {
 				case MapType.Source21:
 				case MapType.Source22:
 				case MapType.Source23:
+				case MapType.L4D2:
 				case MapType.Source27: {
 					structLength = 16;
 					break;
 				}
+				case MapType.Vindictus:
 				case MapType.DMoMaM: {
 					structLength = 20;
 					break;
@@ -84,12 +86,28 @@ namespace LibBSP {
 				int lowestLumpOffset = Int32.MaxValue;
 
 				for (int i = 0; i < numGameLumps; ++i) {
+					int lumpIdent = BitConverter.ToInt32(data, (i * structLength) + 4);
+					int lumpFlags;
+					int lumpVersion;
+					int lumpOffset;
+					int lumpLength;
+					if (type == MapType.Vindictus) {
+						lumpFlags = BitConverter.ToInt32(data, (i * structLength) + 8);
+						lumpVersion = BitConverter.ToInt32(data, (i * structLength) + 12);
+						lumpOffset = BitConverter.ToInt32(data, (i * structLength) + 16);
+						lumpLength = BitConverter.ToInt32(data, (i * structLength) + 20);
+					} else {
+						lumpFlags = BitConverter.ToUInt16(data, (i * structLength) + 8);
+						lumpVersion = BitConverter.ToUInt16(data, (i * structLength) + 10);
+						lumpOffset = BitConverter.ToInt32(data, (i * structLength) + 12);
+						lumpLength = BitConverter.ToInt32(data, (i * structLength) + 16);
+					}
 					LumpInfo info = new LumpInfo {
-						ident = BitConverter.ToInt32(data, (i * structLength) + 4),
-						flags = BitConverter.ToUInt16(data, (i * structLength) + 8),
-						version = BitConverter.ToUInt16(data, (i * structLength) + 10),
-						offset = BitConverter.ToInt32(data, (i * structLength) + 12),
-						length = BitConverter.ToInt32(data, (i * structLength) + 16),
+						ident = lumpIdent,
+						flags = lumpFlags,
+						version = lumpVersion,
+						offset = lumpOffset,
+						length = lumpLength,
 					};
 					this[(GameLumpType)info.ident] = info;
 
@@ -108,10 +126,11 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
 		/// <param name="type">The map type.</param>
+		/// <param name="version">The version of this lump.</param>
 		/// <returns>A new <see cref="GameLump"/> object.</returns>
 		/// <remarks>This is only here for consistency with the other lump structures.</remarks>
-		public static GameLump LumpFactory(byte[] data, MapType type) {
-			return new GameLump(data, type);
+		public static GameLump LumpFactory(byte[] data, MapType type, int version = 0) {
+			return new GameLump(data, type, version);
 		}
 
 		/// <summary>
@@ -131,6 +150,7 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.DMoMaM: {
 					return 35;
 				}

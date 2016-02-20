@@ -9,9 +9,7 @@ namespace LibBSP {
 	/// </summary>
 	public class BSPReader {
 		private FileInfo bspFile;
-		private FileStream stream;
-		private BinaryReader binaryReader;
-		private Dictionary<int, FileInfo> lumpFiles = null;
+		private Dictionary<int, LumpInfo> lumpFiles = null;
 
 		private bool _bigEndian = false;
 
@@ -34,22 +32,25 @@ namespace LibBSP {
 				throw new FileNotFoundException("Unable to open BSP file; file " + file.FullName + " not found.");
 			} else {
 				this.bspFile = file;
-				this.stream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read);
-				this.binaryReader = new BinaryReader(this.stream);
 			}
 		}
 
 		/// <summary>
-		/// Reads this lump in the map.
+		/// Gets the information for lump "<paramref name="index"/>" for this BSP file when reading it as "<paramref name="version"/>".
 		/// </summary>
-		/// <param name="index">The index of the lump to get.</param>
-		/// <param name="version">The version of BSP this is.</param>
-		/// <returns>Array of bytes read from the BSP file.</returns>
-		public byte[] ReadLumpNum(int index, MapType version) {
+		/// <param name="index">The numerical index of this lump.</param>
+		/// <param name="version">The type of BSP to interpret the file as.</param>
+		/// <returns>A <see cref="LumpInfo"/> object containing information about the lump.</returns>
+		/// <exception cref="IndexOutOfRandeException">"<paramref name="index"/>" is less than zero, or greater than the number of lumps allowed by "<paramref name="version"/>".</exception>
+		public LumpInfo GetLumpInfo(int index, MapType version) {
+			if (index < 0 || index >= BSP.GetNumLumps(version)) {
+				throw new IndexOutOfRangeException();
+			}
+
 			switch (version) {
 				case MapType.Quake:
 				case MapType.Nightfire: {
-					return ReadLumpFromOffsetLengthPairAtOffset(4 + (8 * index), version);
+					return GetLumpInfoAtOffset(4 + (8 * index), version);
 				}
 				case MapType.Quake2:
 				case MapType.Daikatana:
@@ -57,35 +58,15 @@ namespace LibBSP {
 				case MapType.SoF:
 				case MapType.Quake3:
 				case MapType.Raven:
-				case MapType.CoD: {
-					return ReadLumpFromOffsetLengthPairAtOffset(8 + (8 * index), version);
-				}
+				case MapType.CoD:
 				case MapType.CoD2: {
-					stream.Seek(8 + (8 * index), SeekOrigin.Begin);
-					int temp = binaryReader.ReadInt32();
-					return ReadLump(binaryReader.ReadInt32(), temp, version);
+					return GetLumpInfoAtOffset(8 + (8 * index), version);
 				}
 				case MapType.STEF2:
 				case MapType.STEF2Demo:
 				case MapType.MOHAA:
 				case MapType.FAKK: {
-					return ReadLumpFromOffsetLengthPairAtOffset(12 + (8 * index), version);
-				}
-				case MapType.CoD4: {
-					stream.Seek(8, SeekOrigin.Begin);
-					int numlumps = binaryReader.ReadInt32();
-					int offset = (numlumps * 8) + 12;
-					for (int i = 0; i < numlumps; i++) {
-						int id = binaryReader.ReadInt32();
-						int length = binaryReader.ReadInt32();
-						if (id == index) {
-							return ReadLump(offset, length, version);
-						} else {
-							offset += length;
-							while (offset % 4 != 0) { offset++; }
-						}
-					}
-					break;
+					return GetLumpInfoAtOffset(12 + (8 * index), version);
 				}
 				case MapType.Source17:
 				case MapType.Source18:
@@ -95,24 +76,154 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
+				case MapType.L4D2:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Vindictus:
 				case MapType.DMoMaM: {
 					if (lumpFiles == null) {
 						LoadLumpFiles();
 					}
-					if (lumpFiles.ContainsKey(index)) { return ReadLumpFile(index); }
-					return ReadLumpFromOffsetLengthPairAtOffset(8 + (16 * index), version);
+					if (lumpFiles.ContainsKey(index)) { return lumpFiles[index]; }
+					return GetLumpInfoAtOffset(8 + (16 * index), version);
+				}
+				case MapType.CoD4: {
+					using (FileStream stream = new FileStream(bspFile.FullName, FileMode.Open, FileAccess.Read)) {
+						BinaryReader binaryReader = new BinaryReader(stream);
+						stream.Seek(8, SeekOrigin.Begin);
+						int numlumps = binaryReader.ReadInt32();
+						int offset = (numlumps * 8) + 12;
+						for (int i = 0; i < numlumps; i++) {
+							int id = binaryReader.ReadInt32();
+							int length = binaryReader.ReadInt32();
+							if (id == index) {
+								return new LumpInfo() {
+									offset = offset,
+									length = length
+								};
+							} else {
+								offset += length;
+								while (offset % 4 != 0) { offset++; }
+							}
+						}
+						binaryReader.Close();
+					}
+					return new LumpInfo();
+				}
+				default: {
+					return null;
 				}
 			}
-			return new byte[0];
+		}
+
+		/// <summary>
+		/// Gets the lump information at offset "<paramref name="offset"/>" for this BSP file when reading it as "<paramref name="version"/>".
+		/// </summary>
+		/// <param name="offset">The offset of the lump's information.</param>
+		/// <param name="version">The type of BSP to interpret the file as.</param>
+		/// <returns>A <see cref="LumpInfo"/> object containing information about the lump.</returns>
+		private LumpInfo GetLumpInfoAtOffset(int offset, MapType version) {
+			if (bspFile.Length < offset + 16) {
+				return new LumpInfo();
+			}
+			byte[] input;
+			using (FileStream stream = new FileStream(bspFile.FullName, FileMode.Open, FileAccess.Read)) {
+				BinaryReader binaryReader = new BinaryReader(stream);
+				stream.Seek(offset, SeekOrigin.Begin);
+				input = binaryReader.ReadBytes(16);
+				binaryReader.Close();
+			}
+			if (version == MapType.TacticalInterventionEncrypted) {
+				input = XorWithKeyStartingAtIndex(input, offset);
+			}
+
+			int lumpOffset = 0;
+			int lumpLength = 0;
+			int lumpVersion = 0;
+			int lumpIdent = 0;
+			if (version == MapType.L4D2) {
+				lumpVersion = BitConverter.ToInt32(input, 0);
+				lumpOffset = BitConverter.ToInt32(input, 4);
+				lumpLength = BitConverter.ToInt32(input, 8);
+				lumpIdent = BitConverter.ToInt32(input, 12);
+				// TODO: This is awful. Let's rework the enum to have internal ways to check engine forks.
+			} else if (version == MapType.Source17 ||
+						 version == MapType.Source18 ||
+						 version == MapType.Source19 ||
+						 version == MapType.Source20 ||
+						 version == MapType.Source21 ||
+						 version == MapType.Source22 ||
+						 version == MapType.Source23 ||
+						 version == MapType.Source27 ||
+						 version == MapType.Vindictus ||
+						 version == MapType.DMoMaM ||
+						 version == MapType.TacticalInterventionEncrypted) {
+				lumpOffset = BitConverter.ToInt32(input, 0);
+				lumpLength = BitConverter.ToInt32(input, 4);
+				lumpVersion = BitConverter.ToInt32(input, 8);
+				lumpIdent = BitConverter.ToInt32(input, 12);
+			} else if (version == MapType.CoD || version == MapType.CoD2) {
+				lumpLength = BitConverter.ToInt32(input, 0);
+				lumpOffset = BitConverter.ToInt32(input, 4);
+			} else {
+				lumpOffset = BitConverter.ToInt32(input, 0);
+				lumpLength = BitConverter.ToInt32(input, 4);
+			}
+
+			/*if (bigEndian) {
+				byte[] bytes = BitConverter.GetBytes(lumpLength);
+				Array.Reverse(bytes);
+				lumpLength = BitConverter.ToInt32(bytes, 0);
+				bytes = BitConverter.GetBytes(lumpOffset);
+				Array.Reverse(bytes);
+				lumpOffset = BitConverter.ToInt32(bytes, 0);
+			}*/
+
+			return new LumpInfo() {
+				offset = lumpOffset,
+				length = lumpLength,
+				version = lumpVersion,
+				ident = lumpIdent
+			};
+		}
+
+		/// <summary>
+		/// Reads the lump in the BSP file using the information in "<paramref name="info"/>".
+		/// </summary>
+		/// <param name="info">The <see cref="LumpInfo"/> object representing the lump's information.</param>
+		/// <returns>A <c>byte</c> array containing the data from the file for the lump at the offset with the length from "<paramref name="info"/>".</returns>
+		public byte[] ReadLump(LumpInfo info) {
+			if (info.length == 0) { return new byte[0]; }
+			byte[] output;
+
+			if (info.lumpFile != null) {
+				using (FileStream fs = new FileStream(info.lumpFile.FullName, FileMode.Open, FileAccess.Read)) {
+					BinaryReader br = new BinaryReader(fs);
+					fs.Seek(info.offset, SeekOrigin.Begin);
+					output = br.ReadBytes(info.length);
+					br.Close();
+					return output;
+				}
+			}
+
+			using (FileStream stream = new FileStream(bspFile.FullName, FileMode.Open, FileAccess.Read)) {
+				BinaryReader binaryReader = new BinaryReader(stream);
+				stream.Seek(info.offset, SeekOrigin.Begin);
+				output = binaryReader.ReadBytes(info.length);
+				binaryReader.Close();
+			}
+
+			if (key.Length != 0) {
+				output = XorWithKeyStartingAtIndex(output, info.offset);
+			}
+
+			return output;
 		}
 
 		/// <summary>
 		/// Loads any lump files associated with the BSP.
 		/// </summary>
 		private void LoadLumpFiles() {
-			lumpFiles = new Dictionary<int, FileInfo>();
+			lumpFiles = new Dictionary<int, LumpInfo>();
 			// Scan the BSP's directory for lump files
 			DirectoryInfo dir = bspFile.Directory;
 			List<FileInfo> files = dir.GetFiles(bspFile.Name.Substring(0, bspFile.Name.Length - 4) + "_?_*.lmp").ToList();
@@ -127,87 +238,27 @@ namespace LibBSP {
 			});
 			// Read the files in order. The last file in the list for a specific lump will replace that lump.
 			foreach (FileInfo file in files) {
-				FileStream fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read);
-				BinaryReader br = new BinaryReader(fs);
-				fs.Seek(4, SeekOrigin.Begin);
-				int lumpIndex = BitConverter.ToInt32(br.ReadBytes(4), 0);
-				lumpFiles[lumpIndex] = file;
-				br.Dispose();
-				fs.Dispose();
+				using (FileStream fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read)) {
+					BinaryReader br = new BinaryReader(fs);
+					fs.Seek(0, SeekOrigin.Begin);
+					byte[] input = br.ReadBytes(20);
+					int offset = BitConverter.ToInt32(input, 0);
+					int lumpIndex = BitConverter.ToInt32(input, 4);
+					int version = BitConverter.ToInt32(input, 8);
+					int length = BitConverter.ToInt32(input, 12);
+					lumpFiles[lumpIndex] = new LumpInfo() {
+						offset = offset,
+						version = version,
+						length = length,
+						lumpFile = file
+					};
+					br.Close();
+				}
 			}
 		}
 
 		/// <summary>
-		/// Returns the data contained in the lump file for the lump <paramref name="index"/>.
-		/// </summary>
-		/// <param name="index">Index of the lump to get data from the lump file.</param>
-		/// <returns>The lump data in the lump file.</returns>
-		private byte[] ReadLumpFile(int index) {
-			FileInfo file = lumpFiles[index];
-			FileStream fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read);
-			BinaryReader br = new BinaryReader(fs);
-			fs.Seek(0, SeekOrigin.Begin);
-			byte[] input = br.ReadBytes(20);
-			int offset = BitConverter.ToInt32(input, 0);
-			int length = BitConverter.ToInt32(input, 12);
-			fs.Seek(offset, SeekOrigin.Begin);
-			byte[] output = br.ReadBytes(length);
-			br.Dispose();
-			fs.Dispose();
-			return output;
-		}
-
-		/// <summary>
-		/// Returns the lump referenced by the offset/length pair at the specified <paramref name="offset"/>,
-		/// read as two Int32.
-		/// </summary>
-		/// <param name="offset">The byte offset for the offset/length pair.</param>
-		/// <param name="version">The version of BSP this is.</param>
-		/// <returns>Array of bytes read from the BSP file.</returns>
-		private byte[] ReadLumpFromOffsetLengthPairAtOffset(int offset, MapType version) {
-			stream.Seek(offset, SeekOrigin.Begin);
-			byte[] input = binaryReader.ReadBytes(12);
-			if (version == MapType.TacticalInterventionEncrypted) {
-				input = XorWithKeyStartingAtIndex(input, offset);
-			}
-			int lumpOffset;
-			int lumpLength;
-			if (version == MapType.L4D2) {
-				lumpOffset = BitConverter.ToInt32(input, 4);
-				lumpLength = BitConverter.ToInt32(input, 8);
-			} else {
-				lumpOffset = BitConverter.ToInt32(input, 0);
-				lumpLength = BitConverter.ToInt32(input, 4);
-			}
-			/*if (bigEndian) {
-				byte[] bytes = BitConverter.GetBytes(lumpLength);
-				Array.Reverse(bytes);
-				lumpLength = BitConverter.ToInt32(bytes, 0);
-				bytes = BitConverter.GetBytes(lumpOffset);
-				Array.Reverse(bytes);
-				lumpOffset = BitConverter.ToInt32(bytes, 0);
-			}*/
-			return ReadLump(lumpOffset, lumpLength, version);
-		}
-
-		/// <summary>
-		/// Reads the lump <paramref name="length"/> bytes long at <paramref name="offset"/> in the file.
-		/// </summary>
-		/// <param name="offset">Offset to start reading from.</param>
-		/// <param name="length">Length of the lump to read.</param>
-		/// <param name="version">The version of BSP this is.</param>
-		/// <returns>Array of bytes read from the BSP file.</returns>
-		public byte[] ReadLump(int offset, int length, MapType version) {
-			stream.Seek(offset, SeekOrigin.Begin);
-			byte[] input = binaryReader.ReadBytes(length);
-			if (version == MapType.TacticalInterventionEncrypted) {
-				input = XorWithKeyStartingAtIndex(input, offset);
-			}
-			return input;
-		}
-
-		/// <summary>
-		/// Xors the <paramref name="data"/> <c>byte</c> array with the localls stored key <c>byte</c> array, starting at a certain <paramref name="index"/> in the key.
+		/// Xors the <paramref name="data"/> <c>byte</c> array with the locally stored key <c>byte</c> array, starting at a certain <paramref name="index"/> in the key.
 		/// </summary>
 		/// <param name="data">The byte array to Xor.</param>
 		/// <param name="index">The index in the key byte array to start reading from.</param>
@@ -250,213 +301,216 @@ namespace LibBSP {
 		/// <returns>The <see cref="MapType"/> of this BSP, <see cref="MapType.Undefined"/> if it could not be determined.</returns>
 		private MapType GetVersion(bool bigEndian) {
 			MapType current = MapType.Undefined;
-			stream.Seek(0, SeekOrigin.Begin);
-			int data = binaryReader.ReadInt32();
-			if (bigEndian) {
-				byte[] bytes = BitConverter.GetBytes(data);
-				Array.Reverse(bytes);
-				data = BitConverter.ToInt32(bytes, 0);
-			}
-			if (data == 1347633737) {
-				// 1347633737 reads in ASCII as "IBSP"
-				// Versions: CoD, CoD2, CoD4, Quake 2, Daikatana, Quake 3 (RtCW), Soldier of Fortune
-				data = binaryReader.ReadInt32();
+			using (FileStream stream = new FileStream(bspFile.FullName, FileMode.Open, FileAccess.Read)) {
+				BinaryReader binaryReader = new BinaryReader(stream);
+				stream.Seek(0, SeekOrigin.Begin);
+				int data = binaryReader.ReadInt32();
 				if (bigEndian) {
 					byte[] bytes = BitConverter.GetBytes(data);
 					Array.Reverse(bytes);
 					data = BitConverter.ToInt32(bytes, 0);
 				}
-				switch (data) {
-					case 4: {
-						current = MapType.CoD2;
-						break;
+				if (data == 1347633737) {
+					// 1347633737 reads in ASCII as "IBSP"
+					// Versions: CoD, CoD2, CoD4, Quake 2, Daikatana, Quake 3 (RtCW), Soldier of Fortune
+					data = binaryReader.ReadInt32();
+					if (bigEndian) {
+						byte[] bytes = BitConverter.GetBytes(data);
+						Array.Reverse(bytes);
+						data = BitConverter.ToInt32(bytes, 0);
 					}
-					case 22: {
-						current = MapType.CoD4;
-						break;
-					}
-					case 38: {
-						current = MapType.Quake2;
-						break;
-					}
-					case 41: {
-						current = MapType.Daikatana;
-						break;
-					}
-					case 46: {
-						current = MapType.Quake3;
-						// This version number is both Quake 3 and Soldier of Fortune. Find out the length of the
-						// header, based on offsets.
-						for (int i = 0; i < 17; i++) {
-							stream.Seek((i + 1) * 8, SeekOrigin.Begin);
-							int temp = binaryReader.ReadInt32();
-							if (bigEndian) {
-								byte[] bytes = BitConverter.GetBytes(temp);
-								Array.Reverse(bytes);
-								temp = BitConverter.ToInt32(bytes, 0);
-							}
-							if (temp == 184) {
-								current = MapType.SoF;
-								break;
-							} else {
-								if (temp == 144) {
+					switch (data) {
+						case 4: {
+							current = MapType.CoD2;
+							break;
+						}
+						case 22: {
+							current = MapType.CoD4;
+							break;
+						}
+						case 38: {
+							current = MapType.Quake2;
+							break;
+						}
+						case 41: {
+							current = MapType.Daikatana;
+							break;
+						}
+						case 46: {
+							current = MapType.Quake3;
+							// This version number is both Quake 3 and Soldier of Fortune. Find out the length of the
+							// header, based on offsets.
+							for (int i = 0; i < 17; i++) {
+								stream.Seek((i + 1) * 8, SeekOrigin.Begin);
+								int temp = binaryReader.ReadInt32();
+								if (bigEndian) {
+									byte[] bytes = BitConverter.GetBytes(temp);
+									Array.Reverse(bytes);
+									temp = BitConverter.ToInt32(bytes, 0);
+								}
+								if (temp == 184) {
+									current = MapType.SoF;
 									break;
+								} else {
+									if (temp == 144) {
+										break;
+									}
 								}
 							}
+							break;
 						}
-						break;
+						case 47: {
+							current = MapType.Quake3;
+							break;
+						}
+						case 59: {
+							current = MapType.CoD;
+							break;
+						}
 					}
-					case 47: {
-						current = MapType.Quake3;
-						break;
-					}
-					case 59: {
-						current = MapType.CoD;
-						break;
-					}
-				}
-			} else {
-				if (data == 892416050) {
-					// 892416050 reads in ASCII as "2015," the game studio which developed MoHAA
-					current = MapType.MOHAA;
 				} else {
-					if (data == 1095516485) {
-						// 1095516485 reads in ASCII as "EALA," the ones who developed MoHAA Spearhead and Breakthrough
+					if (data == 892416050) {
+						// 892416050 reads in ASCII as "2015," the game studio which developed MoHAA
 						current = MapType.MOHAA;
 					} else {
-						if (data == 1347633750) {
-							// 1347633750 reads in ASCII as "VBSP." Indicates Source engine.
-							// Some source games handle this as 2 shorts.
-							// TODO: Big endian?
-							// Formats: Source 17-23 and 27, DMoMaM, Vindictus
-							data = (int)binaryReader.ReadUInt16();
-							switch (data) {
-								case 17: {
-									current = MapType.Source17;
-									break;
-								}
-								case 18: {
-									current = MapType.Source18;
-									break;
-								}
-								case 19: {
-									current = MapType.Source19;
-									break;
-								}
-								case 20: {
-									int version2 = (int)binaryReader.ReadUInt16();
-									if (version2 == 4) {
-										// TODO: This doesn't necessarily mean the whole map should be read as DMoMaM.
-										current = MapType.DMoMaM;
-									} else {
-										// TODO: Vindictus? Before I was determining these by looking at the Game Lump data, is there a better way?
-										current = MapType.Source20;
-									}
-									break;
-								}
-								case 21: {
-									current = MapType.Source21;
-									// Hack to determine if this is a L4D2 map. Read what would normally be the offset of
-									// a lump. If it is less than the header length it's probably not an offset, indicating L4D2.
-									stream.Seek(8, SeekOrigin.Begin);
-									int test = binaryReader.ReadInt32();
-									if (bigEndian) {
-										byte[] bytes = BitConverter.GetBytes(test);
-										Array.Reverse(bytes);
-										test = BitConverter.ToInt32(bytes, 0);
-									}
-									if (test < 1032) {
-										current = MapType.L4D2;
-									}
-									break;
-								}
-								case 22: {
-									current = MapType.Source22;
-									break;
-								}
-								case 23: {
-									current = MapType.Source23;
-									break;
-								}
-								case 27: {
-									current = MapType.Source27;
-									break;
-								}
-							}
+						if (data == 1095516485) {
+							// 1095516485 reads in ASCII as "EALA," the ones who developed MoHAA Spearhead and Breakthrough
+							current = MapType.MOHAA;
 						} else {
-							if (data == 1347633746) {
-								// Reads in ASCII as "RBSP". Raven software's modification of Q3BSP, or Ritual's modification of Q2.
-								// Formats: Raven, SiN
-								current = MapType.Raven;
-								for (int i = 0; i < 17; i++) {
-									// Find out where the first lump starts, based on offsets.
-									stream.Seek((i + 1) * 8, SeekOrigin.Begin);
-									int temp = binaryReader.ReadInt32();
-									if (bigEndian) {
-										byte[] bytes = BitConverter.GetBytes(temp);
-										Array.Reverse(bytes);
-										temp = BitConverter.ToInt32(bytes, 0);
-									}
-									if (temp == 168) {
-										current = MapType.SiN;
+							if (data == 1347633750) {
+								// 1347633750 reads in ASCII as "VBSP." Indicates Source engine.
+								// Some source games handle this as 2 shorts.
+								// TODO: Big endian?
+								// Formats: Source 17-23 and 27, DMoMaM, Vindictus
+								data = (int)binaryReader.ReadUInt16();
+								switch (data) {
+									case 17: {
+										current = MapType.Source17;
 										break;
-									} else {
-										if (temp == 152) {
-											break;
+									}
+									case 18: {
+										current = MapType.Source18;
+										break;
+									}
+									case 19: {
+										current = MapType.Source19;
+										break;
+									}
+									case 20: {
+										int version2 = (int)binaryReader.ReadUInt16();
+										if (version2 == 4) {
+											// TODO: This doesn't necessarily mean the whole map should be read as DMoMaM.
+											current = MapType.DMoMaM;
+										} else {
+											// TODO: Vindictus? Before I was determining these by looking at the Game Lump data, is there a better way?
+											current = MapType.Source20;
 										}
+										break;
+									}
+									case 21: {
+										current = MapType.Source21;
+										// Hack to determine if this is a L4D2 map. Read what would normally be the offset of
+										// a lump. If it is less than the header length it's probably not an offset, indicating L4D2.
+										stream.Seek(8, SeekOrigin.Begin);
+										int test = binaryReader.ReadInt32();
+										if (bigEndian) {
+											byte[] bytes = BitConverter.GetBytes(test);
+											Array.Reverse(bytes);
+											test = BitConverter.ToInt32(bytes, 0);
+										}
+										if (test < 1032) {
+											current = MapType.L4D2;
+										}
+										break;
+									}
+									case 22: {
+										current = MapType.Source22;
+										break;
+									}
+									case 23: {
+										current = MapType.Source23;
+										break;
+									}
+									case 27: {
+										current = MapType.Source27;
+										break;
 									}
 								}
 							} else {
-								if (data == 556942917) {
-									// "EF2!"
-									current = MapType.STEF2;
-								} else {
-									if (data == 1263223110) {
-										// "FAKK"
-										// Formats: STEF2 demo, Heavy Metal FAKK2 (American McGee's Alice)
-										data = binaryReader.ReadInt32();
+								if (data == 1347633746) {
+									// Reads in ASCII as "RBSP". Raven software's modification of Q3BSP, or Ritual's modification of Q2.
+									// Formats: Raven, SiN
+									current = MapType.Raven;
+									for (int i = 0; i < 17; i++) {
+										// Find out where the first lump starts, based on offsets.
+										stream.Seek((i + 1) * 8, SeekOrigin.Begin);
+										int temp = binaryReader.ReadInt32();
 										if (bigEndian) {
-											byte[] bytes = BitConverter.GetBytes(data);
+											byte[] bytes = BitConverter.GetBytes(temp);
 											Array.Reverse(bytes);
-											data = BitConverter.ToInt32(bytes, 0);
+											temp = BitConverter.ToInt32(bytes, 0);
 										}
-										switch (data) {
-											case 19: {
-												current = MapType.STEF2Demo;
-												break;
-											}
-											case 12:
-											case 42: {// American McGee's Alice
-												current = MapType.FAKK;
+										if (temp == 168) {
+											current = MapType.SiN;
+											break;
+										} else {
+											if (temp == 152) {
 												break;
 											}
 										}
+									}
+								} else {
+									if (data == 556942917) {
+										// "EF2!"
+										current = MapType.STEF2;
 									} else {
-										switch (data) {
-											// Various numbers not representing a string
-											// Formats: HL1, Quake, Nightfire, or perhaps Tactical Intervention's encrypted format
-											case 29:
-											case 30: {
-												current = MapType.Quake;
-												break;
+										if (data == 1263223110) {
+											// "FAKK"
+											// Formats: STEF2 demo, Heavy Metal FAKK2 (American McGee's Alice)
+											data = binaryReader.ReadInt32();
+											if (bigEndian) {
+												byte[] bytes = BitConverter.GetBytes(data);
+												Array.Reverse(bytes);
+												data = BitConverter.ToInt32(bytes, 0);
 											}
-											case 42: {
-												current = MapType.Nightfire;
-												break;
-											}
-											default: {
-												// Hack to get Tactical Intervention's encryption key. At offset 384, there are two unused lumps whose
-												// values in the header are always 0s. Grab these 32 bytes (256 bits) and see if they match an expected value.
-												stream.Seek(384, SeekOrigin.Begin);
-												key = binaryReader.ReadBytes(32);
-												stream.Seek(0, SeekOrigin.Begin);
-												data = BitConverter.ToInt32(XorWithKeyStartingAtIndex(binaryReader.ReadBytes(4)), 0);
-												if (data == 1347633750) {
-													current = MapType.TacticalInterventionEncrypted;
-												} else {
-													current = MapType.Undefined;
+											switch (data) {
+												case 19: {
+													current = MapType.STEF2Demo;
+													break;
 												}
-												break;
+												case 12:
+												case 42: {// American McGee's Alice
+													current = MapType.FAKK;
+													break;
+												}
+											}
+										} else {
+											switch (data) {
+												// Various numbers not representing a string
+												// Formats: HL1, Quake, Nightfire, or perhaps Tactical Intervention's encrypted format
+												case 29:
+												case 30: {
+													current = MapType.Quake;
+													break;
+												}
+												case 42: {
+													current = MapType.Nightfire;
+													break;
+												}
+												default: {
+													// Hack to get Tactical Intervention's encryption key. At offset 384, there are two unused lumps whose
+													// values in the header are always 0s. Grab these 32 bytes (256 bits) and see if they match an expected value.
+													stream.Seek(384, SeekOrigin.Begin);
+													key = binaryReader.ReadBytes(32);
+													stream.Seek(0, SeekOrigin.Begin);
+													data = BitConverter.ToInt32(XorWithKeyStartingAtIndex(binaryReader.ReadBytes(4)), 0);
+													if (data == 1347633750) {
+														current = MapType.TacticalInterventionEncrypted;
+													} else {
+														current = MapType.Undefined;
+													}
+													break;
+												}
 											}
 										}
 									}
@@ -465,15 +519,9 @@ namespace LibBSP {
 						}
 					}
 				}
+				binaryReader.Close();
 			}
 			return current;
-		}
-
-		/// <summary>
-		/// Disposes of the <c>FileStream</c> and releases the handle to the File.
-		/// </summary>
-		public void Close() {
-			stream.Dispose();
 		}
 	}
 }

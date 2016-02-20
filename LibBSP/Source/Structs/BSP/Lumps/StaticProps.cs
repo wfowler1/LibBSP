@@ -16,7 +16,7 @@ namespace LibBSP {
 		/// <param name="type">Format identifier.</param>
 		/// <param name="version">Version of static prop lump this is.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
-		public StaticProps(byte[] data, MapType type, int version) {
+		public StaticProps(byte[] data, MapType type, int version = 0) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -25,18 +25,26 @@ namespace LibBSP {
 			if (data.Length > 0) {
 				int offset = 0;
 				dictionary = new string[BitConverter.ToInt32(data, 0)];
+				offset += 4;
 				for (int i = 0; i < dictionary.Length; ++i) {
 					byte[] temp = new byte[128];
-					Array.Copy(data, (i * 128) + 4, temp, 0, 128);
+					Array.Copy(data, offset, temp, 0, 128);
 					dictionary[i] = temp.ToNullTerminatedString();
+					offset += 128;
 				}
 				int numLeafDefinitions = BitConverter.ToInt32(data, (dictionary.Length * 128) + 4);
-				int numProps = BitConverter.ToInt32(data, (dictionary.Length * 128) + (numLeafDefinitions * 2) + 8);
+				offset += 4 + (numLeafDefinitions * 2);
+				if (type == MapType.Vindictus && version == 6) {
+					int numPropScales = BitConverter.ToInt32(data, offset);
+					offset += 4 + (numPropScales * 16);
+				}
+				int numProps = BitConverter.ToInt32(data, offset);
+				offset += 4;
 				if (numProps > 0) {
-					structLength = (data.Length - ((dictionary.Length * 128) + (numLeafDefinitions * 2) + 12)) / numProps;
+					structLength = (data.Length - offset) / numProps;
 					byte[] bytes = new byte[structLength];
 					for (int i = 0; i < numProps; ++i) {
-						Array.Copy(data, (dictionary.Length * 128) + (numLeafDefinitions * 2) + 12 + (i * structLength), bytes, 0, structLength);
+						Array.Copy(data, offset, bytes, 0, structLength);
 						Add(new StaticProp(bytes, type, version));
 						offset += structLength;
 					}

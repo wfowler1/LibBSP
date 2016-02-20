@@ -37,7 +37,8 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data"><c>Byte</c>s read from a file.</param>
 		/// <param name="type">The <see cref="MapType"/> of the source map.</param>
-		public Entities(byte[] data, MapType type) : base() {
+		/// <param name="version">The version of this lump.</param>
+		public Entities(byte[] data, MapType type, int version = 0) : base() {
 			// Keep track of whether or not we're currently in a set of quotation marks.
 			// I came across a map where the idiot map maker used { and } within a value. This broke the code before.
 			bool inQuotes = false;

@@ -12,8 +12,9 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data">Array of <c>byte</c>s to parse.</param>
 		/// <param name="type">Format identifier.</param>
+		/// <param name="version">The version of this lump.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
-		public DisplacementVertices(byte[] data, MapType type) : base(data.Length / 20) {
+		public DisplacementVertices(byte[] data, MapType type, int version = 0) : base(data.Length / 20) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -21,7 +22,7 @@ namespace LibBSP {
 			byte[] bytes = new byte[structLength];
 			for (int i = 0; i < data.Length / structLength; ++i) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
-				Add(new DisplacementVertex(bytes, type));
+				Add(new DisplacementVertex(bytes, type, version));
 			}
 		}
 
