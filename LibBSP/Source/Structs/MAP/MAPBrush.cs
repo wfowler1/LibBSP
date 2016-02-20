@@ -13,6 +13,7 @@ namespace LibBSP {
 
 		public List<MAPBrushSide> sides = new List<MAPBrushSide>(6);
 		public MAPPatch patch;
+		public MAPTerrain terrain;
 
 		public bool isDetail = false;
 		public bool isWater = false;
@@ -30,6 +31,7 @@ namespace LibBSP {
 			int braceCount = 0;
 			bool brushDef3 = false;
 			bool inPatch = false;
+			bool inTerrain = false;
 			List<string> child = new List<string>();
 			foreach (string line in lines) {
 				if (line[0] == '{') {
@@ -45,7 +47,7 @@ namespace LibBSP {
 					if (line.Length >= "side".Length && line.Substring(0, "side".Length) == "side") {
 						continue;
 					}
-						// id Tech does this kinda thing
+					// id Tech does this kinda thing
 					else if (line.Length >= "patch".Length && line.Substring(0, "patch".Length) == "patch") {
 						inPatch = true;
 						// Gonna need this line too. We can switch on the type of patch definition, make things much easier.
@@ -55,6 +57,16 @@ namespace LibBSP {
 						child.Add(line);
 						inPatch = false;
 						patch = new MAPPatch(child.ToArray());
+						child = new List<string>();
+						continue;
+					} else if (line.Length >= "terrainDef".Length && line.Substring(0, "terrainDef".Length) == "terrainDef") {
+						inTerrain = true;
+						child.Add(line);
+						continue;
+					} else if (inTerrain) {
+						child.Add(line);
+						inTerrain = false;
+						terrain = new MAPTerrain(child.ToArray());
 						child = new List<string>();
 						continue;
 					} else if (line.Length >= "brushDef3".Length && line.Substring(0, "brushDef3".Length) == "brushDef3") {
