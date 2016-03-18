@@ -51,6 +51,7 @@ namespace LibBSP {
 			texture = lines[2];
 
 			switch (lines[0]) {
+				// TODO: MoHRadiant terrain?
 				case "terrainDef": {
 					for (int i = 2; i < lines.Length; ++i) {
 						string[] line = lines[i].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
