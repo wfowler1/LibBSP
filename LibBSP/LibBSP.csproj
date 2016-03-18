@@ -98,7 +98,9 @@ git rev-list --all --count &gt;&gt; version.txt
 set /p revision= &lt; version.txt
 del /Q version.txt
 cd..
-set /p head= &lt; .git/refs/heads/master
+git rev-parse HEAD &gt;&gt; head.txt
+set /p head= &lt; head.txt
+del /Q head.txt
 cd LibBSP\Source\Util
 del /Q Revision.cs
 type nul&gt; Revision.cs
