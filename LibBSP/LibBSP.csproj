@@ -97,12 +97,15 @@ cd..
 git rev-list --all --count &gt;&gt; version.txt
 set /p revision= &lt; version.txt
 del /Q version.txt
-cd Source\Util
+cd..
+set /p head= &lt; .git/refs/heads/master
+cd LibBSP\Source\Util
 del /Q Revision.cs
 type nul&gt; Revision.cs
 echo namespace LibBSP {&gt;&gt; Revision.cs
 echo 	public class Revision {&gt;&gt; Revision.cs
-echo 		public const string version = "r%25version%25";&gt;&gt; Revision.cs
+echo 		public const string version = "%25revision%25";&gt;&gt; Revision.cs
+echo 		public const string head = "%25head%25";&gt;&gt; Revision.cs
 echo 	}&gt;&gt; Revision.cs
 echo }&gt;&gt; Revision.cs</PreBuildEvent>
   </PropertyGroup>
@@ -115,6 +118,7 @@ type nul&gt; Revision.cs
 echo namespace LibBSP {&gt;&gt; Revision.cs
 echo 	public class Revision {&gt;&gt; Revision.cs
 echo 		public const string version = "To be replaced on build";&gt;&gt; Revision.cs
+echo 		public const string head = "To be replaced on build";&gt;&gt; Revision.cs
 echo 	}&gt;&gt; Revision.cs
 echo }&gt;&gt; Revision.cs</PostBuildEvent>
   </PropertyGroup>
