@@ -29,6 +29,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -84,9 +87,37 @@
     <Compile Include="Source\Structs\Common\Vector3d.cs" />
     <Compile Include="Source\Structs\MAP\MAPTerrain.cs" />
     <Compile Include="Source\Util\BSPReader.cs" />
+    <Compile Include="Source\Util\Revision.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>cd..
+cd..
+git rev-list --all --count &gt;&gt; version.txt
+set /p revision= &lt; version.txt
+del /Q version.txt
+cd Source\Util
+del /Q Revision.cs
+type nul&gt; Revision.cs
+echo namespace LibBSP {&gt;&gt; Revision.cs
+echo 	public class Revision {&gt;&gt; Revision.cs
+echo 		public const string version = "r%25version%25";&gt;&gt; Revision.cs
+echo 	}&gt;&gt; Revision.cs
+echo }&gt;&gt; Revision.cs</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>cd..
+cd..
+cd Source\Util
+del /Q Revision.cs
+type nul&gt; Revision.cs
+echo namespace LibBSP {&gt;&gt; Revision.cs
+echo 	public class Revision {&gt;&gt; Revision.cs
+echo 		public const string version = "To be replaced on build";&gt;&gt; Revision.cs
+echo 	}&gt;&gt; Revision.cs
+echo }&gt;&gt; Revision.cs</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
