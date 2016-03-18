@@ -590,7 +590,7 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="index">Index of the lump to get information for.</param>
 		/// <returns>A <see cref="LumpInfo"/> object containing information about lump "<paramref name="index"/>".</returns>
-		public LumpInfo this[int index] {
+		public new LumpInfo this[int index] {
 			get {
 				if (!ContainsKey(index)) {
 					base[index] = reader.GetLumpInfo(index, version);
