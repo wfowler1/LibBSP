@@ -16,6 +16,9 @@ namespace LibBSP {
 		/// <param name="container">Container <c>char</c>. Any <paramref name="separator"/> characters that occur between two instances of this character will be ignored.</param>
 		/// <returns>Array of <c>string</c> objects that are the resulting substrings.</returns>
 		public static string[] SplitUnlessInContainer(this string st, char separator, char container, StringSplitOptions options = StringSplitOptions.None) {
+			if (st.IndexOf(separator) < 0) { return new string[] { st }; }
+			if (st.IndexOf(container) < 0) { return st.Split(new char[] { separator }, options); }
+
 			List<string> results = new List<string>();
 			bool inContainer = false;
 			StringBuilder current = new StringBuilder();
