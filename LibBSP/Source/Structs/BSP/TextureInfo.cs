@@ -36,6 +36,7 @@ namespace LibBSP {
 
 		public Vector3[] axes { get; private set; }
 		public float[] shifts { get; private set; }
+		public float[] scales { get; private set; }
 		public int flags { get; private set; }
 		public int texture { get; private set; }
 
@@ -59,6 +60,8 @@ namespace LibBSP {
 			shifts[S] = BitConverter.ToSingle(data, 12);
 			axes[T] = new Vector3(BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24));
 			shifts[T] = BitConverter.ToSingle(data, 28);
+			// Texture scaling information is compiled into the axes by changing their length.
+			scales = new float[] { 1, 1 };
 			switch (type) {
 				// Excluded engines: Quake 2-based, Quake 3-based
 				case MapType.Source17:
@@ -99,25 +102,29 @@ namespace LibBSP {
 		/// Creates a new <see cref="TextureInfo"/> object using the passed data.
 		/// </summary>
 		/// <param name="s">The S texture axis.</param>
-		/// <param name="SShift">The texture shift on the S axis.</param>
+		/// <param name="sShift">The texture shift on the S axis.</param>
+		/// <param name="sScale">The texture scale on the S axis.</param>
 		/// <param name="t">The T texture axis.</param>
-		/// <param name="TShift">The texture shift on the T axis.</param>
+		/// <param name="tShift">The texture shift on the T axis.</param>
+		/// <param name="tScale">The texture scale on the T axis.</param>
 		/// <param name="flags">The flags for this <see cref="TextureInfo"/>.</param>
 		/// <param name="texture">Index into the texture list for the texture this <see cref="TextureInfo"/> uses.</param>
-		public TextureInfo(Vector3 s, float SShift, Vector3 t, float TShift, int flags, int texture) {
+		public TextureInfo(Vector3 s, float sShift, float sScale, Vector3 t, float tShift, float tScale, int flags, int texture) {
 			axes = new Vector3[2];
 			axes[S] = s;
 			axes[T] = t;
 			shifts = new float[2];
-			shifts[S] = SShift;
-			shifts[T] = TShift;
+			shifts[S] = sShift;
+			shifts[T] = tShift;
+			scales[S] = sScale;
+			scales[T] = tScale;
 			this.flags = flags;
 			this.texture = texture;
 		}
 
 		/// <summary>
-		/// Adapted from code in the Quake III Arena source code. Stolen without
-		/// permission because it falls under the terms of the GPL v2 license, because I'm not making
+		/// Adapted from code in the Quake III Arena source code. Stolen without permission
+		/// because it falls under the terms of the GPL v2 license, and because I'm not making
 		/// any money, just awesome tools.
 		/// </summary>
 		/// <param name="p"><see cref="Plane"/> of the surface.</param>

@@ -56,7 +56,7 @@ namespace LibBSP {
 				case MapType.Quake2:
 				case MapType.SoF:
 				case MapType.Daikatana: {
-					texAxes = new TextureInfo(new Vector3(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8)), BitConverter.ToSingle(data, 12), new Vector3(BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24)), BitConverter.ToSingle(data, 28), -1, -1);
+					texAxes = new TextureInfo(new Vector3(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8)), BitConverter.ToSingle(data, 12), 1, new Vector3(BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24)), BitConverter.ToSingle(data, 28), 1, -1, -1);
 					flags = BitConverter.ToInt32(data, 32);
 					name = data.ToNullTerminatedString(40, 32);
 					break;
@@ -94,7 +94,7 @@ namespace LibBSP {
 					break;
 				}
 				case MapType.SiN: {
-					texAxes = new TextureInfo(new Vector3(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8)), BitConverter.ToSingle(data, 12), new Vector3(BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24)), BitConverter.ToSingle(data, 28), -1, -1);
+					texAxes = new TextureInfo(new Vector3(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8)), BitConverter.ToSingle(data, 12), 1, new Vector3(BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24)), BitConverter.ToSingle(data, 28), 1, -1, -1);
 					flags = BitConverter.ToInt32(data, 32);
 					name = data.ToNullTerminatedString(36, 64);
 					break;
