@@ -41,7 +41,7 @@ namespace LibBSP {
 		/// <param name="index">The numerical index of this lump.</param>
 		/// <param name="version">The type of BSP to interpret the file as.</param>
 		/// <returns>A <see cref="LumpInfo"/> object containing information about the lump.</returns>
-		/// <exception cref="IndexOutOfRandeException">"<paramref name="index"/>" is less than zero, or greater than the number of lumps allowed by "<paramref name="version"/>".</exception>
+		/// <exception cref="IndexOutOfRangeException">"<paramref name="index"/>" is less than zero, or greater than the number of lumps allowed by "<paramref name="version"/>".</exception>
 		public LumpInfo GetLumpInfo(int index, MapType version) {
 			if (index < 0 || index >= BSP.GetNumLumps(version)) {
 				throw new IndexOutOfRangeException();

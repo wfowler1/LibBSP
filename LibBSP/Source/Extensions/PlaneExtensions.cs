@@ -228,6 +228,57 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Gets the signed distance from this <see cref="Plane"/> to a given point.
+		/// </summary>
+		/// <param name="p">This <see cref="Plane"/>.</param>
+		/// <param name="to">Point to get the distance to.</param>
+		/// <returns>Signed distance from this <see cref="Plane"/> to the given point.</returns>
+		/// <remarks>Unity uses the plane equation "Ax + By + Cz + D = 0" while Quake-based engines
+		/// use "Ax + By + Cz = D". The distance equation needs to be evaluated differently from
+		/// Unity's default implementation to properly apply to planes read from BSPs.</remarks>
+#if UNITY
+		public static float GetBSPDistanceToPoint(this Plane p, Vector3 to) {
+#else
+		public static double GetBSPDistanceToPoint(this Plane p, Vector3 to) {
+#endif
+#if UNITY
+			float normLength = Mathf.Pow(p.normal.x, 2) + Mathf.Pow(p.normal.y, 2) + Mathf.Pow(p.normal.z, 2);
+			if (Mathf.Abs(normLength - 1.00f) > 0.01) {
+				normLength = Mathf.Sqrt(normLength);
+			}
+			return (p.normal.x * to.x + p.normal.y * to.y + p.normal.z * to.z - p.distance) / normLength;
+#else
+			return p.GetDistanceToPoint(to);
+#endif
+		}
+
+		/// <summary>
+		/// Is <paramref name="v"/> on the positive side of this <see cref="Plane"/>?
+		/// </summary>
+		/// <param name="p">This <see cref="Plane"/>.</param>
+		/// <param name="v">Point to get the side for.</param>
+		/// <returns><c>true</c> if <paramref name="v"/> is on the positive side of this <see cref="Plane"/>.</returns>
+		/// <remarks>Unity uses the plane equation "Ax + By + Cz + D = 0" while Quake-based engines
+		/// use "Ax + By + Cz = D". The distance equation needs to be evaluated differently from
+		/// Unity's default implementation to properly apply to planes read from BSPs.</remarks>
+		public static bool GetBSPSide(this Plane p, Vector3 v) {
+			return p.GetBSPDistanceToPoint(v) > 0;
+		}
+
+		/// <summary>
+		/// Determines whether the given <see cref="Vector3"/> is contained in this <see cref="Plane"/>.
+		/// </summary>
+		/// <param name="v">Point.</param>
+		/// <returns><c>true</c> if the <see cref="Vector3"/> is contained in this <see cref="Plane"/>.</returns>
+		/// <remarks>Unity uses the plane equation "Ax + By + Cz + D = 0" while Quake-based engines
+		/// use "Ax + By + Cz = D". The distance equation needs to be evaluated differently from
+		/// Unity's default implementation to properly apply to planes read from BSPs.</remarks>
+		public static bool BSPContains(this Plane p, Vector3 v) {
+			var distanceTo = p.GetBSPDistanceToPoint(v);
+			return distanceTo < 0.001 && distanceTo > -0.001;
+		}
+
+		/// <summary>
 		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <see cref="Plane"/> objects.
 		/// </summary>
 		/// <param name="data">The data to parse.</param>

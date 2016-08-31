@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace LibBSP {
 	/// <summary>
-	/// Holds the data for a plane in 3D space in Hessian Normal Form.
+	/// Holds the data for a plane in 3D space in Hesse Normal Form.
 	/// </summary>
 	[Serializable] public struct Plane : IEquatable<Plane> {
 
