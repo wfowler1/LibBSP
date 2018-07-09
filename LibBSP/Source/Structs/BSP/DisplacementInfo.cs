@@ -1,4 +1,4 @@
-#if UNITY_2_6 || UNITY_2_6_1 || UNITY_3_0 || UNITY_3_0_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5_3_OR_NEWER
+#if UNITY_2_6 || UNITY_2_6_1 || UNITY_3_0 || UNITY_3_0_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER
 #define UNITY
 #endif
 
@@ -19,8 +19,14 @@ namespace LibBSP {
 
 		public Vector3 startPosition { get; private set; }
 		public int dispVertStart { get; private set; }
-		//public int dispTriStart { get; private set; }
+		public int dispTriStart { get; private set; }
 		public int power { get; private set; }
+		public int minTess { get; private set; }
+		public float smoothingAngle { get; private set; }
+		public int contents { get; private set; }
+		public ushort mapFace { get; private set; }
+		public int lightmapAlphaStart { get; private set; }
+		public int lightmapSamplePositionStart { get; private set; }
 		public uint[] allowedVerts { get; private set; }
 
 		/// <summary>
@@ -37,8 +43,14 @@ namespace LibBSP {
 			}
 			startPosition = new Vector3(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
 			dispVertStart = BitConverter.ToInt32(data, 12);
-			//dispTriStart = BitConverter.ToInt32(in, 16);
+			dispTriStart = BitConverter.ToInt32(data, 16);
 			power = BitConverter.ToInt32(data, 20);
+			minTess = BitConverter.ToInt32(data, 24);
+			smoothingAngle = BitConverter.ToSingle(data, 28);
+			contents = BitConverter.ToInt32(data, 32);
+			mapFace = BitConverter.ToUInt16(data, 36);
+			lightmapAlphaStart = BitConverter.ToInt32(data, 38);
+			lightmapSamplePositionStart = BitConverter.ToInt32(data, 42);
 			allowedVerts = new uint[10];
 			int offset = 0;
 			switch (type) {
