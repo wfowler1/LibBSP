@@ -114,6 +114,7 @@ namespace LibBSP {
 			axes[S] = s;
 			axes[T] = t;
 			shifts = new float[2];
+			scales = new float[2];
 			shifts[S] = sShift;
 			shifts[T] = tShift;
 			scales[S] = sScale;
