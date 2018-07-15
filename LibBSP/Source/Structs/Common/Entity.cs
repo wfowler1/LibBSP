@@ -197,12 +197,22 @@ namespace LibBSP {
 			foreach (string line in lines) {
 				string current = line.Trim(' ', '\t', '\r');
 
-				// Cull everything after a //
+				// Cull everything after a "//"
 				bool inQuotes = false;
-
 				for (int i = 0; i < current.Length; ++i) {
-					if (current[i] == '\"' && (i == 0 || current[i - 1] != '\\')) {
-						inQuotes = !inQuotes;
+					
+					if (current[i] == '\"') {
+						if (i == 0) {
+							inQuotes = !inQuotes;
+						} else if (current[i - 1] != '\\') {
+							// Allow for escape-sequenced quotes to not affect the state machine, but only if the quote isn't at the end of a line.
+							// Some Source engine entities use escape sequence quotes in values, but MoHAA has a map with an obvious erroneous backslash before a quote at the end of a line.
+							if (inQuotes && (i + 1 >= current.Length || current[i + 1] == '\n' || current[i + 1] == '\r')) {
+								inQuotes = false;
+							}
+						} else {
+							inQuotes = !inQuotes;
+						}
 					}
 
 					if (!inQuotes && current[i] == '/' && i != 0 && current[i - 1] == '/') {

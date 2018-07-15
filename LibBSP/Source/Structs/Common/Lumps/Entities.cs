@@ -54,9 +54,18 @@ namespace LibBSP {
 			for (int offset = 0; offset < data.Length; ++offset) {
 				currentChar = (char)data[offset];
 
-				// Allow for escape-sequenced quotes to not affect the state machine.
-				if (currentChar == '\"' && (offset == 0 || (char)data[offset - 1] != '\\')) {
-					inQuotes = !inQuotes;
+				if (currentChar == '\"') {
+					if (offset == 0) {
+						inQuotes = !inQuotes;
+					} else if ((char)data[offset - 1] != '\\') {
+						// Allow for escape-sequenced quotes to not affect the state machine, but only if the quote isn't at the end of a line.
+						// Some Source engine entities use escape sequence quotes in values, but MoHAA has a map with an obvious erroneous backslash before a quote at the end of a line.
+						if (inQuotes && (offset + 1 >= data.Length || (char)data[offset + 1] == '\n' || (char)data[offset + 1] == '\r')) {
+							inQuotes = false;
+						}
+					} else {
+						inQuotes = !inQuotes;
+					}
 				}
 
 				if (!inQuotes) {
@@ -89,7 +98,7 @@ namespace LibBSP {
 			}
 
 			if (braceCount != 0) {
-				throw new ArgumentException(string.Format("Brace mismatch when parsing entities! Brace level: {0}", braceCount));
+				throw new ArgumentException(string.Format("Brace mismatch when parsing entities! Entity: {0} Brace level: {1}", Count, braceCount));
 			}
 		}
 
