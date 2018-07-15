@@ -314,9 +314,10 @@ namespace LibBSP {
 			bool inQuotes = false;
 			bool isVal = false;
 			int numCommas = 0;
+			st.Trim('\r', '\n', '\t');
 			for (int i = 0; i < st.Length; ++i) {
 				// Some entity values in Source can use escape sequenced quotes. Need to make sure not to parse those.
-				if (st[i] == '\"' && (i == 0 || st[i - 1] != '\\')) {
+				if (st[i] == '\"' && (i == 0 || i == st.Length - 1 || st[i - 1] != '\\')) {
 					if (inQuotes) {
 						if (isVal) {
 							break;
