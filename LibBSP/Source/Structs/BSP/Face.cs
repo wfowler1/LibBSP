@@ -32,7 +32,7 @@ namespace LibBSP {
 		[Index("vertices")] public int firstVertex { get; private set; }
 		[Count("vertices")] public int numVertices { get; private set; }
 		public int material { get; private set; }
-		public int textureScale { get; private set; }
+		public int textureInfo { get; private set; }
 		public int displacement { get; private set; }
 		public int original { get; private set; }
 		public int flags { get; private set; }
@@ -63,7 +63,7 @@ namespace LibBSP {
 			firstVertex = -1;
 			numVertices = -1;
 			material = -1;
-			textureScale = -1;
+			textureInfo = -1;
 			displacement = -1;
 			original = -1;
 			flags = -1;
@@ -106,7 +106,7 @@ namespace LibBSP {
 					side = (int)data[34];
 					firstEdge = BitConverter.ToInt32(data, 36);
 					numEdges = BitConverter.ToUInt16(data, 40);
-					textureScale = BitConverter.ToUInt16(data, 42);
+					textureInfo = BitConverter.ToUInt16(data, 42);
 					displacement = BitConverter.ToInt16(data, 44);
 					original = BitConverter.ToInt32(data, 96);
 					break;
@@ -125,7 +125,7 @@ namespace LibBSP {
 					side = (int)data[2];
 					firstEdge = BitConverter.ToInt32(data, 4);
 					numEdges = BitConverter.ToUInt16(data, 8);
-					textureScale = BitConverter.ToUInt16(data, 10);
+					textureInfo = BitConverter.ToUInt16(data, 10);
 					displacement = BitConverter.ToInt16(data, 12);
 					original = BitConverter.ToInt32(data, 44);
 					break;
@@ -135,7 +135,7 @@ namespace LibBSP {
 					side = (int)data[4];
 					firstEdge = BitConverter.ToInt32(data, 8);
 					numEdges = BitConverter.ToInt32(data, 12);
-					textureScale = BitConverter.ToInt32(data, 16);
+					textureInfo = BitConverter.ToInt32(data, 16);
 					displacement = BitConverter.ToInt32(data, 20);
 					if (version == 2) {
 						original = BitConverter.ToInt32(data, 60);
@@ -153,7 +153,7 @@ namespace LibBSP {
 					flags = BitConverter.ToInt32(data, 20);
 					texture = BitConverter.ToInt32(data, 24);
 					material = BitConverter.ToInt32(data, 28);
-					textureScale = BitConverter.ToInt32(data, 32);
+					textureInfo = BitConverter.ToInt32(data, 32);
 					unknown = BitConverter.ToInt32(data, 36);
 					lightStyles = BitConverter.ToInt32(data, 40);
 					lightMaps = BitConverter.ToInt32(data, 44);
