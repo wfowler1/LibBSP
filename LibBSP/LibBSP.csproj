@@ -67,6 +67,7 @@
     <Compile Include="Source\Structs\BSP\DisplacementInfo.cs" />
     <Compile Include="Source\Structs\BSP\DisplacementVertex.cs" />
     <Compile Include="Source\Structs\BSP\Lumps\DisplacementVertices.cs" />
+    <Compile Include="Source\Structs\BSP\StaticModel.cs" />
     <Compile Include="Source\Structs\BSP\StaticProp.cs" />
     <Compile Include="Source\Structs\BSP\TextureData.cs" />
     <Compile Include="Source\Structs\BSP\TextureInfo.cs" />

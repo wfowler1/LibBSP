@@ -90,6 +90,8 @@ namespace LibBSP {
 		private List<Brush> _brushes;
 		private List<BrushSide> _brushSides;
 		private NumList _markBrushes;
+		// MoHAA
+		private List<StaticModel> _staticModels;
 		// Nightfire
 		private Textures _materials;
 		private NumList _indices;
@@ -445,6 +447,21 @@ namespace LibBSP {
 					}
 				}
 				return _markBrushes;
+			}
+		}
+
+		/// <summary>
+		/// A <c>List</c> of <see cref="StaticModel"/> objects in the BSP file, if available.
+		/// </summary>
+		public List<StaticModel> staticModels {
+			get {
+				if (_staticModels == null) {
+					int index = StaticModel.GetIndexForLump(version);
+					if (index >= 0) {
+						_staticModels = StaticModel.LumpFactory(reader.ReadLump(this[index]), version, this[index].version);
+					}
+				}
+				return _staticModels;
 			}
 		}
 
