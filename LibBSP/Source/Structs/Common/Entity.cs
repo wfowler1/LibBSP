@@ -345,16 +345,23 @@ namespace LibBSP {
 						connection = val.Split((char)0x1B);
 					}
 					if (connection.Length == 5 || connection.Length == 7) {
-						connections.Add(new EntityConnection {
-							name = key,
-							target = connection[0],
-							action = connection[1],
-							param = connection[2],
-							delay = Double.Parse(connection[3], _format),
-							fireOnce = Int32.Parse(connection[4]),
-							unknown0 = connection.Length > 5 ? connection[5] : "",
-							unknown1 = connection.Length > 6 ? connection[6] : "",
-						});
+						try {
+							connections.Add(new EntityConnection {
+								name = key,
+								target = connection[0],
+								action = connection[1],
+								param = connection[2],
+								delay = Double.Parse(connection[3], _format),
+								fireOnce = Int32.Parse(connection[4]),
+								unknown0 = connection.Length > 5 ? connection[5] : "",
+								unknown1 = connection.Length > 6 ? connection[6] : "",
+							});
+						} catch (FormatException) {
+							// If that fails, assume a false positive and just add this as a normal keyvalue pair.
+							if (!ContainsKey(key)) {
+								this[key] = val;
+							}
+						}
 					}
 				} else {
 					if (!ContainsKey(key)) {
