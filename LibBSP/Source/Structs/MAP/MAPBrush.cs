@@ -18,6 +18,7 @@ namespace LibBSP {
 
 		public bool isDetail = false;
 		public bool isWater = false;
+		public bool isManVis = false;
 
 		/// <summary>
 		/// Creates a new empty <see cref="MAPBrush"/> object. Internal data will have to be set manually.
