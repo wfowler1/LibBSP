@@ -91,6 +91,7 @@ namespace LibBSP {
 		private List<BrushSide> _brushSides;
 		private NumList _markBrushes;
 		// MoHAA
+		private List<LODTerrain> _lodTerrains;
 		private List<StaticModel> _staticModels;
 		// Nightfire
 		private Textures _materials;
@@ -462,6 +463,21 @@ namespace LibBSP {
 					}
 				}
 				return _staticModels;
+			}
+		}
+
+		/// <summary>
+		/// A <c>List</c> of <see cref="LODTerrain"/> objects in the BSP file, if available.
+		/// </summary>
+		public List<LODTerrain> lodTerrains {
+			get {
+				if (_lodTerrains == null) {
+					int index = LODTerrain.GetIndexForLump(version);
+					if (index >= 0) {
+						_lodTerrains = LODTerrain.LumpFactory(reader.ReadLump(this[index]), version, this[index].version);
+					}
+				}
+				return _lodTerrains;
 			}
 		}
 

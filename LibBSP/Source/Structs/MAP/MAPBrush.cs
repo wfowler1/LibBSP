@@ -13,7 +13,8 @@ namespace LibBSP {
 
 		public List<MAPBrushSide> sides = new List<MAPBrushSide>(6);
 		public MAPPatch patch;
-		public MAPTerrain terrain;
+		public MAPTerrainEF2 ef2Terrain;
+		public MAPTerrainMoHAA mohTerrain;
 
 		public bool isDetail = false;
 		public bool isWater = false;
@@ -66,7 +67,8 @@ namespace LibBSP {
 					} else if (inTerrain) {
 						child.Add(line);
 						inTerrain = false;
-						terrain = new MAPTerrain(child.ToArray());
+						// TODO: MoHRadiant terrain
+						ef2Terrain = new MAPTerrainEF2(child.ToArray());
 						child = new List<string>();
 						continue;
 					} else if (line.Length >= "brushDef3".Length && line.Substring(0, "brushDef3".Length) == "brushDef3") {

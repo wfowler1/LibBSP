@@ -58,6 +58,7 @@
     <Compile Include="Source\Structs\BSP\Edge.cs" />
     <Compile Include="Source\Structs\BSP\Face.cs" />
     <Compile Include="Source\Structs\BSP\Leaf.cs" />
+    <Compile Include="Source\Structs\BSP\LODTerrain.cs" />
     <Compile Include="Source\Structs\BSP\Lumps\GameLump.cs" />
     <Compile Include="Source\Structs\BSP\Lumps\StaticProps.cs" />
     <Compile Include="Source\Structs\BSP\Lumps\Textures.cs" />
@@ -86,7 +87,8 @@
     <Compile Include="Source\Structs\Common\Vector2d.cs" />
     <Compile Include="Source\Structs\Common\Vector4d.cs" />
     <Compile Include="Source\Structs\Common\Vector3d.cs" />
-    <Compile Include="Source\Structs\MAP\MAPTerrain.cs" />
+    <Compile Include="Source\Structs\MAP\MAPTerrainEF2.cs" />
+    <Compile Include="Source\Structs\MAP\MAPTerrainMoHAA.cs" />
     <Compile Include="Source\Util\BSPReader.cs" />
     <Compile Include="Source\Util\Revision.cs" />
   </ItemGroup>

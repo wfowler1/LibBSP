@@ -16,9 +16,9 @@ namespace LibBSP {
 	using Vector3 = Vector3d;
 #endif
 	/// <summary>
-	/// Class containing all data necessary to render a Bezier patch.
+	/// Class containing all data necessary to render a Terrain from Star Trek EF2.
 	/// </summary>
-	[Serializable] public class MAPTerrain {
+	[Serializable] public class MAPTerrainEF2 {
 
 		private static IFormatProvider _format = CultureInfo.CreateSpecificCulture("en-US");
 
@@ -38,20 +38,19 @@ namespace LibBSP {
 		public float[][] alphaMap;
 
 		/// <summary>
-		/// Creates a new empty <see cref="MAPTerrain"/> object. Internal data will have to be set manually.
+		/// Creates a new empty <see cref="MAPTerrainEF2"/> object. Internal data will have to be set manually.
 		/// </summary>
-		public MAPTerrain() { }
+		public MAPTerrainEF2() { }
 
 		/// <summary>
-		/// Constructs a new <see cref="MAPTerrain"/> object using the supplied string array as data.
+		/// Constructs a new <see cref="MAPTerrainEF2"/> object using the supplied string array as data.
 		/// </summary>
 		/// <param name="lines">Data to parse.</param>
-		public MAPTerrain(string[] lines) {
+		public MAPTerrainEF2(string[] lines) {
 
 			texture = lines[2];
 
 			switch (lines[0]) {
-				// TODO: MoHRadiant terrain?
 				case "terrainDef": {
 					for (int i = 2; i < lines.Length; ++i) {
 						string[] line = lines[i].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
