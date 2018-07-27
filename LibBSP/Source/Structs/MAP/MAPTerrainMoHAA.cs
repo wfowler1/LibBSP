@@ -40,7 +40,7 @@ namespace LibBSP {
 			// TODO: Constructor to parse text
 		}
 
-		public class Partition {
+		[Serializable] public class Partition {
 			public int unknown1;
 			public int unknown2;
 			public string shader;
@@ -68,7 +68,7 @@ namespace LibBSP {
 			}
 		}
 
-		public class Vertex {
+		[Serializable] public class Vertex {
 			public int height;
 			public string unknown1;
 			public string unknown2;
