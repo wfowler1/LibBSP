@@ -21,15 +21,14 @@ namespace LibBSP {
 	/// </summary>
 	public static class UIVertexExtensions {
 
+#if !UNITY
 		/// <summary>
 		/// Scales the position of this <see cref="UIVertex"/> by a number.
 		/// </summary>
 		/// <param name="v1">This <see cref="UIVertex"/>.</param>
 		/// <param name="scalar">Scalar value.</param>
-		/// <returns>The scaled <see cref="UIVertex"/>.</returns>
-		public static UIVertex Scale(this UIVertex v1, float scalar) {
+		public static void Scale(this ref UIVertex v1, float scalar) {
 			v1.position *= scalar;
-			return v1;
 		}
 
 		/// <summary>
@@ -37,16 +36,10 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="v1">This <see cref="UIVertex"/>.</param>
 		/// <param name="v2">The other <see cref="UIVertex"/>.</param>
-		/// <returns>The resulting <see cref="UIVertex"/>.</returns>
-		public static UIVertex Add(this UIVertex v1, UIVertex v2) {
-			return new UIVertex {
-				color = v1.color,
-				normal = v1.normal,
-				position = v1.position + v2.position,
-				tangent = v1.tangent,
-				uv0 = v1.uv0 + v2.uv0,
-				uv1 = v1.uv1 + v2.uv1
-			};
+		public static void Add(this ref UIVertex v1, UIVertex v2) {
+			v1.position += v2.position;
+			v1.uv0 += v2.uv0;
+			v1.uv1 += v2.uv1;
 		}
 
 		/// <summary>
@@ -54,16 +47,47 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="v1">This <see cref="UIVertex"/>.</param>
 		/// <param name="v2">The <see cref="Vector3"/>.</param>
-		/// <returns>The resulting <see cref="UIVertex"/>.</returns>
-		public static UIVertex Translate(this UIVertex v1, Vector3 v2) {
-			return new UIVertex {
-				color = v1.color,
-				normal = v1.normal,
-				position = v1.position + v2,
-				tangent = v1.tangent,
-				uv0 = v1.uv0,
-				uv1 = v1.uv1
-			};
+		public static void Translate(this ref UIVertex v1, Vector3 v2) {
+			v1.position += v2;
+		}
+#endif
+
+		// Extension methods using "ref" are features of C# 7.2. They will not work in Unity, no matter what.
+		// Instead use these vanilla static methods in any code intended to be used with Unity.
+
+		/// <summary>
+		/// Scales the position of a <see cref="UIVertex"/> by a number and returns the result.
+		/// </summary>
+		/// <param name="v1">The <see cref="UIVertex"/> to scale.</param>
+		/// <param name="scalar">Scalar value.</param>
+		/// <returns>The resulting <see cref="UIVertex"/> of this scaling operation.</returns>
+		public static UIVertex Scale(UIVertex v1, float scalar) {
+			v1.position *= scalar;
+			return v1;
+		}
+
+		/// <summary>
+		/// Adds the position of a <see cref="UIVertex"/> to another <see cref="UIVertex"/> and returns the result.
+		/// </summary>
+		/// <param name="v1">A <see cref="UIVertex"/> to be added to another.</param>
+		/// <param name="v2">A <see cref="UIVertex"/> to be added to another.</param>
+		/// <returns>The resulting <see cref="UIVertex"/> of this addition.</returns>
+		public static UIVertex Add(UIVertex v1, UIVertex v2) {
+			v1.position += v2.position;
+			v1.uv0 += v2.uv0;
+			v1.uv1 += v2.uv1;
+			return v1;
+		}
+
+		/// <summary>
+		/// Adds the position of a <c>Vector3</c> to a <see cref="UIVertex"/> and returns the result.
+		/// </summary>
+		/// <param name="v1">The <see cref="UIVertex"/> to translate.</param>
+		/// <param name="v2">The <see cref="Vector3"/> to translate by.</param>
+		/// <returns>The resulting <see cref="UIVertex"/> translated by <paramref name="v2"/>.</returns>
+		public static UIVertex Translate(UIVertex v1, Vector3 v2) {
+			v1.position += v2;
+			return v1;
 		}
 
 		/// <summary>
