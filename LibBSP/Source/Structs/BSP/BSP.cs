@@ -93,6 +93,10 @@ namespace LibBSP {
 		// MoHAA
 		private List<LODTerrain> _lodTerrains;
 		private List<StaticModel> _staticModels;
+		// CoD
+		private List<Patch> _patches;
+		private List<UIVertex> _patchVerts;
+		private NumList _patchIndices;
 		// Nightfire
 		private Textures _materials;
 		private NumList _indices;
@@ -482,6 +486,52 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// A <c>List</c> of <see cref="Patch"/> objects in the BSP file, if available.
+		/// </summary>
+		public List<Patch> patches {
+			get {
+				if (_patches == null) {
+					int index = Patch.GetIndexForLump(version);
+					if (index >= 0) {
+						_patches = Patch.LumpFactory(reader.ReadLump(this[index]), version, this[index].version);
+					}
+				}
+				return _patches;
+			}
+		}
+		
+		/// <summary>
+		/// A <c>List</c> of <see cref="UIVertex"/> objects in the BSP file representing the patch vertices of the BSP, if available.
+		/// </summary>
+		public List<UIVertex> patchVerts {
+			get {
+				if (_patchVerts == null) {
+					int index = UIVertexExtensions.GetIndexForPatchVertsLump(version);
+					if (index >= 0) {
+						_patchVerts = UIVertexExtensions.LumpFactory(reader.ReadLump(this[index]), version, 1);
+					}
+				}
+				return _patchVerts;
+			}
+		}
+
+		/// <summary>
+		/// A <see cref="NumList"/> object containing the Patch Vertex Indices lump, if available.
+		/// </summary>
+		public NumList patchIndices {
+			get {
+				if (_patchIndices == null) {
+					NumList.DataType type;
+					int index = NumList.GetIndexForPatchIndicesLump(version, out type);
+					if (index >= 0) {
+						_patchIndices = NumList.LumpFactory(reader.ReadLump(this[index]), type);
+					}
+				}
+				return _patchIndices;
+			}
+		}
+
+		/// <summary>
 		/// A <see cref="NumList"/> object containing the Face Vertex Indices lump, if available.
 		/// </summary>
 		public NumList indices {
@@ -772,8 +822,8 @@ namespace LibBSP {
 			}
 
 			// Get the index and length from the object
-			int index = (int)indexProperty.GetGetMethod().Invoke(o, null);
-			int count = (int)countProperty.GetGetMethod().Invoke(o, null);
+			int index = (int)(indexProperty.GetGetMethod().Invoke(o, null));
+			int count = (int)(countProperty.GetGetMethod().Invoke(o, null));
 
 			// Get the lump from this class
 			List<T> theLump = targetLump.GetGetMethod().Invoke(this, null) as List<T>;

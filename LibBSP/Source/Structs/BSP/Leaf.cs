@@ -90,6 +90,13 @@ namespace LibBSP {
 					numMarkBrushes = BitConverter.ToInt32(data, 44);
 					break;
 				}
+				case MapType.CoD: {
+					firstMarkFace = BitConverter.ToInt32(data, 8);
+					numMarkFaces = BitConverter.ToInt32(data, 12);
+					firstMarkBrush = BitConverter.ToInt32(data, 16);
+					numMarkBrushes = BitConverter.ToInt32(data, 20);
+					break;
+				}
 				default: {
 					throw new ArgumentException("Map type " + type + " isn't supported by the Leaf class.");
 				}
@@ -208,6 +215,9 @@ namespace LibBSP {
 				}
 				case MapType.Nightfire: {
 					return 11;
+				}
+				case MapType.CoD: {
+					return 21;
 				}
 				default: {
 					return -1;

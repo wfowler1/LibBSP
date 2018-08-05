@@ -74,6 +74,14 @@ namespace LibBSP {
 			lightMaps = -1;
 			patchSize = new Vector2(Single.NaN, Single.NaN);
 			switch (type) {
+				case MapType.CoD: {
+					texture = BitConverter.ToInt16(data, 0);
+					firstVertex = BitConverter.ToInt32(data, 4);
+					numVertices = BitConverter.ToInt16(data, 8);
+					numIndices = BitConverter.ToInt16(data, 10);
+					firstIndex = BitConverter.ToInt32(data, 12);
+					break;
+				}
 				case MapType.Quake:
 				case MapType.Quake2:
 				case MapType.Daikatana:
@@ -180,6 +188,10 @@ namespace LibBSP {
 			}
 			int structLength = 0;
 			switch (type) {
+				case MapType.CoD: {
+					structLength = 16;
+					break;
+				}
 				case MapType.Quake:
 				case MapType.Quake2:
 				case MapType.Daikatana: {
@@ -272,7 +284,8 @@ namespace LibBSP {
 				case MapType.Quake2:
 				case MapType.SiN:
 				case MapType.Daikatana:
-				case MapType.SoF: {
+				case MapType.SoF:
+				case MapType.CoD: {
 					return 6;
 				}
 				case MapType.Vindictus:

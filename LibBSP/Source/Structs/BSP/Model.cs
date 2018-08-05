@@ -22,6 +22,8 @@ namespace LibBSP {
 		[Count("brushes")] public int numBrushes { get; private set; }
 		[Index("faces")] public int firstFace { get; private set; } // Quake/GoldSrc
 		[Count("faces")] public int numFaces { get; private set; }
+		[Index("markSurfaces")] public int firstLeafPatch { get; private set; } // CoD
+		[Count("markSurfaces")] public int numLeafPatches { get; private set; }
 
 		/// <summary>
 		/// Creates a new <see cref="Model"/> object from a <c>byte</c> array.
@@ -42,6 +44,8 @@ namespace LibBSP {
 			numBrushes = -1;
 			firstFace = -1;
 			numFaces = -1;
+			firstLeafPatch = -1;
+			numLeafPatches = -1;
 			switch (type) {
 				case MapType.Quake: {
 					headNode = BitConverter.ToInt32(data, 36);
@@ -94,7 +98,13 @@ namespace LibBSP {
 					numBrushes = BitConverter.ToInt32(data, 36);
 					break;
 				}
-				case MapType.CoD:
+				case MapType.CoD: {
+					firstFace = BitConverter.ToInt32(data, 24);
+					numFaces = BitConverter.ToInt32(data, 28);
+					firstLeafPatch = BitConverter.ToInt32(data, 32);
+					numLeafPatches = BitConverter.ToInt32(data, 36);
+					goto case MapType.CoD2;
+				}
 				case MapType.CoD2:
 				case MapType.CoD4: {
 					firstBrush = BitConverter.ToInt32(data, 40);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LibBSP {
 	/// <summary>
-	/// Holds the data used by the brush structures of all formats of BSP.
+	/// Holds the data for a terrain object in MoHAA.
 	/// </summary>
 	public struct LODTerrain {
 

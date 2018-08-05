@@ -27,8 +27,8 @@ namespace LibBSP {
 			plane = BitConverter.ToInt32(data, 0); // All formats I've seen use the first 4 bytes as an int, plane index
 			switch (type) {
 				case MapType.Quake: {
-					this.child1 = BitConverter.ToInt16(data, 4);
-					this.child2 = BitConverter.ToInt16(data, 6);
+					child1 = BitConverter.ToInt16(data, 4);
+					child2 = BitConverter.ToInt16(data, 6);
 					break;
 				}
 				// These all use the first three ints for planenum and children
@@ -56,8 +56,8 @@ namespace LibBSP {
 				case MapType.Quake3:
 				case MapType.FAKK:
 				case MapType.CoD: {
-					this.child1 = BitConverter.ToInt32(data, 4);
-					this.child2 = BitConverter.ToInt32(data, 8);
+					child1 = BitConverter.ToInt32(data, 4);
+					child2 = BitConverter.ToInt32(data, 8);
 					break;
 				}
 				default: {
@@ -178,6 +178,9 @@ namespace LibBSP {
 				case MapType.STEF2:
 				case MapType.STEF2Demo: {
 					return 11;
+				}
+				case MapType.CoD: {
+					return 20;
 				}
 				default: {
 					return -1;

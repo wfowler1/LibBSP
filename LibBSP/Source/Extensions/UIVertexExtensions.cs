@@ -107,9 +107,17 @@ namespace LibBSP {
 			}
 			UIVertex result = new UIVertex();
 			switch (type) {
+				case MapType.CoD: {
+					if (version == 0) {
+						goto case MapType.Quake3;
+					} else if (version == 1) {
+						result.color = Color32Extensions.FromArgb(255, 255, 255, 255);
+						goto case MapType.DMoMaM;
+					}
+					break;
+				}
 				case MapType.MOHAA:
 				case MapType.Quake3:
-				case MapType.CoD:
 				case MapType.CoD2:
 				case MapType.CoD4:
 				case MapType.FAKK: {
@@ -194,9 +202,16 @@ namespace LibBSP {
 					structLength = 12;
 					break;
 				}
+				case MapType.CoD: {
+					if (version == 0) {
+						goto case MapType.Quake3;
+					} else if (version == 1) {
+						goto case MapType.DMoMaM;
+					}
+					break;
+				}
 				case MapType.MOHAA:
 				case MapType.Quake3:
-				case MapType.CoD:
 				case MapType.FAKK: {
 					structLength = 44;
 					break;
@@ -224,7 +239,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets the index for this lump in the BSP file for a specific map format.
+		/// Gets the index for the vertices lump in the BSP file for a specific map format.
 		/// </summary>
 		/// <param name="type">The map type.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
@@ -260,9 +275,28 @@ namespace LibBSP {
 				case MapType.STEF2Demo: {
 					return 6;
 				}
+				case MapType.CoD: {
+					return 7;
+				}
 				case MapType.Raven:
 				case MapType.Quake3: {
 					return 10;
+				}
+				default: {
+					return -1;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the index for the patch vertices lump in the BSP file for a specific map format.
+		/// </summary>
+		/// <param name="type">The map type.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
+		public static int GetIndexForPatchVertsLump(MapType type) {
+			switch (type) {
+				case MapType.CoD: {
+					return 25;
 				}
 				default: {
 					return -1;

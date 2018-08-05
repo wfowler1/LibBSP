@@ -150,6 +150,10 @@ namespace LibBSP {
 					dataType = DataType.UInt16;
 					return 16;
 				}
+				case MapType.CoD: {
+					dataType = DataType.UInt32;
+					return 23;
+				}
 			}
 			dataType = DataType.Invalid;
 			return -1;
@@ -239,6 +243,10 @@ namespace LibBSP {
 					dataType = DataType.UInt16;
 					return 17;
 				}
+				case MapType.CoD: {
+					dataType = DataType.UInt32;
+					return 22;
+				}
 			}
 			dataType = DataType.Invalid;
 			return -1;
@@ -266,10 +274,31 @@ namespace LibBSP {
 					dataType = DataType.UInt32;
 					return 7;
 				}
+				case MapType.CoD: {
+					dataType = DataType.UInt16;
+					return 8;
+				}
 				case MapType.Raven:
 				case MapType.Quake3: {
 					dataType = DataType.UInt32;
 					return 11;
+				}
+			}
+			dataType = DataType.Invalid;
+			return -1;
+		}
+
+		/// <summary>
+		/// Gets the index for the patch indices lump in the BSP file for a specific map format, and the type of data the format uses.
+		/// </summary>
+		/// <param name="version">The map type.</param>
+		/// <param name="dataType"><c>out</c> parameter that will contain the data type this version uses.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
+		public static int GetIndexForPatchIndicesLump(MapType version, out DataType dataType) {
+			switch (version) {
+				case MapType.CoD: {
+					dataType = DataType.UInt16;
+					return 26;
 				}
 			}
 			dataType = DataType.Invalid;
