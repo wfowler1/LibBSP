@@ -9,6 +9,7 @@ namespace LibBSP {
 	/// range of objects from the specified lump through the
 	/// <see cref="BSP.GetReferencedObjects&lt;T&gt;(System.Object, System.String)"/> method.
 	/// </summary>
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 	public class CountAttribute : Attribute {
 
 		public string lumpName;

@@ -1,26 +1,27 @@
-#if (UNITY_2_6 || UNITY_2_6_1 || UNITY_3_0 || UNITY_3_0_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER)
+#if UNITY_2_6 || UNITY_2_6_1 || UNITY_3_0 || UNITY_3_0_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER
 #define UNITY
 #endif
+
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Globalization;
+#if UNITY
+using UnityEngine;
+#endif
 
 namespace LibBSP {
-#if !UNITY
-	using Vector2 = Vector2d;
-	using Vector3 = Vector3d;
+#if UNITY
+	using Vector2d = Vector2;
+	using Vector3d = Vector3;
 #endif
+
 	/// <summary>
 	/// Class containing all data necessary to render a Terrain from MoHAA.
 	/// </summary>
 	[Serializable] public class MAPTerrainMoHAA {
 
-		private static IFormatProvider _format = CultureInfo.CreateSpecificCulture("en-US");
-
-		public Vector2 size;
+		public Vector2d size;
 		public int flags;
-		public Vector3 origin;
+		public Vector3d origin;
 		public List<Partition> partitions;
 		public List<Vertex> vertices;
 
@@ -40,6 +41,9 @@ namespace LibBSP {
 			// TODO: Constructor to parse text
 		}
 
+		/// <summary>
+		/// Class containing the data for a partition of a <see cref="MAPTerrainMoHAA"/>.
+		/// </summary>
 		[Serializable] public class Partition {
 			public int unknown1;
 			public int unknown2;
@@ -68,6 +72,9 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// Class containing the data for a vertex of a <see cref="MAPTerrainMoHAA"/>.
+		/// </summary>
 		[Serializable] public class Vertex {
 			public int height;
 			public string unknown1;
@@ -79,5 +86,6 @@ namespace LibBSP {
 				unknown2 = "";
 			}
 		}
+
 	}
 }

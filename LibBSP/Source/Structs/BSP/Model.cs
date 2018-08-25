@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace LibBSP {
+
 	/// <summary>
 	/// A class containing all data needed for the models lump in any given BSP.
 	/// </summary>
@@ -178,13 +179,12 @@ namespace LibBSP {
 					throw new ArgumentException("Map type " + type + " isn't supported by the Leaf lump factory.");
 				}
 			}
-			int offset = 0;
-			List<Model> lump = new List<Model>(data.Length / structLength);
+			int numObjects = data.Length / structLength;
+			List<Model> lump = new List<Model>(numObjects);
 			byte[] bytes = new byte[structLength];
-			for (int i = 0; i < data.Length / structLength; ++i) {
+			for (int i = 0; i < numObjects; ++i) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				lump.Add(new Model(bytes, type, version));
-				offset += structLength;
 			}
 			return lump;
 		}
@@ -242,5 +242,6 @@ namespace LibBSP {
 				}
 			}
 		}
+
 	}
 }

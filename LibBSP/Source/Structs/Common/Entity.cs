@@ -3,7 +3,6 @@
 #endif
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.Serialization;
@@ -13,10 +12,11 @@ using UnityEngine;
 #endif
 
 namespace LibBSP {
-#if !UNITY
-	using Vector3 = Vector3d;
-	using Vector4 = Vector4d;
+#if UNITY
+	using Vector3d = Vector3;
+	using Vector4d = Vector4;
 #endif
+
 	/// <summary>
 	/// Class containing all data for a single <see cref="Entity"/>, including attributes, Source Entity I/O connections and solids.
 	/// </summary>
@@ -41,7 +41,7 @@ namespace LibBSP {
 			get {
 				try {
 					if (ContainsKey("spawnflags")) {
-						return System.UInt32.Parse(this["spawnflags"]);
+						return uint.Parse(this["spawnflags"]);
 					} else {
 						return 0;
 					}
@@ -55,7 +55,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Wrapper for the "origin" attribute.
 		/// </summary>
-		public Vector3 origin {
+		public Vector3d origin {
 			get { return GetVector("origin"); }
 			set { this["origin"] = value.x + " " + value.y + " " + value.z; }
 		}
@@ -63,7 +63,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Wrapper for the "angles" attribute.
 		/// </summary>
-		public Vector3 angles {
+		public Vector3d angles {
 			get { return GetVector("angles"); }
 			set { this["angles"] = value.x + " " + value.y + " " + value.z; }
 		}
@@ -114,7 +114,7 @@ namespace LibBSP {
 							string st = this["model"];
 							if (st[0] == '*') {
 								int ret = -1;
-								if (Int32.TryParse(st.Substring(1), out ret)) {
+								if (int.TryParse(st.Substring(1), out ret)) {
 									return ret;
 								} else {
 									return -1;
@@ -351,8 +351,8 @@ namespace LibBSP {
 								target = connection[0],
 								action = connection[1],
 								param = connection[2],
-								delay = Double.Parse(connection[3], _format),
-								fireOnce = Int32.Parse(connection[4]),
+								delay = double.Parse(connection[3], _format),
+								fireOnce = int.Parse(connection[4]),
 								unknown0 = connection.Length > 5 ? connection[5] : "",
 								unknown1 = connection.Length > 6 ? connection[6] : "",
 							});
@@ -444,7 +444,7 @@ namespace LibBSP {
 		/// <returns>The numeric value of the value corresponding to <paramref name="key"/>.</returns>
 		public float GetFloat(string key, float? failDefault = null) {
 			try {
-				return Single.Parse(this[key], _format);
+				return float.Parse(this[key], _format);
 			} catch (Exception e) {
 				if (!failDefault.HasValue) {
 					throw e;
@@ -462,7 +462,7 @@ namespace LibBSP {
 		/// <returns>The numeric value of the value corresponding to <paramref name="key"/>.</returns>
 		public int GetInt(string key, int? failDefault = null) {
 			try {
-				return Int32.Parse(this[key], _format);
+				return int.Parse(this[key], _format);
 			} catch (Exception e) {
 				if (!failDefault.HasValue) {
 					throw e;
@@ -472,23 +472,23 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets a Vector attribute as a <see cref="Vector4"/>. This will only read as many values as are in the attribute.
+		/// Gets a Vector attribute as a <see cref="Vector4d"/>. This will only read as many values as are in the attribute.
 		/// </summary>
 		/// <param name="key">Name of the attribute to retrieve.</param>
 		/// <returns>Vector representation of the components of the attribute.</returns>
-		public Vector4 GetVector(string key) {
+		public Vector4d GetVector(string key) {
 			float[] results = new float[4];
 			if (ContainsKey(key) && !string.IsNullOrEmpty(this[key])) {
 				string[] nums = this[key].Split(' ');
 				for (int i = 0; i < results.Length && i < nums.Length; ++i) {
 					try {
-						results[i] = Single.Parse(nums[i], _format);
+						results[i] = float.Parse(nums[i], _format);
 					} catch {
 						results[i] = 0;
 					}
 				}
 			}
-			return new Vector4(results[0], results[1], results[2], results[3]);
+			return new Vector4d(results[0], results[1], results[2], results[3]);
 		}
 
 		#region IComparable

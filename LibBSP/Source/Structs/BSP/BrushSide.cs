@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace LibBSP {
+
 	/// <summary>
 	/// Holds the data used by the brush side structures of all formats of BSP.
 	/// </summary>
@@ -161,9 +162,10 @@ namespace LibBSP {
 					throw new ArgumentException("Map type " + type + " isn't supported by the BrushSide lump factory.");
 				}
 			}
-			List<BrushSide> lump = new List<BrushSide>(data.Length / structLength);
+			int numObjects = data.Length / structLength;
+			List<BrushSide> lump = new List<BrushSide>(numObjects);
 			byte[] bytes = new byte[structLength];
-			for (int i = 0; i < data.Length / structLength; i++) {
+			for (int i = 0; i < numObjects; i++) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				lump.Add(new BrushSide(bytes, type, version));
 			}

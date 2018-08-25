@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace LibBSP {
+
 	/// <summary>
 	/// Class representing a group of <see cref="DisplacementVertex"/> objects. Contains helpful methods to handle Displacement Vertices in the <c>List</c>.
 	/// </summary>
@@ -20,7 +21,8 @@ namespace LibBSP {
 			}
 			int structLength = 20;
 			byte[] bytes = new byte[structLength];
-			for (int i = 0; i < data.Length / structLength; ++i) {
+			int numObjects = data.Length / structLength;
+			for (int i = 0; i < numObjects; ++i) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				Add(new DisplacementVertex(bytes, type, version));
 			}

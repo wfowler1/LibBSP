@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace LibBSP {
+
 	/// <summary>
 	/// <c>List</c>&lt;<see cref="Texture"/>&gt; with some useful methods for manipulating <see cref="Texture"/> objects,
 	/// especially when handling them as a group.
@@ -64,13 +65,13 @@ namespace LibBSP {
 				case MapType.Vindictus:
 				case MapType.DMoMaM: {
 					int offset = 0;
-					byte[] bytes;
+					byte[] myBytes;
 					for (int i = 0; i < data.Length; ++i) {
 						if (data[i] == (byte)0x00) {
 							// They are null-terminated strings, of non-constant length (not padded)
-							bytes = new byte[i - offset];
-							Array.Copy(data, offset, bytes, 0, i - offset);
-							Add(new Texture(bytes, type, version));
+							myBytes = new byte[i - offset];
+							Array.Copy(data, offset, myBytes, 0, i - offset);
+							Add(new Texture(myBytes, type, version));
 							offset = i + 1;
 						}
 					}
@@ -79,24 +80,23 @@ namespace LibBSP {
 				case MapType.Quake: {
 					int numElements = BitConverter.ToInt32(data, 0);
 					structLength = 40;
-					byte[] bytes = new byte[structLength];
+					byte[] myBytes = new byte[structLength];
 					for (int i = 0; i < numElements; ++i) {
-						Array.Copy(data, BitConverter.ToInt32(data, (i + 1) * 4), bytes, 0, structLength);
-						Add(new Texture(bytes, type, version));
+						Array.Copy(data, BitConverter.ToInt32(data, (i + 1) * 4), myBytes, 0, structLength);
+						Add(new Texture(myBytes, type, version));
 					}
 					return;
 				}
 				default: {
-					throw new ArgumentException("Map type " + type + " isn't supported by the Node class.");
+					throw new ArgumentException("Map type " + type + " doesn't use a Texture lump or the lump is unknown.");
 				}
 			}
 
-			{
-				byte[] bytes = new byte[structLength];
-				for (int i = 0; i < data.Length / structLength; ++i) {
-					Array.Copy(data, (i * structLength), bytes, 0, structLength);
-					Add(new Texture(bytes, type, version));
-				}
+			int numObjects = data.Length / structLength;
+			byte[] bytes = new byte[structLength];
+			for (int i = 0; i < numObjects; ++i) {
+				Array.Copy(data, (i * structLength), bytes, 0, structLength);
+				Add(new Texture(bytes, type, version));
 			}
 		}
 
@@ -136,5 +136,6 @@ namespace LibBSP {
 			// If we get here, the requested texture didn't exist.
 			return -1;
 		}
+
 	}
 }

@@ -9,15 +9,16 @@ using UnityEngine;
 #endif
 
 namespace LibBSP {
-#if !UNITY
-	using Vector3 = Vector3d;
+#if UNITY
+	using Vector3d = Vector3;
 #endif
+
 	/// <summary>
 	/// Holds all data for a Displacement from Source engine.
 	/// </summary>
 	public struct DisplacementInfo {
 
-		public Vector3 startPosition { get; private set; }
+		public Vector3d startPosition { get; private set; }
 		public int dispVertStart { get; private set; }
 		public int dispTriStart { get; private set; }
 		public int power { get; private set; }
@@ -41,7 +42,7 @@ namespace LibBSP {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			startPosition = new Vector3(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
+			startPosition = new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
 			dispVertStart = BitConverter.ToInt32(data, 12);
 			dispTriStart = BitConverter.ToInt32(data, 16);
 			power = BitConverter.ToInt32(data, 20);
@@ -130,13 +131,12 @@ namespace LibBSP {
 					throw new ArgumentException("Map type " + type + " isn't supported by the SourceDispInfo lump factory.");
 				}
 			}
-			int offset = 0;
-			List<DisplacementInfo> lump = new List<DisplacementInfo>(data.Length / structLength);
+			int numObjects = data.Length / structLength;
+			List<DisplacementInfo> lump = new List<DisplacementInfo>(numObjects);
 			byte[] bytes = new byte[structLength];
-			for (int i = 0; i < data.Length / structLength; ++i) {
+			for (int i = 0; i < numObjects; ++i) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				lump.Add(new DisplacementInfo(bytes, type, version));
-				offset += structLength;
 			}
 			return lump;
 		}

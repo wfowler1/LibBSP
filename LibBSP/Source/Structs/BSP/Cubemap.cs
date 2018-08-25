@@ -9,15 +9,16 @@ using UnityEngine;
 #endif
 
 namespace LibBSP {
-#if !UNITY
-	using Vector3 = Vector3d;
+#if UNITY
+	using Vector3d = Vector3;
 #endif
+
 	/// <summary>
 	/// Holds all data for a Cubemap from Source engine.
 	/// </summary>
 	public struct Cubemap {
 
-		public Vector3 origin { get; private set; }
+		public Vector3d origin { get; private set; }
 		public int size { get; private set; }
 
 		/// <summary>
@@ -45,7 +46,7 @@ namespace LibBSP {
 				case MapType.L4D2:
 				case MapType.Vindictus:
 				case MapType.DMoMaM: {
-					origin = new Vector3(BitConverter.ToInt32(data, 0), BitConverter.ToInt32(data, 4), BitConverter.ToInt32(data, 8));
+					origin = new Vector3d(BitConverter.ToInt32(data, 0), BitConverter.ToInt32(data, 4), BitConverter.ToInt32(data, 8));
 					size = BitConverter.ToInt32(data, 12);
 					break;
 				}
@@ -89,13 +90,12 @@ namespace LibBSP {
 					throw new ArgumentException("Map type " + type + " isn't supported by the SourceCubemap lump factory.");
 				}
 			}
-			int offset = 0;
-			List<Cubemap> lump = new List<Cubemap>(data.Length / structLength);
+			int numObjects = data.Length / structLength;
+			List<Cubemap> lump = new List<Cubemap>(numObjects);
 			byte[] bytes = new byte[structLength];
-			for (int i = 0; i < data.Length / structLength; ++i) {
+			for (int i = 0; i < numObjects; ++i) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				lump.Add(new Cubemap(bytes, type, version));
-				offset += structLength;
 			}
 			return lump;
 		}

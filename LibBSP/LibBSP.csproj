@@ -45,12 +45,11 @@
   <ItemGroup>
     <Compile Include="Source\Attributes\CountAttribute.cs" />
     <Compile Include="Source\Attributes\IndexAttribute.cs" />
-    <Compile Include="Source\Extensions\Color32Extensions.cs" />
+    <Compile Include="Source\Extensions\ColorExtensions.cs" />
     <Compile Include="Source\Extensions\CustomAttributeExtensions.cs" />
     <Compile Include="Source\Extensions\PlaneExtensions.cs" />
-    <Compile Include="Source\Extensions\RectExtensions.cs" />
     <Compile Include="Source\Extensions\StringExtensions.cs" />
-    <Compile Include="Source\Extensions\UIVertexExtensions.cs" />
+    <Compile Include="Source\Extensions\VertexExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\Structs\BSP\Brush.cs" />
     <Compile Include="Source\Structs\BSP\BrushSide.cs" />
@@ -72,19 +71,18 @@
     <Compile Include="Source\Structs\BSP\StaticModel.cs" />
     <Compile Include="Source\Structs\BSP\StaticProp.cs" />
     <Compile Include="Source\Structs\BSP\TextureData.cs" />
-    <Compile Include="Source\Structs\BSP\TextureInfo.cs" />
+    <Compile Include="Source\Structs\Common\TextureInfo.cs" />
     <Compile Include="Source\Structs\BSP\Texture.cs" />
     <Compile Include="Source\Structs\Common\Entity.cs" />
     <Compile Include="Source\Structs\Common\Lumps\Entities.cs" />
     <Compile Include="Source\Structs\Common\Lumps\NumList.cs" />
-    <Compile Include="Source\Structs\Common\Rect.cs" />
     <Compile Include="Source\Structs\MAP\MAPBrush.cs" />
     <Compile Include="Source\Structs\MAP\MAPBrushSide.cs" />
     <Compile Include="Source\Structs\MAP\MAPDisplacement.cs" />
     <Compile Include="Source\Structs\MAP\MAPPatch.cs" />
     <Compile Include="Source\Structs\Common\Plane.cs" />
     <Compile Include="Source\Structs\Common\Ray.cs" />
-    <Compile Include="Source\Structs\Common\UIVertex.cs" />
+    <Compile Include="Source\Structs\Common\Vertex.cs" />
     <Compile Include="Source\Structs\Common\Vector2d.cs" />
     <Compile Include="Source\Structs\Common\Vector4d.cs" />
     <Compile Include="Source\Structs\Common\Vector3d.cs" />

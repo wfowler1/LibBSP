@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 
 namespace LibBSP {
+
 	/// <summary>
 	/// Static class containing helper methods for <c>string</c> objects.
 	/// </summary>
 	public static class StringExtensions {
+
 		/// <summary>
 		/// Splits a <c>string</c> using a Unicode character, unless that character is between two instances of a container.
 		/// </summary>
@@ -139,7 +141,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Parses the <c>bytes</c> in a <c>byte</c> array into an ASCII <c>string</c>.
+		/// Parses the <c>byte</c>s in a <c>byte</c> array into an ASCII <c>string</c>.
 		/// </summary>
 		/// <param name="bytes"><c>byte</c>s to parse.</param>
 		/// <returns>The resulting <c>string</c>.</returns>
@@ -150,6 +152,6 @@ namespace LibBSP {
 			}
 			return sb.ToString();
 		}
-	}
 
+	}
 }

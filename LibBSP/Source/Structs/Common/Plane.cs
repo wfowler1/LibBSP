@@ -1,8 +1,8 @@
-#if !(UNITY || UNITY_2_6 || UNITY_2_6_1 || UNITY_3_0 || UNITY_3_0_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER)
+#if !(UNITY_2_6 || UNITY_2_6_1 || UNITY_3_0 || UNITY_3_0_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER)
 using System;
-using System.Collections.Generic;
 
 namespace LibBSP {
+
 	/// <summary>
 	/// Holds the data for a plane in 3D space in Hesse Normal Form.
 	/// </summary>
@@ -96,9 +96,9 @@ namespace LibBSP {
 		/// <param name="normal">Normal of this <see cref="Plane"/>.</param>
 		/// <param name="dist">Distance from the origin to this <see cref="Plane"/>.</param>
 		public Plane(Vector3d normal, double dist) {
-			this._normal = new Vector3d(normal);
+			_normal = new Vector3d(normal);
 			_normal.Normalize();
-			this.distance = dist;
+			distance = dist;
 		}
 
 		/// <summary>
@@ -123,9 +123,9 @@ namespace LibBSP {
 		/// <param name="normal">Normal of this <see cref="Plane"/>.</param>
 		/// <param name="point">A point on this <see cref="Plane"/>.</param>
 		public Plane(Vector3d normal, Vector3d point) {
-			this._normal = normal;
+			_normal = normal;
 			_normal.Normalize();
-			this.distance = point * normal;
+			distance = point * normal;
 		}
 
 		/// <summary>
@@ -153,7 +153,7 @@ namespace LibBSP {
 		/// <param name="obj"><c>object</c> to compare to.</param>
 		/// <returns>Whether <paramref name="obj"/> is a <see cref="Plane"/> and is equal to this <see cref="Plane"/>.</returns>
 		public override bool Equals(object obj) {
-			if (object.ReferenceEquals(obj, null) || !GetType().IsAssignableFrom(obj.GetType())) { return false; }
+			if (ReferenceEquals(obj, null) || !GetType().IsAssignableFrom(obj.GetType())) { return false; }
 			return Equals((Plane)obj);
 		}
 
@@ -210,9 +210,9 @@ namespace LibBSP {
 		/// <returns>Signed distance from this <see cref="Plane"/> to the given point.</returns>
 		public double GetDistanceToPoint(Vector3d to) {
 			// Ax + By + Cz - d = DISTANCE = normDOTpoint - d
-			double normLength = System.Math.Pow(normal.x, 2) + System.Math.Pow(normal.y, 2) + System.Math.Pow(normal.z, 2);
-			if (System.Math.Abs(normLength - 1.00) > 0.01) {
-				normLength = System.Math.Sqrt(normLength);
+			double normLength = Math.Pow(normal.x, 2) + Math.Pow(normal.y, 2) + Math.Pow(normal.z, 2);
+			if (Math.Abs(normLength - 1.00) > 0.01) {
+				normLength = Math.Sqrt(normLength);
 			}
 			return (normal.x * to.x + normal.y * to.y + normal.z * to.z - distance) / normLength;
 		}

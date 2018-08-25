@@ -9,8 +9,8 @@ using UnityEngine;
 #endif
 
 namespace LibBSP {
-#if !UNITY
-	using Vector3 = Vector3d;
+#if UNITY
+	using Vector3d = Vector3;
 #endif
 
 	/// <summary>
@@ -18,7 +18,7 @@ namespace LibBSP {
 	/// </summary>
 	public struct TextureData {
 
-		public Vector3 reflectivity { get; private set; }
+		public Vector3d reflectivity { get; private set; }
 		public int stringTableIndex { get; private set; }
 		public int width { get; private set; }
 		public int height { get; private set; }
@@ -36,7 +36,7 @@ namespace LibBSP {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			reflectivity = new Vector3(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
+			reflectivity = new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
 			stringTableIndex = BitConverter.ToInt32(data, 12);
 			width = BitConverter.ToInt32(data, 16);
 			height = BitConverter.ToInt32(data, 20);
@@ -57,9 +57,10 @@ namespace LibBSP {
 				throw new ArgumentNullException();
 			}
 			int structLength = 32;
-			List<TextureData> lump = new List<TextureData>(data.Length / structLength);
+			int numObjects = data.Length / structLength;
+			List<TextureData> lump = new List<TextureData>(numObjects);
 			byte[] bytes = new byte[structLength];
-			for (int i = 0; i < data.Length / structLength; i++) {
+			for (int i = 0; i < numObjects; i++) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				lump.Add(new TextureData(bytes, type, version));
 			}
@@ -92,5 +93,6 @@ namespace LibBSP {
 				}
 			}
 		}
+
 	}
 }

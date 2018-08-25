@@ -1,8 +1,10 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Text;
 
 namespace LibBSP {
+
 	/// <summary>
 	/// Class representing a group of <see cref="Entity"/> objects. Contains helpful methods to handle Entities in the <c>List</c>.
 	/// </summary>
@@ -49,7 +51,7 @@ namespace LibBSP {
 			// all text between them.
 			char currentChar;
 			// This will be the resulting entity, fed into Entity.FromString
-			System.Text.StringBuilder current = new System.Text.StringBuilder();
+			StringBuilder current = new StringBuilder();
 
 			for (int offset = 0; offset < data.Length; ++offset) {
 				currentChar = (char)data[offset];
@@ -88,7 +90,7 @@ namespace LibBSP {
 						if (offset == 0 || (char)data[offset - 1] == '\n' || (char)data[offset - 1] == '\t' || (char)data[offset - 1] == ' ' || (char)data[offset - 1] == '\r') {
 							--braceCount;
 							if (braceCount == 0) {
-								this.Add(Entity.FromString(current.ToString()));
+								Add(Entity.FromString(current.ToString()));
 								// Reset StringBuilder
 								current.Length = 0;
 							}
@@ -108,7 +110,7 @@ namespace LibBSP {
 		/// <param name="key">Attribute to match.</param>
 		/// <param name="value">Desired value of attribute.</param>
 		public void RemoveAllWithAttribute(string key, string value) {
-			this.RemoveAll(entity => { return entity[key].Equals(value, StringComparison.InvariantCultureIgnoreCase); });
+			RemoveAll(entity => { return entity[key].Equals(value, StringComparison.InvariantCultureIgnoreCase); });
 		}
 
 		/// <summary>

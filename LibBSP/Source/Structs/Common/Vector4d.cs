@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 
 namespace LibBSP {
-	using Color32 = Color;
+
 	/// <summary>
 	/// Holds four <c>double</c>s representing a 4-dimensional vector.
 	/// </summary>
@@ -332,7 +332,7 @@ namespace LibBSP {
 			return Scale(v1, 1.0 / divisor);
 		}
 
-		#region IEquatable
+#region IEquatable
 		/// <summary>
 		/// Equivalency. Returns <c>true</c> if the components of two vectors are equal or approximately equal.
 		/// </summary>
@@ -437,7 +437,7 @@ namespace LibBSP {
 			return 4.0 * a * a * b * b - Math.Pow((a * a) + (b * b) - (c * c), 2);
 		}
 
-		#region IEnumerable
+#region IEnumerable
 		/// <summary>
 		/// Allows enumeration through the components of a <see cref="Vector4d"/> using a foreach loop.
 		/// </summary>
@@ -462,7 +462,7 @@ namespace LibBSP {
 			yield return z;
 			yield return w;
 		}
-		#endregion
+#endregion
 
 		/// <summary>
 		/// Implicitly converts this <see cref="Vector4d"/> into a <see cref="Vector2d"/>. This will be called when Vector2d v2 = v4 is used.
@@ -488,8 +488,8 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="v"><see cref="Vector4d"/> to convert.</param>
 		/// <returns>This <see cref="Vector4d"/> in a <c>Color</c> object interpreted as RGBA.</returns>
-		public static implicit operator Color32(Vector4d v) {
-			return Color32Extensions.FromArgb((int)Math.Max(v.w, 255), (int)Math.Max(v.x, 255), (int)Math.Max(v.y, 255), (int)Math.Max(v.z, 255));
+		public static implicit operator Color(Vector4d v) {
+			return ColorExtensions.FromArgb((int)Math.Max(v.w, 255), (int)Math.Max(v.x, 255), (int)Math.Max(v.y, 255), (int)Math.Max(v.z, 255));
 		}
 	}
 }

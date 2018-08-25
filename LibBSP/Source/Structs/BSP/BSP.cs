@@ -1,5 +1,8 @@
-#if (UNITY_2_6 || UNITY_2_6_1 || UNITY_3_0 || UNITY_3_0_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER)
+#if UNITY_2_6 || UNITY_2_6_1 || UNITY_3_0 || UNITY_3_0_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER
 #define UNITY
+#if !(UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER)
+#define OLDUNITY
+#endif
 #endif
 
 using System;
@@ -11,9 +14,10 @@ using UnityEngine;
 #endif
 
 namespace LibBSP {
-#if !UNITY
-	using Vector3 = Vector3d;
+#if UNITY && !OLDUNITY
+	using Vertex = UIVertex;
 #endif
+
 	/// <summary>
 	/// Enum of the known different map formats.
 	/// </summary>
@@ -52,7 +56,7 @@ namespace LibBSP {
 	}
 
 	/// <summary>
-	/// Struct containing basic information for a lump in a BSP file.
+	/// Class containing basic information for a lump in a BSP file.
 	/// </summary>
 	public class LumpInfo {
 		public int ident;
@@ -64,7 +68,7 @@ namespace LibBSP {
 	}
 
 	/// <summary>
-	/// Holds data for any and all BSP formats. Any unused lumps in a given format
+	/// Holds data for any and all supported BSP formats. Any unused lumps in a given format
 	/// will be left as null.
 	/// </summary>
 	public class BSP : Dictionary<int, LumpInfo> {
@@ -76,7 +80,7 @@ namespace LibBSP {
 		private Entities _entities;
 		private List<Plane> _planes;
 		private Textures _textures;
-		private List<UIVertex> _vertices;
+		private List<Vertex> _vertices;
 		private List<Node> _nodes;
 		private List<TextureInfo> _texInfo;
 		private List<Face> _faces;
@@ -95,7 +99,7 @@ namespace LibBSP {
 		private List<StaticModel> _staticModels;
 		// CoD
 		private List<Patch> _patches;
-		private List<UIVertex> _patchVerts;
+		private List<Vertex> _patchVerts;
 		private NumList _patchIndices;
 		// Nightfire
 		private Textures _materials;
@@ -183,14 +187,14 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// A <c>List</c> of <see cref="UIVertex"/> objects in the BSP file representing the vertices of the BSP, if available.
+		/// A <c>List</c> of <see cref="Vertex"/> objects in the BSP file representing the vertices of the BSP, if available.
 		/// </summary>
-		public List<UIVertex> vertices {
+		public List<Vertex> vertices {
 			get {
 				if (_vertices == null) {
-					int index = UIVertexExtensions.GetIndexForLump(version);
+					int index = VertexExtensions.GetIndexForLump(version);
 					if (index >= 0) {
-						_vertices = UIVertexExtensions.LumpFactory(reader.ReadLump(this[index]), version, this[index].version);
+						_vertices = VertexExtensions.LumpFactory(reader.ReadLump(this[index]), version, this[index].version);
 					}
 				}
 				return _vertices;
@@ -501,14 +505,14 @@ namespace LibBSP {
 		}
 		
 		/// <summary>
-		/// A <c>List</c> of <see cref="UIVertex"/> objects in the BSP file representing the patch vertices of the BSP, if available.
+		/// A <c>List</c> of <see cref="Vertex"/> objects in the BSP file representing the patch vertices of the BSP, if available.
 		/// </summary>
-		public List<UIVertex> patchVerts {
+		public List<Vertex> patchVerts {
 			get {
 				if (_patchVerts == null) {
-					int index = UIVertexExtensions.GetIndexForPatchVertsLump(version);
+					int index = VertexExtensions.GetIndexForPatchVertsLump(version);
 					if (index >= 0) {
-						_patchVerts = UIVertexExtensions.LumpFactory(reader.ReadLump(this[index]), version, 1);
+						_patchVerts = VertexExtensions.LumpFactory(reader.ReadLump(this[index]), version, 1);
 					}
 				}
 				return _patchVerts;
@@ -699,7 +703,7 @@ namespace LibBSP {
 		/// <param name="file">A reference to the .BSP file.</param>
 		public BSP(FileInfo file) : base(16) {
 			reader = new BSPReader(file);
-			this.filePath = file.FullName;
+			filePath = file.FullName;
 		}
 
 		/// <summary>
@@ -830,5 +834,6 @@ namespace LibBSP {
 			
 			return theLump.GetRange(index, count);
 		}
+
 	}
 }

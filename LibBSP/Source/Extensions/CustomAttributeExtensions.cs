@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 
 namespace LibBSP {
+
 	/// <summary>
 	/// Contains static methods for retrieving custom attributes.
 	/// </summary>

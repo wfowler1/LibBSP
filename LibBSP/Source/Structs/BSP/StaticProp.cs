@@ -3,22 +3,22 @@
 #endif
 
 using System;
-using System.Collections.Generic;
 #if UNITY
 using UnityEngine;
 #endif
 
 namespace LibBSP {
-#if !UNITY
-	using Vector3 = Vector3d;
+#if UNITY
+	using Vector3d = Vector3;
 #endif
+
 	/// <summary>
 	/// Handles the data needed for a static prop object.
 	/// </summary>
 	public struct StaticProp {
 
-		public Vector3 origin { get; private set; }
-		public Vector3 angles { get; private set; }
+		public Vector3d origin { get; private set; }
+		public Vector3d angles { get; private set; }
 		public short dictionaryEntry { get; private set; }
 		public byte solidity { get; private set; }
 		public byte flags { get; private set; }
@@ -40,8 +40,8 @@ namespace LibBSP {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			origin = Vector3.zero;
-			angles = Vector3.zero;
+			origin = Vector3d.zero;
+			angles = Vector3d.zero;
 			dictionaryEntry = 0;
 			solidity = 0;
 			flags = 0;
@@ -85,8 +85,8 @@ namespace LibBSP {
 							goto case 4;
 						}
 						case 4: {
-							origin = new Vector3(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
-							angles = new Vector3(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20));
+							origin = new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
+							angles = new Vector3d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20));
 							dictionaryEntry = BitConverter.ToInt16(data, 24);
 							solidity = data[30];
 							flags = data[31];
@@ -114,5 +114,6 @@ namespace LibBSP {
 		public static StaticProps LumpFactory(byte[] data, MapType type, int version = 0) {
 			return new StaticProps(data, type, version);
 		}
+
 	}
 }

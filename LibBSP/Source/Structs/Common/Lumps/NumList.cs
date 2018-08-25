@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace LibBSP {
+
 	/// <summary>
 	/// List class for numbers. Can handle any integer data type except <c>ulong</c>.
 	/// </summary>

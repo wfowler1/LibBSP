@@ -1,20 +1,19 @@
-#if (UNITY_2_6 || UNITY_2_6_1 || UNITY_3_0 || UNITY_3_0_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER)
+#if UNITY_2_6 || UNITY_2_6_1 || UNITY_3_0 || UNITY_3_0_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER
 #define UNITY
 #endif
+
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 #if UNITY
 using UnityEngine;
-#else
-using System.Drawing;
 #endif
 
 namespace LibBSP {
-#if !UNITY
-	using Vector4 = Vector4d;
-	using Vector3 = Vector3d;
+#if UNITY
+	using Vector4d = Vector4;
+	using Vector3d = Vector3;
 #endif
+
 	/// <summary>
 	/// Class containing all data necessary to render a Terrain from Star Trek EF2.
 	/// </summary>
@@ -31,11 +30,11 @@ namespace LibBSP {
 		public double texScaleY;
 		public int flags;
 		public double sideLength;
-		public Vector3 start;
-		public Vector4 IF;
-		public Vector4 LF;
-		public float[][] heightMap;
-		public float[][] alphaMap;
+		public Vector3d start;
+		public Vector4d IF;
+		public Vector4d LF;
+		public float[,] heightMap;
+		public float[,] alphaMap;
 
 		/// <summary>
 		/// Creates a new empty <see cref="MAPTerrainEF2"/> object. Internal data will have to be set manually.
@@ -57,25 +56,25 @@ namespace LibBSP {
 						switch (line[0]) {
 							case "TEX(": {
 								texture = line[1];
-								textureShiftS = Single.Parse(line[2], _format);
-								textureShiftT = Single.Parse(line[3], _format);
-								texRot = Single.Parse(line[4], _format);
-								texScaleX = Double.Parse(line[5], _format);
-								texScaleY = Double.Parse(line[6], _format);
-								flags = Int32.Parse(line[8]);
+								textureShiftS = float.Parse(line[2], _format);
+								textureShiftT = float.Parse(line[3], _format);
+								texRot = float.Parse(line[4], _format);
+								texScaleX = double.Parse(line[5], _format);
+								texScaleY = double.Parse(line[6], _format);
+								flags = int.Parse(line[8]);
 								break;
 							}
 							case "TD(": {
-								sideLength = Int32.Parse(line[1], _format);
-								start = new Vector3(Single.Parse(line[2], _format), Single.Parse(line[3], _format), Single.Parse(line[4], _format));
+								sideLength = int.Parse(line[1], _format);
+								start = new Vector3d(float.Parse(line[2], _format), float.Parse(line[3], _format), float.Parse(line[4], _format));
 								break;
 							}
 							case "IF(": {
-								IF = new Vector4(Single.Parse(line[1], _format), Single.Parse(line[2], _format), Single.Parse(line[3], _format), Single.Parse(line[4], _format));
+								IF = new Vector4d(float.Parse(line[1], _format), float.Parse(line[2], _format), float.Parse(line[3], _format), float.Parse(line[4], _format));
 								break;
 							}
 							case "LF(": {
-								LF = new Vector4(Single.Parse(line[1], _format), Single.Parse(line[2], _format), Single.Parse(line[3], _format), Single.Parse(line[4], _format));
+								LF = new Vector4d(float.Parse(line[1], _format), float.Parse(line[2], _format), float.Parse(line[3], _format), float.Parse(line[4], _format));
 								break;
 							}
 							case "V(": {
@@ -84,11 +83,10 @@ namespace LibBSP {
 								if (side == 0) {
 									side = line.Length;
 								}
-								heightMap = new float[side][];
+								heightMap = new float[side, side];
 								for (int j = 0; j < side; ++j) {
-									heightMap[j] = new float[side];
 									for (int k = 0; k < side; ++k) {
-										heightMap[j][k] = Single.Parse(line[k], _format);
+										heightMap[j, k] = float.Parse(line[k], _format);
 									}
 									++i;
 									line = lines[i].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -101,11 +99,10 @@ namespace LibBSP {
 								if (side == 0) {
 									side = line.Length;
 								}
-								alphaMap = new float[side][];
+								alphaMap = new float[side, side];
 								for (int j = 0; j < side; ++j) {
-									alphaMap[j] = new float[side];
 									for (int k = 0; k < side; ++k) {
-										alphaMap[j][k] = Single.Parse(line[k], _format);
+										alphaMap[j, k] = float.Parse(line[k], _format);
 									}
 									++i;
 									line = lines[i].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);

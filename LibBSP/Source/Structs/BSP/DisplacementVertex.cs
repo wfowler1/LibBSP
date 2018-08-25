@@ -3,21 +3,21 @@
 #endif
 
 using System;
-using System.Collections.Generic;
 #if UNITY
 using UnityEngine;
 #endif
 
 namespace LibBSP {
-#if !UNITY
-	using Vector3 = Vector3d;
+#if UNITY
+	using Vector3d = Vector3;
 #endif
+
 	/// <summary>
 	/// Holds all the data for a displacement in a Source map.
 	/// </summary>
 	public struct DisplacementVertex {
 
-		public Vector3 normal { get; private set; } // The normalized vector direction this vertex points from "flat"
+		public Vector3d normal { get; private set; } // The normalized vector direction this vertex points from "flat"
 		public float dist { get; private set; } // Magnitude of normal, before normalization
 		public float alpha { get; private set; } // Alpha value of texture at this vertex
 
@@ -32,9 +32,9 @@ namespace LibBSP {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			this.normal = new Vector3(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
-			this.dist = BitConverter.ToSingle(data, 12);
-			this.alpha = BitConverter.ToSingle(data, 16);
+			normal = new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
+			dist = BitConverter.ToSingle(data, 12);
+			alpha = BitConverter.ToSingle(data, 16);
 		}
 
 		/// <summary>

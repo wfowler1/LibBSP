@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace LibBSP {
+
 	/// <summary>
 	/// Enum containing known game lumps.
 	/// </summary>
@@ -10,12 +11,11 @@ namespace LibBSP {
 		tlpd = 1685089396,
 		prpd = 1685090928,
 		sprp = 1936749168,
-
 	}
 
 	/// <summary>
 	/// Class containing the identification and information for the various Game Lumps in Source
-	/// engine BSPs. The only one we're really concerned with is the Static Props.
+	/// engine BSPs.
 	/// </summary>
 	public class GameLump : Dictionary<GameLumpType, LumpInfo> {
 
@@ -76,14 +76,14 @@ namespace LibBSP {
 					break;
 				}
 				default: {
-					throw new ArgumentException("Map type " + type + " isn't supported by the GameLump class.");
+					throw new ArgumentException("Map type " + type + " doesn't use a Game lump or the lump is unknown.");
 				}
 			}
 
 			int numGameLumps = BitConverter.ToInt32(data, 0);
 			if (numGameLumps > 0) {
 				int headerLength = 4 + (numGameLumps * structLength);
-				int lowestLumpOffset = Int32.MaxValue;
+				int lowestLumpOffset = int.MaxValue;
 
 				for (int i = 0; i < numGameLumps; ++i) {
 					int lumpIdent = BitConverter.ToInt32(data, (i * structLength) + 4);

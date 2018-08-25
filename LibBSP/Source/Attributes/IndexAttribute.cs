@@ -4,11 +4,12 @@ using System.Collections.Generic;
 namespace LibBSP {
 	/// <summary>
 	/// Custom Attribute class to mark a member of a struct as an index into another lump. The
-	/// member this Attribute is applied to should always be paired with a member with a
-	/// <see cref="CountAttribute"/> applied to it. The two attributes can the be used to grab a range of objects
+	/// member this Attribute is applied to can be paired with a member with a <see cref="CountAttribute"/>
+	/// applied to it. The two attributes can the be used to grab a range of objects
 	/// from the specified lump through the
 	/// <see cref="BSP.GetReferencedObjects&lt;T&gt;(System.Object, System.String)"/> method.
 	/// </summary>
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 	public class IndexAttribute : Attribute {
 
 		public string lumpName;

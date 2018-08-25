@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace LibBSP {
+
 	/// <summary>
 	/// Holds two <c>double</c>s representing a 2-dimensional vector.
 	/// </summary>
@@ -287,7 +288,7 @@ namespace LibBSP {
 			return Scale(v1, 1.0 / divisor);
 		}
 
-		#region IEquatable
+#region IEquatable
 		/// <summary>
 		/// Equivalency. Returns <c>true</c> if the components of two vectors are equal or approximately equal.
 		/// </summary>
@@ -336,7 +337,7 @@ namespace LibBSP {
 		public override int GetHashCode() {
 			return x.GetHashCode() ^ y.GetHashCode();
 		}
-		#endregion
+#endregion
 
 		/// <summary>
 		/// Calculates the distance from this vector to another.
@@ -390,7 +391,7 @@ namespace LibBSP {
 			return 4.0 * a * a * b * b - Math.Pow((a * a) + (b * b) - (c * c), 2);
 		}
 
-		#region IEnumerable
+#region IEnumerable
 		/// <summary>
 		/// Allows enumeration through the components of a <see cref="Vector2d"/> using a foreach loop.
 		/// </summary>
@@ -411,7 +412,7 @@ namespace LibBSP {
 			yield return x;
 			yield return y;
 		}
-		#endregion
+#endregion
 
 		/// <summary>
 		/// Implicitly converts this <see cref="Vector2d"/> into a <see cref="Vector3d"/>. This will be called when <c>Vector3d v3 = v2</c> is used.

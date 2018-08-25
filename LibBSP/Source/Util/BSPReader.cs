@@ -4,10 +4,12 @@ using System.IO;
 using System.Collections.Generic;
 
 namespace LibBSP {
+
 	/// <summary>
 	/// Handles reading of a BSP file on-demand.
 	/// </summary>
 	public class BSPReader {
+
 		private FileInfo bspFile;
 		private Dictionary<int, LumpInfo> lumpFiles = null;
 
@@ -31,7 +33,7 @@ namespace LibBSP {
 			if (!File.Exists(file.FullName)) {
 				throw new FileNotFoundException("Unable to open BSP file; file " + file.FullName + " not found.");
 			} else {
-				this.bspFile = file;
+				bspFile = file;
 			}
 		}
 
@@ -232,8 +234,8 @@ namespace LibBSP {
 				int startIndex = bspFile.Name.Length - 1;
 				int f1EndIndex = f1.Name.LastIndexOf('.');
 				int f2EndIndex = f2.Name.LastIndexOf('.');
-				int f1Position = Int32.Parse(f1.Name.Substring(startIndex, f1EndIndex - startIndex));
-				int f2Position = Int32.Parse(f2.Name.Substring(startIndex, f2EndIndex - startIndex));
+				int f1Position = int.Parse(f1.Name.Substring(startIndex, f1EndIndex - startIndex));
+				int f2Position = int.Parse(f2.Name.Substring(startIndex, f2EndIndex - startIndex));
 				return f1Position - f2Position;
 			});
 			// Read the files in order. The last file in the list for a specific lump will replace that lump.

@@ -1,4 +1,4 @@
-#if (UNITY_2_6 || UNITY_2_6_1 || UNITY_3_0 || UNITY_3_0_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER)
+#if UNITY_2_6 || UNITY_2_6_1 || UNITY_3_0 || UNITY_3_0_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER
 #define UNITY
 #endif
 
@@ -10,9 +10,11 @@ using UnityEngine;
 #endif
 
 namespace LibBSP {
-#if !UNITY
-	using Vector3 = Vector3d;
+#if UNITY
+	using Vector2d = Vector2;
+	using Vector3d = Vector3;
 #endif
+
 	/// <summary>
 	/// Class containing data for a brush side. Please note vertices must be set manually or generated through CSG.
 	/// </summary>
@@ -20,17 +22,10 @@ namespace LibBSP {
 
 		private static IFormatProvider _format = CultureInfo.CreateSpecificCulture("en-US");
 
-		public Vector3[] vertices;
+		public Vector3d[] vertices;
 		public Plane plane;
 		public string texture;
-		public Vector3 textureS;
-		public double textureShiftS;
-		public Vector3 textureT;
-		public double textureShiftT;
-		public float texRot;
-		public double texScaleX;
-		public double texScaleY;
-		public int flags;
+		public TextureInfo textureInfo;
 		public string material;
 		public double lgtScale;
 		public double lgtRot;
@@ -53,42 +48,43 @@ namespace LibBSP {
 				float dist = 0;
 
 				// If this succeeds, assume brushDef3
-				if (Single.TryParse(tokens[4], out dist)) {
-					plane = new Plane(new Vector3(Single.Parse(tokens[1], _format), Single.Parse(tokens[2], _format), Single.Parse(tokens[3], _format)), dist);
-					textureS = new Vector3(Single.Parse(tokens[8], _format), Single.Parse(tokens[9], _format), Single.Parse(tokens[10], _format));
-					textureT = new Vector3(Single.Parse(tokens[13], _format), Single.Parse(tokens[14], _format), Single.Parse(tokens[15], _format));
+				if (float.TryParse(tokens[4], out dist)) {
+					plane = new Plane(new Vector3d(float.Parse(tokens[1], _format), float.Parse(tokens[2], _format), float.Parse(tokens[3], _format)), dist);
+					textureInfo = new TextureInfo(new Vector3d(float.Parse(tokens[8], _format), float.Parse(tokens[9], _format), float.Parse(tokens[10], _format)),
+												  new Vector3d(float.Parse(tokens[13], _format), float.Parse(tokens[14], _format), float.Parse(tokens[15], _format)),
+												  Vector2d.zero,
+												  Vector2d.one,
+												  0, 0, 0);
 					texture = tokens[18];
 				} else {
-					Vector3 v1 = new Vector3(Single.Parse(tokens[1], _format), Single.Parse(tokens[2], _format), Single.Parse(tokens[3], _format));
-					Vector3 v2 = new Vector3(Single.Parse(tokens[6], _format), Single.Parse(tokens[7], _format), Single.Parse(tokens[8], _format));
-					Vector3 v3 = new Vector3(Single.Parse(tokens[11], _format), Single.Parse(tokens[12], _format), Single.Parse(tokens[13], _format));
-					vertices = new Vector3[] { v1, v2, v3 };
+					Vector3d v1 = new Vector3d(float.Parse(tokens[1], _format), float.Parse(tokens[2], _format), float.Parse(tokens[3], _format));
+					Vector3d v2 = new Vector3d(float.Parse(tokens[6], _format), float.Parse(tokens[7], _format), float.Parse(tokens[8], _format));
+					Vector3d v3 = new Vector3d(float.Parse(tokens[11], _format), float.Parse(tokens[12], _format), float.Parse(tokens[13], _format));
+					vertices = new Vector3d[] { v1, v2, v3 };
 					plane = new Plane(v1, v2, v3);
 					texture = tokens[15];
 					// GearCraft
 					if (tokens[16] == "[") {
-						textureS = new Vector3(Single.Parse(tokens[17], _format), Single.Parse(tokens[18], _format), Single.Parse(tokens[19], _format));
-						textureShiftS = Double.Parse(tokens[20], _format);
-						textureT = new Vector3(Single.Parse(tokens[23], _format), Single.Parse(tokens[24], _format), Single.Parse(tokens[25], _format));
-						textureShiftT = Double.Parse(tokens[26], _format);
-						texRot = Single.Parse(tokens[28], _format);
-						texScaleX = Double.Parse(tokens[29], _format);
-						texScaleY = Double.Parse(tokens[30], _format);
-						flags = Int32.Parse(tokens[31]);
+						textureInfo = new TextureInfo(new Vector3d(float.Parse(tokens[17], _format), float.Parse(tokens[18], _format), float.Parse(tokens[19], _format)),
+													  new Vector3d(float.Parse(tokens[23], _format), float.Parse(tokens[24], _format), float.Parse(tokens[25], _format)),
+						                              new Vector2d(float.Parse(tokens[20], _format), float.Parse(tokens[26], _format)),
+						                              new Vector2d(float.Parse(tokens[29], _format), float.Parse(tokens[30], _format)),
+													  int.Parse(tokens[31]), 0, double.Parse(tokens[28], _format));
 						material = tokens[32];
 					} else {
 						//<x_shift> <y_shift> <rotation> <x_scale> <y_scale> <content_flags> <surface_flags> <value>
-						textureShiftS = Single.Parse(tokens[16], _format);
-						textureShiftT = Single.Parse(tokens[17], _format);
-						texRot = Single.Parse(tokens[18], _format);
-						texScaleX = Double.Parse(tokens[19], _format);
-						texScaleY = Double.Parse(tokens[20], _format);
-						flags = Int32.Parse(tokens[22]);
+						Vector3d[] axes = TextureInfo.TextureAxisFromPlane(plane);
+						textureInfo = new TextureInfo(axes[0],
+						                              axes[1],
+						                              new Vector2d(float.Parse(tokens[16], _format), float.Parse(tokens[17], _format)),
+						                              new Vector2d(float.Parse(tokens[19], _format), float.Parse(tokens[20], _format)),
+						                              int.Parse(tokens[22]), 0, double.Parse(tokens[18], _format));
 					}
 				}
 			} else {
 				bool inDispInfo = false;
 				int braceCount = 0;
+				textureInfo = new TextureInfo();
 				List<string> child = new List<string>(37);
 				foreach (string line in lines) {
 					if (line == "{") {
@@ -116,32 +112,32 @@ namespace LibBSP {
 							case "plane": {
 								string[] points = tokens[1].SplitUnlessBetweenDelimiters(' ', '(', ')', StringSplitOptions.RemoveEmptyEntries);
 								string[] components = points[0].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-								Vector3 v1 = new Vector3(Single.Parse(components[0], _format), Single.Parse(components[1], _format), Single.Parse(components[2], _format));
+								Vector3d v1 = new Vector3d(float.Parse(components[0], _format), float.Parse(components[1], _format), float.Parse(components[2], _format));
 								components = points[1].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-								Vector3 v2 = new Vector3(Single.Parse(components[0], _format), Single.Parse(components[1], _format), Single.Parse(components[2], _format));
+								Vector3d v2 = new Vector3d(float.Parse(components[0], _format), float.Parse(components[1], _format), float.Parse(components[2], _format));
 								components = points[2].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-								Vector3 v3 = new Vector3(Single.Parse(components[0], _format), Single.Parse(components[1], _format), Single.Parse(components[2], _format));
+								Vector3d v3 = new Vector3d(float.Parse(components[0], _format), float.Parse(components[1], _format), float.Parse(components[2], _format));
 								plane = new Plane(v1, v2, v3);
 								break;
 							}
 							case "uaxis": {
 								string[] split = tokens[1].SplitUnlessBetweenDelimiters(' ', '[', ']', StringSplitOptions.RemoveEmptyEntries);
-								texScaleX = Single.Parse(split[1], _format);
+								textureInfo.scale = new Vector2d(float.Parse(split[1], _format), textureInfo.scale.y);
 								split = split[0].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-								textureS = new Vector3(Single.Parse(split[0], _format), Single.Parse(split[1], _format), Single.Parse(split[2], _format));
-								textureShiftS = Single.Parse(split[3], _format);
+								textureInfo.axes[0] = new Vector3d(float.Parse(split[0], _format), float.Parse(split[1], _format), float.Parse(split[2], _format));
+								textureInfo.translation = new Vector2d(float.Parse(split[3], _format), textureInfo.translation.y);
 								break;
 							}
 							case "vaxis": {
 								string[] split = tokens[1].SplitUnlessBetweenDelimiters(' ', '[', ']', StringSplitOptions.RemoveEmptyEntries);
-								texScaleY = Single.Parse(split[1], _format);
+								textureInfo.scale = new Vector2d(textureInfo.scale.x, float.Parse(split[1], _format));
 								split = split[0].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-								textureT = new Vector3(Single.Parse(split[0], _format), Single.Parse(split[1], _format), Single.Parse(split[2], _format));
-								textureShiftT = Single.Parse(split[3], _format);
+								textureInfo.axes[1] = new Vector3d(float.Parse(split[0], _format), float.Parse(split[1], _format), float.Parse(split[2], _format));
+								textureInfo.translation = new Vector2d(textureInfo.translation.x, float.Parse(split[3], _format));
 								break;
 							}
 							case "rotation": {
-								texRot = Single.Parse(tokens[1], _format);
+								textureInfo.rotation = double.Parse(tokens[1], _format);
 								break;
 							}
 						}

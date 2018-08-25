@@ -3,14 +3,14 @@
 #endif
 
 using System;
-using System.Collections.Generic;
 #if UNITY
 using UnityEngine;
 #endif
 
 namespace LibBSP {
-#if !UNITY
-	using Vector3 = Vector3d;
+#if UNITY
+	using Vector2d = Vector2;
+	using Vector3d = Vector3;
 #endif
 
 	/// <summary>
@@ -56,7 +56,11 @@ namespace LibBSP {
 				case MapType.Quake2:
 				case MapType.SoF:
 				case MapType.Daikatana: {
-					texAxes = new TextureInfo(new Vector3(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8)), BitConverter.ToSingle(data, 12), 1, new Vector3(BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24)), BitConverter.ToSingle(data, 28), 1, -1, -1);
+					texAxes = new TextureInfo(new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8)),
+					                          new Vector3d(BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24)),
+					                          new Vector2d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 28)),
+					                          Vector2d.one,
+					                          -1, -1, 0);
 					flags = BitConverter.ToInt32(data, 32);
 					name = data.ToNullTerminatedString(40, 32);
 					break;
@@ -94,7 +98,11 @@ namespace LibBSP {
 					break;
 				}
 				case MapType.SiN: {
-					texAxes = new TextureInfo(new Vector3(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8)), BitConverter.ToSingle(data, 12), 1, new Vector3(BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24)), BitConverter.ToSingle(data, 28), 1, -1, -1);
+					texAxes = new TextureInfo(new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8)),
+					                          new Vector3d(BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24)),
+					                          new Vector2d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 28)),
+					                          Vector2d.one,
+					                          -1, -1, 0);
 					flags = BitConverter.ToInt32(data, 32);
 					name = data.ToNullTerminatedString(36, 64);
 					break;
@@ -181,5 +189,6 @@ namespace LibBSP {
 				}
 			}
 		}
+
 	}
 }

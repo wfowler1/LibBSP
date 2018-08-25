@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace LibBSP {
+
 	/// <summary>
 	/// List of <see cref="StaticProp"/> objects containing data relevant to Static Props, like the dictionary of actual model paths.
 	/// </summary>

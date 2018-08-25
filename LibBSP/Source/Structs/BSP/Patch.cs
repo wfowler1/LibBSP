@@ -9,8 +9,8 @@ using UnityEngine;
 #endif
 
 namespace LibBSP {
-#if !UNITY
-	using Vector2 = Vector2d;
+#if UNITY
+	using Vector2d = Vector2;
 #endif
 
 	/// <summary>
@@ -20,7 +20,7 @@ namespace LibBSP {
 
 		public short shader { get; private set; }
 		public short type { get; private set; }
-		public Vector2 dimensions { get; private set; }
+		public Vector2d dimensions { get; private set; }
 		public int flags { get; private set; }
 		[Index("patchVerts")] public int firstVertex { get; private set; }
 		[Count("patchVerts")] public int numVertices { get; private set; }
@@ -46,7 +46,7 @@ namespace LibBSP {
 					if (this.type == 0) { // Patch
 						short x = BitConverter.ToInt16(data, 4);
 						short y = BitConverter.ToInt16(data, 6);
-						dimensions = new Vector2(x, y);
+						dimensions = new Vector2d(x, y);
 						flags = BitConverter.ToInt32(data, 8);
 						firstVertex = BitConverter.ToInt32(data, 12);
 						numVertices = x * y;
@@ -87,9 +87,10 @@ namespace LibBSP {
 					throw new ArgumentException("Map type " + type + " isn't supported by the Patch lump factory.");
 				}
 			}
-			List<Patch> lump = new List<Patch>(data.Length / structLength);
+			int numObjects = data.Length / structLength;
+			List<Patch> lump = new List<Patch>(numObjects);
 			byte[] bytes = new byte[structLength];
-			for (int i = 0; i < data.Length / structLength; ++i) {
+			for (int i = 0; i < numObjects; ++i) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				lump.Add(new Patch(bytes, type, version));
 			}

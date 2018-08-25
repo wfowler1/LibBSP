@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 
 namespace LibBSP {
-	using Color32 = Color;
+
 	/// <summary>
 	/// Holds three <c>double</c>s representing a 3-dimensional vector.
 	/// </summary>
@@ -337,7 +337,7 @@ namespace LibBSP {
 			return Scale(v1, 1.0 / divisor);
 		}
 
-		#region IEquatable
+#region IEquatable
 		/// <summary>
 		/// Equivalency. Returns <c>true</c> if the components of two vectors are equal or approximately equal.
 		/// </summary>
@@ -386,7 +386,7 @@ namespace LibBSP {
 		public override int GetHashCode() {
 			return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode();
 		}
-		#endregion
+#endregion
 
 		/// <summary>
 		/// Calculates the distance from this vector to another.
@@ -441,7 +441,7 @@ namespace LibBSP {
 			return 4.0 * a * a * b * b - Math.Pow((a * a) + (b * b) - (c * c), 2);
 		}
 
-		#region IEnumerable
+#region IEnumerable
 		/// <summary>
 		/// Allows enumeration through the components of a <see cref="Vector3d"/> using a foreach loop.
 		/// </summary>
@@ -464,7 +464,7 @@ namespace LibBSP {
 			yield return y;
 			yield return z;
 		}
-		#endregion
+#endregion
 
 		/// <summary>
 		/// Implicitly converts this <see cref="Vector3d"/> into a <see cref="Vector2d"/>. This will be called when <c>Vector2d v2 = v3</c> is used.
@@ -489,8 +489,8 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="v"><see cref="Vector3d"/> to convert.</param>
 		/// <returns>This <see cref="Vector3d"/> in a <c>Color</c> object interpreted as RGB.</returns>
-		public static implicit operator Color32(Vector3d v) {
-			return Color32Extensions.FromArgb(255, (int)Math.Max(v.x, 255), (int)Math.Max(v.y, 255), (int)Math.Max(v.z, 255));
+		public static implicit operator Color(Vector3d v) {
+			return ColorExtensions.FromArgb(255, (int)Math.Max(v.x, 255), (int)Math.Max(v.y, 255), (int)Math.Max(v.z, 255));
 		}
 	}
 }

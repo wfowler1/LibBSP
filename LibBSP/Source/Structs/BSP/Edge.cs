@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace LibBSP {
+
 	/// <summary>
 	/// Holds all the data for an edge in a BSP map.
 	/// </summary>
@@ -96,9 +97,10 @@ namespace LibBSP {
 					throw new ArgumentException("Map type " + type + " isn't supported by the Edge lump factory.");
 				}
 			}
-			List<Edge> lump = new List<Edge>(data.Length / structLength);
+			int numObjects = data.Length / structLength;
+			List<Edge> lump = new List<Edge>(numObjects);
 			byte[] bytes = new byte[structLength];
-			for (int i = 0; i < data.Length / structLength; ++i) {
+			for (int i = 0; i < numObjects; ++i) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				lump.Add(new Edge(bytes, type, version));
 			}
@@ -138,5 +140,6 @@ namespace LibBSP {
 				}
 			}
 		}
+
 	}
 }

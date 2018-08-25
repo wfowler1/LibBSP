@@ -9,17 +9,18 @@ using UnityEngine;
 #endif
 
 namespace LibBSP {
-#if !UNITY
-	using Vector3 = Vector3d;
+#if UNITY
+	using Vector3d = Vector3;
 #endif
+
 	/// <summary>
 	/// Handles the data needed for a static model object from MoHAA.
 	/// </summary>
 	public struct StaticModel {
 
 		public string name { get; private set; }
-		public Vector3 origin { get; private set; }
-		public Vector3 angles { get; private set; }
+		public Vector3d origin { get; private set; }
+		public Vector3d angles { get; private set; }
 		public float scale { get; private set; }
 		[Index("vertices")] public int firstVertex { get; private set; }
 		[Count("vertices")] public short numVertices { get; private set; }
@@ -37,16 +38,16 @@ namespace LibBSP {
 				throw new ArgumentNullException();
 			}
 			name = "";
-			origin = Vector3.zero;
-			angles = Vector3.zero;
+			origin = Vector3d.zero;
+			angles = Vector3d.zero;
 			scale = 0;
 			switch (type) {
 				case MapType.MOHAA: {
 					byte[] nameBytes = new byte[128];
 					Array.Copy(data, 0, nameBytes, 0, 128);
 					name = nameBytes.ToNullTerminatedString();
-					origin = new Vector3(BitConverter.ToSingle(data, 128), BitConverter.ToSingle(data, 132), BitConverter.ToSingle(data, 136));
-					angles = new Vector3(BitConverter.ToSingle(data, 140), BitConverter.ToSingle(data, 144), BitConverter.ToSingle(data, 148));
+					origin = new Vector3d(BitConverter.ToSingle(data, 128), BitConverter.ToSingle(data, 132), BitConverter.ToSingle(data, 136));
+					angles = new Vector3d(BitConverter.ToSingle(data, 140), BitConverter.ToSingle(data, 144), BitConverter.ToSingle(data, 148));
 					scale = BitConverter.ToSingle(data, 152);
 					firstVertex = BitConverter.ToInt32(data, 156);
 					numVertices = BitConverter.ToInt16(data, 160);
@@ -81,9 +82,10 @@ namespace LibBSP {
 					throw new ArgumentException("Map type " + type + " isn't supported by the StaticModel lump factory.");
 				}
 			}
-			List<StaticModel> lump = new List<StaticModel>(data.Length / structLength);
+			int numObjects = data.Length / structLength;
+			List<StaticModel> lump = new List<StaticModel>(numObjects);
 			byte[] bytes = new byte[structLength];
-			for (int i = 0; i < data.Length / structLength; ++i) {
+			for (int i = 0; i < numObjects; ++i) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				lump.Add(new StaticModel(bytes, type, version));
 			}
@@ -105,5 +107,6 @@ namespace LibBSP {
 				}
 			}
 		}
+
 	}
 }

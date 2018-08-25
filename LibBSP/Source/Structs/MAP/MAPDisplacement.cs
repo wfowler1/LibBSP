@@ -1,19 +1,19 @@
-#if (UNITY_2_6 || UNITY_2_6_1 || UNITY_3_0 || UNITY_3_0_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER)
+#if UNITY_2_6 || UNITY_2_6_1 || UNITY_3_0 || UNITY_3_0_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER
 #define UNITY
 #endif
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Globalization;
 #if UNITY
 using UnityEngine;
 #endif
 
 namespace LibBSP {
-#if !UNITY
-	using Vector3 = Vector3d;
+#if UNITY
+	using Vector3d = Vector3;
 #endif
+
 	/// <summary>
 	/// Class containing all data necessary to render a displacement from Source engine.
 	/// </summary>
@@ -22,10 +22,10 @@ namespace LibBSP {
 		private static IFormatProvider _format = CultureInfo.CreateSpecificCulture("en-US");
 
 		public int power;
-		public Vector3 start;
-		public Vector3[][] normals;
-		public float[][] distances;
-		public float[][] alphas;
+		public Vector3d start;
+		public Vector3d[,] normals;
+		public float[,] distances;
+		public float[,] alphas;
 
 		/// <summary>
 		/// Creates a new empty <see cref="MAPDisplacement"/> object. Internal data will have to be set manually.
@@ -71,38 +71,33 @@ namespace LibBSP {
 					string[] tokens = line.SplitUnlessInContainer(' ', '\"', StringSplitOptions.RemoveEmptyEntries);
 					switch (tokens[0]) {
 						case "power": {
-							power = Int32.Parse(tokens[1]);
+							power = int.Parse(tokens[1]);
 							int side = (int)Math.Pow(2, power) + 1;
-							normals = new Vector3[side][];
-							distances = new float[side][];
-							alphas = new float[side][];
-							for (int i = 0; i < side; ++i) {
-								normals[i] = new Vector3[side];
-								distances[i] = new float[side];
-								alphas[i] = new float[side];
-							}
+							normals = new Vector3d[side, side];
+							distances = new float[side, side];
+							alphas = new float[side, side];
 							break;
 						}
 						case "startposition": {
 							string[] point = tokens[1].Substring(1, tokens[1].Length - 2).Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-							start = new Vector3(Single.Parse(point[0], _format), Single.Parse(point[1], _format), Single.Parse(point[2], _format));
+							start = new Vector3d(float.Parse(point[0], _format), float.Parse(point[1], _format), float.Parse(point[2], _format));
 							break;
 						}
 					}
 				} else if (braceCount > 1) {
 					if (inNormals) {
 						string[] tokens = line.SplitUnlessInContainer(' ', '\"', StringSplitOptions.RemoveEmptyEntries);
-						int row = Int32.Parse(tokens[0].Substring(3));
+						int row = int.Parse(tokens[0].Substring(3));
 						string[] points = tokens[1].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 						normalsTokens[row] = points;
 					} else if (inDistances) {
 						string[] tokens = line.SplitUnlessInContainer(' ', '\"', StringSplitOptions.RemoveEmptyEntries);
-						int row = Int32.Parse(tokens[0].Substring(3));
+						int row = int.Parse(tokens[0].Substring(3));
 						string[] nums = tokens[1].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 						distancesTokens[row] = nums;
 					} else if (inAlphas) {
 						string[] tokens = line.SplitUnlessInContainer(' ', '\"', StringSplitOptions.RemoveEmptyEntries);
-						int row = Int32.Parse(tokens[0].Substring(3));
+						int row = int.Parse(tokens[0].Substring(3));
 						string[] nums = tokens[1].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 						alphasTokens[row] = nums;
 					}
@@ -113,18 +108,17 @@ namespace LibBSP {
 				throw new ArgumentException("Bad data given to MAPDisplacement, no power specified!");
 			}
 
-			if (start.x == Single.NaN) {
+			if (start.x == float.NaN) {
 				throw new ArgumentException("Bad data given to MAPDisplacement, no starting point specified!");
 			}
 
 			foreach (int i in normalsTokens.Keys) {
 				for (int j = 0; j < normalsTokens[i].Length / 3; j++) {
-					normals[i][j] = new Vector3(Single.Parse(normalsTokens[i][j * 3], _format), Single.Parse(normalsTokens[i][(j * 3) + 1], _format), Single.Parse(normalsTokens[i][(j * 3) + 2], _format));
-					distances[i][j] = Single.Parse(distancesTokens[i][j], _format);
-					alphas[i][j] = Single.Parse(alphasTokens[i][j], _format);
+					normals[i, j] = new Vector3d(float.Parse(normalsTokens[i][j * 3], _format), float.Parse(normalsTokens[i][(j * 3) + 1], _format), float.Parse(normalsTokens[i][(j * 3) + 2], _format));
+					distances[i, j] = float.Parse(distancesTokens[i][j], _format);
+					alphas[i, j] = float.Parse(alphasTokens[i][j], _format);
 				}
 			}
-
 		}
 
 	}

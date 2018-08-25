@@ -9,8 +9,8 @@ using UnityEngine;
 #endif
 
 namespace LibBSP {
-#if !UNITY
-	using Vector2 = Vector2d;
+#if UNITY
+	using Vector2d = Vector2;
 #endif
 	
 	/// <summary>
@@ -41,7 +41,7 @@ namespace LibBSP {
 		public int unknown { get; private set; }
 		public int lightStyles { get; private set; }
 		public int lightMaps { get; private set; }
-		public Vector2 patchSize { get; private set; }
+		public Vector2d patchSize { get; private set; }
 
 		/// <summary>
 		/// Creates a new <see cref="Face"/> object from a <c>byte</c> array.
@@ -72,7 +72,7 @@ namespace LibBSP {
 			unknown = -1;
 			lightStyles = -1;
 			lightMaps = -1;
-			patchSize = new Vector2(Single.NaN, Single.NaN);
+			patchSize = new Vector2d(Single.NaN, Single.NaN);
 			switch (type) {
 				case MapType.CoD: {
 					texture = BitConverter.ToInt16(data, 0);
@@ -106,7 +106,7 @@ namespace LibBSP {
 					numVertices = BitConverter.ToInt32(data, 16);
 					firstIndex = BitConverter.ToInt32(data, 20);
 					numIndices = BitConverter.ToInt32(data, 24);
-					patchSize = new Vector2(BitConverter.ToInt32(data, 96), BitConverter.ToInt32(data, 100));
+					patchSize = new Vector2d(BitConverter.ToInt32(data, 96), BitConverter.ToInt32(data, 100));
 					break;
 				}
 				case MapType.Source17: {
@@ -257,9 +257,10 @@ namespace LibBSP {
 					throw new ArgumentException("Map type " + type + " isn't supported by the Face lump factory.");
 				}
 			}
-			List<Face> lump = new List<Face>(data.Length / structLength);
+			int numObjects = data.Length / structLength;
+			List<Face> lump = new List<Face>(numObjects);
 			byte[] bytes = new byte[structLength];
-			for (int i = 0; i < data.Length / structLength; ++i) {
+			for (int i = 0; i < numObjects; ++i) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				lump.Add(new Face(bytes, type, version));
 			}
@@ -342,5 +343,6 @@ namespace LibBSP {
 				}
 			}
 		}
+
 	}
 }

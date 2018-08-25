@@ -1,53 +1,55 @@
-#if (UNITY_2_6 || UNITY_2_6_1 || UNITY_3_0 || UNITY_3_0_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER)
+#if UNITY_2_6 || UNITY_2_6_1 || UNITY_3_0 || UNITY_3_0_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER
 #define UNITY
+#if !(UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER)
+#define OLDUNITY
+#endif
 #endif
 
 using System;
 using System.Collections.Generic;
 #if UNITY
 using UnityEngine;
-#else
-using System.Drawing;
 #endif
 
 namespace LibBSP {
-#if !UNITY
-	using Color32 = Color;
-	using Vector2 = Vector2d;
-	using Vector3 = Vector3d;
+#if UNITY
+	using Vector2d = Vector2;
+	using Vector3d = Vector3;
+#if !OLDUNITY
+	using Vertex = UIVertex;
 #endif
+#endif
+
 	/// <summary>
-	/// Static class containing helper methods for <see cref="UIVertex"/> objects.
+	/// Static class containing helper methods for <see cref="Vertex"/> objects.
 	/// </summary>
-	public static class UIVertexExtensions {
+	public static class VertexExtensions {
 
 #if !UNITY
 		/// <summary>
-		/// Scales the position of this <see cref="UIVertex"/> by a number.
+		/// Scales the position of this <see cref="Vertex"/> by a scalar.
 		/// </summary>
-		/// <param name="v1">This <see cref="UIVertex"/>.</param>
+		/// <param name="v1">This <see cref="Vertex"/>.</param>
 		/// <param name="scalar">Scalar value.</param>
-		public static void Scale(this ref UIVertex v1, float scalar) {
+		public static void Scale(this ref Vertex v1, float scalar) {
 			v1.position *= scalar;
 		}
 
 		/// <summary>
-		/// Adds the position of this <see cref="UIVertex"/> to another <see cref="UIVertex"/>.
+		/// Adds the position of this <see cref="Vertex"/> to another <see cref="Vertex"/>.
 		/// </summary>
-		/// <param name="v1">This <see cref="UIVertex"/>.</param>
-		/// <param name="v2">The other <see cref="UIVertex"/>.</param>
-		public static void Add(this ref UIVertex v1, UIVertex v2) {
+		/// <param name="v1">This <see cref="Vertex"/>.</param>
+		/// <param name="v2">The other <see cref="Vertex"/>.</param>
+		public static void Add(this ref Vertex v1, Vertex v2) {
 			v1.position += v2.position;
-			v1.uv0 += v2.uv0;
-			v1.uv1 += v2.uv1;
 		}
 
 		/// <summary>
-		/// Adds the position of a <c>Vector3</c> to this <see cref="UIVertex"/>.
+		/// Adds the position of a <c>Vector3d</c> to this <see cref="Vertex"/>.
 		/// </summary>
-		/// <param name="v1">This <see cref="UIVertex"/>.</param>
-		/// <param name="v2">The <see cref="Vector3"/>.</param>
-		public static void Translate(this ref UIVertex v1, Vector3 v2) {
+		/// <param name="v1">This <see cref="Vertex"/>.</param>
+		/// <param name="v2">The <see cref="Vector3d"/>.</param>
+		public static void Translate(this ref Vertex v1, Vector3d v2) {
 			v1.position += v2;
 		}
 #endif
@@ -56,62 +58,60 @@ namespace LibBSP {
 		// Instead use these vanilla static methods in any code intended to be used with Unity.
 
 		/// <summary>
-		/// Scales the position of a <see cref="UIVertex"/> by a number and returns the result.
+		/// Scales the position of a <see cref="Vertex"/> by a scalar and returns the result.
 		/// </summary>
-		/// <param name="v1">The <see cref="UIVertex"/> to scale.</param>
+		/// <param name="v1">The <see cref="Vertex"/> to scale.</param>
 		/// <param name="scalar">Scalar value.</param>
-		/// <returns>The resulting <see cref="UIVertex"/> of this scaling operation.</returns>
-		public static UIVertex Scale(UIVertex v1, float scalar) {
+		/// <returns>The resulting <see cref="Vertex"/> of this scaling operation.</returns>
+		public static Vertex Scale(Vertex v1, float scalar) {
 			v1.position *= scalar;
 			return v1;
 		}
 
 		/// <summary>
-		/// Adds the position of a <see cref="UIVertex"/> to another <see cref="UIVertex"/> and returns the result.
+		/// Adds the position of a <see cref="Vertex"/> to another <see cref="Vertex"/> and returns the result.
 		/// </summary>
-		/// <param name="v1">A <see cref="UIVertex"/> to be added to another.</param>
-		/// <param name="v2">A <see cref="UIVertex"/> to be added to another.</param>
-		/// <returns>The resulting <see cref="UIVertex"/> of this addition.</returns>
-		public static UIVertex Add(UIVertex v1, UIVertex v2) {
+		/// <param name="v1">A <see cref="Vertex"/> to be added to another.</param>
+		/// <param name="v2">A <see cref="Vertex"/> to be added to another.</param>
+		/// <returns>The resulting <see cref="Vertex"/> of this addition.</returns>
+		public static Vertex Add(Vertex v1, Vertex v2) {
 			v1.position += v2.position;
-			v1.uv0 += v2.uv0;
-			v1.uv1 += v2.uv1;
 			return v1;
 		}
 
 		/// <summary>
-		/// Adds the position of a <c>Vector3</c> to a <see cref="UIVertex"/> and returns the result.
+		/// Adds the position of a <c>Vector3d</c> to a <see cref="Vertex"/> and returns the result.
 		/// </summary>
-		/// <param name="v1">The <see cref="UIVertex"/> to translate.</param>
-		/// <param name="v2">The <see cref="Vector3"/> to translate by.</param>
-		/// <returns>The resulting <see cref="UIVertex"/> translated by <paramref name="v2"/>.</returns>
-		public static UIVertex Translate(UIVertex v1, Vector3 v2) {
+		/// <param name="v1">The <see cref="Vertex"/> to translate.</param>
+		/// <param name="v2">The <see cref="Vector3d"/> to translate by.</param>
+		/// <returns>The resulting <see cref="Vertex"/> translated by <paramref name="v2"/>.</returns>
+		public static Vertex Translate(Vertex v1, Vector3d v2) {
 			v1.position += v2;
 			return v1;
 		}
 
 		/// <summary>
-		/// Creates a new <see cref="UIVertex"/> object from a <c>byte</c> array.
+		/// Creates a new <see cref="Vertex"/> object from a <c>byte</c> array.
 		/// </summary>
 		/// <param name="data"><c>byte</c> array to parse.</param>
 		/// <param name="type">The map type.</param>
 		/// <param name="version">The version of this lump.</param>
-		/// <returns>The resulting <see cref="UIVertex"/> object.</returns>
+		/// <returns>The resulting <see cref="Vertex"/> object.</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was null.</exception>
 		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
-		/// <remarks><see cref="UIVertex"/> has no constructor, so the object must be initialized field-by-field. Even if it
+		/// <remarks><see cref="Vertex"/> has no constructor, so the object must be initialized field-by-field. Even if it
 		/// did have a constructor, the way data needs to be read wouldn't allow use of it.</remarks>
-		public static UIVertex CreateVertex(byte[] data, MapType type, int version = 0) {
+		public static Vertex CreateVertex(byte[] data, MapType type, int version = 0) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			UIVertex result = new UIVertex();
+			Vertex result = new Vertex();
 			switch (type) {
 				case MapType.CoD: {
 					if (version == 0) {
 						goto case MapType.Quake3;
 					} else if (version == 1) {
-						result.color = Color32Extensions.FromArgb(255, 255, 255, 255);
+						result.color = ColorExtensions.FromArgb(255, 255, 255, 255);
 						goto case MapType.DMoMaM;
 					}
 					break;
@@ -121,19 +121,19 @@ namespace LibBSP {
 				case MapType.CoD2:
 				case MapType.CoD4:
 				case MapType.FAKK: {
-					result.uv0 = new Vector2(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16));
-					result.color = Color32Extensions.FromArgb(data[43], data[40], data[41], data[42]);
+					result.uv0 = new Vector2d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16));
+					result.color = ColorExtensions.FromArgb(data[43], data[40], data[41], data[42]);
 					goto case MapType.DMoMaM;
 				}
 				case MapType.Raven: {
-					result.uv0 = new Vector2(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16));
-					result.color = Color32Extensions.FromArgb(data[67], data[64], data[65], data[66]);
+					result.uv0 = new Vector2d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16));
+					result.color = ColorExtensions.FromArgb(data[67], data[64], data[65], data[66]);
 					goto case MapType.DMoMaM;
 				}
 				case MapType.STEF2:
 				case MapType.STEF2Demo: {
-					result.uv0 = new Vector2(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16));
-					result.color = Color32Extensions.FromArgb(data[35], data[32], data[33], data[34]);
+					result.uv0 = new Vector2d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16));
+					result.color = ColorExtensions.FromArgb(data[35], data[32], data[33], data[34]);
 					goto case MapType.DMoMaM;
 				}
 				case MapType.Quake:
@@ -154,28 +154,28 @@ namespace LibBSP {
 				case MapType.Daikatana:
 				case MapType.Vindictus:
 				case MapType.DMoMaM: {
-					result.position = new Vector3(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
+					result.position = new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
 					break;
 				}
 				default: {
-					throw new ArgumentException("Map type " + type + " isn't supported by the UIVertex class factory.");
+					throw new ArgumentException("Map type " + type + " doesn't use Vertex objects, or reading them isn't implemented.");
 				}
 			}
 			return result;
 		}
 
 		/// <summary>
-		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <see cref="UIVertex"/> objects.
+		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <see cref="Vertex"/> objects.
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
 		/// <param name="type">The map type.</param>
 		/// <param name="version">The version of this lump.</param>
-		/// <returns>A <c>List</c> of <see cref="UIVertex"/> objects.</returns>
+		/// <returns>A <c>List</c> of <see cref="Vertex"/> objects.</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
 		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
 		/// <remarks>This function goes here since I can't put it into Unity's <c>UIVertex</c> class, and so I can't
 		/// depend on having a constructor taking a byte array.</remarks>
-		public static List<UIVertex> LumpFactory(byte[] data, MapType type, int version = 0) {
+		public static List<Vertex> LumpFactory(byte[] data, MapType type, int version = 0) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -226,12 +226,13 @@ namespace LibBSP {
 					break;
 				}
 				default: {
-					throw new ArgumentException("Map type " + type + " isn't supported by the Vertex lump factory.");
+					throw new ArgumentException("Map type " + type + " doesn't use a Vertex lump or the lump is unknown.");
 				}
 			}
-			List<UIVertex> lump = new List<UIVertex>(data.Length / structLength);
+			int numObjects = data.Length / structLength;
+			List<Vertex> lump = new List<Vertex>(numObjects);
 			byte[] bytes = new byte[structLength];
-			for (int i = 0; i < data.Length / structLength; ++i) {
+			for (int i = 0; i < numObjects; ++i) {
 				Array.Copy(data, i * structLength, bytes, 0, structLength);
 				lump.Add(CreateVertex(bytes, type, version));
 			}

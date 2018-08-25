@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace LibBSP {
+
 	/// <summary>
 	/// Contains all data needed for a node in a BSP tree.
 	/// </summary>
@@ -10,7 +11,6 @@ namespace LibBSP {
 		public int plane { get; private set; }
 		public int child1 { get; private set; } // Negative values are valid here. However, the child can never be zero,
 		public int child2 { get; private set; } // since that would reference the head node causing an infinite loop.
-		// TODO: Other things in Node structure
 
 		/// <summary>
 		/// Creates a new <see cref="Node"/> object from a <c>byte</c> array.
@@ -125,13 +125,12 @@ namespace LibBSP {
 					throw new ArgumentException("Map type " + type + " isn't supported by the Node lump factory.");
 				}
 			}
-			int offset = 0;
-			List<Node> lump = new List<Node>(data.Length / structLength);
+			int numObjects = data.Length / structLength;
+			List<Node> lump = new List<Node>(numObjects);
 			byte[] bytes = new byte[structLength];
-			for (int i = 0; i < data.Length / structLength; ++i) {
+			for (int i = 0; i < numObjects; ++i) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				lump.Add(new Node(bytes, type, version));
-				offset += structLength;
 			}
 			return lump;
 		}
@@ -187,5 +186,6 @@ namespace LibBSP {
 				}
 			}
 		}
+
 	}
 }

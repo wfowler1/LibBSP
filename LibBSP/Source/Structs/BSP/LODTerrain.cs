@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace LibBSP {
+
 	/// <summary>
 	/// Holds the data for a terrain object in MoHAA.
 	/// </summary>
@@ -92,9 +93,10 @@ namespace LibBSP {
 					throw new ArgumentException("Map type " + type + " isn't supported by the LODTerrain lump factory.");
 				}
 			}
-			List<LODTerrain> lump = new List<LODTerrain>(data.Length / structLength);
+			int numObjects = data.Length / structLength;
+			List<LODTerrain> lump = new List<LODTerrain>(numObjects);
 			byte[] bytes = new byte[structLength];
-			for (int i = 0; i < data.Length / structLength; ++i) {
+			for (int i = 0; i < numObjects; ++i) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				lump.Add(new LODTerrain(bytes, type, version));
 			}

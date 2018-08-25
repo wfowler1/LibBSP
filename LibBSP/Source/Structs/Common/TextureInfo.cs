@@ -9,8 +9,9 @@ using UnityEngine;
 #endif
 
 namespace LibBSP {
-#if !UNITY
-	using Vector3 = Vector3d;
+#if UNITY
+	using Vector2d = Vector2;
+	using Vector3d = Vector3;
 #endif
 
 	/// <summary>
@@ -25,20 +26,33 @@ namespace LibBSP {
 		/// <summary>
 		/// Array of base texture axes. When referenced properly, provides a good default texture axis for any given plane.
 		/// </summary>
-		public static readonly Vector3[] baseAxes = new Vector3[] { 
-			new Vector3(0, 0, 1), new Vector3(1, 0, 0), new Vector3(0, -1, 0),
-			new Vector3(0, 0, -1), new Vector3(1, 0, 0), new Vector3(0, -1, 0),
-			new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, -1),
-			new Vector3(-1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, -1),
-			new Vector3(0, 1, 0), new Vector3(1, 0, 0), new Vector3(0, 0, -1),
-			new Vector3(0, -1, 0), new Vector3(1, 0, 0), new Vector3(0, 0, -1)
+		public static readonly Vector3d[] baseAxes = new Vector3d[] { 
+			new Vector3d(0, 0, 1), new Vector3d(1, 0, 0), new Vector3d(0, -1, 0),
+			new Vector3d(0, 0, -1), new Vector3d(1, 0, 0), new Vector3d(0, -1, 0),
+			new Vector3d(1, 0, 0), new Vector3d(0, 1, 0), new Vector3d(0, 0, -1),
+			new Vector3d(-1, 0, 0), new Vector3d(0, 1, 0), new Vector3d(0, 0, -1),
+			new Vector3d(0, 1, 0), new Vector3d(1, 0, 0), new Vector3d(0, 0, -1),
+			new Vector3d(0, -1, 0), new Vector3d(1, 0, 0), new Vector3d(0, 0, -1)
 		};
 
-		public Vector3[] axes { get; private set; }
-		public float[] shifts { get; private set; }
-		public float[] scales { get; private set; }
-		public int flags { get; private set; }
-		public int texture { get; private set; }
+		public Vector3d[] axes { get; set; }
+		public Vector2d translation { get; set; }
+		public Vector2d scale { get; set; }
+		public int flags { get; set; }
+		public int texture { get; set; }
+		public double rotation { get; set; }
+
+		/// <summary>
+		/// Creates a new <see cref="TextureInfo"/> object with sensible defaults.
+		/// </summary>
+		public TextureInfo() {
+			axes = new Vector3d[2];
+			translation = Vector2d.zero;
+			scale = Vector2d.one;
+			flags = 0;
+			texture = 0;
+			rotation = 0;
+		}
 
 		/// <summary>
 		/// Creates a new <see cref="TextureInfo"/> object from a <c>byte</c> array.
@@ -54,14 +68,13 @@ namespace LibBSP {
 			}
 			texture = -1;
 			flags = -1;
-			axes = new Vector3[2];
-			shifts = new float[2];
-			axes[S] = new Vector3(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
-			shifts[S] = BitConverter.ToSingle(data, 12);
-			axes[T] = new Vector3(BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24));
-			shifts[T] = BitConverter.ToSingle(data, 28);
+			axes = new Vector3d[2];
+			translation = new Vector2d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 28));
+			axes[S] = new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
+			axes[T] = new Vector3d(BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24));
 			// Texture scaling information is compiled into the axes by changing their length.
-			scales = new float[] { 1, 1 };
+			scale = Vector2d.one;
+			rotation = 0;
 			switch (type) {
 				// Excluded engines: Quake 2-based, Quake 3-based
 				case MapType.Source17:
@@ -102,48 +115,42 @@ namespace LibBSP {
 		/// Creates a new <see cref="TextureInfo"/> object using the passed data.
 		/// </summary>
 		/// <param name="s">The S texture axis.</param>
-		/// <param name="sShift">The texture shift on the S axis.</param>
-		/// <param name="sScale">The texture scale on the S axis.</param>
 		/// <param name="t">The T texture axis.</param>
-		/// <param name="tShift">The texture shift on the T axis.</param>
-		/// <param name="tScale">The texture scale on the T axis.</param>
+		/// <param name="translation">Texture translation along both axes (in pixels).</param>
+		/// <param name="scale">Texture scale along both axes.</param>
 		/// <param name="flags">The flags for this <see cref="TextureInfo"/>.</param>
 		/// <param name="texture">Index into the texture list for the texture this <see cref="TextureInfo"/> uses.</param>
-		public TextureInfo(Vector3 s, float sShift, float sScale, Vector3 t, float tShift, float tScale, int flags, int texture) {
-			axes = new Vector3[2];
+		/// <param name="rotation">Rotation of the texutre axes.</param>
+		public TextureInfo(Vector3d s, Vector3d t, Vector2d translation, Vector2d scale, int flags, int texture, double rotation) {
+			axes = new Vector3d[2];
 			axes[S] = s;
 			axes[T] = t;
-			shifts = new float[2];
-			scales = new float[2];
-			shifts[S] = sShift;
-			shifts[T] = tShift;
-			scales[S] = sScale;
-			scales[T] = tScale;
+			this.translation = translation;
+			this.scale = scale;
 			this.flags = flags;
 			this.texture = texture;
+			this.rotation = rotation;
 		}
 
 		/// <summary>
-		/// Adapted from code in the Quake III Arena source code. Stolen without permission
-		/// because it falls under the terms of the GPL v2 license, and because I'm not making
-		/// any money, just awesome tools.
+		/// Given a <see cref="Plane"/> <c>p</c>, return an optimal set of texture axes for it.
 		/// </summary>
 		/// <param name="p"><see cref="Plane"/> of the surface.</param>
 		/// <returns>The best matching texture axes for the given <see cref="Plane"/>.</returns>
-		public static Vector3[] TextureAxisFromPlane(Plane p) {
+		public static Vector3d[] TextureAxisFromPlane(Plane p) {
 			int bestaxis = 0;
 			double best = 0; // "Best" dot product so far
 			for (int i = 0; i < 6; ++i) {
 				// For all possible axes, positive and negative
-				double dot = Vector3.Dot(p.normal, new Vector3(baseAxes[i * 3][0], baseAxes[i * 3][1], baseAxes[i * 3][2]));
+				double dot = Vector3d.Dot(p.normal, new Vector3d(baseAxes[i * 3][0], baseAxes[i * 3][1], baseAxes[i * 3][2]));
 				if (dot > best) {
 					best = dot;
 					bestaxis = i;
 				}
 			}
-			Vector3[] newAxes = new Vector3[2];
-			newAxes[0] = new Vector3(baseAxes[bestaxis * 3 + 1][0], baseAxes[bestaxis * 3 + 1][1], baseAxes[bestaxis * 3 + 1][2]);
-			newAxes[1] = new Vector3(baseAxes[bestaxis * 3 + 2][0], baseAxes[bestaxis * 3 + 2][1], baseAxes[bestaxis * 3 + 2][2]);
+			Vector3d[] newAxes = new Vector3d[2];
+			newAxes[0] = new Vector3d(baseAxes[bestaxis * 3 + 1][0], baseAxes[bestaxis * 3 + 1][1], baseAxes[bestaxis * 3 + 1][2]);
+			newAxes[1] = new Vector3d(baseAxes[bestaxis * 3 + 2][0], baseAxes[bestaxis * 3 + 2][1], baseAxes[bestaxis * 3 + 2][2]);
 			return newAxes;
 		}
 
@@ -192,9 +199,10 @@ namespace LibBSP {
 					throw new ArgumentException("Map type " + type + " isn't supported by the Leaf lump factory.");
 				}
 			}
-			List<TextureInfo> lump = new List<TextureInfo>(data.Length / structLength);
+			int numObjects = data.Length / structLength;
+			List<TextureInfo> lump = new List<TextureInfo>(numObjects);
 			byte[] bytes = new byte[structLength];
-			for (int i = 0; i < data.Length / structLength; ++i) {
+			for (int i = 0; i < numObjects; ++i) {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				lump.Add(new TextureInfo(bytes, type, version));
 			}
@@ -231,5 +239,6 @@ namespace LibBSP {
 				}
 			}
 		}
+
 	}
 }
