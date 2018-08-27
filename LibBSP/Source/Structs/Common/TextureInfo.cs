@@ -19,7 +19,7 @@ namespace LibBSP {
 	/// Some BSP formats lack this lump (or the information is contained in a
 	/// different lump) so their cases will be left out.
 	/// </summary>
-	public class TextureInfo {
+	[Serializable] public class TextureInfo {
 
 		public const int S = 0;
 		public const int T = 1;
@@ -35,12 +35,12 @@ namespace LibBSP {
 			new Vector3d(0, -1, 0), new Vector3d(1, 0, 0), new Vector3d(0, 0, -1)
 		};
 
-		public Vector3d[] axes { get; set; }
-		public Vector2d translation { get; set; }
-		public Vector2d scale { get; set; }
-		public int flags { get; set; }
-		public int texture { get; set; }
-		public double rotation { get; set; }
+        public Vector3d[] axes;
+        public Vector2d translation;
+        public Vector2d scale;
+        public int flags;
+        public int texture;
+        public double rotation;
 
 		/// <summary>
 		/// Creates a new <see cref="TextureInfo"/> object with sensible defaults.
