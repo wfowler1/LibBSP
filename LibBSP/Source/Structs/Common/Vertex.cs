@@ -1,7 +1,8 @@
 #if UNITY_2_6 || UNITY_2_6_1 || UNITY_3_0 || UNITY_3_0_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER
 #define UNITY
-#if !(UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER)
-// Unity 4.5 had UIVertex but the implementation was incomplete.
+#if !UNITY_5_6_OR_NEWER
+// UIVertex was introduced in Unity 4.5 but it only had color, position and one UV.
+// From 4.6.0 until 5.5.6 it was missing two sets of UVs.
 #define OLDUNITY
 #endif
 #endif
@@ -34,7 +35,7 @@ namespace LibBSP {
 		public Vector2d uv3;
 
 		/// <summary>
-		/// Simple UIVertex with sensible settings.
+		/// Simple Vertex with sensible settings.
 		/// </summary>
 		public static Vertex simpleVert {
 			get {

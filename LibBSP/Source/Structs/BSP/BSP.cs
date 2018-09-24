@@ -1,6 +1,6 @@
 #if UNITY_2_6 || UNITY_2_6_1 || UNITY_3_0 || UNITY_3_0_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER
 #define UNITY
-#if !(UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER)
+#if !UNITY_5_6_OR_NEWER
 #define OLDUNITY
 #endif
 #endif
