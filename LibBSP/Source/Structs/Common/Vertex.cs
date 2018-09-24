@@ -13,7 +13,7 @@ using System;
 
 namespace LibBSP {
 #if UNITY
-	using Color = UnityEngine.Color;
+	using Color = UnityEngine.Color32;
 	using Vector2d = UnityEngine.Vector2;
 	using Vector3d = UnityEngine.Vector3;
 	using Vector4d = UnityEngine.Vector4;
@@ -25,14 +25,14 @@ namespace LibBSP {
 	/// Vertex struct, including fields for normal, tangent and four sets of UVs.
 	/// </summary>
 	[Serializable] public struct Vertex {
-		public Color color;
-		public Vector3d normal;
 		public Vector3d position;
-		public Vector4d tangent;
+		public Vector3d normal;
+		public Color color;
 		public Vector2d uv0;
 		public Vector2d uv1;
 		public Vector2d uv2;
 		public Vector2d uv3;
+		public Vector4d tangent;
 
 		/// <summary>
 		/// Simple Vertex with sensible settings.
