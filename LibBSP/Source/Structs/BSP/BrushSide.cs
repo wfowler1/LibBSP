@@ -1,19 +1,23 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace LibBSP {
 
 	/// <summary>
 	/// Holds the data used by the brush side structures of all formats of BSP.
 	/// </summary>
+	[StructLayout(LayoutKind.Explicit)]
 	public struct BrushSide {
-
-		public int plane { get; private set; }
-		public float dist { get; private set; }
-		public int texture { get; private set; } // -1 is a valid texture index in Quake 2. However it means "unused" there
-		public int face { get; private set; }
-		public int displacement { get; private set; } // In theory, this should always point to the side's displacement info. In practice, displacement brushes are removed on compile, leaving only the faces.
-		public bool bevel { get; private set; }
+		
+		// Call of Duty's format sucks. The first field is either a float or an int
+		// depending on whether or not it's one of the first six sides in a brush.
+		[FieldOffset(0)] public int plane;
+		[FieldOffset(0)] public float dist;
+		[FieldOffset(4)] public int texture; // -1 is a valid texture index in Quake 2. However it means "unused" there
+		[FieldOffset(8)] public int face;
+		[FieldOffset(12)] public int displacement; // In theory, this should always point to the side's displacement info. In practice, displacement brushes are removed on compile, leaving only the faces.
+		[FieldOffset(16)] public bool bevel;
 
 		/// <summary>
 		/// Creates a new <see cref="BrushSide"/> object from a <c>byte</c> array.
@@ -28,7 +32,6 @@ namespace LibBSP {
 				throw new ArgumentNullException();
 			}
 			plane = -1;
-			dist = -1;
 			texture = -1;
 			face = -1;
 			displacement = -1;
@@ -36,13 +39,7 @@ namespace LibBSP {
 			switch (type) {
 				case MapType.CoD:
 				case MapType.CoD2:
-				case MapType.CoD4: {
-					// Call of Duty's format sucks. The first field is either a float or an int
-					// depending on whether or not it's one of the first six sides in a brush.
-					// Store both possibilities, and the algorithm will determine which to use.
-					dist = BitConverter.ToSingle(data, 0);
-					goto case MapType.Quake3;
-				}
+				case MapType.CoD4:
 				case MapType.Quake3:
 				case MapType.FAKK:
 				case MapType.STEF2Demo:
