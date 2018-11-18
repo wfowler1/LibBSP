@@ -111,30 +111,43 @@ namespace LibBSP {
 					if (version == 0) {
 						goto case MapType.Quake3;
 					} else if (version == 1) {
+						// Patch vertex. Set color to white (makes things easier in CoDRadiant) and simply read position.
 						result.color = ColorExtensions.FromArgb(255, 255, 255, 255);
-						goto case MapType.DMoMaM;
+						goto case MapType.Quake;
 					}
 					break;
 				}
+				case MapType.CoD2: {
+					result.normal = new Vector3d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20));
+					result.color = ColorExtensions.FromArgb(data[27], data[24], data[25], data[26]);
+					result.uv0 = new Vector2d(BitConverter.ToSingle(data, 28), BitConverter.ToSingle(data, 32));
+					result.uv1 = new Vector2d(BitConverter.ToSingle(data, 36), BitConverter.ToSingle(data, 40));
+					goto case MapType.Quake;
+				}
 				case MapType.MOHAA:
 				case MapType.Quake3:
-				case MapType.CoD2:
 				case MapType.CoD4:
 				case MapType.FAKK: {
 					result.uv0 = new Vector2d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16));
+					result.uv1 = new Vector2d(BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24));
+					result.normal = new Vector3d(BitConverter.ToSingle(data, 28), BitConverter.ToSingle(data, 32), BitConverter.ToSingle(data, 36));
 					result.color = ColorExtensions.FromArgb(data[43], data[40], data[41], data[42]);
-					goto case MapType.DMoMaM;
+					goto case MapType.Quake;
 				}
 				case MapType.Raven: {
 					result.uv0 = new Vector2d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16));
+					result.uv1 = new Vector2d(BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24));
+					result.normal = new Vector3d(BitConverter.ToSingle(data, 52), BitConverter.ToSingle(data, 56), BitConverter.ToSingle(data, 60));
 					result.color = ColorExtensions.FromArgb(data[67], data[64], data[65], data[66]);
-					goto case MapType.DMoMaM;
+					goto case MapType.Quake;
 				}
 				case MapType.STEF2:
 				case MapType.STEF2Demo: {
 					result.uv0 = new Vector2d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16));
+					result.uv1 = new Vector2d(BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24));
 					result.color = ColorExtensions.FromArgb(data[35], data[32], data[33], data[34]);
-					goto case MapType.DMoMaM;
+					result.normal = new Vector3d(BitConverter.ToSingle(data, 36), BitConverter.ToSingle(data, 40), BitConverter.ToSingle(data, 44));
+					goto case MapType.Quake;
 				}
 				case MapType.Quake:
 				case MapType.Nightfire:
@@ -206,8 +219,12 @@ namespace LibBSP {
 					if (version == 0) {
 						goto case MapType.Quake3;
 					} else if (version == 1) {
-						goto case MapType.DMoMaM;
+						goto case MapType.Quake;
 					}
+					break;
+				}
+				case MapType.CoD2: {
+					structLength = 68;
 					break;
 				}
 				case MapType.MOHAA:
@@ -278,6 +295,9 @@ namespace LibBSP {
 				}
 				case MapType.CoD: {
 					return 7;
+				}
+				case MapType.CoD2: {
+					return 8;
 				}
 				case MapType.Raven:
 				case MapType.Quake3: {
