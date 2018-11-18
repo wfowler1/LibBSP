@@ -142,7 +142,7 @@ namespace LibBSP {
 			int lumpLength = 0;
 			int lumpVersion = 0;
 			int lumpIdent = 0;
-			if (version == MapType.L4D2) {
+			if (version == MapType.L4D2 || version == MapType.Source27) {
 				lumpVersion = BitConverter.ToInt32(input, 0);
 				lumpOffset = BitConverter.ToInt32(input, 4);
 				lumpLength = BitConverter.ToInt32(input, 8);
@@ -155,7 +155,6 @@ namespace LibBSP {
 						 version == MapType.Source21 ||
 						 version == MapType.Source22 ||
 						 version == MapType.Source23 ||
-						 version == MapType.Source27 ||
 						 version == MapType.Vindictus ||
 						 version == MapType.DMoMaM ||
 						 version == MapType.TacticalInterventionEncrypted) {
@@ -404,8 +403,33 @@ namespace LibBSP {
 											// TODO: This doesn't necessarily mean the whole map should be read as DMoMaM.
 											current = MapType.DMoMaM;
 										} else {
-											// TODO: Vindictus? Before I was determining these by looking at the Game Lump data, is there a better way?
 											current = MapType.Source20;
+											// Hack for detecting Vindictus: Look in the GameLump for offset/length/flags outside of ranges we'd expect
+											LumpInfo gameLumpInfo = GetLumpInfo(35, MapType.Source20);
+											stream.Seek(gameLumpInfo.offset, SeekOrigin.Begin);
+											int numGameLumps = binaryReader.ReadInt32();
+											if (numGameLumps > 0) {
+												// Normally this would be the offset and length for the first game lump.
+												// But in Vindictus it's the version indicator for it instead.
+												stream.Seek(gameLumpInfo.offset + 12, SeekOrigin.Begin);
+												int testOffset = binaryReader.ReadInt32();
+												if (numGameLumps > 1) {
+													if (testOffset < 24) {
+														current = MapType.Vindictus;
+														break;
+													}
+												} else {
+													// Normally this would be the ident for the second game lump.
+													// But in Vindictus it's the length for the first instead.
+													stream.Seek(gameLumpInfo.offset + 20, SeekOrigin.Begin);
+													int testName = binaryReader.ReadInt32();
+													// A lump ident tends to have a value far above 1090519040, longer than any GameLump should be.
+													if (testOffset < 24 && testName < gameLumpInfo.length) {
+														current = MapType.Vindictus;
+														break;
+													}
+												}
+											}
 										}
 										break;
 									}
