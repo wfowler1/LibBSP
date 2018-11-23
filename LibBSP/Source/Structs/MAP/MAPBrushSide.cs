@@ -124,7 +124,7 @@ namespace LibBSP {
 								string[] split = tokens[1].SplitUnlessBetweenDelimiters(' ', '[', ']', StringSplitOptions.RemoveEmptyEntries);
 								textureInfo.scale = new Vector2d(float.Parse(split[1], _format), textureInfo.scale.y);
 								split = split[0].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-								textureInfo.axes[0] = new Vector3d(float.Parse(split[0], _format), float.Parse(split[1], _format), float.Parse(split[2], _format));
+								textureInfo.uAxis = new Vector3d(float.Parse(split[0], _format), float.Parse(split[1], _format), float.Parse(split[2], _format));
 								textureInfo.translation = new Vector2d(float.Parse(split[3], _format), textureInfo.translation.y);
 								break;
 							}
@@ -132,7 +132,7 @@ namespace LibBSP {
 								string[] split = tokens[1].SplitUnlessBetweenDelimiters(' ', '[', ']', StringSplitOptions.RemoveEmptyEntries);
 								textureInfo.scale = new Vector2d(textureInfo.scale.x, float.Parse(split[1], _format));
 								split = split[0].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-								textureInfo.axes[1] = new Vector3d(float.Parse(split[0], _format), float.Parse(split[1], _format), float.Parse(split[2], _format));
+								textureInfo.vAxis = new Vector3d(float.Parse(split[0], _format), float.Parse(split[1], _format), float.Parse(split[2], _format));
 								textureInfo.translation = new Vector2d(textureInfo.translation.x, float.Parse(split[3], _format));
 								break;
 							}

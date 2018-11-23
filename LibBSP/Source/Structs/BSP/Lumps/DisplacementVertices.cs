@@ -20,9 +20,9 @@ namespace LibBSP {
 				throw new ArgumentNullException();
 			}
 			int structLength = 20;
-			byte[] bytes = new byte[structLength];
 			int numObjects = data.Length / structLength;
 			for (int i = 0; i < numObjects; ++i) {
+				byte[] bytes = new byte[structLength];
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				Add(new DisplacementVertex(bytes, type, version));
 			}

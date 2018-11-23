@@ -19,27 +19,6 @@ namespace LibBSP {
 	/// </summary>
 	public class GameLump : Dictionary<GameLumpType, LumpInfo> {
 
-		private byte[] _rawData;
-		private int _gameLumpOffset;
-
-		/// <summary>
-		/// Byte array representing the raw data read from the BSP for the game lump.
-		/// </summary>
-		public byte[] rawData {
-			get {
-				return _rawData;
-			}
-		}
-
-		/// <summary>
-		/// The amount to subtract from all the <see cref="LumpInfo.offset"/> values to find the offset relative to the start of the Game Lump data. May be 0.
-		/// </summary>
-		public int gameLumpOffset {
-			get {
-				return _gameLumpOffset;
-			}
-		}
-
 		/// <summary>
 		/// Creates a new <see cref="GameLump"/> object by parsing a <c>byte</c> array into a <c>Dictionary</c> of <see cref="LumpInfo"/> objects.
 		/// These objects contain offsets, lengths and versions of the GameLump lumps.
@@ -53,7 +32,6 @@ namespace LibBSP {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			_rawData = data;
 
 			int structLength = 0;
 			switch (type) {
@@ -82,25 +60,25 @@ namespace LibBSP {
 
 			int numGameLumps = BitConverter.ToInt32(data, 0);
 			if (numGameLumps > 0) {
-				int headerLength = 4 + (numGameLumps * structLength);
+				int lumpDictionaryOffset = (type == MapType.DMoMaM) ? 8 : 4;
 				int lowestLumpOffset = int.MaxValue;
 
 				for (int i = 0; i < numGameLumps; ++i) {
-					int lumpIdent = BitConverter.ToInt32(data, (i * structLength) + 4);
+					int lumpIdent = BitConverter.ToInt32(data, (i * structLength) + lumpDictionaryOffset);
 					int lumpFlags;
 					int lumpVersion;
 					int lumpOffset;
 					int lumpLength;
 					if (type == MapType.Vindictus) {
-						lumpFlags = BitConverter.ToInt32(data, (i * structLength) + 8);
-						lumpVersion = BitConverter.ToInt32(data, (i * structLength) + 12);
-						lumpOffset = BitConverter.ToInt32(data, (i * structLength) + 16);
-						lumpLength = BitConverter.ToInt32(data, (i * structLength) + 20);
+						lumpFlags = BitConverter.ToInt32(data, (i * structLength) + lumpDictionaryOffset + 4);
+						lumpVersion = BitConverter.ToInt32(data, (i * structLength) + lumpDictionaryOffset + 8);
+						lumpOffset = BitConverter.ToInt32(data, (i * structLength) + lumpDictionaryOffset + 12);
+						lumpLength = BitConverter.ToInt32(data, (i * structLength) + lumpDictionaryOffset + 16);
 					} else {
-						lumpFlags = BitConverter.ToUInt16(data, (i * structLength) + 8);
-						lumpVersion = BitConverter.ToUInt16(data, (i * structLength) + 10);
-						lumpOffset = BitConverter.ToInt32(data, (i * structLength) + 12);
-						lumpLength = BitConverter.ToInt32(data, (i * structLength) + 16);
+						lumpFlags = BitConverter.ToUInt16(data, (i * structLength) + lumpDictionaryOffset + 4);
+						lumpVersion = BitConverter.ToUInt16(data, (i * structLength) + lumpDictionaryOffset + 6);
+						lumpOffset = BitConverter.ToInt32(data, (i * structLength) + lumpDictionaryOffset + 8);
+						lumpLength = BitConverter.ToInt32(data, (i * structLength) + lumpDictionaryOffset + 12);
 					}
 					LumpInfo info = new LumpInfo {
 						ident = lumpIdent,
@@ -115,9 +93,6 @@ namespace LibBSP {
 						lowestLumpOffset = info.offset;
 					}
 				}
-
-				// If the offset values are given relative to the beginning of the lump, this should give 0.
-				_gameLumpOffset = lowestLumpOffset - headerLength;
 			}
 		}
 
@@ -158,6 +133,20 @@ namespace LibBSP {
 					return -1;
 				}
 			}
+		}
+
+		/// <summary>
+		/// Gets the lowest offset used for a Game Lump.
+		/// </summary>
+		/// <returns>The lowest offset used for a Game Lump, or <c>int.MaxValue</c> if no Game Lumps exist.</returns>
+		public int GetLowestLumpOffset() {
+			int lowest = int.MaxValue;
+			foreach (LumpInfo info in Values) {
+				if (info.offset < lowest) {
+					lowest = info.offset;
+				}
+			}
+			return lowest;
 		}
 	}
 }

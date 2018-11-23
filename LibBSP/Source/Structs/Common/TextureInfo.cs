@@ -21,36 +21,169 @@ namespace LibBSP {
 	/// </summary>
 	[Serializable] public class TextureInfo {
 
-		public const int S = 0;
-		public const int T = 1;
-		/// <summary>
-		/// Array of base texture axes. When referenced properly, provides a good default texture axis for any given plane.
-		/// </summary>
-		public static readonly Vector3d[] baseAxes = new Vector3d[] { 
-			new Vector3d(0, 0, 1), new Vector3d(1, 0, 0), new Vector3d(0, -1, 0),
-			new Vector3d(0, 0, -1), new Vector3d(1, 0, 0), new Vector3d(0, -1, 0),
-			new Vector3d(1, 0, 0), new Vector3d(0, 1, 0), new Vector3d(0, 0, -1),
-			new Vector3d(-1, 0, 0), new Vector3d(0, 1, 0), new Vector3d(0, 0, -1),
-			new Vector3d(0, 1, 0), new Vector3d(1, 0, 0), new Vector3d(0, 0, -1),
-			new Vector3d(0, -1, 0), new Vector3d(1, 0, 0), new Vector3d(0, 0, -1)
-		};
+		public byte[] data;
+		public MapType type;
+		public int version;
 
-        public Vector3d[] axes;
-        public Vector2d translation;
-        public Vector2d scale;
-        public int flags;
-        public int texture;
-        public double rotation;
+		// No BSP format uses these so they are fields.
+		public Vector2d scale = Vector2d.one;
+		public double rotation = 0;
+
+		public Vector3d uAxis {
+			get {
+				return new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
+			}
+			set {
+				value.GetBytes().CopyTo(data, 0);
+			}
+		}
+
+		public Vector3d vAxis {
+			get {
+				return new Vector3d(BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24));
+			}
+			set {
+				value.GetBytes().CopyTo(data, 16);
+			}
+		}
+
+		public Vector2d translation {
+			get {
+				return new Vector2d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 28));
+			}
+			set {
+				BitConverter.GetBytes((float)value.x).CopyTo(data, 12);
+				BitConverter.GetBytes((float)value.y).CopyTo(data, 28);
+			}
+		}
+
+		public int flags {
+			get {
+				switch (type) {
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.Vindictus: {
+						return BitConverter.ToInt32(data, 64);
+					}
+					case MapType.DMoMaM: {
+						return BitConverter.ToInt32(data, 88);
+					}
+					case MapType.Quake: {
+						return BitConverter.ToInt32(data, 36);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (type) {
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.Vindictus: {
+						bytes.CopyTo(data, 64);
+						break;
+					}
+					case MapType.DMoMaM: {
+						bytes.CopyTo(data, 88);
+						break;
+					}
+					case MapType.Quake: {
+						bytes.CopyTo(data, 36);
+						break;
+					}
+				}
+			}
+		}
+
+		public int texture {
+			get {
+				switch (type) {
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.Vindictus: {
+						return BitConverter.ToInt32(data, 68);
+					}
+					case MapType.DMoMaM: {
+						return BitConverter.ToInt32(data, 92);
+					}
+					case MapType.Quake: {
+						return BitConverter.ToInt32(data, 32);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (type) {
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.Vindictus: {
+						bytes.CopyTo(data, 68);
+						break;
+					}
+					case MapType.DMoMaM: {
+						bytes.CopyTo(data, 92);
+						break;
+					}
+					case MapType.Quake: {
+						bytes.CopyTo(data, 32);
+						break;
+					}
+				}
+			}
+		}
 
 		/// <summary>
 		/// Creates a new <see cref="TextureInfo"/> object with sensible defaults.
 		/// </summary>
 		public TextureInfo() {
-			axes = new Vector3d[2];
+			data = new byte[40];
+			type = MapType.Quake;
+			version = 0;
+
+			uAxis = Vector3d.zero;
+			vAxis = Vector3d.zero;
 			translation = Vector2d.zero;
-			scale = Vector2d.one;
 			flags = 0;
-			texture = 0;
+			texture = -1;
+
+			scale = Vector2d.one;
 			rotation = 0;
 		}
 
@@ -61,70 +194,35 @@ namespace LibBSP {
 		/// <param name="type">The map type.</param>
 		/// <param name="version">The version of this lump.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
 		public TextureInfo(byte[] data, MapType type, int version = 0) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			texture = -1;
-			flags = -1;
-			axes = new Vector3d[2];
-			translation = new Vector2d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 28));
-			axes[S] = new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
-			axes[T] = new Vector3d(BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24));
-			// Texture scaling information is compiled into the axes by changing their length.
+			this.data = data;
+			this.type = type;
+			this.version = version;
+
 			scale = Vector2d.one;
 			rotation = 0;
-			switch (type) {
-				// Excluded engines: Quake 2-based, Quake 3-based
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Vindictus: {
-					texture = BitConverter.ToInt32(data, 68);
-					flags = BitConverter.ToInt32(data, 64);
-					break;
-				}
-				case MapType.DMoMaM: {
-					texture = BitConverter.ToInt32(data, 92);
-					flags = BitConverter.ToInt32(data, 88);
-					break;
-				}
-				case MapType.Quake: {
-					texture = BitConverter.ToInt32(data, 32);
-					flags = BitConverter.ToInt32(data, 36);
-					break;
-				}
-				case MapType.Nightfire: {
-					break;
-				}
-				default: {
-					throw new ArgumentException("Map type " + type + " isn't supported by the TextureInfo class.");
-				}
-			}
 		}
 
 		/// <summary>
 		/// Creates a new <see cref="TextureInfo"/> object using the passed data.
 		/// </summary>
-		/// <param name="s">The S texture axis.</param>
-		/// <param name="t">The T texture axis.</param>
+		/// <param name="u">The U texture axis.</param>
+		/// <param name="v">The V texture axis.</param>
 		/// <param name="translation">Texture translation along both axes (in pixels).</param>
 		/// <param name="scale">Texture scale along both axes.</param>
 		/// <param name="flags">The flags for this <see cref="TextureInfo"/>.</param>
 		/// <param name="texture">Index into the texture list for the texture this <see cref="TextureInfo"/> uses.</param>
 		/// <param name="rotation">Rotation of the texutre axes.</param>
-		public TextureInfo(Vector3d s, Vector3d t, Vector2d translation, Vector2d scale, int flags, int texture, double rotation) {
-			axes = new Vector3d[2];
-			axes[S] = s;
-			axes[T] = t;
+		public TextureInfo(Vector3d u, Vector3d v, Vector2d translation, Vector2d scale, int flags, int texture, double rotation) {
+			data = new byte[40];
+			type = MapType.Quake;
+			version = 0;
+
+			uAxis = u;
+			vAxis = v;
 			this.translation = translation;
 			this.scale = scale;
 			this.flags = flags;
@@ -138,19 +236,10 @@ namespace LibBSP {
 		/// <param name="p"><see cref="Plane"/> of the surface.</param>
 		/// <returns>The best matching texture axes for the given <see cref="Plane"/>.</returns>
 		public static Vector3d[] TextureAxisFromPlane(Plane p) {
-			int bestaxis = 0;
-			double best = 0; // "Best" dot product so far
-			for (int i = 0; i < 6; ++i) {
-				// For all possible axes, positive and negative
-				double dot = Vector3d.Dot(p.normal, new Vector3d(baseAxes[i * 3][0], baseAxes[i * 3][1], baseAxes[i * 3][2]));
-				if (dot > best) {
-					best = dot;
-					bestaxis = i;
-				}
-			}
+			int bestaxis = p.BestAxis();
 			Vector3d[] newAxes = new Vector3d[2];
-			newAxes[0] = new Vector3d(baseAxes[bestaxis * 3 + 1][0], baseAxes[bestaxis * 3 + 1][1], baseAxes[bestaxis * 3 + 1][2]);
-			newAxes[1] = new Vector3d(baseAxes[bestaxis * 3 + 2][0], baseAxes[bestaxis * 3 + 2][1], baseAxes[bestaxis * 3 + 2][2]);
+			newAxes[0] = PlaneExtensions.baseAxes[bestaxis * 3 + 1];
+			newAxes[1] = PlaneExtensions.baseAxes[bestaxis * 3 + 2];
 			return newAxes;
 		}
 
@@ -201,8 +290,8 @@ namespace LibBSP {
 			}
 			int numObjects = data.Length / structLength;
 			List<TextureInfo> lump = new List<TextureInfo>(numObjects);
-			byte[] bytes = new byte[structLength];
 			for (int i = 0; i < numObjects; ++i) {
+				byte[] bytes = new byte[structLength];
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				lump.Add(new TextureInfo(bytes, type, version));
 			}

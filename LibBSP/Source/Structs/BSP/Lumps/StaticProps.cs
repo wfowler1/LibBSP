@@ -43,8 +43,8 @@ namespace LibBSP {
 				offset += 4;
 				if (numProps > 0) {
 					structLength = (data.Length - offset) / numProps;
-					byte[] bytes = new byte[structLength];
 					for (int i = 0; i < numProps; ++i) {
+						byte[] bytes = new byte[structLength];
 						Array.Copy(data, offset, bytes, 0, structLength);
 						Add(new StaticProp(bytes, type, version));
 						offset += structLength;

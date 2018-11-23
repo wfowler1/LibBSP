@@ -420,7 +420,7 @@ namespace LibBSP {
 
 		/// <summary>
 		/// Clears the bits in "spawnflags" which are set in <paramref name="bits"/>.
-		/// Equivalent to spawnflags = (<paramref name="bits"/> ^ 0xFFFFFFFF) & spawnflags.
+		/// Equivalent to spawnflags = (<paramref name="bits"/> ^ 0xFFFFFFFF) &amp; spawnflags.
 		/// </summary>
 		/// <param name="bits">Bitmask of bits to clear.</param>
 		public void ClearSpawnflags(uint bits) {
@@ -524,9 +524,9 @@ namespace LibBSP {
 		#region ISerializable
 		/// <summary>
 		/// Implements the <c>ISerializable</c> interface and returns the data needed
-		/// to serialize the <see cref="Entity"> instance.
+		/// to serialize the <see cref="Entity"/> instance.
 		/// </summary>
-		/// <param name="info">A <c>SerializationInfo</c> object that contains the information required to serialize the <see cref="Entity"> instance.</param>
+		/// <param name="info">A <c>SerializationInfo</c> object that contains the information required to serialize the <see cref="Entity"/> instance.</param>
 		/// <param name="context">A <c>StreamingContext</c> structure that contains the source and destination of the serialized stream associated with the <see cref="Entity"/> instance.</param>
 		public override void GetObjectData(SerializationInfo info, StreamingContext context) {
 			base.GetObjectData(info, context);

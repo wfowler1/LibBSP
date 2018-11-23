@@ -30,5 +30,26 @@ namespace LibBSP {
 #endif
 		}
 
+		/// <summary>
+		/// Gets this <c>Color</c> as R8G8B8A8.
+		/// </summary>
+		/// <param name="color">This <c>Color</c>.</param>
+		/// <returns>A <c>byte</c> array with four members, RGBA.</returns>
+		public static byte[] GetBytes(this Color color) {
+			byte[] bytes = new byte[4];
+#if UNITY
+			bytes[0] = color.r;
+			bytes[1] = color.g;
+			bytes[2] = color.b;
+			bytes[3] = color.a;
+#else
+			bytes[0] = color.R;
+			bytes[1] = color.G;
+			bytes[2] = color.B;
+			bytes[3] = color.A;
+#endif
+			return bytes;
+		}
+
 	}
 }

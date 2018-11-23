@@ -19,6 +19,18 @@ namespace LibBSP {
 	public static class PlaneExtensions {
 
 		/// <summary>
+		/// Array of base texture axes. When referenced properly, provides a good default texture axis for any given plane.
+		/// </summary>
+		public static readonly Vector3d[] baseAxes = new Vector3d[] {
+			new Vector3d(0, 0, 1), new Vector3d(1, 0, 0), new Vector3d(0, -1, 0),
+			new Vector3d(0, 0, -1), new Vector3d(1, 0, 0), new Vector3d(0, -1, 0),
+			new Vector3d(1, 0, 0), new Vector3d(0, 1, 0), new Vector3d(0, 0, -1),
+			new Vector3d(-1, 0, 0), new Vector3d(0, 1, 0), new Vector3d(0, 0, -1),
+			new Vector3d(0, 1, 0), new Vector3d(1, 0, 0), new Vector3d(0, 0, -1),
+			new Vector3d(0, -1, 0), new Vector3d(1, 0, 0), new Vector3d(0, 0, -1)
+		};
+
+		/// <summary>
 		/// Intersects three <see cref="Plane"/>s at a <see cref="Vector3d"/>. Returns NaN for all components if two or more <see cref="Plane"/>s are parallel.
 		/// </summary>
 		/// <param name="p1"><see cref="Plane"/> to intersect.</param>
@@ -262,14 +274,32 @@ namespace LibBSP {
 		/// <param name="version">The version of this lump.</param>
 		/// <returns>A <c>List</c> of <see cref="Plane"/> objects.</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null.</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
 		/// <remarks>This function goes here since it can't go into Unity's Plane class, and so can't depend
 		/// on having a constructor taking a byte array.</remarks>
 		public static List<Plane> LumpFactory(byte[] data, MapType type, int version = 0) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			int structLength = 0;
+			int structLength = GetStructLength(type, version);
+			int numObjects = data.Length / structLength;
+			List<Plane> lump = new List<Plane>(numObjects);
+			for (int i = 0; i < numObjects; ++i) {
+				Vector3d normal = new Vector3d(BitConverter.ToSingle(data, structLength * i), BitConverter.ToSingle(data, (structLength * i) + 4), BitConverter.ToSingle(data, (structLength * i) + 8));
+				float distance = BitConverter.ToSingle(data, (structLength * i) + 12);
+				lump.Add(new Plane(normal, distance));
+			}
+			return lump;
+		}
+
+		/// <summary>
+		/// Gets this <see cref="Plane"/> as a <c>byte</c> array to be used in a BSP of type <see cref="type"/>.
+		/// </summary>
+		/// <param name="p">This <see cref="Plane"/>.</param>
+		/// <param name="type">The <see cref="MapType"/> of BSP this <see cref="Plane"/> is from.</param>
+		/// <param name="version">The version of the planes lump in the BSP.</param>
+		/// <returns><c>byte</c> array representing this <see cref="Plane"/>'s components.</returns>
+		public static byte[] GetBytes(this Plane p, MapType type, int version = 0) {
+			byte[] bytes = new byte[GetStructLength(type, version)];
 			switch (type) {
 				case MapType.Quake:
 				case MapType.Nightfire:
@@ -289,33 +319,39 @@ namespace LibBSP {
 				case MapType.Quake2:
 				case MapType.Daikatana:
 				case MapType.TacticalInterventionEncrypted: {
-					structLength = 20;
+					BitConverter.GetBytes(BestAxis(p)).CopyTo(bytes, 16);
 					break;
 				}
-				case MapType.STEF2:
-				case MapType.MOHAA:
-				case MapType.STEF2Demo:
-				case MapType.Raven:
-				case MapType.Quake3:
-				case MapType.FAKK:
-				case MapType.CoD:
-				case MapType.CoD2:
-				case MapType.CoD4: {
-					structLength = 16;
-					break;
-				}
-				default: {
-					throw new ArgumentException("Map type " + type + " doesn't use a Plane lump or the lump is unknown.");
+			}
+			p.normal.GetBytes().CopyTo(bytes, 0);
+			BitConverter.GetBytes(p.distance).CopyTo(bytes, 12);
+			return bytes;
+		}
+
+		/// <summary>
+		/// Gets the axis this <see cref="Plane"/>'s normal is closest to (the <see cref="Plane"/>'s normal
+		/// and the axis have the largest dot product).
+		/// 0 = Positive Z
+		/// 1 = Negative Z
+		/// 2 = Positive X
+		/// 3 = Negative X
+		/// 4 = Positive Y
+		/// 5 = Negative Y
+		/// </summary>
+		/// <param name="p">This <see cref="Plane"/>.</param>
+		/// <returns>The best-match axis for this <see cref="Plane"/>.</returns>
+		public static int BestAxis(this Plane p) {
+			int bestaxis = 0;
+			double best = 0; // "Best" dot product so far
+			for (int i = 0; i < 6; ++i) {
+				// For all possible axes, positive and negative
+				double dot = Vector3d.Dot(p.normal, baseAxes[i * 3]);
+				if (dot > best) {
+					best = dot;
+					bestaxis = i;
 				}
 			}
-			int numObjects = data.Length / structLength;
-			List<Plane> lump = new List<Plane>(numObjects);
-			for (int i = 0; i < numObjects; ++i) {
-				Vector3d normal = new Vector3d(BitConverter.ToSingle(data, structLength * i), BitConverter.ToSingle(data, (structLength * i) + 4), BitConverter.ToSingle(data, (structLength * i) + 8));
-				float distance = BitConverter.ToSingle(data, (structLength * i) + 12);
-				lump.Add(new Plane(normal, distance));
-			}
-			return lump;
+			return bestaxis;
 		}
 
 		/// <summary>
@@ -362,6 +398,46 @@ namespace LibBSP {
 					return -1;
 				}
 			}
+		}
+
+		public static int GetStructLength(MapType type, int version) {
+			int structLength = 0;
+			switch (type) {
+				case MapType.Quake:
+				case MapType.Nightfire:
+				case MapType.SiN:
+				case MapType.SoF:
+				case MapType.Source17:
+				case MapType.Source18:
+				case MapType.Source19:
+				case MapType.Source20:
+				case MapType.Source21:
+				case MapType.Source22:
+				case MapType.Source23:
+				case MapType.Source27:
+				case MapType.L4D2:
+				case MapType.DMoMaM:
+				case MapType.Vindictus:
+				case MapType.Quake2:
+				case MapType.Daikatana:
+				case MapType.TacticalInterventionEncrypted: {
+					structLength = 20;
+					break;
+				}
+				case MapType.STEF2:
+				case MapType.MOHAA:
+				case MapType.STEF2Demo:
+				case MapType.Raven:
+				case MapType.Quake3:
+				case MapType.FAKK:
+				case MapType.CoD:
+				case MapType.CoD2:
+				case MapType.CoD4: {
+					structLength = 16;
+					break;
+				}
+			}
+			return structLength;
 		}
 	}
 }

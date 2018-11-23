@@ -606,8 +606,19 @@ namespace LibBSP {
 				if (_staticProps == null) {
 					if (gameLump != null && gameLump.ContainsKey(GameLumpType.sprp)) {
 						LumpInfo info = gameLump[GameLumpType.sprp];
-						byte[] thisLump = new byte[info.length];
-						Array.Copy(gameLump.rawData, info.offset - gameLump.gameLumpOffset, thisLump, 0, info.length);
+						byte[] thisLump;
+						// GameLump lumps may have their offset specified from either the beginning of the GameLump, or the beginning of the file.
+						if (gameLump.GetLowestLumpOffset() < this[GameLump.GetIndexForLump(version)].offset) {
+							thisLump = reader.ReadLump(new LumpInfo() {
+								ident = info.ident,
+								flags = info.flags,
+								version = info.version,
+								offset = info.offset + this[GameLump.GetIndexForLump(version)].offset,
+								length = info.length
+							});
+						} else {
+							thisLump = reader.ReadLump(info);
+						}
 						_staticProps = StaticProp.LumpFactory(thisLump, version, info.version);
 					}
 				}
@@ -832,9 +843,16 @@ namespace LibBSP {
 			int count = (int)(countProperty.GetGetMethod().Invoke(o, null));
 
 			// Get the lump from this class
-			List<T> theLump = targetLump.GetGetMethod().Invoke(this, null) as List<T>;
-			
-			return theLump.GetRange(index, count);
+			IList<T> theLump = targetLump.GetGetMethod().Invoke(this, null) as IList<T>;
+
+			// Copy items from the lump into a return list.
+			// IList<T> lacks AddRange and this is faster and creates less garbage than any Linq trickery I could come up with.
+			// Passing references to IList<T> out of this method just eats obscene amounts of memory until the system runs out.
+			List<T> ret = new List<T>(count);
+			for (int i = 0; i < count; ++i) {
+				ret.Add(theLump[index + i]);
+			}
+			return ret;
 		}
 
 	}

@@ -15,6 +15,7 @@ namespace LibBSP {
 #if UNITY
 	using Vector2d = Vector2;
 	using Vector3d = Vector3;
+	using Vector4d = Vector4;
 #if !OLDUNITY
 	using Vertex = UIVertex;
 #endif
@@ -122,6 +123,9 @@ namespace LibBSP {
 					result.color = ColorExtensions.FromArgb(data[27], data[24], data[25], data[26]);
 					result.uv0 = new Vector2d(BitConverter.ToSingle(data, 28), BitConverter.ToSingle(data, 32));
 					result.uv1 = new Vector2d(BitConverter.ToSingle(data, 36), BitConverter.ToSingle(data, 40));
+					// Use these fields to store additional unknown information
+					result.tangent = new Vector4d(BitConverter.ToSingle(data, 44), BitConverter.ToSingle(data, 48), BitConverter.ToSingle(data, 52), BitConverter.ToSingle(data, 56));
+					result.uv3 = new Vector2d(BitConverter.ToSingle(data, 60), BitConverter.ToSingle(data, 64));
 					goto case MapType.Quake;
 				}
 				case MapType.MOHAA:
@@ -137,14 +141,20 @@ namespace LibBSP {
 				case MapType.Raven: {
 					result.uv0 = new Vector2d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16));
 					result.uv1 = new Vector2d(BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24));
+					result.uv2 = new Vector2d(BitConverter.ToSingle(data, 28), BitConverter.ToSingle(data, 32));
+					result.uv3 = new Vector2d(BitConverter.ToSingle(data, 36), BitConverter.ToSingle(data, 40));
 					result.normal = new Vector3d(BitConverter.ToSingle(data, 52), BitConverter.ToSingle(data, 56), BitConverter.ToSingle(data, 60));
 					result.color = ColorExtensions.FromArgb(data[67], data[64], data[65], data[66]);
+					// Use for two more float fields and two more colors.
+					// There's actually another field that seems to be color but I've only ever seen it be FFFFFFFF.
+					result.tangent = new Vector4d(BitConverter.ToSingle(data, 44), BitConverter.ToSingle(data, 48), BitConverter.ToSingle(data, 68), BitConverter.ToSingle(data, 72));
 					goto case MapType.Quake;
 				}
 				case MapType.STEF2:
 				case MapType.STEF2Demo: {
 					result.uv0 = new Vector2d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16));
 					result.uv1 = new Vector2d(BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24));
+					result.uv2 = new Vector2d(BitConverter.ToSingle(data, 28), 0);
 					result.color = ColorExtensions.FromArgb(data[35], data[32], data[33], data[34]);
 					result.normal = new Vector3d(BitConverter.ToSingle(data, 36), BitConverter.ToSingle(data, 40), BitConverter.ToSingle(data, 44));
 					goto case MapType.Quake;
@@ -186,66 +196,13 @@ namespace LibBSP {
 		/// <returns>A <c>List</c> of <see cref="Vertex"/> objects.</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
 		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
-		/// <remarks>This function goes here since I can't put it into Unity's <c>UIVertex</c> class, and so I can't
+		/// <remarks>This function goes here since it can't be in Unity's <c>UIVertex</c> class, and so I can't
 		/// depend on having a constructor taking a byte array.</remarks>
 		public static List<Vertex> LumpFactory(byte[] data, MapType type, int version = 0) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			int structLength = 0;
-			switch (type) {
-				case MapType.Quake:
-				case MapType.Nightfire:
-				case MapType.SiN:
-				case MapType.SoF:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Quake2:
-				case MapType.Daikatana:
-				case MapType.Vindictus:
-				case MapType.DMoMaM: {
-					structLength = 12;
-					break;
-				}
-				case MapType.CoD: {
-					if (version == 0) {
-						goto case MapType.Quake3;
-					} else if (version == 1) {
-						goto case MapType.Quake;
-					}
-					break;
-				}
-				case MapType.CoD2: {
-					structLength = 68;
-					break;
-				}
-				case MapType.MOHAA:
-				case MapType.Quake3:
-				case MapType.FAKK: {
-					structLength = 44;
-					break;
-				}
-				case MapType.STEF2:
-				case MapType.STEF2Demo: {
-					structLength = 48;
-					break;
-				}
-				case MapType.Raven: {
-					structLength = 80;
-					break;
-				}
-				default: {
-					throw new ArgumentException("Map type " + type + " doesn't use a Vertex lump or the lump is unknown.");
-				}
-			}
+			int structLength = GetStructLength(type, version);
 			int numObjects = data.Length / structLength;
 			List<Vertex> lump = new List<Vertex>(numObjects);
 			byte[] bytes = new byte[structLength];
@@ -323,6 +280,165 @@ namespace LibBSP {
 					return -1;
 				}
 			}
+		}
+
+		/// <summary>
+		/// Gets the length of the <see cref="Vertex"/> struct for the given <see cref="MapType"/> and <paramref name="version"/>.
+		/// </summary>
+		/// <param name="type">The type of BSP to get struct length for.</param>
+		/// <param name="version">Version of the lump.</param>
+		/// <returns>The length of the struct for the given <see cref="MapType"/> of the given <paramref name="version"/>.</returns>
+		public static int GetStructLength(MapType type, int version) {
+			int structLength = 0;
+			switch (type) {
+				case MapType.Quake:
+				case MapType.Nightfire:
+				case MapType.SiN:
+				case MapType.SoF:
+				case MapType.Source17:
+				case MapType.Source18:
+				case MapType.Source19:
+				case MapType.Source20:
+				case MapType.Source21:
+				case MapType.Source22:
+				case MapType.Source23:
+				case MapType.Source27:
+				case MapType.L4D2:
+				case MapType.TacticalInterventionEncrypted:
+				case MapType.Quake2:
+				case MapType.Daikatana:
+				case MapType.Vindictus:
+				case MapType.DMoMaM: {
+					structLength = 12;
+					break;
+				}
+				case MapType.CoD: {
+					if (version == 0) {
+						goto case MapType.Quake3;
+					} else if (version == 1) {
+						goto case MapType.Quake;
+					}
+					break;
+				}
+				case MapType.CoD2: {
+					structLength = 68;
+					break;
+				}
+				case MapType.MOHAA:
+				case MapType.Quake3:
+				case MapType.FAKK: {
+					structLength = 44;
+					break;
+				}
+				case MapType.STEF2:
+				case MapType.STEF2Demo: {
+					structLength = 48;
+					break;
+				}
+				case MapType.Raven: {
+					structLength = 80;
+					break;
+				}
+				default: {
+					throw new ArgumentException("Map type " + type + " doesn't use a Vertex lump or the lump is unknown.");
+				}
+			}
+			return structLength;
+		}
+
+		/// <summary>
+		/// Gets a byte array for this <see cref="Vertex"/> to be inserted into a map of type <paramref name="type"/> with lump version <paramref name="version"/>.
+		/// </summary>
+		/// <param name="v">This <see cref="Vertex"/>.</param>
+		/// <param name="type">The <see cref="MapType"/> this <see cref="Vertex"/> is from.</param>
+		/// <param name="version">The version of the lump this <see cref="Vertex"/> is from.</param>
+		/// <returns><c>byte</c> array of the data for this <see cref="Vertex"/>.</returns>
+		public static byte[] GetBytes(this Vertex v, MapType type, int version) {
+			byte[] bytes = new byte[GetStructLength(type, version)];
+
+			switch (type) {
+				case MapType.Quake:
+				case MapType.Nightfire:
+				case MapType.SiN:
+				case MapType.SoF:
+				case MapType.Source17:
+				case MapType.Source18:
+				case MapType.Source19:
+				case MapType.Source20:
+				case MapType.Source21:
+				case MapType.Source22:
+				case MapType.Source23:
+				case MapType.Source27:
+				case MapType.L4D2:
+				case MapType.TacticalInterventionEncrypted:
+				case MapType.Quake2:
+				case MapType.Daikatana:
+				case MapType.Vindictus:
+				case MapType.DMoMaM: {
+					v.position.GetBytes().CopyTo(bytes, 0);
+					break;
+				}
+				case MapType.CoD: {
+					if (version == 0) {
+						goto case MapType.Quake3;
+					} else if (version == 1) {
+						goto case MapType.Quake;
+					}
+					break;
+				}
+				case MapType.CoD2: {
+					v.normal.GetBytes().CopyTo(bytes, 12);
+					v.color.GetBytes().CopyTo(bytes, 24);
+					v.uv0.GetBytes().CopyTo(bytes, 28);
+					v.uv1.GetBytes().CopyTo(bytes, 36);
+					// Use these fields to store additional unknown information
+					v.tangent.GetBytes().CopyTo(bytes, 44);
+					v.uv3.GetBytes().CopyTo(bytes, 60);
+					break;
+				}
+				case MapType.MOHAA:
+				case MapType.Quake3:
+				case MapType.CoD4:
+				case MapType.FAKK: {
+					v.uv0.GetBytes().CopyTo(bytes, 12);
+					v.uv1.GetBytes().CopyTo(bytes, 20);
+					v.normal.GetBytes().CopyTo(bytes, 28);
+					v.color.GetBytes().CopyTo(bytes, 40);
+					goto case MapType.Quake;
+				}
+				case MapType.Raven: {
+					v.uv0.GetBytes().CopyTo(bytes, 12);
+					v.uv1.GetBytes().CopyTo(bytes, 20);
+					v.uv2.GetBytes().CopyTo(bytes, 28);
+					v.uv3.GetBytes().CopyTo(bytes, 36);
+					BitConverter.GetBytes((float)v.tangent.x).CopyTo(bytes, 44);
+					BitConverter.GetBytes((float)v.tangent.y).CopyTo(bytes, 48);
+					v.normal.GetBytes().CopyTo(bytes, 52);
+					v.color.GetBytes().CopyTo(bytes, 64);
+					BitConverter.GetBytes((float)v.tangent.z).CopyTo(bytes, 68);
+					BitConverter.GetBytes((float)v.tangent.w).CopyTo(bytes, 72);
+					// There's actually another field that seems to be a color but I've only ever seen it be FFFFFFFF.
+					bytes[76] = 255;
+					bytes[77] = 255;
+					bytes[78] = 255;
+					bytes[79] = 255;
+					goto case MapType.Quake;
+				}
+				case MapType.STEF2:
+				case MapType.STEF2Demo: {
+					v.uv0.GetBytes().CopyTo(bytes, 12);
+					v.uv1.GetBytes().CopyTo(bytes, 20);
+					BitConverter.GetBytes(v.uv2.x).CopyTo(bytes, 28);
+					v.color.GetBytes().CopyTo(bytes, 32);
+					v.normal.GetBytes().CopyTo(bytes, 36);
+					goto case MapType.Quake;
+				}
+				default: {
+					bytes = new byte[0];
+					break;
+				}
+			}
+			return bytes;
 		}
 
 	}

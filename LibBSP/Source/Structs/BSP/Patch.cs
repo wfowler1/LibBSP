@@ -18,14 +18,229 @@ namespace LibBSP {
 	/// </summary>
 	public struct Patch {
 
-		public short shader { get; private set; }
-		public short type { get; private set; }
-		public Vector2d dimensions { get; private set; }
-		public int flags { get; private set; }
-		[Index("patchVerts")] public int firstVertex { get; private set; }
-		[Count("patchVerts")] public int numVertices { get; private set; }
-		[Count("patchIndices")] public int numIndices { get; private set; }
-		[Index("patchIndices")] public int firstIndex { get; private set; }
+		public byte[] data;
+		public MapType type;
+		public int version;
+
+		public short shader {
+			get {
+				switch (type) {
+					case MapType.CoD: {
+						return BitConverter.ToInt16(data, 0);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (type) {
+					case MapType.CoD: {
+						bytes.CopyTo(data, 0);
+						break;
+					}
+				}
+			}
+		}
+		
+		public short patchType {
+			get {
+				switch (type) {
+					case MapType.CoD: {
+						return BitConverter.ToInt16(data, 2);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (type) {
+					case MapType.CoD: {
+						bytes.CopyTo(data, 2);
+						break;
+					}
+				}
+			}
+		}
+		
+		public Vector2d dimensions {
+			get {
+				switch (type) {
+					case MapType.CoD: {
+						if (patchType == 0) {
+							return new Vector2d(BitConverter.ToInt16(data, 4), BitConverter.ToInt16(data, 6));
+						} else {
+							return new Vector2d(float.NaN, float.NaN);
+						}
+					}
+					default: {
+						return new Vector2d(float.NaN, float.NaN);
+					}
+				}
+			}
+			set {
+				switch (type) {
+					case MapType.CoD: {
+						if (patchType == 0) {
+							BitConverter.GetBytes((short)value.x).CopyTo(data, 4);
+							BitConverter.GetBytes((short)value.y).CopyTo(data, 6);
+						}
+						break;
+					}
+				}
+			}
+		}
+		
+		public int flags {
+			get {
+				switch (type) {
+					case MapType.CoD: {
+						if (patchType == 0) {
+							return BitConverter.ToInt32(data, 8);
+						} else {
+							return -1;
+						}
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (type) {
+					case MapType.CoD: {
+						if (patchType == 0) {
+							bytes.CopyTo(data, 8);
+						}
+						break;
+					}
+				}
+			}
+		}
+		
+		[Index("patchVerts")] public int firstVertex {
+			get {
+				switch (type) {
+					case MapType.CoD: {
+						if (patchType == 0) {
+							return BitConverter.ToInt32(data, 12);
+						} else if (patchType == 1) {
+							return BitConverter.ToInt32(data, 8);
+						} else {
+							return -1;
+						}
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (type) {
+					case MapType.CoD: {
+						if (patchType == 0) {
+							bytes.CopyTo(data, 12);
+						} else if (patchType == 1) {
+							bytes.CopyTo(data, 8);
+						}
+						break;
+					}
+				}
+			}
+		}
+		
+		[Count("patchVerts")] public int numVertices {
+			get {
+				switch (type) {
+					case MapType.CoD: {
+						if (patchType == 0) {
+							return BitConverter.ToInt16(data, 4) * BitConverter.ToInt16(data, 6);
+						} else if (patchType == 1) {
+							return BitConverter.ToInt16(data, 4);
+						} else {
+							return -1;
+						}
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (type) {
+					case MapType.CoD: {
+						if (patchType == 1) {
+							data[4] = bytes[0];
+							data[5] = bytes[1];
+						}
+						break;
+					}
+				}
+			}
+		}
+		
+		[Count("patchIndices")] public int numIndices {
+			get {
+				switch (type) {
+					case MapType.CoD: {
+						if (patchType == 1) {
+							return BitConverter.ToInt16(data, 6);
+						} else {
+							return -1;
+						}
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (type) {
+					case MapType.CoD: {
+						if (patchType == 1) {
+							data[6] = bytes[0];
+							data[7] = bytes[1];
+						}
+						break;
+					}
+				}
+			}
+		}
+		
+		[Index("patchIndices")] public int firstIndex {
+			get {
+				switch (type) {
+					case MapType.CoD: {
+						if (patchType == 1) {
+							return BitConverter.ToInt32(data, 12);
+						} else {
+							return -1;
+						}
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (type) {
+					case MapType.CoD: {
+						if (patchType == 1) {
+							bytes.CopyTo(data, 12);
+						}
+						break;
+					}
+				}
+			}
+		}
 
 		/// <summary>
 		/// Creates a new <see cref="Patch"/> object from a <c>byte</c> array.
@@ -34,34 +249,13 @@ namespace LibBSP {
 		/// <param name="type">The map type.</param>
 		/// <param name="version">The version of this lump.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
 		public Patch(byte[] data, MapType type, int version = 0) : this() {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			switch (type) {
-				case MapType.CoD: {
-					shader = BitConverter.ToInt16(data, 0);
-					this.type = BitConverter.ToInt16(data, 2);
-					if (this.type == 0) { // Patch
-						short x = BitConverter.ToInt16(data, 4);
-						short y = BitConverter.ToInt16(data, 6);
-						dimensions = new Vector2d(x, y);
-						flags = BitConverter.ToInt32(data, 8);
-						firstVertex = BitConverter.ToInt32(data, 12);
-						numVertices = x * y;
-					} else if (this.type == 1) { // Terrain
-						numVertices = BitConverter.ToInt16(data, 4);
-						numIndices = BitConverter.ToInt16(data, 6);
-						firstVertex = BitConverter.ToInt32(data, 8);
-						firstIndex = BitConverter.ToInt32(data, 12);
-					}
-					break;
-				}
-				default: {
-					throw new ArgumentException("Map type " + type + " isn't supported by the Patch class.");
-				}
-			}
+			this.data = data;
+			this.type = type;
+			this.version = version;
 		}
 
 		/// <summary>
@@ -89,8 +283,8 @@ namespace LibBSP {
 			}
 			int numObjects = data.Length / structLength;
 			List<Patch> lump = new List<Patch>(numObjects);
-			byte[] bytes = new byte[structLength];
 			for (int i = 0; i < numObjects; ++i) {
+				byte[] bytes = new byte[structLength];
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				lump.Add(new Patch(bytes, type, version));
 			}

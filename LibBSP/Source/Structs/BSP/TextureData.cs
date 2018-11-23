@@ -18,12 +18,63 @@ namespace LibBSP {
 	/// </summary>
 	public struct TextureData {
 
-		public Vector3d reflectivity { get; private set; }
-		public int stringTableIndex { get; private set; }
-		public int width { get; private set; }
-		public int height { get; private set; }
-		public int view_width { get; private set; }
-		public int view_height { get; private set; }
+		public byte[] data;
+		public MapType type;
+		public int version;
+
+		public Vector3d reflectivity {
+			get {
+				return new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
+			}
+			set {
+				value.GetBytes().CopyTo(data, 0);
+			}
+		}
+		
+		public int stringTableIndex {
+			get {
+				return BitConverter.ToInt32(data, 12);
+			}
+			set {
+				BitConverter.GetBytes(value).CopyTo(data, 12);
+			}
+		}
+		
+		public int width {
+			get {
+				return BitConverter.ToInt32(data, 16);
+			}
+			set {
+				BitConverter.GetBytes(value).CopyTo(data, 16);
+			}
+		}
+		
+		public int height {
+			get {
+				return BitConverter.ToInt32(data, 20);
+			}
+			set {
+				BitConverter.GetBytes(value).CopyTo(data, 20);
+			}
+		}
+		
+		public int view_width {
+			get {
+				return BitConverter.ToInt32(data, 24);
+			}
+			set {
+				BitConverter.GetBytes(value).CopyTo(data, 24);
+			}
+		}
+		
+		public int view_height {
+			get {
+				return BitConverter.ToInt32(data, 28);
+			}
+			set {
+				BitConverter.GetBytes(value).CopyTo(data, 28);
+			}
+		}
 
 		/// <summary>
 		/// Creates a new <see cref="TextureData"/> object from a <c>byte</c> array.
@@ -36,12 +87,9 @@ namespace LibBSP {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			reflectivity = new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
-			stringTableIndex = BitConverter.ToInt32(data, 12);
-			width = BitConverter.ToInt32(data, 16);
-			height = BitConverter.ToInt32(data, 20);
-			view_width = BitConverter.ToInt32(data, 24);
-			view_height = BitConverter.ToInt32(data, 28);
+			this.data = data;
+			this.type = type;
+			this.version = version;
 		}
 
 		/// <summary>
@@ -59,8 +107,8 @@ namespace LibBSP {
 			int structLength = 32;
 			int numObjects = data.Length / structLength;
 			List<TextureData> lump = new List<TextureData>(numObjects);
-			byte[] bytes = new byte[structLength];
 			for (int i = 0; i < numObjects; i++) {
+				byte[] bytes = new byte[structLength];
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				lump.Add(new TextureData(bytes, type, version));
 			}

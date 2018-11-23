@@ -16,15 +16,431 @@ namespace LibBSP {
 	/// </remarks>
 	public struct Model {
 
-		public int headNode { get; private set; } // Quake, Half-life, Quake 2, SiN
-		[Index("leaves")] public int firstLeaf { get; private set; } // 007 nightfire
-		[Count("leaves")] public int numLeaves { get; private set; }
-		[Index("brushes")] public int firstBrush { get; private set; } // Quake 3 and derivatives
-		[Count("brushes")] public int numBrushes { get; private set; }
-		[Index("faces")] public int firstFace { get; private set; } // Quake/GoldSrc
-		[Count("faces")] public int numFaces { get; private set; }
-		[Index("markSurfaces")] public int firstLeafPatch { get; private set; } // CoD
-		[Count("markSurfaces")] public int numLeafPatches { get; private set; }
+		public byte[] data;
+		public MapType type;
+		public int version;
+
+		[Index("nodes")] public int headNode {
+			get {
+				switch (type) {
+					case MapType.Quake:
+					case MapType.Quake2:
+					case MapType.Daikatana:
+					case MapType.SiN:
+					case MapType.SoF:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.Vindictus: {
+						return BitConverter.ToInt32(data, 36);
+					}
+					case MapType.DMoMaM: {
+						return BitConverter.ToInt32(data, 40);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (type) {
+					case MapType.Quake:
+					case MapType.Quake2:
+					case MapType.Daikatana:
+					case MapType.SiN:
+					case MapType.SoF:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.Vindictus: {
+						bytes.CopyTo(data, 36);
+						break;
+					}
+					case MapType.DMoMaM: {
+						bytes.CopyTo(data, 40);
+						break;
+					}
+				}
+			}
+		}
+
+		[Index("leaves")] public int firstLeaf {
+			get {
+				switch (type) {
+					case MapType.Nightfire: {
+						return BitConverter.ToInt32(data, 40);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (type) {
+					case MapType.Nightfire: {
+						bytes.CopyTo(data, 40);
+						break;
+					}
+				}
+			}
+		}
+
+		[Count("leaves")] public int numLeaves {
+			get {
+				switch (type) {
+					case MapType.Nightfire: {
+						return BitConverter.ToInt32(data, 44);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (type) {
+					case MapType.Nightfire: {
+						bytes.CopyTo(data, 44);
+						break;
+					}
+				}
+			}
+		}
+
+		[Index("brushes")] public int firstBrush {
+			get {
+				switch (type) {
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.Quake3:
+					case MapType.MOHAA:
+					case MapType.Raven:
+					case MapType.FAKK: {
+						return BitConverter.ToInt32(data, 32);
+					}
+					case MapType.CoD:
+					case MapType.CoD2:
+					case MapType.CoD4: {
+						return BitConverter.ToInt32(data, 40);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (type) {
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.Quake3:
+					case MapType.MOHAA:
+					case MapType.Raven:
+					case MapType.FAKK: {
+						bytes.CopyTo(data, 32);
+						break;
+					}
+					case MapType.CoD:
+					case MapType.CoD2:
+					case MapType.CoD4: {
+						bytes.CopyTo(data, 40);
+						break;
+					}
+				}
+			}
+		}
+
+		[Count("brushes")] public int numBrushes {
+			get {
+				switch (type) {
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.Quake3:
+					case MapType.MOHAA:
+					case MapType.Raven:
+					case MapType.FAKK: {
+						return BitConverter.ToInt32(data, 36);
+					}
+					case MapType.CoD:
+					case MapType.CoD2:
+					case MapType.CoD4: {
+						return BitConverter.ToInt32(data, 44);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (type) {
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.Quake3:
+					case MapType.MOHAA:
+					case MapType.Raven:
+					case MapType.FAKK: {
+						bytes.CopyTo(data, 36);
+						break;
+					}
+					case MapType.CoD:
+					case MapType.CoD2:
+					case MapType.CoD4: {
+						bytes.CopyTo(data, 44);
+						break;
+					}
+				}
+			}
+		}
+
+		[Index("faces")] public int firstFace {
+			get {
+				switch (type) {
+					case MapType.CoD:
+					case MapType.CoD2:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.Quake3:
+					case MapType.MOHAA:
+					case MapType.Raven:
+					case MapType.FAKK: {
+						return BitConverter.ToInt32(data, 24);
+					}
+					case MapType.Quake2:
+					case MapType.Daikatana:
+					case MapType.SiN:
+					case MapType.SoF:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.Vindictus: {
+						return BitConverter.ToInt32(data, 40);
+					}
+					case MapType.DMoMaM: {
+						return BitConverter.ToInt32(data, 44);
+					}
+					case MapType.Nightfire: {
+						return BitConverter.ToInt32(data, 48);
+					}
+					case MapType.Quake: {
+						return BitConverter.ToInt32(data, 56);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (type) {
+					case MapType.CoD:
+					case MapType.CoD2:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.Quake3:
+					case MapType.MOHAA:
+					case MapType.Raven:
+					case MapType.FAKK: {
+						bytes.CopyTo(data, 24);
+						break;
+					}
+					case MapType.Quake2:
+					case MapType.Daikatana:
+					case MapType.SiN:
+					case MapType.SoF:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.Vindictus: {
+						bytes.CopyTo(data, 40);
+						break;
+					}
+					case MapType.DMoMaM: {
+						bytes.CopyTo(data, 44);
+						break;
+					}
+					case MapType.Nightfire: {
+						bytes.CopyTo(data, 48);
+						break;
+					}
+					case MapType.Quake: {
+						bytes.CopyTo(data, 56);
+						break;
+					}
+				}
+			}
+		}
+
+		[Count("faces")] public int numFaces {
+			get {
+				switch (type) {
+					case MapType.CoD:
+					case MapType.CoD2:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.Quake3:
+					case MapType.MOHAA:
+					case MapType.Raven:
+					case MapType.FAKK: {
+						return BitConverter.ToInt32(data, 28);
+					}
+					case MapType.Quake2:
+					case MapType.Daikatana:
+					case MapType.SiN:
+					case MapType.SoF:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.Vindictus: {
+						return BitConverter.ToInt32(data, 44);
+					}
+					case MapType.DMoMaM: {
+						return BitConverter.ToInt32(data, 48);
+					}
+					case MapType.Nightfire: {
+						return BitConverter.ToInt32(data, 52);
+					}
+					case MapType.Quake: {
+						return BitConverter.ToInt32(data, 60);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (type) {
+					case MapType.CoD:
+					case MapType.CoD2:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.Quake3:
+					case MapType.MOHAA:
+					case MapType.Raven:
+					case MapType.FAKK: {
+						bytes.CopyTo(data, 28);
+						break;
+					}
+					case MapType.Quake2:
+					case MapType.Daikatana:
+					case MapType.SiN:
+					case MapType.SoF:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.Vindictus: {
+						bytes.CopyTo(data, 44);
+						break;
+					}
+					case MapType.DMoMaM: {
+						bytes.CopyTo(data, 48);
+						break;
+					}
+					case MapType.Nightfire: {
+						bytes.CopyTo(data, 52);
+						break;
+					}
+					case MapType.Quake: {
+						bytes.CopyTo(data, 60);
+						break;
+					}
+				}
+			}
+		}
+
+		[Index("markSurfaces")]
+		public int firstLeafPatch {
+			get {
+				switch (type) {
+					case MapType.CoD:
+					case MapType.CoD2: {
+						return BitConverter.ToInt32(data, 32);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (type) {
+					case MapType.CoD:
+					case MapType.CoD2: {
+						bytes.CopyTo(data, 32);
+						break;
+					}
+				}
+			}
+		}
+
+		[Count("markSurfaces")] public int numLeafPatches {
+			get {
+				switch (type) {
+					case MapType.CoD:
+					case MapType.CoD2: {
+						return BitConverter.ToInt32(data, 36);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (type) {
+					case MapType.CoD:
+					case MapType.CoD2: {
+						bytes.CopyTo(data, 36);
+						break;
+					}
+				}
+			}
+		}
 
 		/// <summary>
 		/// Creates a new <see cref="Model"/> object from a <c>byte</c> array.
@@ -33,89 +449,13 @@ namespace LibBSP {
 		/// <param name="type">The map type.</param>
 		/// <param name="version">The version of this lump.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
 		public Model(byte[] data, MapType type, int version = 0) : this() {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			headNode = -1;
-			firstLeaf = -1;
-			numLeaves = -1;
-			firstBrush = -1;
-			numBrushes = -1;
-			firstFace = -1;
-			numFaces = -1;
-			firstLeafPatch = -1;
-			numLeafPatches = -1;
-			switch (type) {
-				case MapType.Quake: {
-					headNode = BitConverter.ToInt32(data, 36);
-					firstFace = BitConverter.ToInt32(data, 56);
-					numFaces = BitConverter.ToInt32(data, 60);
-					break;
-				}
-				case MapType.Quake2:
-				case MapType.Daikatana:
-				case MapType.SiN:
-				case MapType.SoF:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Vindictus: {
-					headNode = BitConverter.ToInt32(data, 36);
-					firstFace = BitConverter.ToInt32(data, 40);
-					numFaces = BitConverter.ToInt32(data, 44);
-					break;
-				}
-				case MapType.DMoMaM: {
-					headNode = BitConverter.ToInt32(data, 40);
-					firstFace = BitConverter.ToInt32(data, 44);
-					numFaces = BitConverter.ToInt32(data, 48);
-					break;
-				}
-				case MapType.Nightfire: {
-					firstLeaf = BitConverter.ToInt32(data, 40);
-					numLeaves = BitConverter.ToInt32(data, 44);
-					firstFace = BitConverter.ToInt32(data, 48);
-					numFaces = BitConverter.ToInt32(data, 52);
-					break;
-				}
-				case MapType.STEF2:
-				case MapType.STEF2Demo:
-				case MapType.Quake3:
-				case MapType.MOHAA:
-				case MapType.Raven:
-				case MapType.FAKK: {
-					firstFace = BitConverter.ToInt32(data, 24);
-					numFaces = BitConverter.ToInt32(data, 28);
-					firstBrush = BitConverter.ToInt32(data, 32);
-					numBrushes = BitConverter.ToInt32(data, 36);
-					break;
-				}
-				case MapType.CoD: {
-					firstFace = BitConverter.ToInt32(data, 24);
-					numFaces = BitConverter.ToInt32(data, 28);
-					firstLeafPatch = BitConverter.ToInt32(data, 32);
-					numLeafPatches = BitConverter.ToInt32(data, 36);
-					goto case MapType.CoD2;
-				}
-				case MapType.CoD2:
-				case MapType.CoD4: {
-					firstBrush = BitConverter.ToInt32(data, 40);
-					numBrushes = BitConverter.ToInt32(data, 44);
-					break;
-				}
-				default: {
-					throw new ArgumentException("Map type " + type + " isn't supported by the Model class.");
-				}
-			}
+			this.data = data;
+			this.type = type;
+			this.version = version;
 		}
 
 		/// <summary>
@@ -181,8 +521,8 @@ namespace LibBSP {
 			}
 			int numObjects = data.Length / structLength;
 			List<Model> lump = new List<Model>(numObjects);
-			byte[] bytes = new byte[structLength];
 			for (int i = 0; i < numObjects; ++i) {
+				byte[] bytes = new byte[structLength];
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				lump.Add(new Model(bytes, type, version));
 			}

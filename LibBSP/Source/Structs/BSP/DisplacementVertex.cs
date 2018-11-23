@@ -17,9 +17,45 @@ namespace LibBSP {
 	/// </summary>
 	public struct DisplacementVertex {
 
-		public Vector3d normal { get; private set; } // The normalized vector direction this vertex points from "flat"
-		public float dist { get; private set; } // Magnitude of normal, before normalization
-		public float alpha { get; private set; } // Alpha value of texture at this vertex
+		public byte[] data;
+		public MapType type;
+		public int version;
+
+		/// <summary>
+		/// The normalized vector direction this vertex points from "flat".
+		/// </summary>
+		public Vector3d normal {
+			get {
+				return new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
+			}
+			set {
+				value.GetBytes().CopyTo(data, 0);
+			}
+		}
+
+		/// <summary>
+		/// Magnitude of normal, before normalization.
+		/// </summary>
+		public float dist {
+			get {
+				return BitConverter.ToSingle(data, 12);
+			}
+			set {
+				BitConverter.GetBytes(value).CopyTo(data, 12);
+			}
+		}
+
+		/// <summary>
+		/// Alpha value of texture at this vertex.
+		/// </summary>
+		public float alpha {
+			get {
+				return BitConverter.ToSingle(data, 16);
+			}
+			set {
+				BitConverter.GetBytes(value).CopyTo(data, 16);
+			}
+		}
 
 		/// <summary>
 		/// Creates a new <see cref="DisplacementVertex"/> object from a <c>byte</c> array.
@@ -32,9 +68,9 @@ namespace LibBSP {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			normal = new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
-			dist = BitConverter.ToSingle(data, 12);
-			alpha = BitConverter.ToSingle(data, 16);
+			this.data = data;
+			this.type = type;
+			this.version = version;
 		}
 
 		/// <summary>

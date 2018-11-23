@@ -65,11 +65,10 @@ namespace LibBSP {
 				case MapType.Vindictus:
 				case MapType.DMoMaM: {
 					int offset = 0;
-					byte[] myBytes;
 					for (int i = 0; i < data.Length; ++i) {
 						if (data[i] == (byte)0x00) {
 							// They are null-terminated strings, of non-constant length (not padded)
-							myBytes = new byte[i - offset];
+							byte[] myBytes = new byte[i - offset];
 							Array.Copy(data, offset, myBytes, 0, i - offset);
 							Add(new Texture(myBytes, type, version));
 							offset = i + 1;
@@ -80,8 +79,8 @@ namespace LibBSP {
 				case MapType.Quake: {
 					int numElements = BitConverter.ToInt32(data, 0);
 					structLength = 40;
-					byte[] myBytes = new byte[structLength];
 					for (int i = 0; i < numElements; ++i) {
+						byte[] myBytes = new byte[structLength];
 						Array.Copy(data, BitConverter.ToInt32(data, (i + 1) * 4), myBytes, 0, structLength);
 						Add(new Texture(myBytes, type, version));
 					}
@@ -93,8 +92,8 @@ namespace LibBSP {
 			}
 
 			int numObjects = data.Length / structLength;
-			byte[] bytes = new byte[structLength];
 			for (int i = 0; i < numObjects; ++i) {
+				byte[] bytes = new byte[structLength];
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				Add(new Texture(bytes, type, version));
 			}

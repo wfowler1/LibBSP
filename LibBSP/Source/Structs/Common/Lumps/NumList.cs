@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace LibBSP {
@@ -6,8 +7,11 @@ namespace LibBSP {
 	/// <summary>
 	/// List class for numbers. Can handle any integer data type except <c>ulong</c>.
 	/// </summary>
-	public class NumList : List<long> {
+	public class NumList : IList<long>, ICollection<long>, IEnumerable<long>, IList, ICollection, IEnumerable {
 
+		/// <summary>
+		/// Enum of the types that may be used in this class.
+		/// </summary>
 		public enum DataType : int {
 			Invalid = 0,
 			SByte = 1,
@@ -19,6 +23,7 @@ namespace LibBSP {
 			Int64 = 7,
 		}
 
+		public byte[] data;
 		public DataType type { get; private set; }
 
 		/// <summary>
@@ -27,61 +32,21 @@ namespace LibBSP {
 		/// <param name="data"><c>byte</c> array to parse.</param>
 		/// <param name="type">The type of number to store.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
-		/// <exception cref="ArgumentException"><paramref name="type"/> was not a member of the DataType enum.</exception>
 		public NumList(byte[] data, DataType type) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
+			this.data = data;
 			this.type = type;
-			switch (type) {
-				case DataType.SByte: {
-					unchecked {
-						for (int i = 0; i < data.Length; ++i) {
-							Add((long)((sbyte)data[i]));
-						}
-					}
-					break;
-				}
-				case DataType.Byte: {
-					for (int i = 0; i < data.Length; ++i) {
-						Add((long)(data[i]));
-					}
-					break;
-				}
-				case DataType.Int16: {
-					for (int i = 0; i < data.Length / 2; ++i) {
-						Add((long)BitConverter.ToInt16(data, i * 2));
-					}
-					break;
-				}
-				case DataType.UInt16: {
-					for (int i = 0; i < data.Length / 2; ++i) {
-						Add((long)BitConverter.ToUInt16(data, i * 2));
-					}
-					break;
-				}
-				case DataType.Int32: {
-					for (int i = 0; i < data.Length / 4; ++i) {
-						Add((long)BitConverter.ToInt32(data, i * 4));
-					}
-					break;
-				}
-				case DataType.UInt32: {
-					for (int i = 0; i < data.Length / 4; ++i) {
-						Add((long)BitConverter.ToUInt32(data, i * 4));
-					}
-					break;
-				}
-				case DataType.Int64: {
-					for (int i = 0; i < data.Length / 8; ++i) {
-						Add(BitConverter.ToInt64(data, i * 8));
-					}
-					break;
-				}
-				default: {
-					throw new ArgumentException(type + " isn't a member of the DataType enum.");
-				}
-			}
+		}
+
+		/// <summary>
+		/// Creates an empty <see cref="NumList"/> object.
+		/// </summary>
+		/// <param name="type">The type of number to store.</param>
+		public NumList(DataType type) {
+			this.data = new byte[0];
+			this.type = type;
 		}
 
 		/// <summary>
@@ -92,6 +57,34 @@ namespace LibBSP {
 		/// <returns>The resulting <see cref="NumList"/>.</returns>
 		public static NumList LumpFactory(byte[] data, DataType type) {
 			return new NumList(data, type);
+		}
+
+		/// <summary>
+		/// Gets the length, in bytes, of the numerical primitive used by this instance of this class.
+		/// </summary>
+		public int StructLength {
+			get {
+				switch (type) {
+					case DataType.Byte:
+					case DataType.SByte: {
+						return 1;
+					}
+					case DataType.UInt16:
+					case DataType.Int16: {
+						return 2;
+					}
+					case DataType.UInt32:
+					case DataType.Int32: {
+						return 4;
+					}
+					case DataType.Int64: {
+						return 8;
+					}
+					default: {
+						return 0;
+					}
+				}
+			}
 		}
 
 		#region IndicesForLumps
@@ -248,6 +241,10 @@ namespace LibBSP {
 					dataType = DataType.UInt32;
 					return 22;
 				}
+				case MapType.CoD2: {
+					dataType = DataType.UInt32;
+					return 27;
+				}
 			}
 			dataType = DataType.Invalid;
 			return -1;
@@ -278,6 +275,10 @@ namespace LibBSP {
 				case MapType.CoD: {
 					dataType = DataType.UInt16;
 					return 8;
+				}
+				case MapType.CoD2: {
+					dataType = DataType.UInt16;
+					return 9;
 				}
 				case MapType.Raven:
 				case MapType.Quake3: {
@@ -360,6 +361,229 @@ namespace LibBSP {
 			}
 			dataType = DataType.Invalid;
 			return -1;
+		}
+		#endregion
+
+		#region ICollection
+		public void Add(long value) {
+			byte[] temp = new byte[data.Length + StructLength];
+			Array.Copy(data, 0, temp, 0, data.Length);
+			byte[] bytes = BitConverter.GetBytes(value);
+			Array.Copy(bytes, 0, temp, data.Length, StructLength);
+			data = temp;
+		}
+
+		public void Clear() {
+			data = new byte[0];
+		}
+
+		public bool Contains(long value) {
+			foreach (long curr in this) {
+				if (curr == value) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public void CopyTo(long[] array, int arrayIndex) {
+			for (int i = 0; i < Count; ++i) {
+				array[i + arrayIndex] = this[i];
+			}
+		}
+
+		void ICollection.CopyTo(Array array, int arrayIndex) {
+			for (int i = 0; i < Count; ++i) {
+				array.SetValue(this[i], i + arrayIndex);
+			}
+		}
+
+		public bool Remove(long value) {
+			for (int i = 0; i < Count; ++i) {
+				if (this[i] == value) {
+					RemoveAt(i);
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public int Count {
+			get {
+				return data.Length / StructLength;
+			}
+		}
+
+		public bool IsReadOnly {
+			get {
+				return false;
+			}
+		}
+
+		public object SyncRoot {
+			get {
+				return data.SyncRoot;
+			}
+		}
+
+		public bool IsSynchronized {
+			get { return data.IsSynchronized; }
+		}
+		#endregion
+
+		#region IEnumerable
+		public IEnumerator<long> GetEnumerator() {
+			for (int i = 0; i < Count; ++i) {
+				yield return this[i];
+			}
+		}
+
+		IEnumerator IEnumerable.GetEnumerator() {
+			for (int i = 0; i < Count; ++i) {
+				yield return this[i];
+			}
+		}
+		#endregion
+
+		#region IList
+		public int Add(object obj) {
+			if (obj is byte || obj is sbyte || obj is short || obj is ushort || obj is int || obj is uint || obj is long) {
+				Add((long)obj);
+				return Count - 1;
+			}
+
+			return -1;
+		}
+
+		public bool Contains(object obj) {
+			if (obj is byte || obj is sbyte || obj is short || obj is ushort || obj is int || obj is uint || obj is long) {
+				return Contains((long)obj);
+			}
+
+			return false;
+		}
+
+		public int IndexOf(object obj) {
+			if (obj is byte || obj is sbyte || obj is short || obj is ushort || obj is int || obj is uint || obj is long) {
+				return IndexOf((long)obj);
+			}
+
+			return -1;
+		}
+
+		public void Insert(int index, object obj) {
+			if (obj is byte || obj is sbyte || obj is short || obj is ushort || obj is int || obj is uint || obj is long) {
+				Insert(index, (long)obj);
+			}
+		}
+
+		public void Remove(object obj) {
+			if (obj is byte || obj is sbyte || obj is short || obj is ushort || obj is int || obj is uint || obj is long) {
+				Remove((long)obj);
+			}
+		}
+
+		public int IndexOf(long value) {
+			for (int i = 0; i < Count; ++i) {
+				if (this[i] == value) {
+					return i;
+				}
+			}
+
+			return -1;
+		}
+
+		object IList.this[int index] {
+			get {
+				return this[index];
+			}
+			set {
+				if (value is byte || value is sbyte || value is short || value is ushort || value is int || value is uint || value is long) {
+					this[index] = (long)value;
+				}
+			}
+		}
+
+		public bool IsFixedSize {
+			get {
+				return false;
+			}
+		}
+
+		public void Insert(int index, long value) {
+			byte[] temp = new byte[data.Length + StructLength];
+			Array.Copy(data, 0, temp, 0, StructLength * index);
+			byte[] bytes = BitConverter.GetBytes(value);
+			Array.Copy(bytes, 0, temp, StructLength * index, StructLength);
+			Array.Copy(data, StructLength * index, temp, StructLength * (index + 1), data.Length - StructLength * index);
+			data = temp;
+		}
+
+		public void RemoveAt(int index) {
+			byte[] temp = new byte[data.Length - StructLength];
+			Array.Copy(data, 0, temp, 0, StructLength * index);
+			Array.Copy(data, StructLength * (index + 1), temp, StructLength * index, data.Length - (StructLength * (index + 1)));
+			data = temp;
+		}
+
+		public long this[int index] {
+			get {
+				switch (type) {
+					case DataType.SByte: {
+						return (sbyte)data[index];
+					}
+					case DataType.Byte: {
+						return data[index];
+					}
+					case DataType.Int16: {
+						return BitConverter.ToInt16(data, index * 2);
+					}
+					case DataType.UInt16: {
+						return BitConverter.ToUInt16(data, index * 2);
+					}
+					case DataType.Int32: {
+						return BitConverter.ToInt32(data, index * 4);
+					}
+					case DataType.UInt32: {
+						return BitConverter.ToUInt32(data, index * 4);
+					}
+					case DataType.Int64: {
+						return BitConverter.ToInt64(data, index * 8);
+					}
+					default: {
+						return 0;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (type) {
+					case DataType.SByte:
+					case DataType.Byte: {
+						data[index] = bytes[0];
+						break;
+					}
+					case DataType.Int16:
+					case DataType.UInt16: {
+						data[index * 2] = bytes[0];
+						data[(index * 2) + 1] = bytes[1];
+						break;
+					}
+					case DataType.Int32:
+					case DataType.UInt32: {
+						data[index * 4] = bytes[0];
+						data[(index * 4) + 1] = bytes[1];
+						data[(index * 4) + 2] = bytes[2];
+						data[(index * 4) + 3] = bytes[3];
+						break;
+					}
+					case DataType.Int64: {
+						bytes.CopyTo(data, index * 8);
+						break;
+					}
+				}
+			}
 		}
 		#endregion
 	}

@@ -49,6 +49,9 @@
     <Compile Include="Source\Extensions\CustomAttributeExtensions.cs" />
     <Compile Include="Source\Extensions\PlaneExtensions.cs" />
     <Compile Include="Source\Extensions\StringExtensions.cs" />
+    <Compile Include="Source\Extensions\Vector2dExtensions.cs" />
+    <Compile Include="Source\Extensions\Vector3dExtensions.cs" />
+    <Compile Include="Source\Extensions\Vector4dExtensions.cs" />
     <Compile Include="Source\Extensions\VertexExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\Structs\BSP\Brush.cs" />

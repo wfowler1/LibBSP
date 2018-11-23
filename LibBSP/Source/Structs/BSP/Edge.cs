@@ -8,8 +8,129 @@ namespace LibBSP {
 	/// </summary>
 	public struct Edge {
 
-		public int firstVertex { get; private set; }
-		public int secondVertex { get; private set; }
+		public byte[] data;
+		public MapType type;
+		public int version;
+
+		public int firstVertex {
+			get {
+				switch (type) {
+					case MapType.Quake:
+					case MapType.SiN:
+					case MapType.Daikatana:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM:
+					case MapType.Quake2:
+					case MapType.SoF: {
+						return BitConverter.ToUInt16(data, 0);
+					}
+					case MapType.Vindictus: {
+						return BitConverter.ToInt32(data, 0);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (type) {
+					case MapType.Quake:
+					case MapType.SiN:
+					case MapType.Daikatana:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM:
+					case MapType.Quake2:
+					case MapType.SoF: {
+						data[0] = bytes[0];
+						data[1] = bytes[1];
+						break;
+					}
+					case MapType.Vindictus: {
+						bytes.CopyTo(data, 0);
+						break;
+					}
+				}
+			}
+		}
+		
+		public int secondVertex {
+			get {
+				switch (type) {
+					case MapType.Quake:
+					case MapType.SiN:
+					case MapType.Daikatana:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM:
+					case MapType.Quake2:
+					case MapType.SoF: {
+						return BitConverter.ToUInt16(data, 2);
+					}
+					case MapType.Vindictus: {
+						return BitConverter.ToInt32(data, 4);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (type) {
+					case MapType.Quake:
+					case MapType.SiN:
+					case MapType.Daikatana:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM:
+					case MapType.Quake2:
+					case MapType.SoF: {
+						data[2] = bytes[0];
+						data[3] = bytes[1];
+						break;
+					}
+					case MapType.Vindictus: {
+						BitConverter.GetBytes(value).CopyTo(data, 4);
+						break;
+					}
+				}
+			}
+		}
 
 		/// <summary>
 		/// Creates a new <see cref="Edge"/> object from a <c>byte</c> array.
@@ -18,41 +139,13 @@ namespace LibBSP {
 		/// <param name="type">The map type.</param>
 		/// <param name="version">The version of this lump.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
 		public Edge(byte[] data, MapType type, int version = 0) : this() {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			switch (type) {
-				case MapType.Quake:
-				case MapType.SiN:
-				case MapType.Daikatana:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.DMoMaM:
-				case MapType.Quake2:
-				case MapType.SoF: {
-					firstVertex = BitConverter.ToUInt16(data, 0);
-					secondVertex = BitConverter.ToUInt16(data, 2);
-					break;
-				}
-				case MapType.Vindictus: {
-					firstVertex = BitConverter.ToInt32(data, 0);
-					secondVertex = BitConverter.ToInt32(data, 4);
-					break;
-				}
-				default: {
-					throw new ArgumentException("Map type " + type + " isn't supported by the Edge class.");
-				}
-			}
+			this.data = data;
+			this.type = type;
+			this.version = version;
 		}
 
 		/// <summary>
@@ -99,8 +192,8 @@ namespace LibBSP {
 			}
 			int numObjects = data.Length / structLength;
 			List<Edge> lump = new List<Edge>(numObjects);
-			byte[] bytes = new byte[structLength];
 			for (int i = 0; i < numObjects; ++i) {
+				byte[] bytes = new byte[structLength];
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				lump.Add(new Edge(bytes, type, version));
 			}
