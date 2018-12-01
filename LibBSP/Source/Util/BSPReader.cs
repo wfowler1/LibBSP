@@ -88,6 +88,13 @@ namespace LibBSP {
 					if (lumpFiles.ContainsKey(index)) { return lumpFiles[index]; }
 					return GetLumpInfoAtOffset(8 + (16 * index), version);
 				}
+				case MapType.Titanfall: {
+					if (lumpFiles == null) {
+						LoadLumpFiles();
+					}
+					if (lumpFiles.ContainsKey(index)) { return lumpFiles[index]; }
+					return GetLumpInfoAtOffset((16 * (index + 1)), version);
+				}
 				case MapType.CoD4: {
 					using (FileStream stream = new FileStream(bspFile.FullName, FileMode.Open, FileAccess.Read)) {
 						BinaryReader binaryReader = new BinaryReader(stream);
@@ -157,7 +164,8 @@ namespace LibBSP {
 						 version == MapType.Source23 ||
 						 version == MapType.Vindictus ||
 						 version == MapType.DMoMaM ||
-						 version == MapType.TacticalInterventionEncrypted) {
+						 version == MapType.TacticalInterventionEncrypted ||
+						 version == MapType.Titanfall) {
 				lumpOffset = BitConverter.ToInt32(input, 0);
 				lumpLength = BitConverter.ToInt32(input, 4);
 				lumpVersion = BitConverter.ToInt32(input, 8);
@@ -305,244 +313,246 @@ namespace LibBSP {
 			using (FileStream stream = new FileStream(bspFile.FullName, FileMode.Open, FileAccess.Read)) {
 				BinaryReader binaryReader = new BinaryReader(stream);
 				stream.Seek(0, SeekOrigin.Begin);
-				int data = binaryReader.ReadInt32();
+				int num = binaryReader.ReadInt32();
 				if (bigEndian) {
-					byte[] bytes = BitConverter.GetBytes(data);
+					byte[] bytes = BitConverter.GetBytes(num);
 					Array.Reverse(bytes);
-					data = BitConverter.ToInt32(bytes, 0);
+					num = BitConverter.ToInt32(bytes, 0);
 				}
-				if (data == 1347633737) {
-					// 1347633737 reads in ASCII as "IBSP"
-					// Versions: CoD, CoD2, CoD4, Quake 2, Daikatana, Quake 3 (RtCW), Soldier of Fortune
-					data = binaryReader.ReadInt32();
-					if (bigEndian) {
-						byte[] bytes = BitConverter.GetBytes(data);
-						Array.Reverse(bytes);
-						data = BitConverter.ToInt32(bytes, 0);
-					}
-					switch (data) {
-						case 4: {
-							current = MapType.CoD2;
-							break;
+				switch (num) {
+					case 1347633737: {
+						// 1347633737 reads in ASCII as "IBSP"
+						// Versions: CoD, CoD2, CoD4, Quake 2, Daikatana, Quake 3 (RtCW), Soldier of Fortune
+						int num2 = binaryReader.ReadInt32();
+						if (bigEndian) {
+							byte[] bytes = BitConverter.GetBytes(num2);
+							Array.Reverse(bytes);
+							num2 = BitConverter.ToInt32(bytes, 0);
 						}
-						case 22: {
-							current = MapType.CoD4;
-							break;
-						}
-						case 38: {
-							current = MapType.Quake2;
-							break;
-						}
-						case 41: {
-							current = MapType.Daikatana;
-							break;
-						}
-						case 46: {
-							current = MapType.Quake3;
-							// This version number is both Quake 3 and Soldier of Fortune. Find out the length of the
-							// header, based on offsets.
-							for (int i = 0; i < 17; i++) {
-								stream.Seek((i + 1) * 8, SeekOrigin.Begin);
-								int temp = binaryReader.ReadInt32();
-								if (bigEndian) {
-									byte[] bytes = BitConverter.GetBytes(temp);
-									Array.Reverse(bytes);
-									temp = BitConverter.ToInt32(bytes, 0);
-								}
-								if (temp == 184) {
-									current = MapType.SoF;
-									break;
-								} else {
-									if (temp == 144) {
-										break;
-									}
-								}
+						switch (num2) {
+							case 4: {
+								current = MapType.CoD2;
+								break;
 							}
-							break;
-						}
-						case 47: {
-							current = MapType.Quake3;
-							break;
-						}
-						case 59: {
-							current = MapType.CoD;
-							break;
-						}
-					}
-				} else {
-					if (data == 892416050) {
-						// 892416050 reads in ASCII as "2015," the game studio which developed MoHAA
-						current = MapType.MOHAA;
-					} else {
-						if (data == 1095516485) {
-							// 1095516485 reads in ASCII as "EALA," the ones who developed MoHAA Spearhead and Breakthrough
-							current = MapType.MOHAA;
-						} else {
-							if (data == 1347633750) {
-								// 1347633750 reads in ASCII as "VBSP." Indicates Source engine.
-								// Some source games handle this as 2 shorts.
-								// TODO: Big endian?
-								// Formats: Source 17-23 and 27, DMoMaM, Vindictus
-								data = (int)binaryReader.ReadUInt16();
-								switch (data) {
-									case 17: {
-										current = MapType.Source17;
-										break;
+							case 22: {
+								current = MapType.CoD4;
+								break;
+							}
+							case 38: {
+								current = MapType.Quake2;
+								break;
+							}
+							case 41: {
+								current = MapType.Daikatana;
+								break;
+							}
+							case 46: {
+								current = MapType.Quake3;
+								// This version number is both Quake 3 and Soldier of Fortune. Find out the length of the
+								// header, based on offsets.
+								for (int i = 0; i < 17; i++) {
+									stream.Seek((i + 1) * 8, SeekOrigin.Begin);
+									int temp = binaryReader.ReadInt32();
+									if (bigEndian) {
+										byte[] bytes = BitConverter.GetBytes(temp);
+										Array.Reverse(bytes);
+										temp = BitConverter.ToInt32(bytes, 0);
 									}
-									case 18: {
-										current = MapType.Source18;
+									if (temp == 184) {
+										current = MapType.SoF;
 										break;
-									}
-									case 19: {
-										current = MapType.Source19;
-										break;
-									}
-									case 20: {
-										int version2 = (int)binaryReader.ReadUInt16();
-										if (version2 == 4) {
-											// TODO: This doesn't necessarily mean the whole map should be read as DMoMaM.
-											current = MapType.DMoMaM;
-										} else {
-											current = MapType.Source20;
-											// Hack for detecting Vindictus: Look in the GameLump for offset/length/flags outside of ranges we'd expect
-											LumpInfo gameLumpInfo = GetLumpInfo(35, MapType.Source20);
-											stream.Seek(gameLumpInfo.offset, SeekOrigin.Begin);
-											int numGameLumps = binaryReader.ReadInt32();
-											if (numGameLumps > 0) {
-												// Normally this would be the offset and length for the first game lump.
-												// But in Vindictus it's the version indicator for it instead.
-												stream.Seek(gameLumpInfo.offset + 12, SeekOrigin.Begin);
-												int testOffset = binaryReader.ReadInt32();
-												if (numGameLumps > 1) {
-													if (testOffset < 24) {
-														current = MapType.Vindictus;
-														break;
-													}
-												} else {
-													// Normally this would be the ident for the second game lump.
-													// But in Vindictus it's the length for the first instead.
-													stream.Seek(gameLumpInfo.offset + 20, SeekOrigin.Begin);
-													int testName = binaryReader.ReadInt32();
-													// A lump ident tends to have a value far above 1090519040, longer than any GameLump should be.
-													if (testOffset < 24 && testName < gameLumpInfo.length) {
-														current = MapType.Vindictus;
-														break;
-													}
-												}
-											}
+									} else {
+										if (temp == 144) {
+											break;
 										}
-										break;
-									}
-									case 21: {
-										current = MapType.Source21;
-										// Hack to determine if this is a L4D2 map. Read what would normally be the offset of
-										// a lump. If it is less than the header length it's probably not an offset, indicating L4D2.
-										stream.Seek(8, SeekOrigin.Begin);
-										int test = binaryReader.ReadInt32();
-										if (bigEndian) {
-											byte[] bytes = BitConverter.GetBytes(test);
-											Array.Reverse(bytes);
-											test = BitConverter.ToInt32(bytes, 0);
-										}
-										if (test < 1032) {
-											current = MapType.L4D2;
-										}
-										break;
-									}
-									case 22: {
-										current = MapType.Source22;
-										break;
-									}
-									case 23: {
-										current = MapType.Source23;
-										break;
-									}
-									case 27: {
-										current = MapType.Source27;
-										break;
 									}
 								}
-							} else {
-								if (data == 1347633746) {
-									// Reads in ASCII as "RBSP". Raven software's modification of Q3BSP, or Ritual's modification of Q2.
-									// Formats: Raven, SiN
-									current = MapType.Raven;
-									for (int i = 0; i < 17; i++) {
-										// Find out where the first lump starts, based on offsets.
-										stream.Seek((i + 1) * 8, SeekOrigin.Begin);
-										int temp = binaryReader.ReadInt32();
-										if (bigEndian) {
-											byte[] bytes = BitConverter.GetBytes(temp);
-											Array.Reverse(bytes);
-											temp = BitConverter.ToInt32(bytes, 0);
-										}
-										if (temp == 168) {
-											current = MapType.SiN;
-											break;
+								break;
+							}
+							case 47: {
+								current = MapType.Quake3;
+								break;
+							}
+							case 59: {
+								current = MapType.CoD;
+								break;
+							}
+						}
+						break;
+					}
+					case 892416050:
+					case 1095516485: {
+						// 892416050 reads in ASCII as "2015," the game studio which developed MoHAA
+						// 1095516485 reads in ASCII as "EALA," the ones who developed MoHAA Spearhead and Breakthrough
+						current = MapType.MOHAA;
+						break;
+					}
+					case 1347633750: {
+						// 1347633750 reads in ASCII as "VBSP." Indicates Source engine.
+						// Some source games handle this as 2 shorts.
+						// TODO: Big endian?
+						// Formats: Source 17-23 and 27, DMoMaM, Vindictus
+						int num2 = (int)binaryReader.ReadUInt16();
+						switch (num2) {
+							case 17: {
+								current = MapType.Source17;
+								break;
+							}
+							case 18: {
+								current = MapType.Source18;
+								break;
+							}
+							case 19: {
+								current = MapType.Source19;
+								break;
+							}
+							case 20: {
+								int version2 = (int)binaryReader.ReadUInt16();
+								if (version2 == 4) {
+									// TODO: This doesn't necessarily mean the whole map should be read as DMoMaM.
+									current = MapType.DMoMaM;
+								} else {
+									current = MapType.Source20;
+									// Hack for detecting Vindictus: Look in the GameLump for offset/length/flags outside of ranges we'd expect
+									LumpInfo gameLumpInfo = GetLumpInfo(35, MapType.Source20);
+									stream.Seek(gameLumpInfo.offset, SeekOrigin.Begin);
+									int numGameLumps = binaryReader.ReadInt32();
+									if (numGameLumps > 0) {
+										// Normally this would be the offset and length for the first game lump.
+										// But in Vindictus it's the version indicator for it instead.
+										stream.Seek(gameLumpInfo.offset + 12, SeekOrigin.Begin);
+										int testOffset = binaryReader.ReadInt32();
+										if (numGameLumps > 1) {
+											if (testOffset < 24) {
+												current = MapType.Vindictus;
+												break;
+											}
 										} else {
-											if (temp == 152) {
+											// Normally this would be the ident for the second game lump.
+											// But in Vindictus it's the length for the first instead.
+											stream.Seek(gameLumpInfo.offset + 20, SeekOrigin.Begin);
+											int testName = binaryReader.ReadInt32();
+											// A lump ident tends to have a value far above 1090519040, longer than any GameLump should be.
+											if (testOffset < 24 && testName < gameLumpInfo.length) {
+												current = MapType.Vindictus;
 												break;
 											}
 										}
 									}
-								} else {
-									if (data == 556942917) {
-										// "EF2!"
-										current = MapType.STEF2;
-									} else {
-										if (data == 1263223110) {
-											// "FAKK"
-											// Formats: STEF2 demo, Heavy Metal FAKK2 (American McGee's Alice)
-											data = binaryReader.ReadInt32();
-											if (bigEndian) {
-												byte[] bytes = BitConverter.GetBytes(data);
-												Array.Reverse(bytes);
-												data = BitConverter.ToInt32(bytes, 0);
-											}
-											switch (data) {
-												case 19: {
-													current = MapType.STEF2Demo;
-													break;
-												}
-												case 12:
-												case 42: {// American McGee's Alice
-													current = MapType.FAKK;
-													break;
-												}
-											}
-										} else {
-											switch (data) {
-												// Various numbers not representing a string
-												// Formats: HL1, Quake, Nightfire, or perhaps Tactical Intervention's encrypted format
-												case 29:
-												case 30: {
-													current = MapType.Quake;
-													break;
-												}
-												case 42: {
-													current = MapType.Nightfire;
-													break;
-												}
-												default: {
-													// Hack to get Tactical Intervention's encryption key. At offset 384, there are two unused lumps whose
-													// values in the header are always 0s. Grab these 32 bytes (256 bits) and see if they match an expected value.
-													stream.Seek(384, SeekOrigin.Begin);
-													key = binaryReader.ReadBytes(32);
-													stream.Seek(0, SeekOrigin.Begin);
-													data = BitConverter.ToInt32(XorWithKeyStartingAtIndex(binaryReader.ReadBytes(4)), 0);
-													if (data == 1347633750) {
-														current = MapType.TacticalInterventionEncrypted;
-													} else {
-														current = MapType.Undefined;
-													}
-													break;
-												}
-											}
-										}
-									}
+								}
+								break;
+							}
+							case 21: {
+								current = MapType.Source21;
+								// Hack to determine if this is a L4D2 map. Read what would normally be the offset of
+								// a lump. If it is less than the header length it's probably not an offset, indicating L4D2.
+								stream.Seek(8, SeekOrigin.Begin);
+								int test = binaryReader.ReadInt32();
+								if (bigEndian) {
+									byte[] bytes = BitConverter.GetBytes(test);
+									Array.Reverse(bytes);
+									test = BitConverter.ToInt32(bytes, 0);
+								}
+								if (test < 1032) {
+									current = MapType.L4D2;
+								}
+								break;
+							}
+							case 22: {
+								current = MapType.Source22;
+								break;
+							}
+							case 23: {
+								current = MapType.Source23;
+								break;
+							}
+							case 27: {
+								current = MapType.Source27;
+								break;
+							}
+						}
+						break;
+					}
+					case 1347633746: {
+						// Reads in ASCII as "RBSP". Raven software's modification of Q3BSP, or Ritual's modification of Q2.
+						// Formats: Raven, SiN
+						current = MapType.Raven;
+						for (int i = 0; i < 17; i++) {
+							// Find out where the first lump starts, based on offsets.
+							stream.Seek((i + 1) * 8, SeekOrigin.Begin);
+							int temp = binaryReader.ReadInt32();
+							if (bigEndian) {
+								byte[] bytes = BitConverter.GetBytes(temp);
+								Array.Reverse(bytes);
+								temp = BitConverter.ToInt32(bytes, 0);
+							}
+							if (temp == 168) {
+								current = MapType.SiN;
+								break;
+							} else {
+								if (temp == 152) {
+									break;
 								}
 							}
 						}
+						break;
+					}
+					case 556942917: {
+						// "EF2!"
+						current = MapType.STEF2;
+						break;
+					}
+					case 1347633778: {
+						// "rBSP". Respawn's format for Titanfall
+						current = MapType.Titanfall;
+						break;
+					}
+					case 1263223110: {
+						// "FAKK"
+						// Formats: STEF2 demo, Heavy Metal FAKK2 (American McGee's Alice)
+						int num2 = binaryReader.ReadInt32();
+						if (bigEndian) {
+							byte[] bytes = BitConverter.GetBytes(num2);
+							Array.Reverse(bytes);
+							num2 = BitConverter.ToInt32(bytes, 0);
+						}
+						switch (num2) {
+							case 19: {
+								current = MapType.STEF2Demo;
+								break;
+							}
+							case 12:
+							case 42: {// American McGee's Alice
+								current = MapType.FAKK;
+								break;
+							}
+						}
+						break;
+					}
+					// Various numbers not representing a string
+					// Formats: HL1, Quake, Nightfire, or perhaps Tactical Intervention's encrypted format
+					case 29:
+					case 30: {
+						current = MapType.Quake;
+						break;
+					}
+					case 42: {
+						current = MapType.Nightfire;
+						break;
+					}
+					default: {
+						// Hack to get Tactical Intervention's encryption key. At offset 384, there are two unused lumps whose
+						// values in the header are always 0s. Grab these 32 bytes (256 bits) and see if they match an expected value.
+						stream.Seek(384, SeekOrigin.Begin);
+						key = binaryReader.ReadBytes(32);
+						stream.Seek(0, SeekOrigin.Begin);
+						int num2 = BitConverter.ToInt32(XorWithKeyStartingAtIndex(binaryReader.ReadBytes(4)), 0);
+						if (num2 == 1347633750) {
+							current = MapType.TacticalInterventionEncrypted;
+						} else {
+							current = MapType.Undefined;
+						}
+						break;
 					}
 				}
 				binaryReader.Close();

@@ -318,7 +318,8 @@ namespace LibBSP {
 				case MapType.Vindictus:
 				case MapType.Quake2:
 				case MapType.Daikatana:
-				case MapType.TacticalInterventionEncrypted: {
+				case MapType.TacticalInterventionEncrypted:
+				case MapType.Titanfall: {
 					BitConverter.GetBytes(BestAxis(p)).CopyTo(bytes, 16);
 					break;
 				}
@@ -382,7 +383,8 @@ namespace LibBSP {
 				case MapType.Source23:
 				case MapType.Source27:
 				case MapType.L4D2:
-				case MapType.DMoMaM: {
+				case MapType.DMoMaM:
+				case MapType.Titanfall: {
 					return 1;
 				}
 				case MapType.CoD:
@@ -432,7 +434,8 @@ namespace LibBSP {
 				case MapType.FAKK:
 				case MapType.CoD:
 				case MapType.CoD2:
-				case MapType.CoD4: {
+				case MapType.CoD4:
+				case MapType.Titanfall: {
 					structLength = 16;
 					break;
 				}

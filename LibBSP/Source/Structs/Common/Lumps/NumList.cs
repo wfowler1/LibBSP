@@ -326,7 +326,8 @@ namespace LibBSP {
 				case MapType.Source23:
 				case MapType.Source27:
 				case MapType.L4D2:
-				case MapType.DMoMaM: {
+				case MapType.DMoMaM:
+				case MapType.Titanfall: {
 					dataType = DataType.Int32;
 					return 44;
 				}

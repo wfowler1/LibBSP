@@ -173,6 +173,7 @@ namespace LibBSP {
 				case MapType.Source27:
 				case MapType.L4D2:
 				case MapType.TacticalInterventionEncrypted:
+				case MapType.Titanfall:
 				case MapType.Quake2:
 				case MapType.Daikatana:
 				case MapType.Vindictus:
@@ -238,7 +239,8 @@ namespace LibBSP {
 				case MapType.Source23:
 				case MapType.Source27:
 				case MapType.L4D2:
-				case MapType.DMoMaM: {
+				case MapType.DMoMaM:
+				case MapType.Titanfall: {
 					return 3;
 				}
 				case MapType.MOHAA:
@@ -308,7 +310,8 @@ namespace LibBSP {
 				case MapType.Quake2:
 				case MapType.Daikatana:
 				case MapType.Vindictus:
-				case MapType.DMoMaM: {
+				case MapType.DMoMaM:
+				case MapType.Titanfall: {
 					structLength = 12;
 					break;
 				}
@@ -374,7 +377,8 @@ namespace LibBSP {
 				case MapType.Quake2:
 				case MapType.Daikatana:
 				case MapType.Vindictus:
-				case MapType.DMoMaM: {
+				case MapType.DMoMaM:
+				case MapType.Titanfall: {
 					v.position.GetBytes().CopyTo(bytes, 0);
 					break;
 				}

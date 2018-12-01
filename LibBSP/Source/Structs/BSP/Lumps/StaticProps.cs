@@ -28,19 +28,21 @@ namespace LibBSP {
 				dictionary = new string[BitConverter.ToInt32(data, 0)];
 				offset += 4;
 				for (int i = 0; i < dictionary.Length; ++i) {
-					byte[] temp = new byte[128];
-					Array.Copy(data, offset, temp, 0, 128);
-					dictionary[i] = temp.ToNullTerminatedString();
+					dictionary[i] = data.ToNullTerminatedString(offset, 128);
 					offset += 128;
 				}
-				int numLeafDefinitions = BitConverter.ToInt32(data, (dictionary.Length * 128) + 4);
+				int numLeafDefinitions = BitConverter.ToInt32(data, offset);
 				offset += 4 + (numLeafDefinitions * 2);
 				if (type == MapType.Vindictus && version == 6) {
 					int numPropScales = BitConverter.ToInt32(data, offset);
 					offset += 4 + (numPropScales * 16);
 				}
 				int numProps = BitConverter.ToInt32(data, offset);
-				offset += 4;
+				if (version == 12) { // So far only Titanfall
+					offset += 12;
+				} else {
+					offset += 4;
+				}
 				if (numProps > 0) {
 					structLength = (data.Length - offset) / numProps;
 					for (int i = 0; i < numProps; ++i) {

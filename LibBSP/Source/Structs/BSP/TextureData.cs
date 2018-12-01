@@ -105,9 +105,12 @@ namespace LibBSP {
 				throw new ArgumentNullException();
 			}
 			int structLength = 32;
+			if (type == MapType.Titanfall) {
+				structLength = 36;
+			}
 			int numObjects = data.Length / structLength;
 			List<TextureData> lump = new List<TextureData>(numObjects);
-			for (int i = 0; i < numObjects; i++) {
+			for (int i = 0; i < numObjects; ++i) {
 				byte[] bytes = new byte[structLength];
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				lump.Add(new TextureData(bytes, type, version));
@@ -133,7 +136,8 @@ namespace LibBSP {
 				case MapType.Source23:
 				case MapType.Source27:
 				case MapType.L4D2:
-				case MapType.DMoMaM: {
+				case MapType.DMoMaM:
+				case MapType.Titanfall: {
 					return 2;
 				}
 				default: {

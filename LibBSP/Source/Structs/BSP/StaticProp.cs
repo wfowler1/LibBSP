@@ -39,7 +39,8 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 4:
 							case 5:
@@ -48,7 +49,8 @@ namespace LibBSP {
 							case 8:
 							case 9:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								return new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
 							}
 							default: {
@@ -74,7 +76,8 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 4:
 							case 5:
@@ -83,7 +86,8 @@ namespace LibBSP {
 							case 8:
 							case 9:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								value.GetBytes().CopyTo(data, 0);
 								break;
 							}
@@ -108,7 +112,8 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 4:
 							case 5:
@@ -117,7 +122,8 @@ namespace LibBSP {
 							case 8:
 							case 9:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								return new Vector3d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20));
 							}
 							default: {
@@ -143,7 +149,8 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 4:
 							case 5:
@@ -152,7 +159,8 @@ namespace LibBSP {
 							case 8:
 							case 9:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								value.GetBytes().CopyTo(data, 12);
 								break;
 							}
@@ -177,7 +185,8 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 4:
 							case 5:
@@ -186,7 +195,8 @@ namespace LibBSP {
 							case 8:
 							case 9:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								return BitConverter.ToInt16(data, 24);
 							}
 							default: {
@@ -213,7 +223,8 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 4:
 							case 5:
@@ -222,7 +233,8 @@ namespace LibBSP {
 							case 8:
 							case 9:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								bytes.CopyTo(data, 24);
 								break;
 							}
@@ -387,7 +399,8 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 4:
 							case 5:
@@ -396,7 +409,8 @@ namespace LibBSP {
 							case 8:
 							case 9:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								return data[30];
 							}
 							default: {
@@ -422,7 +436,8 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 4:
 							case 5:
@@ -431,7 +446,8 @@ namespace LibBSP {
 							case 8:
 							case 9:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								data[30] = value;
 								break;
 							}
@@ -456,7 +472,8 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 4:
 							case 5:
@@ -465,7 +482,8 @@ namespace LibBSP {
 							case 8:
 							case 9:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								return data[31];
 							}
 							default: {
@@ -491,7 +509,8 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 4:
 							case 5:
@@ -500,7 +519,8 @@ namespace LibBSP {
 							case 8:
 							case 9:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								data[31] = value;
 								break;
 							}
@@ -525,7 +545,8 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 4:
 							case 5:
@@ -533,7 +554,8 @@ namespace LibBSP {
 							case 7:
 							case 8:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								return BitConverter.ToInt32(data, 32);
 							}
 							case 9: {
@@ -567,7 +589,8 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 4:
 							case 5:
@@ -575,7 +598,8 @@ namespace LibBSP {
 							case 7:
 							case 8:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								bytes.CopyTo(data, 32);
 								break;
 							}
@@ -608,7 +632,8 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 4:
 							case 5:
@@ -616,7 +641,8 @@ namespace LibBSP {
 							case 7:
 							case 8:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								return BitConverter.ToSingle(data, 36);
 							}
 							case 9: {
@@ -650,7 +676,8 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 4:
 							case 5:
@@ -658,7 +685,8 @@ namespace LibBSP {
 							case 7:
 							case 8:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								bytes.CopyTo(data, 36);
 								break;
 							}
@@ -691,7 +719,8 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 4:
 							case 5:
@@ -699,7 +728,8 @@ namespace LibBSP {
 							case 7:
 							case 8:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								return BitConverter.ToSingle(data, 40);
 							}
 							case 9: {
@@ -733,7 +763,8 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 4:
 							case 5:
@@ -741,7 +772,8 @@ namespace LibBSP {
 							case 7:
 							case 8:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								bytes.CopyTo(data, 40);
 								break;
 							}
@@ -774,7 +806,8 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 4:
 							case 5:
@@ -782,7 +815,8 @@ namespace LibBSP {
 							case 7:
 							case 8:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								return new Vector3d(BitConverter.ToSingle(data, 44), BitConverter.ToSingle(data, 48), BitConverter.ToSingle(data, 52));
 							}
 							case 9: {
@@ -816,7 +850,8 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 4:
 							case 5:
@@ -824,7 +859,8 @@ namespace LibBSP {
 							case 7:
 							case 8:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								bytes.CopyTo(data, 44);
 								break;
 							}
@@ -857,14 +893,16 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 5:
 							case 6:
 							case 7:
 							case 8:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								return BitConverter.ToSingle(data, 56);
 							}
 							case 9: {
@@ -898,14 +936,16 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 5:
 							case 6:
 							case 7:
 							case 8:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								bytes.CopyTo(data, 56);
 								break;
 							}
@@ -1046,11 +1086,13 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 8:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								return data[60];
 							}
 							case 9: {
@@ -1083,11 +1125,13 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 8:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								data[60] = value;
 								break;
 							}
@@ -1120,11 +1164,13 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 8:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								return data[61];
 							}
 							case 9: {
@@ -1157,11 +1203,13 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 8:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								data[61] = value;
 								break;
 							}
@@ -1194,11 +1242,13 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 8:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								return data[62];
 							}
 							case 9: {
@@ -1231,11 +1281,13 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 8:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								data[62] = value;
 								break;
 							}
@@ -1268,11 +1320,13 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 8:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								return data[63];
 							}
 							case 9: {
@@ -1305,11 +1359,13 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 8:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								data[63] = value;
 								break;
 							}
@@ -1342,12 +1398,14 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 7:
 							case 8:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								return ColorExtensions.FromArgb(data[67], data[64], data[65], data[66]);
 							}
 							case 9: {
@@ -1380,12 +1438,14 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						switch (version) {
 							case 7:
 							case 8:
 							case 10:
-							case 11: {
+							case 11:
+							case 12: {
 								value.GetBytes().CopyTo(data, 64);
 								break;
 							}

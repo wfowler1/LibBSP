@@ -52,6 +52,7 @@ namespace LibBSP {
 		Quake3 = 1347633783,
 		// TYPE_RTCW = 1347633784, // Uses same structures as Quake 3
 		CoD = 1347633796,
+		Titanfall = 1347633807,
 		DMoMaM = 1347895914,
 	}
 
@@ -774,6 +775,9 @@ namespace LibBSP {
 				case MapType.L4D2:
 				case MapType.Vindictus: {
 					return 64;
+				}
+				case MapType.Titanfall: {
+					return 128;
 				}
 				default: {
 					return -1;

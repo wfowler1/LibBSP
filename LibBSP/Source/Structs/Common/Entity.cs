@@ -573,7 +573,8 @@ namespace LibBSP {
 				case MapType.Source22:
 				case MapType.Source23:
 				case MapType.Source27:
-				case MapType.DMoMaM: {
+				case MapType.DMoMaM:
+				case MapType.Titanfall: {
 					return 0;
 				}
 				case MapType.FAKK:

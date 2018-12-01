@@ -63,7 +63,8 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						return data.ToRawString();
 					}
 					case MapType.SiN: {
@@ -119,7 +120,8 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
-					case MapType.DMoMaM: {
+					case MapType.DMoMaM:
+					case MapType.Titanfall: {
 						data = bytes;
 						break;
 					}
@@ -354,7 +356,8 @@ namespace LibBSP {
 				case MapType.Source23:
 				case MapType.Source27:
 				case MapType.L4D2:
-				case MapType.DMoMaM: {
+				case MapType.DMoMaM:
+				case MapType.Titanfall: {
 					return 43;
 				}
 				default: {

@@ -473,6 +473,10 @@ namespace LibBSP {
 			}
 			int structLength = 0;
 			switch (type) {
+				case MapType.Titanfall: {
+					structLength = 32;
+					break;
+				}
 				case MapType.Quake3:
 				case MapType.Raven:
 				case MapType.STEF2:
@@ -561,7 +565,8 @@ namespace LibBSP {
 				case MapType.Source23:
 				case MapType.Source27:
 				case MapType.L4D2:
-				case MapType.DMoMaM: {
+				case MapType.DMoMaM:
+				case MapType.Titanfall: {
 					return 14;
 				}
 				case MapType.STEF2:
