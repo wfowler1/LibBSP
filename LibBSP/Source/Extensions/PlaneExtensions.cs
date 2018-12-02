@@ -318,9 +318,8 @@ namespace LibBSP {
 				case MapType.Vindictus:
 				case MapType.Quake2:
 				case MapType.Daikatana:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Titanfall: {
-					BitConverter.GetBytes(BestAxis(p)).CopyTo(bytes, 16);
+				case MapType.TacticalInterventionEncrypted: {
+					BitConverter.GetBytes(p.Type()).CopyTo(bytes, 16);
 					break;
 				}
 			}
@@ -353,6 +352,46 @@ namespace LibBSP {
 				}
 			}
 			return bestaxis;
+		}
+
+		/// <summary>
+		/// Gets the axial type of this plane.
+		/// 0 = X
+		/// 1 = Y
+		/// 2 = Z
+		/// 3 = Closest to X
+		/// 4 = Closest to Y
+		/// 5 = Closest to Z
+		/// </summary>
+		/// <remarks>
+		/// This more closely resembles the type calculation of zhlt, q2tools seems to use a greater-than-or-equal
+		/// comparison for the "closest to" types whereas we use a greater-than here. The difference should be minimal.
+		/// </remarks>
+		/// <param name="p">This <see cref="Plane"/>.</param>
+		/// <returns>The axial type of this plane.</returns>
+		public static int Type(this Plane p) {
+			double ax = Math.Abs(p.normal.x);
+			if (ax >= 1.0) {
+				return 0;
+			}
+
+			double ay = Math.Abs(p.normal.y);
+			if (ay >= 1.0) {
+				return 1;
+			}
+
+			double az = Math.Abs(p.normal.z);
+			if (az >= 1.0) {
+				return 2;
+			}
+			
+			if (ax > ay && ax > az) {
+				return 3;
+			}
+			if (ay > ax && ay > az) {
+				return 4;
+			}
+			return 5;
 		}
 
 		/// <summary>
@@ -402,6 +441,12 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// Gets the <see cref="Plane"/> structure length for the specified <see cref="MapType"/>.
+		/// </summary>
+		/// <param name="type">The version of BSP this plane came from.</param>
+		/// <param name="version">The version of the planes lump this plane came from.</param>
+		/// <returns>The length of this structure, in bytes.</returns>
 		public static int GetStructLength(MapType type, int version) {
 			int structLength = 0;
 			switch (type) {
