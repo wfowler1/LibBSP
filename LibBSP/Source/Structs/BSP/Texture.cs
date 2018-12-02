@@ -44,6 +44,7 @@ namespace LibBSP {
 					case MapType.CoD2:
 					case MapType.CoD4:
 					case MapType.FAKK:
+					case MapType.MOHAA:
 					case MapType.Nightfire: {
 						return data.ToNullTerminatedString(0, 64);
 					}
@@ -93,6 +94,7 @@ namespace LibBSP {
 					case MapType.CoD2:
 					case MapType.CoD4:
 					case MapType.FAKK:
+					case MapType.MOHAA:
 					case MapType.Nightfire: {
 						for (int i = 0; i < 64; ++i) {
 							data[i] = 0;
