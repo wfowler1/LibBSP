@@ -311,6 +311,9 @@ namespace LibBSP {
 		private MapType GetVersion(bool bigEndian) {
 			MapType current = MapType.Undefined;
 			using (FileStream stream = new FileStream(bspFile.FullName, FileMode.Open, FileAccess.Read)) {
+				if (stream.Length < 4) {
+					return current;
+				}
 				BinaryReader binaryReader = new BinaryReader(stream);
 				stream.Seek(0, SeekOrigin.Begin);
 				int num = binaryReader.ReadInt32();
