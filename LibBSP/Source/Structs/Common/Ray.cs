@@ -2,6 +2,9 @@
 using System;
 
 namespace LibBSP {
+#if GODOT
+	using Vector3d = Godot.Vector3;
+#endif
 
 	/// <summary>
 	/// A struct for a <see cref="Ray"/> defined by a starting point and a direction vector.
@@ -16,7 +19,11 @@ namespace LibBSP {
 				return _direction;
 			}
 			set {
+#if GODOT
+				_direction = value.Normalized();
+#else
 				_direction = value.normalized;
+#endif
 			}
 		}
 
@@ -27,7 +34,11 @@ namespace LibBSP {
 		/// <param name="direction">Direction vector of this <see cref="Ray"/>.</param>
 		public Ray(Vector3d origin, Vector3d direction) {
 			this.origin = origin;
+#if GODOT
+			_direction = direction.Normalized();
+#else
 			_direction = direction.normalized;
+#endif
 		}
 
 		/// <summary>
@@ -36,7 +47,7 @@ namespace LibBSP {
 		/// <param name="distance">Distance of the point to get.</param>
 		/// <returns>The point at <paramref name="distance"/> units along this <see cref="Ray"/>.</returns>
 		public Vector3d GetPoint(double distance) {
-			return origin + (distance * direction);
+			return origin + ((float)distance * direction);
 		}
 
 		/// <summary>
@@ -47,7 +58,7 @@ namespace LibBSP {
 			return string.Format("( {0}, {1} )", origin, direction);
 		}
 
-		#region IEquatable
+#region IEquatable
 		/// <summary>
 		/// Determines whether this <see cref="Ray"/> is equivalent to another.
 		/// </summary>
@@ -94,7 +105,7 @@ namespace LibBSP {
 		public override int GetHashCode() {
 			return origin.GetHashCode() ^ direction.GetHashCode();
 		}
-		#endregion
+#endregion
 
 	}
 }

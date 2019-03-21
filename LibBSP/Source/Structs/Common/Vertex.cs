@@ -17,6 +17,11 @@ namespace LibBSP {
 	using Vector2d = UnityEngine.Vector2;
 	using Vector3d = UnityEngine.Vector3;
 	using Vector4d = UnityEngine.Vector4;
+#elif GODOT
+	using Color = Godot.Color;
+	using Vector2d = Godot.Vector2;
+	using Vector3d = Godot.Vector3;
+	using Vector4d = Godot.Quat;
 #else
 	using Color = System.Drawing.Color;
 #endif

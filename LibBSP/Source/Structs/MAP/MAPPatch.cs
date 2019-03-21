@@ -17,6 +17,10 @@ namespace LibBSP {
 #if !OLDUNITY
 	using Vertex = UnityEngine.UIVertex;
 #endif
+#elif GODOT
+	using Vector2d = Godot.Vector2;
+	using Vector3d = Godot.Vector3;
+	using Color = Godot.Color;
 #else
 	using Color = System.Drawing.Color;
 #endif

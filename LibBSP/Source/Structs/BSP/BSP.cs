@@ -9,13 +9,15 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
-#if UNITY
-using UnityEngine;
-#endif
 
 namespace LibBSP {
-#if UNITY && !OLDUNITY
-	using Vertex = UIVertex;
+#if UNITY
+	using Plane = UnityEngine.Plane;
+#if !OLDUNITY
+	using Vertex = UnityEngine.UIVertex;
+#endif
+#elif GODOT
+	using Plane = Godot.Plane;
 #endif
 
 	/// <summary>

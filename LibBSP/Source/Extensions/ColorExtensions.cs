@@ -5,6 +5,8 @@
 namespace LibBSP {
 #if UNITY
 	using Color = UnityEngine.Color32;
+#elif GODOT
+	using Color = Godot.Color;
 #else
 	using Color = System.Drawing.Color;
 #endif
@@ -25,6 +27,8 @@ namespace LibBSP {
 		public static Color FromArgb(int a, int r, int g, int b) {
 #if UNITY
 			return new Color((byte)r, (byte)g, (byte)b, (byte)a);
+#elif GODOT
+			return new Color(r << 24 | g << 16 | b << 8 | a);
 #else
 			return Color.FromArgb(a, r, g, b);
 #endif
@@ -42,6 +46,11 @@ namespace LibBSP {
 			bytes[1] = color.g;
 			bytes[2] = color.b;
 			bytes[3] = color.a;
+#elif GODOT
+			bytes[0] = (byte)color.r8;
+			bytes[1] = (byte)color.g8;
+			bytes[2] = (byte)color.b8;
+			bytes[3] = (byte)color.a8;
 #else
 			bytes[0] = color.R;
 			bytes[1] = color.G;

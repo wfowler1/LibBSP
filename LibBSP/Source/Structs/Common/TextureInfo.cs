@@ -4,14 +4,16 @@
 
 using System;
 using System.Collections.Generic;
-#if UNITY
-using UnityEngine;
-#endif
 
 namespace LibBSP {
 #if UNITY
-	using Vector2d = Vector2;
-	using Vector3d = Vector3;
+	using Vector2d = UnityEngine.Vector2;
+	using Vector3d = UnityEngine.Vector3;
+	using Plane = UnityEngine.Plane;
+#elif GODOT
+	using Vector2d = Godot.Vector2;
+	using Vector3d = Godot.Vector3;
+	using Plane = Godot.Plane;
 #endif
 
 	/// <summary>
@@ -26,7 +28,7 @@ namespace LibBSP {
 		public int version;
 
 		// No BSP format uses these so they are fields.
-		public Vector2d scale = Vector2d.one;
+		public Vector2d scale = new Vector2d(1, 1);
 		public double rotation = 0;
 
 		public Vector3d uAxis {
@@ -177,13 +179,13 @@ namespace LibBSP {
 			type = MapType.Quake;
 			version = 0;
 
-			uAxis = Vector3d.zero;
-			vAxis = Vector3d.zero;
-			translation = Vector2d.zero;
+			uAxis = new Vector3d(0, 0, 0);
+			vAxis = new Vector3d(0, 0, 0);
+			translation = new Vector2d(0, 0);
 			flags = 0;
 			texture = -1;
 
-			scale = Vector2d.one;
+			scale = new Vector2d(1, 1);
 			rotation = 0;
 		}
 
@@ -202,7 +204,7 @@ namespace LibBSP {
 			this.type = type;
 			this.version = version;
 
-			scale = Vector2d.one;
+			scale = new Vector2d(1, 1);
 			rotation = 0;
 		}
 

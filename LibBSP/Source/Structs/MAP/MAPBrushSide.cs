@@ -5,14 +5,16 @@
 using System.Collections.Generic;
 using System;
 using System.Globalization;
-#if UNITY
-using UnityEngine;
-#endif
 
 namespace LibBSP {
 #if UNITY
-	using Vector2d = Vector2;
-	using Vector3d = Vector3;
+	using Vector2d = UnityEngine.Vector2;
+	using Vector3d = UnityEngine.Vector3;
+	using Plane = UnityEngine.Plane;
+#elif GODOT
+	using Vector2d = Godot.Vector2;
+	using Vector3d = Godot.Vector3;
+	using Plane = Godot.Plane;
 #endif
 
 	/// <summary>
@@ -52,8 +54,8 @@ namespace LibBSP {
 					plane = new Plane(new Vector3d(float.Parse(tokens[1], _format), float.Parse(tokens[2], _format), float.Parse(tokens[3], _format)), dist);
 					textureInfo = new TextureInfo(new Vector3d(float.Parse(tokens[8], _format), float.Parse(tokens[9], _format), float.Parse(tokens[10], _format)),
 												  new Vector3d(float.Parse(tokens[13], _format), float.Parse(tokens[14], _format), float.Parse(tokens[15], _format)),
-												  Vector2d.zero,
-												  Vector2d.one,
+												  new Vector2d(0, 0),
+												  new Vector2d(1, 1),
 												  0, 0, 0);
 					texture = tokens[18];
 				} else {

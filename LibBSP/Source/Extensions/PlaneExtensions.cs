@@ -4,13 +4,15 @@
 
 using System;
 using System.Collections.Generic;
-#if UNITY
-using UnityEngine;
-#endif
 
 namespace LibBSP {
 #if UNITY
-	using Vector3d = Vector3;
+	using Plane = UnityEngine.Plane;
+	using Vector3d = UnityEngine.Vector3;
+	using Ray = UnityEngine.Ray;
+#elif GODOT
+	using Plane = Godot.Plane;
+	using Vector3d = Godot.Vector3;
 #endif
 
 	/// <summary>
@@ -31,6 +33,32 @@ namespace LibBSP {
 		};
 
 		/// <summary>
+		/// Gets the normal of this <see cref="Plane"/>.
+		/// </summary>
+		/// <param name="p">This <see cref="Plane"/>.</param>
+		/// <returns>The normal of this <see cref="Plane"/>.</returns>
+		public static Vector3d GetNormal(this Plane p) {
+#if GODOT
+			return p.Normal;
+#else
+			return p.normal;
+#endif
+		}
+
+		/// <summary>
+		/// Gets the distance of this <see cref="Plane"/> from the origin.
+		/// </summary>
+		/// <param name="p">This <see cref="Plane"/>.</param>
+		/// <returns>The distance of this <see cref="Plane"/> from the origin.</returns>
+		public static double GetDistance(this Plane p) {
+#if GODOT
+			return p.D;
+#else
+			return p.distance;
+#endif
+		}
+
+		/// <summary>
 		/// Intersects three <see cref="Plane"/>s at a <see cref="Vector3d"/>. Returns NaN for all components if two or more <see cref="Plane"/>s are parallel.
 		/// </summary>
 		/// <param name="p1"><see cref="Plane"/> to intersect.</param>
@@ -38,9 +66,15 @@ namespace LibBSP {
 		/// <param name="p3"><see cref="Plane"/> to intersect.</param>
 		/// <returns>Point of intersection if all three <see cref="Plane"/>s meet at a point, (NaN, NaN, NaN) otherwise.</returns>
 		public static Vector3d Intersection(Plane p1, Plane p2, Plane p3) {
-			Vector3d aN = p1.normal;
-			Vector3d bN = p2.normal;
-			Vector3d cN = p3.normal;
+#if GODOT
+			return p1.Intersect3(p2, p3);
+#else
+			Vector3d aN = p1.GetNormal();
+			Vector3d bN = p2.GetNormal();
+			Vector3d cN = p3.GetNormal();
+			var p1d = p1.distance;
+			var p2d = p2.distance;
+			var p3d = p3.distance;
 
 			var partSolx1 = (bN.y * cN.z) - (bN.z * cN.y);
 			var partSoly1 = (bN.z * cN.x) - (bN.x * cN.z);
@@ -50,9 +84,10 @@ namespace LibBSP {
 				return new Vector3d(float.NaN, float.NaN, float.NaN);
 			}
 
-			return new Vector3d((p1.distance * partSolx1 + p2.distance * (cN.y * aN.z - cN.z * aN.y) + p3.distance * (aN.y * bN.z - aN.z * bN.y)) / det,
-			                    (p1.distance * partSoly1 + p2.distance * (aN.x * cN.z - aN.z * cN.x) + p3.distance * (bN.x * aN.z - bN.z * aN.x)) / det,
-			                    (p1.distance * partSolz1 + p2.distance * (cN.x * aN.y - cN.y * aN.x) + p3.distance * (aN.x * bN.y - aN.y * bN.x)) / det);
+			return new Vector3d((p1d * partSolx1 + p2d * (cN.y * aN.z - cN.z * aN.y) + p3d * (aN.y * bN.z - aN.z * bN.y)) / det,
+			                    (p1d * partSoly1 + p2d * (aN.x * cN.z - aN.z * cN.x) + p3d * (bN.x * aN.z - bN.z * aN.x)) / det,
+			                    (p1d * partSolz1 + p2d * (cN.x * aN.y - cN.y * aN.x) + p3d * (aN.x * bN.y - aN.y * bN.x)) / det);
+#endif
 		}
 
 		/// <summary>
@@ -63,7 +98,11 @@ namespace LibBSP {
 		/// <param name="p3"><see cref="Plane"/> to intersect.</param>
 		/// <returns>Point of intersection if all three <see cref="Plane"/>s meet at a point, (NaN, NaN, NaN) otherwise.</returns>
 		public static Vector3d Intersect(this Plane p1, Plane p2, Plane p3) {
+#if GODOT
+			return p1.Intersect3(p2, p3);
+#else
 			return Intersection(p1, p2, p3);
+#endif
 		}
 
 		/// <summary>
@@ -85,6 +124,28 @@ namespace LibBSP {
 				return new Vector3d(float.NaN, float.NaN, float.NaN);
 			}
 		}
+
+#if GODOT
+		/// <summary>
+		/// Raycasts a <see cref="Ray"/> against this <see cref="Plane"/>.
+		/// </summary>
+		/// <param name="ray"><see cref="Ray"/> to raycast against.</param>
+		/// <param name="enter"><c>out</c> parameter that will contain the distance along <paramref name="ray"/> where the collision happened.</param>
+		/// <returns>
+		/// <c>true</c> and <paramref name="enter"/> is positive if <see cref="Ray"/> intersects this <see cref="Plane"/> in front of the ray,
+		/// <c>false</c> and <paramref name="enter"/> is negative if <see cref="Ray"/> intersects this <see cref="Plane"/> behind the ray,
+		/// <c>false</c> and <paramref name="enter"/> is 0 if the <see cref="Ray"/> is parallel to this <see cref="Plane"/>.
+		/// </returns>
+		public static bool Raycast(this Plane p, Ray ray, out double enter) {
+			double denom = ray.direction.Dot(p.Normal);
+			if (denom > -0.005 && denom < 0.005) {
+				enter = 0;
+				return false;
+			}
+			enter = (-1 * ray.origin.Dot(p.Normal) + p.D) / denom;
+			return enter > 0;
+		}
+#endif
 
 		/// <summary>
 		/// Intersects this <see cref="Plane"/> with a <see cref="Ray"/> "<paramref name="r"/>" at a <see cref="Vector3d"/>. Returns NaN for all components if they do not intersect.
@@ -113,29 +174,29 @@ namespace LibBSP {
 		/// <param name="p2"><see cref="Plane"/> to intersect.</param>
 		/// <returns>Line of intersection where "<paramref name="p1"/>" intersects "<paramref name="p2"/>", ((NaN, NaN, NaN) + p(NaN, NaN, NaN)) otherwise.</returns>
 		public static Ray Intersection(Plane p1, Plane p2) {
-			Vector3d direction = Vector3d.Cross(p1.normal, p2.normal);
-			if (direction == Vector3d.zero) {
+			Vector3d direction = p1.GetNormal().Cross(p2.GetNormal());
+			if (direction == new Vector3d(0, 0, 0)) {
 				return new Ray(new Vector3d(float.NaN, float.NaN, float.NaN), new Vector3d(float.NaN, float.NaN, float.NaN));
 			}
 			// If x == 0, solve for y in terms of z, or z in terms of y	
 
 			Vector3d origin;
 
-			Vector3d sqrDirection = Vector3d.Scale(direction, direction);
+			Vector3d sqrDirection = new Vector3d(direction.x * direction.x, direction.y * direction.y, direction.z * direction.z);
 			if (sqrDirection.x >= sqrDirection.y && sqrDirection.x >= sqrDirection.z) {
-				var denom = (p1.normal.y * p2.normal.z) - (p2.normal.y * p1.normal.z);
+				var denom = (p1.GetNormal().y * p2.GetNormal().z) - (p2.GetNormal().y * p1.GetNormal().z);
 				origin = new Vector3d(0,
-				                      ((p1.normal.z * p2.distance) - (p2.normal.z * p1.distance)) / denom,
-				                      ((p2.normal.y * p1.distance) - (p1.normal.y * p2.distance)) / denom);
+				                      ((p1.GetNormal().z * (float)p2.GetDistance()) - (p2.GetNormal().z * (float)p1.GetDistance())) / denom,
+				                      ((p2.GetNormal().y * (float)p1.GetDistance()) - (p1.GetNormal().y * (float)p2.GetDistance())) / denom);
 			} else if (sqrDirection.y >= sqrDirection.x && sqrDirection.y >= sqrDirection.z) {
-				var denom = (p1.normal.x * p2.normal.z) - (p2.normal.x * p1.normal.z);
-				origin = new Vector3d(((p1.normal.z * p2.distance) - (p2.normal.z * p1.distance)) / denom,
+				var denom = (p1.GetNormal().x * p2.GetNormal().z) - (p2.GetNormal().x * p1.GetNormal().z);
+				origin = new Vector3d(((p1.GetNormal().z * (float)p2.GetDistance()) - (p2.GetNormal().z * (float)p1.GetDistance())) / denom,
 				                      0,
-				                      ((p2.normal.x * p1.distance) - (p1.normal.x * p2.distance)) / denom);
+				                      ((p2.GetNormal().x * (float)p1.GetDistance()) - (p1.GetNormal().x * (float)p2.GetDistance())) / denom);
 			} else {
-				var denom = (p1.normal.x * p2.normal.y) - (p2.normal.x * p1.normal.y);
-				origin = new Vector3d(((p1.normal.y * p2.distance) - (p2.normal.y * p1.distance)) / denom,
-				                      ((p2.normal.x * p1.distance) - (p1.normal.x * p2.distance)) / denom,
+				var denom = (p1.GetNormal().x * p2.GetNormal().y) - (p2.GetNormal().x * p1.GetNormal().y);
+				origin = new Vector3d(((p1.GetNormal().y * (float)p2.GetDistance()) - (p2.GetNormal().y * (float)p1.GetDistance())) / denom,
+				                      ((p2.GetNormal().x * (float)p1.GetDistance()) - (p1.GetNormal().x * (float)p2.GetDistance())) / denom,
 				                      0);
 			}
 
@@ -161,61 +222,61 @@ namespace LibBSP {
 		public static Vector3d[] GenerateThreePoints(this Plane p, float scalar = 16) {
 			Vector3d[] points = new Vector3d[3];
 			// Figure out if the plane is parallel to two of the axes.
-			if (p.normal.y == 0 && p.normal.z == 0) {
+			if (p.GetNormal().y == 0 && p.GetNormal().z == 0) {
 				// parallel to plane YZ
-				points[0] = new Vector3d(p.distance / p.normal.x, -scalar, scalar);
-				points[1] = new Vector3d(p.distance / p.normal.x, 0, 0);
-				points[2] = new Vector3d(p.distance / p.normal.x, scalar, scalar);
-				if (p.normal.x > 0) {
+				points[0] = new Vector3d((float)p.GetDistance() / p.GetNormal().x, -scalar, scalar);
+				points[1] = new Vector3d((float)p.GetDistance() / p.GetNormal().x, 0, 0);
+				points[2] = new Vector3d((float)p.GetDistance() / p.GetNormal().x, scalar, scalar);
+				if (p.GetNormal().x > 0) {
 					Array.Reverse(points);
 				}
-			} else if (p.normal.x == 0 && p.normal.z == 0) {
+			} else if (p.GetNormal().x == 0 && p.GetNormal().z == 0) {
 				// parallel to plane XZ
-				points[0] = new Vector3d(scalar, p.distance / p.normal.y, -scalar);
-				points[1] = new Vector3d(0, p.distance / p.normal.y, 0);
-				points[2] = new Vector3d(scalar, p.distance / p.normal.y, scalar);
-				if (p.normal.y > 0) {
+				points[0] = new Vector3d(scalar, (float)p.GetDistance() / p.GetNormal().y, -scalar);
+				points[1] = new Vector3d(0, (float)p.GetDistance() / p.GetNormal().y, 0);
+				points[2] = new Vector3d(scalar, (float)p.GetDistance() / p.GetNormal().y, scalar);
+				if (p.GetNormal().y > 0) {
 					Array.Reverse(points);
 				}
-			} else if (p.normal.x == 0 && p.normal.y == 0) {
+			} else if (p.GetNormal().x == 0 && p.GetNormal().y == 0) {
 				// parallel to plane XY
-				points[0] = new Vector3d(-scalar, scalar, p.distance / p.normal.z);
-				points[1] = new Vector3d(0, 0, p.distance / p.normal.z);
-				points[2] = new Vector3d(scalar, scalar, p.distance / p.normal.z);
-				if (p.normal.z > 0) {
+				points[0] = new Vector3d(-scalar, scalar, (float)p.GetDistance() / p.GetNormal().z);
+				points[1] = new Vector3d(0, 0, (float)p.GetDistance() / p.GetNormal().z);
+				points[2] = new Vector3d(scalar, scalar, (float)p.GetDistance() / p.GetNormal().z);
+				if (p.GetNormal().z > 0) {
 					Array.Reverse(points);
 				}
-			} else if (p.normal.x == 0) {
+			} else if (p.GetNormal().x == 0) {
 				// If you reach this point the plane is not parallel to any two-axis plane.
 				// parallel to X axis
-				points[0] = new Vector3d(-scalar, scalar * scalar, (-(scalar * scalar * p.normal.y - p.distance)) / p.normal.z);
-				points[1] = new Vector3d(0, 0, p.distance / p.normal.z);
-				points[2] = new Vector3d(scalar, scalar * scalar, (-(scalar * scalar * p.normal.y - p.distance)) / p.normal.z);
-				if (p.normal.z > 0) {
+				points[0] = new Vector3d(-scalar, scalar * scalar, (-(scalar * scalar * p.GetNormal().y - (float)p.GetDistance())) / p.GetNormal().z);
+				points[1] = new Vector3d(0, 0, (float)p.GetDistance() / p.GetNormal().z);
+				points[2] = new Vector3d(scalar, scalar * scalar, (-(scalar * scalar * p.GetNormal().y - (float)p.GetDistance())) / p.GetNormal().z);
+				if (p.GetNormal().z > 0) {
 					Array.Reverse(points);
 				}
-			} else if (p.normal.y == 0) {
+			} else if (p.GetNormal().y == 0) {
 				// parallel to Y axis
-				points[0] = new Vector3d((-(scalar * scalar * p.normal.z - p.distance)) / p.normal.x, -scalar, scalar * scalar);
-				points[1] = new Vector3d(p.distance / p.normal.x, 0, 0);
-				points[2] = new Vector3d((-(scalar * scalar * p.normal.z - p.distance)) / p.normal.x, scalar, scalar * scalar);
-				if (p.normal.x > 0) {
+				points[0] = new Vector3d((-(scalar * scalar * p.GetNormal().z - (float)p.GetDistance())) / p.GetNormal().x, -scalar, scalar * scalar);
+				points[1] = new Vector3d((float)p.GetDistance() / p.GetNormal().x, 0, 0);
+				points[2] = new Vector3d((-(scalar * scalar * p.GetNormal().z - (float)p.GetDistance())) / p.GetNormal().x, scalar, scalar * scalar);
+				if (p.GetNormal().x > 0) {
 					Array.Reverse(points);
 				}
-			} else if (p.normal.z == 0) {
+			} else if (p.GetNormal().z == 0) {
 				// parallel to Z axis
-				points[0] = new Vector3d(scalar * scalar, (-(scalar * scalar * p.normal.x - p.distance)) / p.normal.y, -scalar);
-				points[1] = new Vector3d(0, p.distance / p.normal.y, 0);
-				points[2] = new Vector3d(scalar * scalar, (-(scalar * scalar * p.normal.x - p.distance)) / p.normal.y, scalar);
-				if (p.normal.y > 0) {
+				points[0] = new Vector3d(scalar * scalar, (-(scalar * scalar * p.GetNormal().x - (float)p.GetDistance())) / p.GetNormal().y, -scalar);
+				points[1] = new Vector3d(0, (float)p.GetDistance() / p.GetNormal().y, 0);
+				points[2] = new Vector3d(scalar * scalar, (-(scalar * scalar * p.GetNormal().x - (float)p.GetDistance())) / p.GetNormal().y, scalar);
+				if (p.GetNormal().y > 0) {
 					Array.Reverse(points);
 				}
 			} else {
 				// If you reach this point the plane is not parallel to any axis. Therefore, any two coordinates will give a third.
-				points[0] = new Vector3d(-scalar, scalar * scalar, -(-scalar * p.normal.x + scalar * scalar * p.normal.y - p.distance) / p.normal.z);
-				points[1] = new Vector3d(0, 0, p.distance / p.normal.z);
-				points[2] = new Vector3d(scalar, scalar * scalar, -(scalar * p.normal.x + scalar * scalar * p.normal.y - p.distance) / p.normal.z);
-				if (p.normal.z > 0) {
+				points[0] = new Vector3d(-scalar, scalar * scalar, -(-scalar * p.GetNormal().x + scalar * scalar * p.GetNormal().y - (float)p.GetDistance()) / p.GetNormal().z);
+				points[1] = new Vector3d(0, 0, (float)p.GetDistance() / p.GetNormal().z);
+				points[2] = new Vector3d(scalar, scalar * scalar, -(scalar * p.GetNormal().x + scalar * scalar * p.GetNormal().y - (float)p.GetDistance()) / p.GetNormal().z);
+				if (p.GetNormal().z > 0) {
 					Array.Reverse(points);
 				}
 			}
@@ -231,14 +292,15 @@ namespace LibBSP {
 		/// <remarks>Unity uses the plane equation "Ax + By + Cz + D = 0" while Quake-based engines
 		/// use "Ax + By + Cz = D". The distance equation needs to be evaluated differently from
 		/// Unity's default implementation to properly apply to planes read from BSPs.</remarks>
-#if UNITY
+#if UNITY || GODOT
 		public static float GetBSPDistanceToPoint(this Plane p, Vector3d to) {
-			return (p.normal.x * to.x + p.normal.y * to.y + p.normal.z * to.z - p.distance) / p.normal.magnitude;
+			return (p.GetNormal().x * to.x + p.GetNormal().y * to.y + p.GetNormal().z * to.z - (float)p.GetDistance()) / (float)p.GetNormal().GetMagnitude();
+		}
 #else
 		public static double GetBSPDistanceToPoint(this Plane p, Vector3d to) {
 			return p.GetDistanceToPoint(to);
-#endif
 		}
+#endif
 
 		/// <summary>
 		/// Is <paramref name="v"/> on the positive side of this <see cref="Plane"/>?
@@ -323,8 +385,8 @@ namespace LibBSP {
 					break;
 				}
 			}
-			p.normal.GetBytes().CopyTo(bytes, 0);
-			BitConverter.GetBytes(p.distance).CopyTo(bytes, 12);
+			p.GetNormal().GetBytes().CopyTo(bytes, 0);
+			BitConverter.GetBytes((float)p.GetDistance()).CopyTo(bytes, 12);
 			return bytes;
 		}
 
@@ -345,7 +407,11 @@ namespace LibBSP {
 			double best = 0; // "Best" dot product so far
 			for (int i = 0; i < 6; ++i) {
 				// For all possible axes, positive and negative
-				double dot = Vector3d.Dot(p.normal, baseAxes[i * 3]);
+#if GODOT
+				double dot = p.Normal.Dot(baseAxes[i * 3]);
+#else
+				double dot = p.normal.Dot(baseAxes[i * 3]);
+#endif
 				if (dot > best) {
 					best = dot;
 					bestaxis = i;
@@ -370,17 +436,17 @@ namespace LibBSP {
 		/// <param name="p">This <see cref="Plane"/>.</param>
 		/// <returns>The axial type of this plane.</returns>
 		public static int Type(this Plane p) {
-			double ax = Math.Abs(p.normal.x);
+			double ax = Math.Abs(p.GetNormal().x);
 			if (ax >= 1.0) {
 				return 0;
 			}
 
-			double ay = Math.Abs(p.normal.y);
+			double ay = Math.Abs(p.GetNormal().y);
 			if (ay >= 1.0) {
 				return 1;
 			}
 
-			double az = Math.Abs(p.normal.z);
+			double az = Math.Abs(p.GetNormal().z);
 			if (az >= 1.0) {
 				return 2;
 			}
