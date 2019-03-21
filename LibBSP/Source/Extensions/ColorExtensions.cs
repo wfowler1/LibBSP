@@ -28,7 +28,7 @@ namespace LibBSP {
 #if UNITY
 			return new Color((byte)r, (byte)g, (byte)b, (byte)a);
 #elif GODOT
-			return new Color(r << 24 | g << 16 | b << 8 | a);
+			return new Color((byte)r << 24 | (byte)g << 16 | (byte)b << 8 | (byte)a);
 #else
 			return Color.FromArgb(a, r, g, b);
 #endif
