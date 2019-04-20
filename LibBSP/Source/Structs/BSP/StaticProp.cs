@@ -4,14 +4,14 @@
 
 using System;
 using System.Text;
-#if UNITY
-using UnityEngine;
-#endif
 
 namespace LibBSP {
 #if UNITY
-	using Color = Color32;
-	using Vector3d = Vector3;
+	using Color = UnityEngine.Color32;
+	using Vector3d = UnityEngine.Vector3;
+#elif GODOT
+	using Color = Godot.Color;
+	using Vector3d = Godot.Vector3;
 #else
 	using Color = System.Drawing.Color;
 #endif

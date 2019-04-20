@@ -4,14 +4,14 @@
 
 using System;
 using System.Text;
-#if UNITY
-using UnityEngine;
-#endif
 
 namespace LibBSP {
 #if UNITY
-	using Vector2d = Vector2;
-	using Vector3d = Vector3;
+	using Vector2d = UnityEngine.Vector2;
+	using Vector3d = UnityEngine.Vector3;
+#elif GODOT
+	using Vector2d = Godot.Vector2;
+	using Vector3d = Godot.Vector3;
 #endif
 
 	/// <summary>
@@ -262,7 +262,7 @@ namespace LibBSP {
 						return new TextureInfo(new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8)),
 						                       new Vector3d(BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24)),
 						                       new Vector2d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 28)),
-						                       Vector2d.one,
+						                       new Vector2d(1, 1),
 						                       -1, -1, 0);
 					}
 					default: {

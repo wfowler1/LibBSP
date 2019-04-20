@@ -7,14 +7,14 @@ using System.Collections.Generic;
 using System.Text;
 using System.Runtime.Serialization;
 using System.Globalization;
-#if UNITY
-using UnityEngine;
-#endif
 
 namespace LibBSP {
 #if UNITY
-	using Vector3d = Vector3;
-	using Vector4d = Vector4;
+	using Vector3d = UnityEngine.Vector3;
+	using Vector4d = UnityEngine.Vector4;
+#elif GODOT
+	using Vector3d = Godot.Vector3;
+	using Vector4d = Godot.Quat;
 #endif
 
 	/// <summary>
@@ -56,7 +56,10 @@ namespace LibBSP {
 		/// Wrapper for the "origin" attribute.
 		/// </summary>
 		public Vector3d origin {
-			get { return GetVector("origin"); }
+			get {
+				Vector4d vec = GetVector("origin");
+				return new Vector3d(vec.x, vec.y, vec.z);
+			}
 			set { this["origin"] = value.x + " " + value.y + " " + value.z; }
 		}
 
@@ -64,7 +67,10 @@ namespace LibBSP {
 		/// Wrapper for the "angles" attribute.
 		/// </summary>
 		public Vector3d angles {
-			get { return GetVector("angles"); }
+			get {
+				Vector4d vec = GetVector("angles");
+				return new Vector3d(vec.x, vec.y, vec.z);
+			}
 			set { this["angles"] = value.x + " " + value.y + " " + value.z; }
 		}
 

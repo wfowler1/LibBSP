@@ -4,19 +4,43 @@
 
 using System;
 using System.Collections.Generic;
-#if UNITY
-using UnityEngine;
-#endif
 
 namespace LibBSP {
 #if UNITY
-	using Vector4d = Vector4;
+	using Vector4d = UnityEngine.Vector4;
+#elif GODOT
+	using Vector4d = Godot.Quat;
 #endif
 
 	/// <summary>
 	/// Class containing helper methods for <see cref="Vector4d"/> objects.
 	/// </summary>
 	public static class Vector4dExtensions {
+
+#if !GODOT
+		/// <summary>
+		/// Vector dot product. This operation is commutative.
+		/// </summary>
+		/// <param name="v1">This <see cref="Vector4d"/>.</param>
+		/// <param name="v2">The <see cref="Vector4d"/> to dot with this <see cref="Vector4d"/>.</param>
+		/// <returns>Dot product of this <see cref="Vector4d"/> and <paramref name="v"/>.</returns>
+		public static double Dot(this Vector4d v1, Vector4d v) {
+			return Vector4d.Dot(v1, v);
+		}
+#endif
+
+		/// <summary>
+		/// Gets the magnitude of this <see cref="Vector4d"/>.
+		/// </summary>
+		/// <param name="v">This <see cref="Vector4d"/>.</param>
+		/// <returns>The magnitude of this <see cref="Vector4d"/>.</returns>
+		public static double GetMagnitude(this Vector4d v) {
+#if GODOT
+			return v.Length;
+#else
+			return v.magnitude;
+#endif
+		}
 
 		/// <summary>
 		/// Gets a <c>byte</c> array representing the components of this <see cref="Vector4d"/> as <c>float</c>s.

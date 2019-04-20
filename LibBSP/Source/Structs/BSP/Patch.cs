@@ -4,13 +4,12 @@
 
 using System;
 using System.Collections.Generic;
-#if UNITY
-using UnityEngine;
-#endif
 
 namespace LibBSP {
 #if UNITY
-	using Vector2d = Vector2;
+	using Vector2d = UnityEngine.Vector2;
+#elif GODOT
+	using Vector2d = Godot.Vector2;
 #endif
 
 	/// <summary>
