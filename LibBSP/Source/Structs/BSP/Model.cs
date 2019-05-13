@@ -212,6 +212,9 @@ namespace LibBSP {
 		[Index("faces")] public int firstFace {
 			get {
 				switch (type) {
+					case MapType.CoD4: {
+						return BitConverter.ToInt16(data, 24);
+					}
 					case MapType.CoD:
 					case MapType.CoD2:
 					case MapType.STEF2:
@@ -256,6 +259,11 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (type) {
+					case MapType.CoD4: {
+						data[24] = bytes[0];
+						data[25] = bytes[1];
+						break;
+					}
 					case MapType.CoD:
 					case MapType.CoD2:
 					case MapType.STEF2:
@@ -304,6 +312,9 @@ namespace LibBSP {
 		[Count("faces")] public int numFaces {
 			get {
 				switch (type) {
+					case MapType.CoD4: {
+						return BitConverter.ToInt16(data, 28);
+					}
 					case MapType.CoD:
 					case MapType.CoD2:
 					case MapType.STEF2:
@@ -348,6 +359,11 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (type) {
+					case MapType.CoD4: {
+						data[28] = bytes[0];
+						data[29] = bytes[1];
+						break;
+					}
 					case MapType.CoD:
 					case MapType.CoD2:
 					case MapType.STEF2:

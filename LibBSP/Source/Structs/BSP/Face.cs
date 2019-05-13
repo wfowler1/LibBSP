@@ -299,7 +299,8 @@ namespace LibBSP {
 			get {
 				switch (type) {
 					case MapType.CoD:
-					case MapType.CoD2: {
+					case MapType.CoD2:
+					case MapType.CoD4: {
 						return BitConverter.ToInt16(data, 0);
 					}
 					case MapType.Quake3:
@@ -329,7 +330,8 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (type) {
 					case MapType.CoD:
-					case MapType.CoD2: {
+					case MapType.CoD2:
+					case MapType.CoD4: {
 						data[0] = bytes[0];
 						data[1] = bytes[1];
 						break;
@@ -373,7 +375,8 @@ namespace LibBSP {
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
-					case MapType.FAKK: {
+					case MapType.FAKK:
+					case MapType.CoD4: {
 						return BitConverter.ToInt32(data, 12);
 					}
 					default: {
@@ -395,7 +398,8 @@ namespace LibBSP {
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
-					case MapType.FAKK: {
+					case MapType.FAKK:
+					case MapType.CoD4: {
 						bytes.CopyTo(data, 12);
 						break;
 					}
@@ -420,6 +424,9 @@ namespace LibBSP {
 					case MapType.MOHAA:
 					case MapType.FAKK: {
 						return BitConverter.ToInt32(data, 16);
+					}
+					case MapType.CoD4: {
+						return BitConverter.ToInt16(data, 16);
 					}
 					default: {
 						return -1;
@@ -446,6 +453,11 @@ namespace LibBSP {
 					case MapType.MOHAA:
 					case MapType.FAKK: {
 						bytes.CopyTo(data, 16);
+						break;
+					}
+					case MapType.CoD4: {
+						data[16] = bytes[0];
+						data[17] = bytes[1];
 						break;
 					}
 				}
@@ -709,7 +721,8 @@ namespace LibBSP {
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
-					case MapType.FAKK: {
+					case MapType.FAKK:
+					case MapType.CoD4: {
 						return BitConverter.ToInt32(data, 20);
 					}
 					default: {
@@ -731,7 +744,8 @@ namespace LibBSP {
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
-					case MapType.FAKK: {
+					case MapType.FAKK:
+					case MapType.CoD4: {
 						bytes.CopyTo(data, 20);
 						break;
 					}
@@ -748,6 +762,9 @@ namespace LibBSP {
 					}
 					case MapType.Nightfire: {
 						return BitConverter.ToInt32(data, 16);
+					}
+					case MapType.CoD4: {
+						return BitConverter.ToInt16(data, 18);
 					}
 					case MapType.Quake3:
 					case MapType.Raven:
@@ -775,6 +792,11 @@ namespace LibBSP {
 						bytes.CopyTo(data, 16);
 						break;
 					}
+					case MapType.CoD4: {
+						data[18] = bytes[0];
+						data[19] = bytes[1];
+						return;
+					}
 					case MapType.Quake3:
 					case MapType.Raven:
 					case MapType.STEF2:
@@ -782,28 +804,6 @@ namespace LibBSP {
 					case MapType.MOHAA:
 					case MapType.FAKK: {
 						bytes.CopyTo(data, 24);
-						break;
-					}
-				}
-			}
-		}
-		
-		public int unknown {
-			get {
-				switch (type) {
-					case MapType.Nightfire: {
-						return BitConverter.ToInt32(data, 36);
-					}
-					default: {
-						return 0;
-					}
-				}
-			}
-			set {
-				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
-					case MapType.Nightfire: {
-						bytes.CopyTo(data, 36);
 						break;
 					}
 				}
@@ -930,6 +930,10 @@ namespace LibBSP {
 					structLength = 20;
 					break;
 				}
+				case MapType.CoD4: {
+					structLength = 24;
+					break;
+				}
 				case MapType.SiN: {
 					structLength = 36;
 					break;
@@ -1021,9 +1025,7 @@ namespace LibBSP {
 				case MapType.CoD: {
 					return 6;
 				}
-				case MapType.CoD2: {
-					return 7;
-				}
+				case MapType.CoD2:
 				case MapType.Vindictus:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Source17:
@@ -1039,7 +1041,8 @@ namespace LibBSP {
 				case MapType.Quake: {
 					return 7;
 				}
-				case MapType.Nightfire: {
+				case MapType.Nightfire:
+				case MapType.CoD4: {
 					return 9;
 				}
 				case MapType.Raven:
@@ -1072,6 +1075,10 @@ namespace LibBSP {
 				case MapType.L4D2:
 				case MapType.DMoMaM: {
 					return 27;
+				}
+				case MapType.CoD4: {
+					// Not sure where else to put this. This is the simple surfaces lump?
+					return 47;
 				}
 				default: {
 					return -1;

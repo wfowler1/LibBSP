@@ -463,8 +463,8 @@ namespace LibBSP {
 				case MapType.CoD: {
 					return 3;
 				}
-				case MapType.CoD4:
-				case MapType.CoD2: {
+				case MapType.CoD2:
+				case MapType.CoD4: {
 					return 5;
 				}
 				case MapType.Raven:

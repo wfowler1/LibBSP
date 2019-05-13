@@ -67,18 +67,18 @@ namespace LibBSP {
 				switch (type) {
 					case DataType.Byte:
 					case DataType.SByte: {
-						return 1;
+						return sizeof(sbyte);
 					}
 					case DataType.UInt16:
 					case DataType.Int16: {
-						return 2;
+						return sizeof(short);
 					}
 					case DataType.UInt32:
 					case DataType.Int32: {
-						return 4;
+						return sizeof(int);
 					}
 					case DataType.Int64: {
-						return 8;
+						return sizeof(long);
 					}
 					default: {
 						return 0;
@@ -245,6 +245,10 @@ namespace LibBSP {
 					dataType = DataType.UInt32;
 					return 27;
 				}
+				case MapType.CoD4: {
+					dataType = DataType.UInt32;
+					return 29;
+				}
 			}
 			dataType = DataType.Invalid;
 			return -1;
@@ -279,6 +283,10 @@ namespace LibBSP {
 				case MapType.CoD2: {
 					dataType = DataType.UInt16;
 					return 9;
+				}
+				case MapType.CoD4: {
+					dataType = DataType.UInt16;
+					return 11;
 				}
 				case MapType.Raven:
 				case MapType.Quake3: {

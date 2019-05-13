@@ -69,6 +69,9 @@ namespace LibBSP {
 		[Index("markBrushes")] public int firstMarkBrush {
 			get {
 				switch (type) {
+					case MapType.CoD4: {
+						return BitConverter.ToInt32(data, 12);
+					}
 					case MapType.CoD:
 					case MapType.CoD2: {
 						return BitConverter.ToInt32(data, 16);
@@ -112,6 +115,10 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (type) {
+					case MapType.CoD4: {
+						bytes.CopyTo(data, 12);
+						break;
+					}
 					case MapType.CoD:
 					case MapType.CoD2: {
 						bytes.CopyTo(data, 16);
@@ -161,6 +168,9 @@ namespace LibBSP {
 		[Count("markBrushes")] public int numMarkBrushes {
 			get {
 				switch (type) {
+					case MapType.CoD4: {
+						return BitConverter.ToInt32(data, 16);
+					}
 					case MapType.CoD:
 					case MapType.CoD2: {
 						return BitConverter.ToInt32(data, 20);
@@ -204,6 +214,10 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (type) {
+					case MapType.CoD4: {
+						bytes.CopyTo(data, 16);
+						break;
+					}
 					case MapType.CoD:
 					case MapType.CoD2: {
 						bytes.CopyTo(data, 20);
@@ -491,6 +505,10 @@ namespace LibBSP {
 			}
 			int structLength = 0;
 			switch (type) {
+				case MapType.CoD4: {
+					structLength = 24;
+					break;
+				}
 				case MapType.Quake:
 				case MapType.Quake2:
 				case MapType.SiN: {
@@ -511,10 +529,6 @@ namespace LibBSP {
 					structLength = 32;
 					break;
 				}
-				case MapType.Vindictus: {
-					structLength = 56;
-					break;
-				}
 				case MapType.CoD:
 				case MapType.CoD2: {
 					structLength = 36;
@@ -530,7 +544,8 @@ namespace LibBSP {
 					break;
 				}
 				case MapType.Source18:
-				case MapType.Source19: {
+				case MapType.Source19:
+				case MapType.Vindictus: {
 					structLength = 56;
 					break;
 				}
@@ -596,6 +611,9 @@ namespace LibBSP {
 				}
 				case MapType.CoD2: {
 					return 26;
+				}
+				case MapType.CoD4: {
+					return 28;
 				}
 				default: {
 					return -1;

@@ -497,8 +497,8 @@ namespace LibBSP {
 				case MapType.Quake3: {
 					return 2;
 				}
-				case MapType.CoD4:
-				case MapType.CoD2: {
+				case MapType.CoD2:
+				case MapType.CoD4: {
 					return 4;
 				}
 				default: {

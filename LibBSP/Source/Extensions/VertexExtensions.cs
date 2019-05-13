@@ -119,7 +119,8 @@ namespace LibBSP {
 					}
 					break;
 				}
-				case MapType.CoD2: {
+				case MapType.CoD2:
+				case MapType.CoD4: {
 					result.normal = new Vector3d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20));
 					result.color = ColorExtensions.FromArgb(data[27], data[24], data[25], data[26]);
 					result.uv0 = new Vector2d(BitConverter.ToSingle(data, 28), BitConverter.ToSingle(data, 32));
@@ -131,7 +132,6 @@ namespace LibBSP {
 				}
 				case MapType.MOHAA:
 				case MapType.Quake3:
-				case MapType.CoD4:
 				case MapType.FAKK: {
 					result.uv0 = new Vector2d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16));
 					result.uv1 = new Vector2d(BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24));
@@ -147,7 +147,7 @@ namespace LibBSP {
 					result.normal = new Vector3d(BitConverter.ToSingle(data, 52), BitConverter.ToSingle(data, 56), BitConverter.ToSingle(data, 60));
 					result.color = ColorExtensions.FromArgb(data[67], data[64], data[65], data[66]);
 					// Use for two more float fields and two more colors.
-					// There's actually another field that seems to be color but I've only ever seen it be FFFFFFFF.
+					// There's actually another field that seems to be color but I've only ever seen it be 0xFFFFFFFF.
 					result.tangent = new Vector4d(BitConverter.ToSingle(data, 44), BitConverter.ToSingle(data, 48), BitConverter.ToSingle(data, 68), BitConverter.ToSingle(data, 72));
 					goto case MapType.Quake;
 				}
@@ -259,6 +259,7 @@ namespace LibBSP {
 				case MapType.CoD2: {
 					return 8;
 				}
+				case MapType.CoD4:
 				case MapType.Raven:
 				case MapType.Quake3: {
 					return 10;
@@ -324,7 +325,8 @@ namespace LibBSP {
 					}
 					break;
 				}
-				case MapType.CoD2: {
+				case MapType.CoD2:
+				case MapType.CoD4: {
 					structLength = 68;
 					break;
 				}
@@ -391,7 +393,8 @@ namespace LibBSP {
 					}
 					break;
 				}
-				case MapType.CoD2: {
+				case MapType.CoD2:
+				case MapType.CoD4: {
 					v.normal.GetBytes().CopyTo(bytes, 12);
 					v.color.GetBytes().CopyTo(bytes, 24);
 					v.uv0.GetBytes().CopyTo(bytes, 28);
@@ -403,7 +406,6 @@ namespace LibBSP {
 				}
 				case MapType.MOHAA:
 				case MapType.Quake3:
-				case MapType.CoD4:
 				case MapType.FAKK: {
 					v.uv0.GetBytes().CopyTo(bytes, 12);
 					v.uv1.GetBytes().CopyTo(bytes, 20);
