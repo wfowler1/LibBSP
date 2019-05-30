@@ -266,7 +266,7 @@ namespace LibBSP {
 						                       -1, -1, 0);
 					}
 					default: {
-						return null;
+						return new TextureInfo();
 					}
 				}
 			}

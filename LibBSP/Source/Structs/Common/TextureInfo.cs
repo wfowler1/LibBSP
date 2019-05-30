@@ -21,15 +21,15 @@ namespace LibBSP {
 	/// Some BSP formats lack this lump (or the information is contained in a
 	/// different lump) so their cases will be left out.
 	/// </summary>
-	[Serializable] public class TextureInfo {
+	[Serializable] public struct TextureInfo {
 
 		public byte[] data;
 		public MapType type;
 		public int version;
 
 		// No BSP format uses these so they are fields.
-		public Vector2d scale = new Vector2d(1, 1);
-		public double rotation = 0;
+		public Vector2d scale;
+		public double rotation;
 
 		public Vector3d uAxis {
 			get {
@@ -172,24 +172,6 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Creates a new <see cref="TextureInfo"/> object with sensible defaults.
-		/// </summary>
-		public TextureInfo() {
-			data = new byte[40];
-			type = MapType.Quake;
-			version = 0;
-
-			uAxis = new Vector3d(0, 0, 0);
-			vAxis = new Vector3d(0, 0, 0);
-			translation = new Vector2d(0, 0);
-			flags = 0;
-			texture = -1;
-
-			scale = new Vector2d(1, 1);
-			rotation = 0;
-		}
-
-		/// <summary>
 		/// Creates a new <see cref="TextureInfo"/> object from a <c>byte</c> array.
 		/// </summary>
 		/// <param name="data"><c>byte</c> array to parse.</param>
@@ -219,17 +201,17 @@ namespace LibBSP {
 		/// <param name="texture">Index into the texture list for the texture this <see cref="TextureInfo"/> uses.</param>
 		/// <param name="rotation">Rotation of the texutre axes.</param>
 		public TextureInfo(Vector3d u, Vector3d v, Vector2d translation, Vector2d scale, int flags, int texture, double rotation) {
-			data = new byte[40];
-			type = MapType.Quake;
-			version = 0;
+			this.data = new byte[40];
+			this.type = MapType.Quake;
+			this.version = 0;
+			this.scale = scale;
+			this.rotation = rotation;
 
 			uAxis = u;
 			vAxis = v;
 			this.translation = translation;
-			this.scale = scale;
 			this.flags = flags;
 			this.texture = texture;
-			this.rotation = rotation;
 		}
 
 		/// <summary>
