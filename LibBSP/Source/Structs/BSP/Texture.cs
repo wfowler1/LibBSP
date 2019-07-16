@@ -24,17 +24,47 @@ namespace LibBSP {
 	/// For example, Nightfire's texture lump only contains 64-byte null-padded strings, but
 	/// Quake 2's has texture scaling included.
 	/// </remarks>
-	public struct Texture {
+	public struct Texture : ILumpObject {
 
-		public byte[] data;
-		public MapType type;
-		public int version;
+		/// <summary>
+		/// The <see cref="ILump"/> this <see cref="ILumpObject"/> came from.
+		/// </summary>
+		public ILump Parent { get; private set; }
+
+		/// <summary>
+		/// Array of <c>byte</c>s used as the data source for this <see cref="ILumpObject"/>.
+		/// </summary>
+		public byte[] Data { get; private set; }
+
+		/// <summary>
+		/// The <see cref="LibBSP.MapType"/> to use to interpret <see cref="Data"/>.
+		/// </summary>
+		public MapType MapType {
+			get {
+				if (Parent == null || Parent.Bsp == null) {
+					return MapType.Undefined;
+				}
+				return Parent.Bsp.version;
+			}
+		}
+
+		/// <summary>
+		/// The version number of the <see cref="ILump"/> this <see cref="ILumpObject"/> came from.
+		/// </summary>
+		public int LumpVersion {
+			get {
+				if (Parent == null) {
+					return 0;
+				}
+				return Parent.LumpInfo.version;
+			}
+		}
 
 		public string name {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake: {
-						return data.ToNullTerminatedString(0, 16);
+						return Data.ToNullTerminatedString(0, 16);
 					}
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
@@ -46,12 +76,12 @@ namespace LibBSP {
 					case MapType.FAKK:
 					case MapType.MOHAA:
 					case MapType.Nightfire: {
-						return data.ToNullTerminatedString(0, 64);
+						return Data.ToNullTerminatedString(0, 64);
 					}
 					case MapType.Quake2:
 					case MapType.SoF:
 					case MapType.Daikatana: {
-						return data.ToNullTerminatedString(40, 32);
+						return Data.ToNullTerminatedString(40, 32);
 					}
 					case MapType.Source17:
 					case MapType.Source18:
@@ -66,10 +96,10 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						return data.ToRawString();
+						return Data.ToRawString();
 					}
 					case MapType.SiN: {
-						return data.ToNullTerminatedString(36, 64);
+						return Data.ToNullTerminatedString(36, 64);
 					}
 					default: {
 						return null;
@@ -78,12 +108,12 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = Encoding.ASCII.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake: {
 						for (int i = 0; i < 16; ++i) {
-							data[i] = 0;
+							Data[i] = 0;
 						}
-						Array.Copy(bytes, 0, data, 0, Math.Min(bytes.Length, 15));
+						Array.Copy(bytes, 0, Data, 0, Math.Min(bytes.Length, 15));
 						break;
 					}
 					case MapType.STEF2:
@@ -97,18 +127,18 @@ namespace LibBSP {
 					case MapType.MOHAA:
 					case MapType.Nightfire: {
 						for (int i = 0; i < 64; ++i) {
-							data[i] = 0;
+							Data[i] = 0;
 						}
-						Array.Copy(bytes, 0, data, 0, Math.Min(bytes.Length, 63));
+						Array.Copy(bytes, 0, Data, 0, Math.Min(bytes.Length, 63));
 						break;
 					}
 					case MapType.Quake2:
 					case MapType.SoF:
 					case MapType.Daikatana: {
 						for (int i = 0; i < 32; ++i) {
-							data[i + 40] = 0;
+							Data[i + 40] = 0;
 						}
-						Array.Copy(bytes, 0, data, 40, Math.Min(bytes.Length, 31));
+						Array.Copy(bytes, 0, Data, 40, Math.Min(bytes.Length, 31));
 						break;
 					}
 					case MapType.Source17:
@@ -124,14 +154,14 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						data = bytes;
+						Data = bytes;
 						break;
 					}
 					case MapType.SiN: {
 						for (int i = 0; i < 64; ++i) {
-							data[i + 36] = 0;
+							Data[i + 36] = 0;
 						}
-						Array.Copy(bytes, 0, data, 36, Math.Min(bytes.Length, 63));
+						Array.Copy(bytes, 0, Data, 36, Math.Min(bytes.Length, 63));
 						break;
 					}
 				}
@@ -140,9 +170,9 @@ namespace LibBSP {
 
 		public string mask {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.MOHAA: {
-						return data.ToNullTerminatedString(76, 64);
+						return Data.ToNullTerminatedString(76, 64);
 					}
 					default: {
 						return null;
@@ -150,13 +180,13 @@ namespace LibBSP {
 				}
 			}
 			set {
-				switch (type) {
+				switch (MapType) {
 					case MapType.MOHAA: {
 						for (int i = 0; i < 64; ++i) {
-							data[i + 76] = 0;
+							Data[i + 76] = 0;
 						}
 						byte[] strBytes = Encoding.ASCII.GetBytes(value);
-						Array.Copy(strBytes, 0, data, 76, Math.Min(strBytes.Length, 63));
+						Array.Copy(strBytes, 0, Data, 76, Math.Min(strBytes.Length, 63));
 						break;
 					}
 				}
@@ -165,12 +195,12 @@ namespace LibBSP {
 
 		public int flags {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake2:
 					case MapType.SoF:
 					case MapType.Daikatana:
 					case MapType.SiN: {
-						return BitConverter.ToInt32(data, 32);
+						return BitConverter.ToInt32(Data, 32);
 					}
 					case MapType.MOHAA:
 					case MapType.STEF2:
@@ -181,7 +211,7 @@ namespace LibBSP {
 					case MapType.CoD2:
 					case MapType.CoD4:
 					case MapType.FAKK: {
-						return BitConverter.ToInt32(data, 64);
+						return BitConverter.ToInt32(Data, 64);
 					}
 					default: {
 						return -1;
@@ -190,12 +220,12 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake2:
 					case MapType.SoF:
 					case MapType.Daikatana:
 					case MapType.SiN: {
-						bytes.CopyTo(data, 32);
+						bytes.CopyTo(Data, 32);
 						break;
 					}
 					case MapType.MOHAA:
@@ -207,7 +237,7 @@ namespace LibBSP {
 					case MapType.CoD2:
 					case MapType.CoD4:
 					case MapType.FAKK: {
-						bytes.CopyTo(data, 64);
+						bytes.CopyTo(Data, 64);
 						break;
 					}
 				}
@@ -216,7 +246,7 @@ namespace LibBSP {
 		
 		public int contents {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.Raven:
@@ -226,7 +256,7 @@ namespace LibBSP {
 					case MapType.CoD4:
 					case MapType.FAKK:
 					case MapType.MOHAA: {
-						return BitConverter.ToInt32(data, 68);
+						return BitConverter.ToInt32(Data, 68);
 					}
 					default: {
 						return -1;
@@ -235,7 +265,7 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.Raven:
@@ -245,7 +275,7 @@ namespace LibBSP {
 					case MapType.CoD4:
 					case MapType.FAKK:
 					case MapType.MOHAA: {
-						bytes.CopyTo(data, 68);
+						bytes.CopyTo(Data, 68);
 						break;
 					}
 				}
@@ -254,14 +284,14 @@ namespace LibBSP {
 		
 		public TextureInfo texAxes {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake2:
 					case MapType.SoF:
 					case MapType.Daikatana:
 					case MapType.SiN: {
-						return new TextureInfo(new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8)),
-						                       new Vector3d(BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24)),
-						                       new Vector2d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 28)),
+						return new TextureInfo(new Vector3d(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8)),
+						                       new Vector3d(BitConverter.ToSingle(Data, 16), BitConverter.ToSingle(Data, 20), BitConverter.ToSingle(Data, 24)),
+						                       new Vector2d(BitConverter.ToSingle(Data, 12), BitConverter.ToSingle(Data, 28)),
 						                       new Vector2d(1, 1),
 						                       -1, -1, 0);
 					}
@@ -271,19 +301,19 @@ namespace LibBSP {
 				}
 			}
 			set {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake2:
 					case MapType.SoF:
 					case MapType.Daikatana:
 					case MapType.SiN: {
 						byte[] bytes = value.uAxis.GetBytes();
-						bytes.CopyTo(data, 0);
+						bytes.CopyTo(Data, 0);
 						bytes = value.vAxis.GetBytes();
-						bytes.CopyTo(data, 16);
+						bytes.CopyTo(Data, 16);
 						bytes = BitConverter.GetBytes(value.translation.x);
-						bytes.CopyTo(data, 12);
+						bytes.CopyTo(Data, 12);
 						bytes = BitConverter.GetBytes(value.translation.y);
-						bytes.CopyTo(data, 28);
+						bytes.CopyTo(Data, 28);
 						break;
 					}
 				}
@@ -294,27 +324,41 @@ namespace LibBSP {
 		/// Creates a new <see cref="Texture"/> object from a <c>byte</c> array.
 		/// </summary>
 		/// <param name="data"><c>byte</c> array to parse.</param>
-		/// <param name="type">The map type.</param>
-		/// <param name="version">The version of this lump.</param>
+		/// <param name="parent">The <see cref="ILump"/> this <see cref="Texture"/> came from.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
-		public Texture(byte[] data, MapType type, int version = 0) : this() {
+		public Texture(byte[] data, ILump parent) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			this.data = data;
-			this.type = type;
-			this.version = version;
+
+			Data = data;
+			Parent = parent;
 		}
 
 		/// <summary>
 		/// Factory method to parse a <c>byte</c> array into a <see cref="Textures"/> object.
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
-		/// <param name="type">The map type.</param>
-		/// <param name="version">The version of this lump.</param>
+		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
+		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
 		/// <returns>A <see cref="Textures"/> object.</returns>
-		public static Textures LumpFactory(byte[] data, MapType type, int version = 0) {
-			return new Textures(data, type, version);
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> parameter was <c>null</c>.</exception>
+		public static Textures LumpFactory(byte[] data, BSP bsp, LumpInfo lumpInfo) {
+			if (data == null) {
+				throw new ArgumentNullException();
+			}
+
+			return new Textures(data, GetStructLength(bsp.version, lumpInfo.version), bsp, lumpInfo);
+		}
+
+		/// <summary>
+		/// Depending on format, this is a variable length structure. Return -1. The <see cref="Textures"/> class will handle object creation.
+		/// </summary>
+		/// <param name="mapType">The <see cref="LibBSP.MapType"/> of the BSP.</param>
+		/// <param name="lumpVersion">The version number for the lump.</param>
+		/// <returns>-1</returns>
+		public static int GetStructLength(MapType type, int version) {
+			return -1;
 		}
 
 		/// <summary>

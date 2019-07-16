@@ -20,11 +20,52 @@ namespace LibBSP {
 	/// <summary>
 	/// Class containing all data for a single <see cref="Entity"/>, including attributes, Source Entity I/O connections and solids.
 	/// </summary>
-	[Serializable] public class Entity : Dictionary<string, string>, IComparable, IComparable<Entity>, ISerializable {
+	[Serializable] public class Entity : Dictionary<string, string>, IComparable, IComparable<Entity>, ISerializable, ILumpObject {
 
 		private static IFormatProvider _format = CultureInfo.CreateSpecificCulture("en-US");
-
 		public const char ConnectionMemberSeparater = (char)0x1B;
+
+		/// <summary>
+		/// The <see cref="ILump"/> this <see cref="ILumpObject"/> came from.
+		/// </summary>
+		public ILump Parent { get; private set; }
+
+		/// <summary>
+		/// Array of <c>byte</c>s representing this <see cref="Entity"/>. If this is set, it will parse the bytes as a string.
+		/// If accessed, will return a <c>byte</c> array of <see cref="ToString"/>.
+		/// </summary>
+		public byte[] Data {
+			get {
+				return Encoding.ASCII.GetBytes(ToString());
+			}
+			set {
+				ParseString(Encoding.ASCII.GetString(value));
+			}
+		}
+
+		/// <summary>
+		/// The <see cref="LibBSP.MapType"/> to use to interpret <see cref="Data"/>.
+		/// </summary>
+		public MapType MapType {
+			get {
+				if (Parent == null || Parent.Bsp == null) {
+					return MapType.Undefined;
+				}
+				return Parent.Bsp.version;
+			}
+		}
+
+		/// <summary>
+		/// The version number of the <see cref="ILump"/> this <see cref="ILumpObject"/> came from.
+		/// </summary>
+		public int LumpVersion {
+			get {
+				if (Parent == null) {
+					return 0;
+				}
+				return Parent.LumpInfo.version;
+			}
+		}
 
 		public List<EntityConnection> connections = new List<EntityConnection>();
 		public List<MAPBrush> brushes = new List<MAPBrush>();
@@ -164,41 +205,67 @@ namespace LibBSP {
 		/// <param name="data">Array to parse.</param>
 		/// <param name="type">The map type.</param>
 		/// <param name="version">The version of this lump.</param>
-		public Entity(byte[] data, MapType type, int version = 0) : this(Encoding.ASCII.GetString(data).Split('\n')) { }
+		public Entity(byte[] data, ILump parent = null) {
+			Parent = parent;
+			Data = data;
+		}
 
 		/// <summary>
 		/// Initializes a new instance of an <see cref="Entity"/> with the given classname.
 		/// </summary>
 		/// <param name="className">Classname of the new <see cref="Entity"/>.</param>
-		public Entity(string className) : base(StringComparer.InvariantCultureIgnoreCase) {
+		public Entity(string className, ILump parent = null) : this(parent) {
 			Add("classname", className);
 		}
 
 		/// <summary>
 		/// Initializes a new instance of an <see cref="Entity"/> object with no initial properties.
 		/// </summary>
-		public Entity() : base(StringComparer.InvariantCultureIgnoreCase) { }
+		public Entity(ILump parent = null) : base(StringComparer.InvariantCultureIgnoreCase) {
+			Parent = parent;
+		}
 
 		/// <summary>
 		/// Initializes a new instance of an <see cref="Entity"/> object, copying the attributes, connections and brushes of the passed <see cref="Entity"/>.
 		/// </summary>
 		/// <param name="copy">The <see cref="Entity"/> to copy.</param>
-		public Entity(Entity copy) : base(copy, StringComparer.InvariantCultureIgnoreCase) {
+		public Entity(Entity copy, ILump parent = null) : base(copy, StringComparer.InvariantCultureIgnoreCase) {
 			connections = new List<EntityConnection>(copy.connections);
 			brushes = new List<MAPBrush>(copy.brushes);
+			Parent = parent;
 		}
 
 		/// <summary>
-		/// Initializes a new instance of an <see cref="Entity"/>, parsing the given <c>string</c> array into an <see cref="Entity"/> structure.
+		/// Initializes a new instance of the <see cref="Entity"/> class with serialized data.
 		/// </summary>
-		/// <param name="lines">Array of <c>string</c>s representing attributes, patches, brushes, displacements etc. to parse.</param>
-		public Entity(string[] lines) : base(StringComparer.InvariantCultureIgnoreCase) {
-			int braceCount = 0;
+		/// <param name="info">A <c>SerializationInfo</c> object containing the information required to serialize the <see cref="Entity"/>.</param>
+		/// <param name="context">A <c>StreamingContext</c> structure containing the source and destination of the serialized stream associated with the <see cref="Entity"/>.</param>
+		protected Entity(SerializationInfo info, StreamingContext context) : base(info, context) {
+			connections = (List<EntityConnection>)info.GetValue("connections", typeof(List<EntityConnection>));
+			brushes = (List<MAPBrush>)info.GetValue("brushes", typeof(List<MAPBrush>));
+			Parent = (ILump)info.GetValue("Parent", typeof(ILump));
+		}
 
+		/// <summary>
+		/// Parses the <c>string</c> <paramref name="st"/> into this <see cref="Entity"/> object.
+		/// All data in this <see cref="Entity"/> will be removed and replaced with the newly parsed data.
+		/// </summary>
+		/// <remarks>
+		/// This was necessary since the <see cref="Entity"/>(<c>string</c>) constructor was already used in a different way.
+		/// </remarks>
+		/// <param name="st">The string to parse.</param>
+		public void ParseString(string st) {
+			Clear();
+			brushes = new List<MAPBrush>();
+			connections = new List<EntityConnection>();
+
+			string[] lines = st.Split('\n');
+
+			int braceCount = 0;
 			bool inConnections = false;
 			bool inBrush = false;
 
-			List<string> child = new List<string>();
+			List<string> brushLines = new List<string>();
 
 			foreach (string line in lines) {
 				string current = line.Trim(' ', '\t', '\r');
@@ -206,7 +273,7 @@ namespace LibBSP {
 				// Cull everything after a "//"
 				bool inQuotes = false;
 				for (int i = 0; i < current.Length; ++i) {
-					
+
 					if (current[i] == '\"') {
 						if (i == 0) {
 							inQuotes = !inQuotes;
@@ -229,8 +296,7 @@ namespace LibBSP {
 				if (string.IsNullOrEmpty(current)) {
 					continue;
 				}
-
-				// Perhaps I should not assume these will always be the first thing on the line
+				
 				if (current[0] == '{') {
 					// If we're only one brace deep, and we have no prior information, assume a brush
 					if (braceCount == 1 && !inBrush && !inConnections) {
@@ -243,14 +309,14 @@ namespace LibBSP {
 					if (braceCount == 1) {
 						// If we determined we were inside a brush substructure
 						if (inBrush) {
-							child.Add(current);
-							brushes.Add(new MAPBrush(child.ToArray()));
-							child = new List<string>();
+							brushLines.Add(current);
+							brushes.Add(new MAPBrush(brushLines));
+							brushLines = new List<string>();
 						}
 						inBrush = false;
 						inConnections = false;
 					} else {
-						child.Add(current);
+						brushLines.Add(current);
 					}
 					continue;
 				} else if (current.Length >= 5 && current.Substring(0, 5) == "solid") {
@@ -262,35 +328,12 @@ namespace LibBSP {
 				}
 
 				if (inBrush) {
-					child.Add(current);
+					brushLines.Add(current);
 					continue;
 				}
 
 				Add(current);
 			}
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Entity"/> class with serialized data.
-		/// </summary>
-		/// <param name="info">A <c>SerializationInfo</c> object containing the information required to serialize the <see cref="Entity"/>.</param>
-		/// <param name="context">A <c>StreamingContext</c> structure containing the source and destination of the serialized stream associated with the <see cref="Entity"/>.</param>
-		protected Entity(SerializationInfo info, StreamingContext context) : base(info, context) {
-			connections = (List<EntityConnection>)info.GetValue("connections", typeof(List<EntityConnection>));
-			brushes = (List<MAPBrush>)info.GetValue("brushes", typeof(List<MAPBrush>));
-		}
-
-		/// <summary>
-		/// Factory method to create an <see cref="Entity"/> from a <c>string</c> "<paramref name="st"/>" where
-		/// "<paramref name="st"/>" contains all lines for the entity, including attributes, brushes, etc.
-		/// </summary>
-		/// <remarks>
-		/// This was necessary since the <see cref="Entity(System.String)"/> constructor was already used in a different way.
-		/// </remarks>
-		/// <param name="st">The data to parse.</param>
-		/// <returns>The resulting <see cref="Entity"/> object.</returns>
-		public static Entity FromString(string st) {
-			return new Entity(st.Split('\n'));
 		}
 
 		/// <summary>
@@ -380,7 +423,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets a <c>string</c> representation of this <see cref="Entity"/>.
 		/// </summary>
-		/// <returns><c>string</c> representation of this <see cref="Entity"/>.</returns>
+		/// <returns>A <c>string</c> representation of this <see cref="Entity"/>.</returns>
 		public override string ToString() {
 			StringBuilder output = new StringBuilder();
 			output.Append("{\n");
@@ -549,8 +592,12 @@ namespace LibBSP {
 		/// <param name="type">The map type.</param>
 		/// <param name="version">The version of this lump.</param>
 		/// <returns>An <see cref="Entities"/> object, which is a <c>List</c> of <see cref="Entity"/>s.</returns>
-		public static Entities LumpFactory(byte[] data, MapType type, int version = 0) {
-			return new Entities(data, type);
+		public static Entities LumpFactory(byte[] data, BSP bsp, LumpInfo lumpInfo) {
+			if (data == null) {
+				throw new ArgumentNullException();
+			}
+
+			return new Entities(data, bsp, lumpInfo);
 		}
 
 		/// <summary>

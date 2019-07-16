@@ -74,6 +74,9 @@
     <Compile Include="Source\Structs\BSP\StaticModel.cs" />
     <Compile Include="Source\Structs\BSP\StaticProp.cs" />
     <Compile Include="Source\Structs\BSP\TextureData.cs" />
+    <Compile Include="Source\Structs\Common\ILumpObject.cs" />
+    <Compile Include="Source\Structs\Common\Lumps\ILump.cs" />
+    <Compile Include="Source\Structs\Common\Lumps\Lump.cs" />
     <Compile Include="Source\Structs\Common\TextureInfo.cs" />
     <Compile Include="Source\Structs\BSP\Texture.cs" />
     <Compile Include="Source\Structs\Common\Entity.cs" />

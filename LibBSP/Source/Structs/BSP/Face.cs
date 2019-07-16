@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace LibBSP {
 #if UNITY
@@ -21,15 +22,45 @@ namespace LibBSP {
 	/// it worthwhile to unify these. All formats use a plane, a texture, vertices,
 	/// and lightmaps in some way.
 	/// </remarks>
-	public struct Face {
+	public struct Face : ILumpObject {
 
-		public byte[] data;
-		public MapType type;
-		public int version;
+		/// <summary>
+		/// The <see cref="ILump"/> this <see cref="ILumpObject"/> came from.
+		/// </summary>
+		public ILump Parent { get; private set; }
+
+		/// <summary>
+		/// Array of <c>byte</c>s used as the data source for this <see cref="ILumpObject"/>.
+		/// </summary>
+		public byte[] Data { get; private set; }
+
+		/// <summary>
+		/// The <see cref="LibBSP.MapType"/> to use to interpret <see cref="Data"/>.
+		/// </summary>
+		public MapType MapType {
+			get {
+				if (Parent == null || Parent.Bsp == null) {
+					return MapType.Undefined;
+				}
+				return Parent.Bsp.version;
+			}
+		}
+
+		/// <summary>
+		/// The version number of the <see cref="ILump"/> this <see cref="ILumpObject"/> came from.
+		/// </summary>
+		public int LumpVersion {
+			get {
+				if (Parent == null) {
+					return 0;
+				}
+				return Parent.LumpInfo.version;
+			}
+		}
 
 		public int plane {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake:
 					case MapType.Quake2:
 					case MapType.Daikatana:
@@ -45,14 +76,14 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.DMoMaM: {
-						return BitConverter.ToUInt16(data, 0);
+						return BitConverter.ToUInt16(Data, 0);
 					}
 					case MapType.Source17: {
-						return BitConverter.ToUInt16(data, 32);
+						return BitConverter.ToUInt16(Data, 32);
 					}
 					case MapType.Nightfire:
 					case MapType.Vindictus: {
-						return BitConverter.ToInt32(data, 0);
+						return BitConverter.ToInt32(Data, 0);
 					}
 					default: {
 						return -1;
@@ -61,7 +92,7 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake:
 					case MapType.Quake2:
 					case MapType.Daikatana:
@@ -77,18 +108,18 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.DMoMaM: {
-						data[0] = bytes[0];
-						data[1] = bytes[1];
+						Data[0] = bytes[0];
+						Data[1] = bytes[1];
 						break;
 					}
 					case MapType.Source17: {
-						data[32] = bytes[0];
-						data[33] = bytes[1];
+						Data[32] = bytes[0];
+						Data[33] = bytes[1];
 						break;
 					}
 					case MapType.Nightfire:
 					case MapType.Vindictus: {
-						bytes.CopyTo(data, 0);
+						bytes.CopyTo(Data, 0);
 						break;
 					}
 				}
@@ -97,13 +128,13 @@ namespace LibBSP {
 		
 		public int side {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake:
 					case MapType.Quake2:
 					case MapType.Daikatana:
 					case MapType.SiN:
 					case MapType.SoF: {
-						return BitConverter.ToUInt16(data, 2);
+						return BitConverter.ToUInt16(Data, 2);
 					}
 					case MapType.Source18:
 					case MapType.Source19:
@@ -115,13 +146,13 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.DMoMaM: {
-						return (int)data[2];
+						return (int)Data[2];
 					}
 					case MapType.Vindictus: {
-						return (int)data[4];
+						return (int)Data[4];
 					}
 					case MapType.Source17: {
-						return (int)data[34];
+						return (int)Data[34];
 					}
 					default: {
 						return -1;
@@ -130,14 +161,14 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake:
 					case MapType.Quake2:
 					case MapType.Daikatana:
 					case MapType.SiN:
 					case MapType.SoF: {
-						data[2] = bytes[0];
-						data[3] = bytes[1];
+						Data[2] = bytes[0];
+						Data[3] = bytes[1];
 						break;
 					}
 					case MapType.Source18:
@@ -150,15 +181,15 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.DMoMaM: {
-						data[2] = bytes[0];
+						Data[2] = bytes[0];
 						break;
 					}
 					case MapType.Vindictus: {
-						data[4] = bytes[0];
+						Data[4] = bytes[0];
 						break;
 					}
 					case MapType.Source17: {
-						data[34] = bytes[0];
+						Data[34] = bytes[0];
 						break;
 					}
 				}
@@ -167,7 +198,7 @@ namespace LibBSP {
 		
 		[Index("edges")] public int firstEdge {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake:
 					case MapType.Quake2:
 					case MapType.Daikatana:
@@ -183,13 +214,13 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.DMoMaM: {
-						return BitConverter.ToInt32(data, 4);
+						return BitConverter.ToInt32(Data, 4);
 					}
 					case MapType.Vindictus: {
-						return BitConverter.ToInt32(data, 8);
+						return BitConverter.ToInt32(Data, 8);
 					}
 					case MapType.Source17: {
-						return BitConverter.ToInt32(data, 36);
+						return BitConverter.ToInt32(Data, 36);
 					}
 					default: {
 						return -1;
@@ -198,7 +229,7 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake:
 					case MapType.Quake2:
 					case MapType.Daikatana:
@@ -214,15 +245,15 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.DMoMaM: {
-						bytes.CopyTo(data, 4);
+						bytes.CopyTo(Data, 4);
 						break;
 					}
 					case MapType.Vindictus: {
-						bytes.CopyTo(data, 8);
+						bytes.CopyTo(Data, 8);
 						break;
 					}
 					case MapType.Source17: {
-						bytes.CopyTo(data, 36);
+						bytes.CopyTo(Data, 36);
 						break;
 					}
 				}
@@ -231,7 +262,7 @@ namespace LibBSP {
 		
 		[Count("edges")] public int numEdges {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake:
 					case MapType.Quake2:
 					case MapType.Daikatana:
@@ -247,13 +278,13 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.DMoMaM: {
-						return BitConverter.ToUInt16(data, 8);
+						return BitConverter.ToUInt16(Data, 8);
 					}
 					case MapType.Vindictus: {
-						return BitConverter.ToInt32(data, 12);
+						return BitConverter.ToInt32(Data, 12);
 					}
 					case MapType.Source17: {
-						return BitConverter.ToUInt16(data, 40);
+						return BitConverter.ToUInt16(Data, 40);
 					}
 					default: {
 						return -1;
@@ -262,7 +293,7 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake:
 					case MapType.Quake2:
 					case MapType.Daikatana:
@@ -278,17 +309,17 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.DMoMaM: {
-						data[8] = bytes[0];
-						data[9] = bytes[1];
+						Data[8] = bytes[0];
+						Data[9] = bytes[1];
 						break;
 					}
 					case MapType.Vindictus: {
-						bytes.CopyTo(data, 12);
+						bytes.CopyTo(Data, 12);
 						break;
 					}
 					case MapType.Source17: {
-						data[40] = bytes[0];
-						data[41] = bytes[1];
+						Data[40] = bytes[0];
+						Data[41] = bytes[1];
 						break;
 					}
 				}
@@ -297,11 +328,11 @@ namespace LibBSP {
 		
 		public int texture {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.CoD:
 					case MapType.CoD2:
 					case MapType.CoD4: {
-						return BitConverter.ToInt16(data, 0);
+						return BitConverter.ToInt16(Data, 0);
 					}
 					case MapType.Quake3:
 					case MapType.Raven:
@@ -309,17 +340,17 @@ namespace LibBSP {
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
 					case MapType.FAKK: {
-						return BitConverter.ToInt32(data, 0);
+						return BitConverter.ToInt32(Data, 0);
 					}
 					case MapType.Quake:
 					case MapType.Quake2:
 					case MapType.Daikatana:
 					case MapType.SiN:
 					case MapType.SoF: {
-						return BitConverter.ToUInt16(data, 10);
+						return BitConverter.ToUInt16(Data, 10);
 					}
 					case MapType.Nightfire: {
-						return BitConverter.ToInt32(data, 24);
+						return BitConverter.ToInt32(Data, 24);
 					}
 					default: {
 						return -1;
@@ -328,12 +359,12 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.CoD:
 					case MapType.CoD2:
 					case MapType.CoD4: {
-						data[0] = bytes[0];
-						data[1] = bytes[1];
+						Data[0] = bytes[0];
+						Data[1] = bytes[1];
 						break;
 					}
 					case MapType.Quake3:
@@ -342,7 +373,7 @@ namespace LibBSP {
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
 					case MapType.FAKK: {
-						bytes.CopyTo(data, 0);
+						bytes.CopyTo(Data, 0);
 						break;
 					}
 					case MapType.Quake:
@@ -350,12 +381,12 @@ namespace LibBSP {
 					case MapType.Daikatana:
 					case MapType.SiN:
 					case MapType.SoF: {
-						data[10] = bytes[0];
-						data[11] = bytes[1];
+						Data[10] = bytes[0];
+						Data[11] = bytes[1];
 						break;
 					}
 					case MapType.Nightfire: {
-						bytes.CopyTo(data, 24);
+						bytes.CopyTo(Data, 24);
 						break;
 					}
 				}
@@ -364,11 +395,11 @@ namespace LibBSP {
 		
 		[Index("vertices")] public int firstVertex {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.CoD:
 					case MapType.CoD2:
 					case MapType.Nightfire: {
-						return BitConverter.ToInt32(data, 4);
+						return BitConverter.ToInt32(Data, 4);
 					}
 					case MapType.Quake3:
 					case MapType.Raven:
@@ -377,7 +408,7 @@ namespace LibBSP {
 					case MapType.MOHAA:
 					case MapType.FAKK:
 					case MapType.CoD4: {
-						return BitConverter.ToInt32(data, 12);
+						return BitConverter.ToInt32(Data, 12);
 					}
 					default: {
 						return -1;
@@ -386,11 +417,11 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.CoD:
 					case MapType.CoD2:
 					case MapType.Nightfire: {
-						bytes.CopyTo(data, 4);
+						bytes.CopyTo(Data, 4);
 						break;
 					}
 					case MapType.Quake3:
@@ -400,7 +431,7 @@ namespace LibBSP {
 					case MapType.MOHAA:
 					case MapType.FAKK:
 					case MapType.CoD4: {
-						bytes.CopyTo(data, 12);
+						bytes.CopyTo(Data, 12);
 						break;
 					}
 				}
@@ -409,13 +440,13 @@ namespace LibBSP {
 		
 		[Count("vertices")] public int numVertices {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.CoD:
 					case MapType.CoD2: {
-						return BitConverter.ToInt16(data, 8);
+						return BitConverter.ToInt16(Data, 8);
 					}
 					case MapType.Nightfire: {
-						return BitConverter.ToInt32(data, 8);
+						return BitConverter.ToInt32(Data, 8);
 					}
 					case MapType.Quake3:
 					case MapType.Raven:
@@ -423,10 +454,10 @@ namespace LibBSP {
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
 					case MapType.FAKK: {
-						return BitConverter.ToInt32(data, 16);
+						return BitConverter.ToInt32(Data, 16);
 					}
 					case MapType.CoD4: {
-						return BitConverter.ToInt16(data, 16);
+						return BitConverter.ToInt16(Data, 16);
 					}
 					default: {
 						return -1;
@@ -435,15 +466,15 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.CoD:
 					case MapType.CoD2: {
-						data[8] = bytes[0];
-						data[9] = bytes[1];
+						Data[8] = bytes[0];
+						Data[9] = bytes[1];
 						break;
 					}
 					case MapType.Nightfire: {
-						bytes.CopyTo(data, 8);
+						bytes.CopyTo(Data, 8);
 						break;
 					}
 					case MapType.Quake3:
@@ -452,12 +483,12 @@ namespace LibBSP {
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
 					case MapType.FAKK: {
-						bytes.CopyTo(data, 16);
+						bytes.CopyTo(Data, 16);
 						break;
 					}
 					case MapType.CoD4: {
-						data[16] = bytes[0];
-						data[17] = bytes[1];
+						Data[16] = bytes[0];
+						Data[17] = bytes[1];
 						break;
 					}
 				}
@@ -466,9 +497,9 @@ namespace LibBSP {
 		
 		public int material {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Nightfire: {
-						return BitConverter.ToInt32(data, 28);
+						return BitConverter.ToInt32(Data, 28);
 					}
 					default: {
 						return -1;
@@ -477,9 +508,9 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Nightfire: {
-						bytes.CopyTo(data, 28);
+						bytes.CopyTo(Data, 28);
 						break;
 					}
 				}
@@ -488,7 +519,7 @@ namespace LibBSP {
 		
 		public int textureInfo {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source18:
 					case MapType.Source19:
 					case MapType.Source20:
@@ -499,16 +530,16 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.DMoMaM: {
-						return BitConverter.ToUInt16(data, 10);
+						return BitConverter.ToUInt16(Data, 10);
 					}
 					case MapType.Vindictus: {
-						return BitConverter.ToInt32(data, 16);
+						return BitConverter.ToInt32(Data, 16);
 					}
 					case MapType.Nightfire: {
-						return BitConverter.ToInt32(data, 32);
+						return BitConverter.ToInt32(Data, 32);
 					}
 					case MapType.Source17: {
-						return BitConverter.ToUInt16(data, 42);
+						return BitConverter.ToUInt16(Data, 42);
 					}
 					default: {
 						return -1;
@@ -517,7 +548,7 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source18:
 					case MapType.Source19:
 					case MapType.Source20:
@@ -528,21 +559,21 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.DMoMaM: {
-						data[10] = bytes[0];
-						data[11] = bytes[1];
+						Data[10] = bytes[0];
+						Data[11] = bytes[1];
 						break;
 					}
 					case MapType.Vindictus: {
-						bytes.CopyTo(data, 16);
+						bytes.CopyTo(Data, 16);
 						break;
 					}
 					case MapType.Nightfire: {
-						bytes.CopyTo(data, 32);
+						bytes.CopyTo(Data, 32);
 						break;
 					}
 					case MapType.Source17: {
-						data[42] = bytes[0];
-						data[43] = bytes[1];
+						Data[42] = bytes[0];
+						Data[43] = bytes[1];
 						break;
 					}
 				}
@@ -551,7 +582,7 @@ namespace LibBSP {
 		
 		public int displacement {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source18:
 					case MapType.Source19:
 					case MapType.Source20:
@@ -562,13 +593,13 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.DMoMaM: {
-						return BitConverter.ToInt16(data, 12);
+						return BitConverter.ToInt16(Data, 12);
 					}
 					case MapType.Vindictus: {
-						return BitConverter.ToInt32(data, 20);
+						return BitConverter.ToInt32(Data, 20);
 					}
 					case MapType.Source17: {
-						return BitConverter.ToInt16(data, 44);
+						return BitConverter.ToInt16(Data, 44);
 					}
 					default: {
 						return -1;
@@ -577,7 +608,7 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source18:
 					case MapType.Source19:
 					case MapType.Source20:
@@ -588,17 +619,17 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.DMoMaM: {
-						data[12] = bytes[0];
-						data[13] = bytes[1];
+						Data[12] = bytes[0];
+						Data[13] = bytes[1];
 						break;
 					}
 					case MapType.Vindictus: {
-						bytes.CopyTo(data, 20);
+						bytes.CopyTo(Data, 20);
 						break;
 					}
 					case MapType.Source17: {
-						data[44] = bytes[0];
-						data[45] = bytes[1];
+						Data[44] = bytes[0];
+						Data[45] = bytes[1];
 						break;
 					}
 				}
@@ -607,7 +638,7 @@ namespace LibBSP {
 		
 		public int original {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source18:
 					case MapType.Source19:
 					case MapType.Source20:
@@ -618,18 +649,18 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.DMoMaM: {
-						return BitConverter.ToInt32(data, 44);
+						return BitConverter.ToInt32(Data, 44);
 					}
 					case MapType.Vindictus: {
-						if (version == 2) {
-							return BitConverter.ToInt32(data, 60);
+						if (LumpVersion == 2) {
+							return BitConverter.ToInt32(Data, 60);
 						}
 						else {
-							return BitConverter.ToInt32(data, 56);
+							return BitConverter.ToInt32(Data, 56);
 						}
 					}
 					case MapType.Source17: {
-						return BitConverter.ToInt32(data, 96);
+						return BitConverter.ToInt32(Data, 96);
 					}
 					default: {
 						return -1;
@@ -638,7 +669,7 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source18:
 					case MapType.Source19:
 					case MapType.Source20:
@@ -649,20 +680,20 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.DMoMaM: {
-						bytes.CopyTo(data, 44);
+						bytes.CopyTo(Data, 44);
 						break;
 					}
 					case MapType.Vindictus: {
-						if (version == 2) {
-							bytes.CopyTo(data, 60);
+						if (LumpVersion == 2) {
+							bytes.CopyTo(Data, 60);
 						}
 						else {
-							bytes.CopyTo(data, 56);
+							bytes.CopyTo(Data, 56);
 						}
 						break;
 					}
 					case MapType.Source17: {
-						bytes.CopyTo(data, 96);
+						bytes.CopyTo(Data, 96);
 						break;
 					}
 				}
@@ -671,17 +702,17 @@ namespace LibBSP {
 		
 		public int flags {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake3:
 					case MapType.Raven:
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
 					case MapType.FAKK: {
-						return BitConverter.ToInt32(data, 8);
+						return BitConverter.ToInt32(Data, 8);
 					}
 					case MapType.Nightfire: {
-						return BitConverter.ToInt32(data, 20);
+						return BitConverter.ToInt32(Data, 20);
 					}
 					default: {
 						return -1;
@@ -690,18 +721,18 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake3:
 					case MapType.Raven:
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
 					case MapType.FAKK: {
-						bytes.CopyTo(data, 8);
+						bytes.CopyTo(Data, 8);
 						break;
 					}
 					case MapType.Nightfire: {
-						bytes.CopyTo(data, 20);
+						bytes.CopyTo(Data, 20);
 						break;
 					}
 				}
@@ -710,11 +741,11 @@ namespace LibBSP {
 		
 		[Index("indices")] public int firstIndex {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.CoD:
 					case MapType.CoD2:
 					case MapType.Nightfire: {
-						return BitConverter.ToInt32(data, 12);
+						return BitConverter.ToInt32(Data, 12);
 					}
 					case MapType.Quake3:
 					case MapType.Raven:
@@ -723,7 +754,7 @@ namespace LibBSP {
 					case MapType.MOHAA:
 					case MapType.FAKK:
 					case MapType.CoD4: {
-						return BitConverter.ToInt32(data, 20);
+						return BitConverter.ToInt32(Data, 20);
 					}
 					default: {
 						return -1;
@@ -732,11 +763,11 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.CoD:
 					case MapType.CoD2:
 					case MapType.Nightfire: {
-						bytes.CopyTo(data, 12);
+						bytes.CopyTo(Data, 12);
 						break;
 					}
 					case MapType.Quake3:
@@ -746,7 +777,7 @@ namespace LibBSP {
 					case MapType.MOHAA:
 					case MapType.FAKK:
 					case MapType.CoD4: {
-						bytes.CopyTo(data, 20);
+						bytes.CopyTo(Data, 20);
 						break;
 					}
 				}
@@ -755,16 +786,16 @@ namespace LibBSP {
 		
 		[Count("indices")] public int numIndices {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.CoD:
 					case MapType.CoD2: {
-						return BitConverter.ToInt16(data, 10);
+						return BitConverter.ToInt16(Data, 10);
 					}
 					case MapType.Nightfire: {
-						return BitConverter.ToInt32(data, 16);
+						return BitConverter.ToInt32(Data, 16);
 					}
 					case MapType.CoD4: {
-						return BitConverter.ToInt16(data, 18);
+						return BitConverter.ToInt16(Data, 18);
 					}
 					case MapType.Quake3:
 					case MapType.Raven:
@@ -772,7 +803,7 @@ namespace LibBSP {
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
 					case MapType.FAKK: {
-						return BitConverter.ToInt32(data, 24);
+						return BitConverter.ToInt32(Data, 24);
 					}
 					default: {
 						return -1;
@@ -781,20 +812,20 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.CoD:
 					case MapType.CoD2: {
-						data[10] = bytes[0];
-						data[11] = bytes[1];
+						Data[10] = bytes[0];
+						Data[11] = bytes[1];
 						return;
 					}
 					case MapType.Nightfire: {
-						bytes.CopyTo(data, 16);
+						bytes.CopyTo(Data, 16);
 						break;
 					}
 					case MapType.CoD4: {
-						data[18] = bytes[0];
-						data[19] = bytes[1];
+						Data[18] = bytes[0];
+						Data[19] = bytes[1];
 						return;
 					}
 					case MapType.Quake3:
@@ -803,7 +834,7 @@ namespace LibBSP {
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
 					case MapType.FAKK: {
-						bytes.CopyTo(data, 24);
+						bytes.CopyTo(Data, 24);
 						break;
 					}
 				}
@@ -812,9 +843,9 @@ namespace LibBSP {
 		
 		public int lightStyles {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Nightfire: {
-						return BitConverter.ToInt32(data, 40);
+						return BitConverter.ToInt32(Data, 40);
 					}
 					default: {
 						return -1;
@@ -823,9 +854,9 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Nightfire: {
-						bytes.CopyTo(data, 40);
+						bytes.CopyTo(Data, 40);
 						break;
 					}
 				}
@@ -834,9 +865,9 @@ namespace LibBSP {
 		
 		public int lightMaps {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Nightfire: {
-						return BitConverter.ToInt32(data, 44);
+						return BitConverter.ToInt32(Data, 44);
 					}
 					default: {
 						return -1;
@@ -845,9 +876,9 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Nightfire: {
-						bytes.CopyTo(data, 44);
+						bytes.CopyTo(Data, 44);
 						break;
 					}
 				}
@@ -856,14 +887,14 @@ namespace LibBSP {
 		
 		public Vector2d patchSize {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake3:
 					case MapType.Raven:
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
 					case MapType.FAKK: {
-						return new Vector2d(BitConverter.ToInt32(data, 96), BitConverter.ToInt32(data, 100));
+						return new Vector2d(BitConverter.ToInt32(Data, 96), BitConverter.ToInt32(Data, 100));
 					}
 					default: {
 						return new Vector2d(float.NaN, float.NaN);
@@ -871,7 +902,7 @@ namespace LibBSP {
 				}
 			}
 			set {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake3:
 					case MapType.Raven:
 					case MapType.STEF2:
@@ -879,9 +910,9 @@ namespace LibBSP {
 					case MapType.MOHAA:
 					case MapType.FAKK: {
 						byte[] bytes = BitConverter.GetBytes((int)value.x);
-						bytes.CopyTo(data, 96);
+						bytes.CopyTo(Data, 96);
 						bytes = BitConverter.GetBytes((int)value.y);
-						bytes.CopyTo(data, 100);
+						bytes.CopyTo(Data, 100);
 						break;
 					}
 				}
@@ -892,63 +923,65 @@ namespace LibBSP {
 		/// Creates a new <see cref="Face"/> object from a <c>byte</c> array.
 		/// </summary>
 		/// <param name="data"><c>byte</c> array to parse.</param>
-		/// <param name="type">The map type.</param>
-		/// <param name="version">The version of this lump.</param>
+		/// <param name="parent">The <see cref="ILump"/> this <see cref="Face"/> came from.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
-		public Face(byte[] data, MapType type, int version = 0) : this() {
+		public Face(byte[] data, ILump parent = null) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			this.data = data;
-			this.type = type;
-			this.version = version;
+
+			Data = data;
+			Parent = parent;
 		}
 
 		/// <summary>
-		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <see cref="Face"/> objects.
+		/// Factory method to parse a <c>byte</c> array into a <see cref="Lump{Face}"/>.
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
-		/// <param name="type">The map type.</param>
-		/// <param name="version">The version of this lump.</param>
-		/// <returns>A <c>List</c> of <see cref="Face"/> objects.</returns>
-		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
-		public static List<Face> LumpFactory(byte[] data, MapType type, int version = 0) {
+		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
+		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
+		/// <returns>A <see cref="Lump{Face}"/>.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> parameter was <c>null</c>.</exception>
+		public static Lump<Face> LumpFactory(byte[] data, BSP bsp, LumpInfo lumpInfo) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			int structLength = 0;
-			switch (type) {
+
+			return new Lump<Face>(data, GetStructLength(bsp.version, lumpInfo.version), bsp, lumpInfo);
+		}
+
+		/// <summary>
+		/// Gets the length of this struct's data for the given <paramref name="mapType"/> and <paramref name="lumpVersion"/>.
+		/// </summary>
+		/// <param name="mapType">The <see cref="LibBSP.MapType"/> of the BSP.</param>
+		/// <param name="lumpVersion">The version number for the lump.</param>
+		/// <returns>The length, in <c>byte</c>s, of this struct.</returns>
+		/// <exception cref="ArgumentException">This struct is not valid or is not implemented for the given <paramref name="mapType"/> and <paramref name="lumpVersion"/>.</exception>
+		public static int GetStructLength(MapType mapType, int lumpVersion = 0) {
+			switch (mapType) {
 				case MapType.CoD:
 				case MapType.CoD2: {
-					structLength = 16;
-					break;
+					return 16;
 				}
 				case MapType.Quake:
 				case MapType.Quake2:
 				case MapType.Daikatana: {
-					structLength = 20;
-					break;
+					return 20;
 				}
 				case MapType.CoD4: {
-					structLength = 24;
-					break;
+					return 24;
 				}
 				case MapType.SiN: {
-					structLength = 36;
-					break;
+					return 36;
 				}
 				case MapType.SoF: {
-					structLength = 40;
-					break;
+					return 40;
 				}
 				case MapType.Nightfire: {
-					structLength = 48;
-					break;
+					return 48;
 				}
 				case MapType.Source17: {
-					structLength = 104;
-					break;
+					return 104;
 				}
 				case MapType.Source18:
 				case MapType.Source19:
@@ -960,47 +993,33 @@ namespace LibBSP {
 				case MapType.L4D2:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.DMoMaM: {
-					structLength = 56;
-					break;
+					return 56;
 				}
 				case MapType.Vindictus: {
-					if (version == 2) {
-						structLength = 76;
+					if (lumpVersion == 2) {
+						return 76;
 					} else {
-						structLength = 72;
+						return 72;
 					}
-					break;
 				}
 				case MapType.Quake3: {
-					structLength = 104;
-					break;
+					return 104;
 				}
 				case MapType.FAKK:
 				case MapType.MOHAA: {
-					structLength = 108;
-					break;
+					return 108;
 				}
 				case MapType.STEF2:
 				case MapType.STEF2Demo: {
-					structLength = 132;
-					break;
+					return 132;
 				}
 				case MapType.Raven: {
-					structLength = 148;
-					break;
+					return 148;
 				}
 				default: {
-					throw new ArgumentException("Map type " + type + " isn't supported by the Face lump factory.");
+					throw new ArgumentException("Lump object " + MethodBase.GetCurrentMethod().DeclaringType.Name + " does not exist in map type " + mapType + " or has not been implemented.");
 				}
 			}
-			int numObjects = data.Length / structLength;
-			List<Face> lump = new List<Face>(numObjects);
-			for (int i = 0; i < numObjects; ++i) {
-				byte[] bytes = new byte[structLength];
-				Array.Copy(data, (i * structLength), bytes, 0, structLength);
-				lump.Add(new Face(bytes, type, version));
-			}
-			return lump;
 		}
 
 		/// <summary>

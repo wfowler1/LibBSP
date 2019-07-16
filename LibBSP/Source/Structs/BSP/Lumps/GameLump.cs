@@ -17,24 +17,33 @@ namespace LibBSP {
 	/// Class containing the identification and information for the various Game Lumps in Source
 	/// engine BSPs.
 	/// </summary>
-	public class GameLump : Dictionary<GameLumpType, LumpInfo> {
+	public class GameLump : Dictionary<GameLumpType, LumpInfo>, ILump {
 
 		/// <summary>
-		/// Creates a new <see cref="GameLump"/> object by parsing a <c>byte</c> array into a <c>Dictionary</c> of <see cref="LumpInfo"/> objects.
-		/// These objects contain offsets, lengths and versions of the GameLump lumps.
+		/// The <see cref="BSP"/> this <see cref="ILump"/> came from.
 		/// </summary>
-		/// <param name="data">The data to parse.</param>
-		/// <param name="type">The map type.</param>
-		/// <param name="version">The version of this lump.</param>
+		public BSP Bsp { get; protected set; }
+
+		/// <summary>
+		/// The <see cref="LumpInfo"/> associated with this <see cref="ILump"/>.
+		/// </summary>
+		public LumpInfo LumpInfo { get; protected set; }
+
+		/// <summary>
+		/// Parses the passed <c>byte</c> array into a <see cref="GameLump"/> object.
+		/// </summary>
+		/// <param name="data">Array of <c>byte</c>s to parse.</param>
+		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
+		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
 		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
-		public GameLump(byte[] data, MapType type, int version = 0) {
+		public GameLump(byte[] data, BSP bsp, LumpInfo lumpInfo = default(LumpInfo)) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
 
 			int structLength = 0;
-			switch (type) {
+			switch (bsp.version) {
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Source17:
 				case MapType.Source18:
@@ -55,13 +64,13 @@ namespace LibBSP {
 					break;
 				}
 				default: {
-					throw new ArgumentException("Map type " + type + " doesn't use a Game lump or the lump is unknown.");
+					throw new ArgumentException("Game lump does not exist in map type " + bsp.version + " or has not been implemented.");
 				}
 			}
 
 			int numGameLumps = BitConverter.ToInt32(data, 0);
 			if (numGameLumps > 0) {
-				int lumpDictionaryOffset = (type == MapType.DMoMaM) ? 8 : 4;
+				int lumpDictionaryOffset = (bsp.version == MapType.DMoMaM) ? 8 : 4;
 				int lowestLumpOffset = int.MaxValue;
 
 				for (int i = 0; i < numGameLumps; ++i) {
@@ -70,7 +79,7 @@ namespace LibBSP {
 					int lumpVersion;
 					int lumpOffset;
 					int lumpLength;
-					if (type == MapType.Vindictus) {
+					if (bsp.version == MapType.Vindictus) {
 						lumpFlags = BitConverter.ToInt32(data, (i * structLength) + lumpDictionaryOffset + 4);
 						lumpVersion = BitConverter.ToInt32(data, (i * structLength) + lumpDictionaryOffset + 8);
 						lumpOffset = BitConverter.ToInt32(data, (i * structLength) + lumpDictionaryOffset + 12);
@@ -98,15 +107,19 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Passes a <c>byte</c> array into the constructor for <see cref="GameLump"/>.
+		/// Factory method to parse a <c>byte</c> array into a <see cref="GameLump"/> object.
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
-		/// <param name="type">The map type.</param>
-		/// <param name="version">The version of this lump.</param>
-		/// <returns>A new <see cref="GameLump"/> object.</returns>
-		/// <remarks>This is only here for consistency with the other lump structures.</remarks>
-		public static GameLump LumpFactory(byte[] data, MapType type, int version = 0) {
-			return new GameLump(data, type, version);
+		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
+		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
+		/// <returns>A <see cref="GameLump"/> object.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> parameter was <c>null</c>.</exception>
+		public static GameLump LumpFactory(byte[] data, BSP bsp, LumpInfo lumpInfo) {
+			if (data == null) {
+				throw new ArgumentNullException();
+			}
+
+			return new GameLump(data, bsp, lumpInfo);
 		}
 
 		/// <summary>

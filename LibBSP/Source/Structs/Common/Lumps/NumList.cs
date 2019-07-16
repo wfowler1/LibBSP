@@ -7,7 +7,17 @@ namespace LibBSP {
 	/// <summary>
 	/// List class for numbers. Can handle any integer data type except <c>ulong</c>.
 	/// </summary>
-	public class NumList : IList<long>, ICollection<long>, IEnumerable<long>, IList, ICollection, IEnumerable {
+	public class NumList : IList<long>, ICollection<long>, IEnumerable<long>, IList, ICollection, IEnumerable, ILump {
+
+		/// <summary>
+		/// The <see cref="BSP"/> this <see cref="ILump"/> came from.
+		/// </summary>
+		public BSP Bsp { get; protected set; }
+
+		/// <summary>
+		/// The <see cref="LumpInfo"/> associated with this <see cref="ILump"/>.
+		/// </summary>
+		public LumpInfo LumpInfo { get; protected set; }
 
 		/// <summary>
 		/// Enum of the types that may be used in this class.
@@ -32,10 +42,12 @@ namespace LibBSP {
 		/// <param name="data"><c>byte</c> array to parse.</param>
 		/// <param name="type">The type of number to store.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
-		public NumList(byte[] data, DataType type) {
+		public NumList(byte[] data, DataType type, BSP bsp = null, LumpInfo lumpInfo = default(LumpInfo)) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
+			Bsp = bsp;
+			LumpInfo = lumpInfo;
 			this.data = data;
 			this.type = type;
 		}
@@ -55,8 +67,8 @@ namespace LibBSP {
 		/// <param name="data"><c>byte</c> array to parse.</param>
 		/// <param name="type">The type of number to store.</param>
 		/// <returns>The resulting <see cref="NumList"/>.</returns>
-		public static NumList LumpFactory(byte[] data, DataType type) {
-			return new NumList(data, type);
+		public static NumList LumpFactory(byte[] data, DataType type, BSP bsp = null, LumpInfo lumpInfo = default(LumpInfo)) {
+			return new NumList(data, type, bsp, lumpInfo);
 		}
 
 		/// <summary>

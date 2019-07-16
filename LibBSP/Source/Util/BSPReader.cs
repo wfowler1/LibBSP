@@ -116,10 +116,10 @@ namespace LibBSP {
 						}
 						binaryReader.Close();
 					}
-					return new LumpInfo();
+					return default(LumpInfo);
 				}
 				default: {
-					return null;
+					return default(LumpInfo);
 				}
 			}
 		}
@@ -132,7 +132,7 @@ namespace LibBSP {
 		/// <returns>A <see cref="LumpInfo"/> object containing information about the lump.</returns>
 		private LumpInfo GetLumpInfoAtOffset(int offset, MapType version) {
 			if (bspFile.Length < offset + 16) {
-				return new LumpInfo();
+				return default(LumpInfo);
 			}
 			byte[] input;
 			using (FileStream stream = new FileStream(bspFile.FullName, FileMode.Open, FileAccess.Read)) {

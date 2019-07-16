@@ -1,31 +1,62 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace LibBSP {
 
 	/// <summary>
 	/// Contains all data needed for a node in a BSP tree.
 	/// </summary>
-	public struct Node {
+	public struct Node : ILumpObject {
 
-		public byte[] data;
-		public MapType type;
-		public int version;
+		/// <summary>
+		/// The <see cref="ILump"/> this <see cref="ILumpObject"/> came from.
+		/// </summary>
+		public ILump Parent { get; private set; }
+
+		/// <summary>
+		/// Array of <c>byte</c>s used as the data source for this <see cref="ILumpObject"/>.
+		/// </summary>
+		public byte[] Data { get; private set; }
+
+		/// <summary>
+		/// The <see cref="LibBSP.MapType"/> to use to interpret <see cref="Data"/>.
+		/// </summary>
+		public MapType MapType {
+			get {
+				if (Parent == null || Parent.Bsp == null) {
+					return MapType.Undefined;
+				}
+				return Parent.Bsp.version;
+			}
+		}
+
+		/// <summary>
+		/// The version number of the <see cref="ILump"/> this <see cref="ILumpObject"/> came from.
+		/// </summary>
+		public int LumpVersion {
+			get {
+				if (Parent == null) {
+					return 0;
+				}
+				return Parent.LumpInfo.version;
+			}
+		}
 
 		public int plane {
 			get {
-				return BitConverter.ToInt32(data, 0);
+				return BitConverter.ToInt32(Data, 0);
 			}
 			set {
-				BitConverter.GetBytes(value).CopyTo(data, 0);
+				BitConverter.GetBytes(value).CopyTo(Data, 0);
 			}
 		}
 
 		public int child1 {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake: {
-						return BitConverter.ToInt16(data, 4);
+						return BitConverter.ToInt16(Data, 4);
 					}
 					case MapType.SiN:
 					case MapType.SoF:
@@ -52,7 +83,7 @@ namespace LibBSP {
 					case MapType.FAKK:
 					case MapType.CoD:
 					case MapType.CoD2: {
-						return BitConverter.ToInt32(data, 4);
+						return BitConverter.ToInt32(Data, 4);
 					}
 					default: {
 						return 0;
@@ -61,10 +92,10 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake: {
-						data[4] = bytes[0];
-						data[5] = bytes[1];
+						Data[4] = bytes[0];
+						Data[5] = bytes[1];
 						break;
 					}
 					case MapType.SiN:
@@ -92,7 +123,7 @@ namespace LibBSP {
 					case MapType.FAKK:
 					case MapType.CoD:
 					case MapType.CoD2: {
-						bytes.CopyTo(data, 4);
+						bytes.CopyTo(Data, 4);
 						break;
 					}
 				}
@@ -101,9 +132,9 @@ namespace LibBSP {
 
 		public int child2 {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake: {
-						return BitConverter.ToInt16(data, 6);
+						return BitConverter.ToInt16(Data, 6);
 					}
 					case MapType.SiN:
 					case MapType.SoF:
@@ -130,7 +161,7 @@ namespace LibBSP {
 					case MapType.FAKK:
 					case MapType.CoD:
 					case MapType.CoD2: {
-						return BitConverter.ToInt32(data, 8);
+						return BitConverter.ToInt32(Data, 8);
 					}
 					default: {
 						return 0;
@@ -139,10 +170,10 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Quake: {
-						data[6] = bytes[0];
-						data[7] = bytes[1];
+						Data[6] = bytes[0];
+						Data[7] = bytes[1];
 						break;
 					}
 					case MapType.SiN:
@@ -170,7 +201,7 @@ namespace LibBSP {
 					case MapType.FAKK:
 					case MapType.CoD:
 					case MapType.CoD2: {
-						bytes.CopyTo(data, 8);
+						bytes.CopyTo(Data, 8);
 						break;
 					}
 				}
@@ -181,43 +212,50 @@ namespace LibBSP {
 		/// Creates a new <see cref="Node"/> object from a <c>byte</c> array.
 		/// </summary>
 		/// <param name="data"><c>byte</c> array to parse.</param>
-		/// <param name="type">The map type.</param>
-		/// <param name="version">The version of this lump.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
-		public Node(byte[] data, MapType type, int version = 0) : this() {
+		/// <param name="parent">The <see cref="ILump"/> this <see cref="Node"/> came from.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
+		public Node(byte[] data, ILump parent = null) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			this.data = data;
-			this.type = type;
-			this.version = version;
+
+			Data = data;
+			Parent = parent;
 		}
 
 		/// <summary>
-		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <see cref="Node"/> objects.
+		/// Factory method to parse a <c>byte</c> array into a <see cref="Lump{Node}"/>.
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
-		/// <param name="type">The map type.</param>
-		/// <param name="version">The version of this lump.</param>
-		/// <returns>A <c>List</c> of <see cref="Node"/> objects.</returns>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
-		public static List<Node> LumpFactory(byte[] data, MapType type, int version = 0) {
+		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
+		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
+		/// <returns>A <see cref="Lump{Node}"/>.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> parameter was <c>null</c>.</exception>
+		public static Lump<Node> LumpFactory(byte[] data, BSP bsp, LumpInfo lumpInfo) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			int structLength = 0;
-			switch (type) {
+
+			return new Lump<Node>(data, GetStructLength(bsp.version, lumpInfo.version), bsp, lumpInfo);
+		}
+
+		/// <summary>
+		/// Gets the length of this struct's data for the given <paramref name="mapType"/> and <paramref name="lumpVersion"/>.
+		/// </summary>
+		/// <param name="mapType">The <see cref="LibBSP.MapType"/> of the BSP.</param>
+		/// <param name="lumpVersion">The version number for the lump.</param>
+		/// <returns>The length, in <c>byte</c>s, of this struct.</returns>
+		/// <exception cref="ArgumentException">This struct is not valid or is not implemented for the given <paramref name="mapType"/> and <paramref name="lumpVersion"/>.</exception>
+		public static int GetStructLength(MapType mapType, int lumpVersion = 0) {
+			switch (mapType) {
 				case MapType.Quake: {
-					structLength = 24;
-					break;
+					return 24;
 				}
 				case MapType.Quake2:
 				case MapType.SiN:
 				case MapType.SoF:
 				case MapType.Daikatana: {
-					structLength = 28;
-					break;
+					return 28;
 				}
 				case MapType.Source17:
 				case MapType.Source18:
@@ -230,12 +268,10 @@ namespace LibBSP {
 				case MapType.L4D2:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.DMoMaM: {
-					structLength = 32;
-					break;
+					return 32;
 				}
 				case MapType.Vindictus: {
-					structLength = 48;
-					break;
+					return 48;
 				}
 				case MapType.Quake3:
 				case MapType.FAKK:
@@ -246,21 +282,12 @@ namespace LibBSP {
 				case MapType.MOHAA:
 				case MapType.Raven:
 				case MapType.Nightfire: {
-					structLength = 36;
-					break;
+					return 36;
 				}
 				default: {
-					throw new ArgumentException("Map type " + type + " isn't supported by the Node lump factory.");
+					throw new ArgumentException("Lump object " + MethodBase.GetCurrentMethod().DeclaringType.Name + " does not exist in map type " + mapType + " or has not been implemented.");
 				}
 			}
-			int numObjects = data.Length / structLength;
-			List<Node> lump = new List<Node>(numObjects);
-			for (int i = 0; i < numObjects; ++i) {
-				byte[] bytes = new byte[structLength];
-				Array.Copy(data, (i * structLength), bytes, 0, structLength);
-				lump.Add(new Node(bytes, type, version));
-			}
-			return lump;
 		}
 
 		/// <summary>

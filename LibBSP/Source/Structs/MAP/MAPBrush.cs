@@ -26,13 +26,15 @@ namespace LibBSP {
 		/// Creates a new <see cref="MAPBrush"/> object using the supplied <c>string</c> array as data.
 		/// </summary>
 		/// <param name="lines">Data to parse.</param>
-		public MAPBrush(string[] lines) {
+		public MAPBrush(IList<string> lines) {
 			int braceCount = 0;
 			bool brushDef3 = false;
 			bool inPatch = false;
 			bool inTerrain = false;
 			List<string> child = new List<string>();
-			foreach (string line in lines) {
+			for (int i = 0; i < lines.Count; ++i) {
+				string line = lines[i];
+
 				if (line[0] == '{') {
 					braceCount++;
 					if (braceCount == 1 || brushDef3) { continue; }

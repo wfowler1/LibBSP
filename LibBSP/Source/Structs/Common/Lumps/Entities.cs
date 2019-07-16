@@ -8,41 +8,51 @@ namespace LibBSP {
 	/// <summary>
 	/// Class representing a group of <see cref="Entity"/> objects. Contains helpful methods to handle Entities in the <c>List</c>.
 	/// </summary>
-	[Serializable] public class Entities : List<Entity> {
+	[Serializable] public class Entities : Lump<Entity> {
 
 		/// <summary>
 		/// Initializes a new instance of an <see cref="Entities"/> object copying a passed <c>IEnumerable</c> of <see cref="Entity"/> objects.
 		/// </summary>
 		/// <param name="data">Collection of <see cref="Entity"/> objects to copy.</param>
-		public Entities(IEnumerable<Entity> data) : base(data) { }
+		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
+		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
+		public Entities(IEnumerable<Entity> entities, BSP bsp = null, LumpInfo lumpInfo = default(LumpInfo)) : base(entities, bsp, lumpInfo) { }
 
 		/// <summary>
 		/// Initializes a new instance of an <see cref="Entities"/> object with a specified initial capacity.
 		/// </summary>
 		/// <param name="initialCapacity">Initial capacity of the <c>List</c> of <see cref="Entity"/> objects.</param>
-		public Entities(int initialCapacity) : base(initialCapacity) { }
+		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
+		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
+		public Entities(int initialCapacity, BSP bsp = null, LumpInfo lumpInfo = default(LumpInfo)) : base(initialCapacity, bsp, lumpInfo) { }
 
 		/// <summary>
 		/// Initializes a new empty <see cref="Entities"/> object.
 		/// </summary>
-		public Entities() : base() { }
+		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
+		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
+		public Entities(BSP bsp = null, LumpInfo lumpInfo = default(LumpInfo)) : base(bsp, lumpInfo) { }
 
 		/// <summary>
 		/// Initializes a new <see cref="Entities"/> object, parsing all the bytes in the passed <paramref name="file"/>.
 		/// </summary>
+		/// <remarks>
+		/// This will not populate Bsp or LumpInfo since a file is being read directly. This should not be used to read a
+		/// lump file, they should be handled through <see cref="BSPReader"/>. Use this to read raw MAP formats instead.
+		/// </remarks>
 		/// <param name="file">The file to read.</param>
-		/// <param name="type">The <see cref="MapType"/> of the source map.</param>
-		public Entities(FileInfo file, MapType type) : this(File.ReadAllBytes(file.FullName), type) { }
+		public Entities(FileInfo file) : this(File.ReadAllBytes(file.FullName)) { }
 
 		/// <summary>
-		/// Initializes a new <see cref="Entities"/> object, and parses the passed <c>byte</c> array into the <c>List</c>.
+		/// Initializes a new <see cref="Entities"/> object, and parses the passed <c>byte</c> array as a <c>string</c>.
 		/// </summary>
 		/// <param name="data"><c>Byte</c>s read from a file.</param>
-		/// <param name="type">The <see cref="MapType"/> of the source map.</param>
-		/// <param name="version">The version of this lump.</param>
-		public Entities(byte[] data, MapType type, int version = 0) : base() {
+		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
+		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
+		public Entities(byte[] data, BSP bsp = null, LumpInfo lumpInfo = default(LumpInfo)) : base(bsp, lumpInfo) {
+
 			// Keep track of whether or not we're currently in a set of quotation marks.
-			// I came across a map where the idiot map maker used { and } within a value. This broke the code before.
+			// I came across a map where the map maker used { and } within a value.
 			bool inQuotes = false;
 			int braceCount = 0;
 
@@ -90,7 +100,9 @@ namespace LibBSP {
 						if (offset == 0 || (char)data[offset - 1] == '\n' || (char)data[offset - 1] == '\t' || (char)data[offset - 1] == ' ' || (char)data[offset - 1] == '\r') {
 							--braceCount;
 							if (braceCount == 0) {
-								Add(Entity.FromString(current.ToString()));
+								Entity entity = new Entity(this);
+								entity.ParseString(current.ToString());
+								Add(entity);
 								// Reset StringBuilder
 								current.Length = 0;
 							}
@@ -146,7 +158,7 @@ namespace LibBSP {
 		/// Gets the first <see cref="Entity"/> with the specified targetname.
 		/// </summary>
 		/// <param name="targetname">Targetname attribute to find.</param>
-		/// <returns>Entity object with the specified targetname.</returns>
+		/// <returns><see cref="Entity"/> object with the specified targetname.</returns>
 		public Entity GetWithName(string targetname) {
 			return Find(entity => { return entity.name.Equals(targetname, StringComparison.InvariantCultureIgnoreCase); });
 		}

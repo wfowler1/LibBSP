@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace LibBSP {
 #if UNITY
@@ -15,63 +16,93 @@ namespace LibBSP {
 	/// <summary>
 	/// Contains all the information for a single Texture Data object.
 	/// </summary>
-	public struct TextureData {
+	public struct TextureData : ILumpObject {
 
-		public byte[] data;
-		public MapType type;
-		public int version;
+		/// <summary>
+		/// The <see cref="ILump"/> this <see cref="ILumpObject"/> came from.
+		/// </summary>
+		public ILump Parent { get; private set; }
+
+		/// <summary>
+		/// Array of <c>byte</c>s used as the data source for this <see cref="ILumpObject"/>.
+		/// </summary>
+		public byte[] Data { get; private set; }
+
+		/// <summary>
+		/// The <see cref="LibBSP.MapType"/> to use to interpret <see cref="Data"/>.
+		/// </summary>
+		public MapType MapType {
+			get {
+				if (Parent == null || Parent.Bsp == null) {
+					return MapType.Undefined;
+				}
+				return Parent.Bsp.version;
+			}
+		}
+
+		/// <summary>
+		/// The version number of the <see cref="ILump"/> this <see cref="ILumpObject"/> came from.
+		/// </summary>
+		public int LumpVersion {
+			get {
+				if (Parent == null) {
+					return 0;
+				}
+				return Parent.LumpInfo.version;
+			}
+		}
 
 		public Vector3d reflectivity {
 			get {
-				return new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
+				return new Vector3d(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8));
 			}
 			set {
-				value.GetBytes().CopyTo(data, 0);
+				value.GetBytes().CopyTo(Data, 0);
 			}
 		}
 		
 		public int stringTableIndex {
 			get {
-				return BitConverter.ToInt32(data, 12);
+				return BitConverter.ToInt32(Data, 12);
 			}
 			set {
-				BitConverter.GetBytes(value).CopyTo(data, 12);
+				BitConverter.GetBytes(value).CopyTo(Data, 12);
 			}
 		}
 		
 		public int width {
 			get {
-				return BitConverter.ToInt32(data, 16);
+				return BitConverter.ToInt32(Data, 16);
 			}
 			set {
-				BitConverter.GetBytes(value).CopyTo(data, 16);
+				BitConverter.GetBytes(value).CopyTo(Data, 16);
 			}
 		}
 		
 		public int height {
 			get {
-				return BitConverter.ToInt32(data, 20);
+				return BitConverter.ToInt32(Data, 20);
 			}
 			set {
-				BitConverter.GetBytes(value).CopyTo(data, 20);
+				BitConverter.GetBytes(value).CopyTo(Data, 20);
 			}
 		}
 		
 		public int view_width {
 			get {
-				return BitConverter.ToInt32(data, 24);
+				return BitConverter.ToInt32(Data, 24);
 			}
 			set {
-				BitConverter.GetBytes(value).CopyTo(data, 24);
+				BitConverter.GetBytes(value).CopyTo(Data, 24);
 			}
 		}
 		
 		public int view_height {
 			get {
-				return BitConverter.ToInt32(data, 28);
+				return BitConverter.ToInt32(Data, 28);
 			}
 			set {
-				BitConverter.GetBytes(value).CopyTo(data, 28);
+				BitConverter.GetBytes(value).CopyTo(Data, 28);
 			}
 		}
 
@@ -79,42 +110,63 @@ namespace LibBSP {
 		/// Creates a new <see cref="TextureData"/> object from a <c>byte</c> array.
 		/// </summary>
 		/// <param name="data"><c>byte</c> array to parse.</param>
-		/// <param name="type">The map type.</param>
-		/// <param name="version">The version of this lump.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
-		public TextureData(byte[] data, MapType type, int version = 0) : this() {
+		/// <param name="parent">The <see cref="ILump"/> this <see cref="TextureData"/> came from.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
+		public TextureData(byte[] data, ILump parent = null) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			this.data = data;
-			this.type = type;
-			this.version = version;
+
+			Data = data;
+			Parent = parent;
 		}
 
 		/// <summary>
-		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <see cref="TextureData"/> objects.
+		/// Factory method to parse a <c>byte</c> array into a <see cref="Lump{TextureData}"/>.
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
-		/// <param name="type">The map type.</param>
-		/// <param name="version">The version of this lump.</param>
-		/// <returns>A <c>List</c> of <see cref="TextureData"/> objects.</returns>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
-		public static List<TextureData> LumpFactory(byte[] data, MapType type, int version = 0) {
+		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
+		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
+		/// <returns>A <see cref="Lump{TextureData}"/>.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> parameter was <c>null</c>.</exception>
+		public static Lump<TextureData> LumpFactory(byte[] data, BSP bsp, LumpInfo lumpInfo) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			int structLength = 32;
-			if (type == MapType.Titanfall) {
-				structLength = 36;
+
+			return new Lump<TextureData>(data, GetStructLength(bsp.version, lumpInfo.version), bsp, lumpInfo);
+		}
+
+		/// <summary>
+		/// Gets the length of this struct's data for the given <paramref name="mapType"/> and <paramref name="lumpVersion"/>.
+		/// </summary>
+		/// <param name="mapType">The <see cref="LibBSP.MapType"/> of the BSP.</param>
+		/// <param name="lumpVersion">The version number for the lump.</param>
+		/// <returns>The length, in <c>byte</c>s, of this struct.</returns>
+		/// <exception cref="ArgumentException">This struct is not valid or is not implemented for the given <paramref name="mapType"/> and <paramref name="lumpVersion"/>.</exception>
+		public static int GetStructLength(MapType mapType, int lumpVersion = 0) {
+			switch (mapType) {
+				case MapType.Vindictus:
+				case MapType.TacticalInterventionEncrypted:
+				case MapType.Source17:
+				case MapType.Source18:
+				case MapType.Source19:
+				case MapType.Source20:
+				case MapType.Source21:
+				case MapType.Source22:
+				case MapType.Source23:
+				case MapType.Source27:
+				case MapType.L4D2:
+				case MapType.DMoMaM: {
+					return 32;
+				}
+				case MapType.Titanfall: {
+					return 36;
+				}
+				default: {
+					throw new ArgumentException("Lump object " + MethodBase.GetCurrentMethod().DeclaringType.Name + " does not exist in map type " + mapType + " or has not been implemented.");
+				}
 			}
-			int numObjects = data.Length / structLength;
-			List<TextureData> lump = new List<TextureData>(numObjects);
-			for (int i = 0; i < numObjects; ++i) {
-				byte[] bytes = new byte[structLength];
-				Array.Copy(data, (i * structLength), bytes, 0, structLength);
-				lump.Add(new TextureData(bytes, type, version));
-			}
-			return lump;
 		}
 
 		/// <summary>

@@ -329,22 +329,22 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <see cref="Plane"/> objects.
+		/// Factory method to parse a <c>byte</c> array into a <see cref="Lump{Plane}"/>.
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
-		/// <param name="type">The map type.</param>
-		/// <param name="version">The version of this lump.</param>
-		/// <returns>A <c>List</c> of <see cref="Plane"/> objects.</returns>
+		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
+		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
+		/// <returns>A <see cref="Lump{Plane}"/>.</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="data" /> was null.</exception>
 		/// <remarks>This function goes here since it can't go into Unity's Plane class, and so can't depend
 		/// on having a constructor taking a byte array.</remarks>
-		public static List<Plane> LumpFactory(byte[] data, MapType type, int version = 0) {
+		public static Lump<Plane> LumpFactory(byte[] data, BSP bsp, LumpInfo lumpInfo) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			int structLength = GetStructLength(type, version);
+			int structLength = GetStructLength(bsp.version, lumpInfo.version);
 			int numObjects = data.Length / structLength;
-			List<Plane> lump = new List<Plane>(numObjects);
+			Lump<Plane> lump = new Lump<Plane>(numObjects, bsp, lumpInfo);
 			for (int i = 0; i < numObjects; ++i) {
 				Vector3d normal = new Vector3d(BitConverter.ToSingle(data, structLength * i), BitConverter.ToSingle(data, (structLength * i) + 4), BitConverter.ToSingle(data, (structLength * i) + 8));
 				float distance = BitConverter.ToSingle(data, (structLength * i) + 12);

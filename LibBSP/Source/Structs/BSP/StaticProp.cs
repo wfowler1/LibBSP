@@ -19,15 +19,45 @@ namespace LibBSP {
 	/// <summary>
 	/// Handles the data needed for a static prop object.
 	/// </summary>
-	public struct StaticProp {
+	public struct StaticProp : ILumpObject {
 
-		public byte[] data;
-		public MapType type;
-		public int version;
+		/// <summary>
+		/// The <see cref="ILump"/> this <see cref="ILumpObject"/> came from.
+		/// </summary>
+		public ILump Parent { get; private set; }
+
+		/// <summary>
+		/// Array of <c>byte</c>s used as the data source for this <see cref="ILumpObject"/>.
+		/// </summary>
+		public byte[] Data { get; private set; }
+
+		/// <summary>
+		/// The <see cref="LibBSP.MapType"/> to use to interpret <see cref="Data"/>.
+		/// </summary>
+		public MapType MapType {
+			get {
+				if (Parent == null || Parent.Bsp == null) {
+					return MapType.Undefined;
+				}
+				return Parent.Bsp.version;
+			}
+		}
+
+		/// <summary>
+		/// The version number of the <see cref="ILump"/> this <see cref="ILumpObject"/> came from.
+		/// </summary>
+		public int LumpVersion {
+			get {
+				if (Parent == null) {
+					return 0;
+				}
+				return Parent.LumpInfo.version;
+			}
+		}
 
 		public Vector3d origin {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -41,7 +71,7 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -51,7 +81,7 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								return new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
+								return new Vector3d(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8));
 							}
 							default: {
 								return new Vector3d(float.NaN, float.NaN, float.NaN);
@@ -64,7 +94,7 @@ namespace LibBSP {
 				}
 			}
 			set {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -78,7 +108,7 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -88,7 +118,7 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								value.GetBytes().CopyTo(data, 0);
+								value.GetBytes().CopyTo(Data, 0);
 								break;
 							}
 						}
@@ -100,7 +130,7 @@ namespace LibBSP {
 		
 		public Vector3d angles {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -114,7 +144,7 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -124,7 +154,7 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								return new Vector3d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20));
+								return new Vector3d(BitConverter.ToSingle(Data, 12), BitConverter.ToSingle(Data, 16), BitConverter.ToSingle(Data, 20));
 							}
 							default: {
 								return new Vector3d(float.NaN, float.NaN, float.NaN);
@@ -137,7 +167,7 @@ namespace LibBSP {
 				}
 			}
 			set {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -151,7 +181,7 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -161,7 +191,7 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								value.GetBytes().CopyTo(data, 12);
+								value.GetBytes().CopyTo(Data, 12);
 								break;
 							}
 						}
@@ -173,7 +203,7 @@ namespace LibBSP {
 		
 		public short dictionaryEntry {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -187,7 +217,7 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -197,7 +227,7 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								return BitConverter.ToInt16(data, 24);
+								return BitConverter.ToInt16(Data, 24);
 							}
 							default: {
 								return -1;
@@ -211,7 +241,7 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -225,7 +255,7 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -235,7 +265,7 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								bytes.CopyTo(data, 24);
+								bytes.CopyTo(Data, 24);
 								break;
 							}
 						}
@@ -247,7 +277,7 @@ namespace LibBSP {
 
 		public short firstLeaf {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -260,7 +290,7 @@ namespace LibBSP {
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
 					case MapType.DMoMaM: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -269,7 +299,7 @@ namespace LibBSP {
 							case 9:
 							case 10:
 							case 11: {
-								return BitConverter.ToInt16(data, 26);
+								return BitConverter.ToInt16(Data, 26);
 							}
 							default: {
 								return -1;
@@ -283,7 +313,7 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -296,7 +326,7 @@ namespace LibBSP {
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
 					case MapType.DMoMaM: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -305,7 +335,7 @@ namespace LibBSP {
 							case 9:
 							case 10:
 							case 11: {
-								bytes.CopyTo(data, 26);
+								bytes.CopyTo(Data, 26);
 								break;
 							}
 						}
@@ -317,7 +347,7 @@ namespace LibBSP {
 
 		public short numLeafs {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -330,7 +360,7 @@ namespace LibBSP {
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
 					case MapType.DMoMaM: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -339,7 +369,7 @@ namespace LibBSP {
 							case 9:
 							case 10:
 							case 11: {
-								return BitConverter.ToInt16(data, 28);
+								return BitConverter.ToInt16(Data, 28);
 							}
 							default: {
 								return -1;
@@ -353,7 +383,7 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -366,7 +396,7 @@ namespace LibBSP {
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
 					case MapType.DMoMaM: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -375,7 +405,7 @@ namespace LibBSP {
 							case 9:
 							case 10:
 							case 11: {
-								bytes.CopyTo(data, 28);
+								bytes.CopyTo(Data, 28);
 								break;
 							}
 						}
@@ -387,7 +417,7 @@ namespace LibBSP {
 
 		public byte solidity {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -401,7 +431,7 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -411,7 +441,7 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								return data[30];
+								return Data[30];
 							}
 							default: {
 								return 0;
@@ -424,7 +454,7 @@ namespace LibBSP {
 				}
 			}
 			set {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -438,7 +468,7 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -448,7 +478,7 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								data[30] = value;
+								Data[30] = value;
 								break;
 							}
 						}
@@ -460,7 +490,7 @@ namespace LibBSP {
 		
 		public byte flags {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -474,7 +504,7 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -484,7 +514,7 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								return data[31];
+								return Data[31];
 							}
 							default: {
 								return 0;
@@ -497,7 +527,7 @@ namespace LibBSP {
 				}
 			}
 			set {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -511,7 +541,7 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -521,7 +551,7 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								data[31] = value;
+								Data[31] = value;
 								break;
 							}
 						}
@@ -533,7 +563,7 @@ namespace LibBSP {
 		
 		public int skin {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -547,7 +577,7 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -556,13 +586,13 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								return BitConverter.ToInt32(data, 32);
+								return BitConverter.ToInt32(Data, 32);
 							}
 							case 9: {
-								if (data.Length == 76) {
-									return BitConverter.ToInt32(data, 36);
+								if (Data.Length == 76) {
+									return BitConverter.ToInt32(Data, 36);
 								} else {
-									return BitConverter.ToInt32(data, 32);
+									return BitConverter.ToInt32(Data, 32);
 								}
 							}
 							default: {
@@ -577,7 +607,7 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -591,7 +621,7 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -600,14 +630,14 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								bytes.CopyTo(data, 32);
+								bytes.CopyTo(Data, 32);
 								break;
 							}
 							case 9: {
-								if (data.Length == 76) {
-									bytes.CopyTo(data, 36);
+								if (Data.Length == 76) {
+									bytes.CopyTo(Data, 36);
 								} else {
-									bytes.CopyTo(data, 32);
+									bytes.CopyTo(Data, 32);
 								}
 								break;
 							}
@@ -620,7 +650,7 @@ namespace LibBSP {
 		
 		public float minFadeDist {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -634,7 +664,7 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -643,13 +673,13 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								return BitConverter.ToSingle(data, 36);
+								return BitConverter.ToSingle(Data, 36);
 							}
 							case 9: {
-								if (data.Length == 76) {
-									return BitConverter.ToSingle(data, 40);
+								if (Data.Length == 76) {
+									return BitConverter.ToSingle(Data, 40);
 								} else {
-									return BitConverter.ToSingle(data, 36);
+									return BitConverter.ToSingle(Data, 36);
 								}
 							}
 							default: {
@@ -664,7 +694,7 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -678,7 +708,7 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -687,14 +717,14 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								bytes.CopyTo(data, 36);
+								bytes.CopyTo(Data, 36);
 								break;
 							}
 							case 9: {
-								if (data.Length == 76) {
-									bytes.CopyTo(data, 40);
+								if (Data.Length == 76) {
+									bytes.CopyTo(Data, 40);
 								} else {
-									bytes.CopyTo(data, 36);
+									bytes.CopyTo(Data, 36);
 								}
 								break;
 							}
@@ -707,7 +737,7 @@ namespace LibBSP {
 		
 		public float maxFadeDist {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -721,7 +751,7 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -730,13 +760,13 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								return BitConverter.ToSingle(data, 40);
+								return BitConverter.ToSingle(Data, 40);
 							}
 							case 9: {
-								if (data.Length == 76) {
-									return BitConverter.ToInt32(data, 44);
+								if (Data.Length == 76) {
+									return BitConverter.ToInt32(Data, 44);
 								} else {
-									return BitConverter.ToInt32(data, 40);
+									return BitConverter.ToInt32(Data, 40);
 								}
 							}
 							default: {
@@ -751,7 +781,7 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -765,7 +795,7 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -774,14 +804,14 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								bytes.CopyTo(data, 40);
+								bytes.CopyTo(Data, 40);
 								break;
 							}
 							case 9: {
-								if (data.Length == 76) {
-									bytes.CopyTo(data, 36);
+								if (Data.Length == 76) {
+									bytes.CopyTo(Data, 36);
 								} else {
-									bytes.CopyTo(data, 32);
+									bytes.CopyTo(Data, 32);
 								}
 								break;
 							}
@@ -794,7 +824,7 @@ namespace LibBSP {
 
 		public Vector3d lightingOrigin {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -808,7 +838,7 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -817,13 +847,13 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								return new Vector3d(BitConverter.ToSingle(data, 44), BitConverter.ToSingle(data, 48), BitConverter.ToSingle(data, 52));
+								return new Vector3d(BitConverter.ToSingle(Data, 44), BitConverter.ToSingle(Data, 48), BitConverter.ToSingle(Data, 52));
 							}
 							case 9: {
-								if (data.Length == 76) {
-									return new Vector3d(BitConverter.ToSingle(data, 48), BitConverter.ToSingle(data, 52), BitConverter.ToSingle(data, 56));
+								if (Data.Length == 76) {
+									return new Vector3d(BitConverter.ToSingle(Data, 48), BitConverter.ToSingle(Data, 52), BitConverter.ToSingle(Data, 56));
 								} else {
-									return new Vector3d(BitConverter.ToSingle(data, 44), BitConverter.ToSingle(data, 48), BitConverter.ToSingle(data, 52));
+									return new Vector3d(BitConverter.ToSingle(Data, 44), BitConverter.ToSingle(Data, 48), BitConverter.ToSingle(Data, 52));
 								}
 							}
 							default: {
@@ -838,7 +868,7 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = value.GetBytes();
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -852,7 +882,7 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 4:
 							case 5:
 							case 6:
@@ -861,14 +891,14 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								bytes.CopyTo(data, 44);
+								bytes.CopyTo(Data, 44);
 								break;
 							}
 							case 9: {
-								if (data.Length == 76) {
-									value.GetBytes().CopyTo(data, 48);
+								if (Data.Length == 76) {
+									value.GetBytes().CopyTo(Data, 48);
 								} else {
-									value.GetBytes().CopyTo(data, 44);
+									value.GetBytes().CopyTo(Data, 44);
 								}
 								break;
 							}
@@ -881,7 +911,7 @@ namespace LibBSP {
 
 		public float forcedFadeScale {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -895,7 +925,7 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 5:
 							case 6:
 							case 7:
@@ -903,13 +933,13 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								return BitConverter.ToSingle(data, 56);
+								return BitConverter.ToSingle(Data, 56);
 							}
 							case 9: {
-								if (data.Length == 76) {
-									return BitConverter.ToSingle(data, 60);
+								if (Data.Length == 76) {
+									return BitConverter.ToSingle(Data, 60);
 								} else {
-									return BitConverter.ToSingle(data, 56);
+									return BitConverter.ToSingle(Data, 56);
 								}
 							}
 							default: {
@@ -924,7 +954,7 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -938,7 +968,7 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 5:
 							case 6:
 							case 7:
@@ -946,14 +976,14 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								bytes.CopyTo(data, 56);
+								bytes.CopyTo(Data, 56);
 								break;
 							}
 							case 9: {
-								if (data.Length == 76) {
-									bytes.CopyTo(data, 60);
+								if (Data.Length == 76) {
+									bytes.CopyTo(Data, 60);
 								} else {
-									bytes.CopyTo(data, 56);
+									bytes.CopyTo(Data, 56);
 								}
 								break;
 							}
@@ -966,7 +996,7 @@ namespace LibBSP {
 
 		public short minDXLevel {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -977,10 +1007,10 @@ namespace LibBSP {
 					case MapType.Source27:
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 6:
 							case 7: {
-								return BitConverter.ToInt16(data, 60);
+								return BitConverter.ToInt16(Data, 60);
 							}
 							default: {
 								return -1;
@@ -994,7 +1024,7 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -1005,10 +1035,10 @@ namespace LibBSP {
 					case MapType.Source27:
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 6:
 							case 7: {
-								bytes.CopyTo(data, 60);
+								bytes.CopyTo(Data, 60);
 								break;
 							}
 						}
@@ -1020,7 +1050,7 @@ namespace LibBSP {
 
 		public short maxDXLevel {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -1031,10 +1061,10 @@ namespace LibBSP {
 					case MapType.Source27:
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 6:
 							case 7: {
-								return BitConverter.ToInt16(data, 62);
+								return BitConverter.ToInt16(Data, 62);
 							}
 							default: {
 								return -1;
@@ -1048,7 +1078,7 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -1059,10 +1089,10 @@ namespace LibBSP {
 					case MapType.Source27:
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 6:
 							case 7: {
-								bytes.CopyTo(data, 62);
+								bytes.CopyTo(Data, 62);
 								break;
 							}
 						}
@@ -1074,7 +1104,7 @@ namespace LibBSP {
 
 		public byte minCPULevel {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -1088,18 +1118,18 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 8:
 							case 10:
 							case 11:
 							case 12: {
-								return data[60];
+								return Data[60];
 							}
 							case 9: {
-								if (data.Length == 76) {
-									return data[64];
+								if (Data.Length == 76) {
+									return Data[64];
 								} else {
-									return data[60];
+									return Data[60];
 								}
 							}
 							default: {
@@ -1113,7 +1143,7 @@ namespace LibBSP {
 				}
 			}
 			set {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -1127,19 +1157,19 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 8:
 							case 10:
 							case 11:
 							case 12: {
-								data[60] = value;
+								Data[60] = value;
 								break;
 							}
 							case 9: {
-								if (data.Length == 76) {
-									data[64] = value;
+								if (Data.Length == 76) {
+									Data[64] = value;
 								} else {
-									data[60] = value;
+									Data[60] = value;
 								}
 								break;
 							}
@@ -1152,7 +1182,7 @@ namespace LibBSP {
 
 		public byte maxCPULevel {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -1166,18 +1196,18 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 8:
 							case 10:
 							case 11:
 							case 12: {
-								return data[61];
+								return Data[61];
 							}
 							case 9: {
-								if (data.Length == 76) {
-									return data[65];
+								if (Data.Length == 76) {
+									return Data[65];
 								} else {
-									return data[61];
+									return Data[61];
 								}
 							}
 							default: {
@@ -1191,7 +1221,7 @@ namespace LibBSP {
 				}
 			}
 			set {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -1205,19 +1235,19 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 8:
 							case 10:
 							case 11:
 							case 12: {
-								data[61] = value;
+								Data[61] = value;
 								break;
 							}
 							case 9: {
-								if (data.Length == 76) {
-									data[65] = value;
+								if (Data.Length == 76) {
+									Data[65] = value;
 								} else {
-									data[61] = value;
+									Data[61] = value;
 								}
 								break;
 							}
@@ -1230,7 +1260,7 @@ namespace LibBSP {
 
 		public byte minGPULevel {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -1244,18 +1274,18 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 8:
 							case 10:
 							case 11:
 							case 12: {
-								return data[62];
+								return Data[62];
 							}
 							case 9: {
-								if (data.Length == 76) {
-									return data[66];
+								if (Data.Length == 76) {
+									return Data[66];
 								} else {
-									return data[62];
+									return Data[62];
 								}
 							}
 							default: {
@@ -1269,7 +1299,7 @@ namespace LibBSP {
 				}
 			}
 			set {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -1283,19 +1313,19 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 8:
 							case 10:
 							case 11:
 							case 12: {
-								data[62] = value;
+								Data[62] = value;
 								break;
 							}
 							case 9: {
-								if (data.Length == 76) {
-									data[66] = value;
+								if (Data.Length == 76) {
+									Data[66] = value;
 								} else {
-									data[62] = value;
+									Data[62] = value;
 								}
 								break;
 							}
@@ -1308,7 +1338,7 @@ namespace LibBSP {
 
 		public byte maxGPULevel {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -1322,18 +1352,18 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 8:
 							case 10:
 							case 11:
 							case 12: {
-								return data[63];
+								return Data[63];
 							}
 							case 9: {
-								if (data.Length == 76) {
-									return data[67];
+								if (Data.Length == 76) {
+									return Data[67];
 								} else {
-									return data[63];
+									return Data[63];
 								}
 							}
 							default: {
@@ -1347,7 +1377,7 @@ namespace LibBSP {
 				}
 			}
 			set {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -1361,19 +1391,19 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 8:
 							case 10:
 							case 11:
 							case 12: {
-								data[63] = value;
+								Data[63] = value;
 								break;
 							}
 							case 9: {
-								if (data.Length == 76) {
-									data[67] = value;
+								if (Data.Length == 76) {
+									Data[67] = value;
 								} else {
-									data[63] = value;
+									Data[63] = value;
 								}
 								break;
 							}
@@ -1386,7 +1416,7 @@ namespace LibBSP {
 
 		public Color diffuseModulaton {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -1400,19 +1430,19 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 7:
 							case 8:
 							case 10:
 							case 11:
 							case 12: {
-								return ColorExtensions.FromArgb(data[67], data[64], data[65], data[66]);
+								return ColorExtensions.FromArgb(Data[67], Data[64], Data[65], Data[66]);
 							}
 							case 9: {
-								if (data.Length == 76) {
-									return ColorExtensions.FromArgb(data[72], data[69], data[70], data[71]);
+								if (Data.Length == 76) {
+									return ColorExtensions.FromArgb(Data[72], Data[69], Data[70], Data[71]);
 								} else {
-									return ColorExtensions.FromArgb(data[67], data[64], data[65], data[66]);
+									return ColorExtensions.FromArgb(Data[67], Data[64], Data[65], Data[66]);
 								}
 							}
 							default: {
@@ -1426,7 +1456,7 @@ namespace LibBSP {
 				}
 			}
 			set {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -1440,20 +1470,20 @@ namespace LibBSP {
 					case MapType.Vindictus:
 					case MapType.DMoMaM:
 					case MapType.Titanfall: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 7:
 							case 8:
 							case 10:
 							case 11:
 							case 12: {
-								value.GetBytes().CopyTo(data, 64);
+								value.GetBytes().CopyTo(Data, 64);
 								break;
 							}
 							case 9: {
-								if (data.Length == 76) {
-									value.GetBytes().CopyTo(data, 69);
+								if (Data.Length == 76) {
+									value.GetBytes().CopyTo(Data, 69);
 								} else {
-									value.GetBytes().CopyTo(data, 64);
+									value.GetBytes().CopyTo(Data, 64);
 								}
 									break;
 							}
@@ -1466,7 +1496,7 @@ namespace LibBSP {
 
 		public float scale {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -1479,9 +1509,9 @@ namespace LibBSP {
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
 					case MapType.DMoMaM: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 11: {
-								return BitConverter.ToSingle(data, 76);
+								return BitConverter.ToSingle(Data, 76);
 							}
 							default: {
 								return float.NaN;
@@ -1495,7 +1525,7 @@ namespace LibBSP {
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -1508,9 +1538,9 @@ namespace LibBSP {
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
 					case MapType.DMoMaM: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 11: {
-								bytes.CopyTo(data, 76);
+								bytes.CopyTo(Data, 76);
 								break;
 							}
 						}
@@ -1522,13 +1552,13 @@ namespace LibBSP {
 
 		public string targetname {
 			get {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source20: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 5:
 							case 6: {
-								if (data.Length > 128) {
-									return data.ToNullTerminatedString(data.Length - 128, 128);
+								if (Data.Length > 128) {
+									return Data.ToNullTerminatedString(Data.Length - 128, 128);
 								}
 								return null;
 							}
@@ -1543,17 +1573,17 @@ namespace LibBSP {
 				}
 			}
 			set {
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source20: {
-						switch (version) {
+						switch (LumpVersion) {
 							case 5:
 							case 6: {
-								if (data.Length > 128) {
+								if (Data.Length > 128) {
 									for (int i = 0; i < 128; ++i) {
-										data[data.Length - i - 1] = 0;
+										Data[Data.Length - i - 1] = 0;
 									}
 									byte[] strBytes = Encoding.ASCII.GetBytes(value);
-									Array.Copy(strBytes, 0, data, data.Length - 128, Math.Min(strBytes.Length, 127));
+									Array.Copy(strBytes, 0, Data, Data.Length - 128, Math.Min(strBytes.Length, 127));
 								}
 								break;
 							}
@@ -1568,27 +1598,41 @@ namespace LibBSP {
 		/// Creates a new <see cref="StaticProp"/> object from a <c>byte</c> array.
 		/// </summary>
 		/// <param name="data"><c>byte</c> array to parse.</param>
-		/// <param name="type">The map type.</param>
-		/// <param name="version">The version of static prop lump this object is a member of.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
-		public StaticProp(byte[] data, MapType type, int version = 0) : this() {
+		/// <param name="parent">The <see cref="ILump"/> this <see cref="StaticProp"/> came from.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
+		public StaticProp(byte[] data, ILump parent = null) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			this.data = data;
-			this.type = type;
-			this.version = version;
+
+			Data = data;
+			Parent = parent;
 		}
 
 		/// <summary>
-		/// Factory method to create a <see cref="StaticProps"/> object.
+		/// Factory method to parse a <c>byte</c> array into a <see cref="StaticProps"/> object.
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
-		/// <param name="type">The map type.</param>
-		/// <param name="version">The version of the Static Prop lump.</param>
+		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
+		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
 		/// <returns>A <see cref="StaticProps"/> object.</returns>
-		public static StaticProps LumpFactory(byte[] data, MapType type, int version = 0) {
-			return new StaticProps(data, type, version);
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> parameter was <c>null</c>.</exception>
+		public static StaticProps LumpFactory(byte[] data, BSP bsp, LumpInfo lumpInfo) {
+			if (data == null) {
+				throw new ArgumentNullException();
+			}
+
+			return new StaticProps(data, GetStructLength(bsp.version, lumpInfo.version), bsp, lumpInfo);
+		}
+
+		/// <summary>
+		/// This is a variable length structure. Return -1. The <see cref="StaticProps"/> class will handle object creation.
+		/// </summary>
+		/// <param name="mapType">The <see cref="LibBSP.MapType"/> of the BSP.</param>
+		/// <param name="lumpVersion">The version number for the lump.</param>
+		/// <returns>-1</returns>
+		public static int GetStructLength(MapType mapType, int lumpVersion = 0) {
+			return -1;
 		}
 
 	}

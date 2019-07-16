@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace LibBSP {
 #if UNITY
@@ -15,99 +16,129 @@ namespace LibBSP {
 	/// <summary>
 	/// Holds all data for a Displacement from Source engine.
 	/// </summary>
-	public struct DisplacementInfo {
+	public struct DisplacementInfo : ILumpObject {
 
-		public byte[] data;
-		public MapType type;
-		public int version;
+		/// <summary>
+		/// The <see cref="ILump"/> this <see cref="ILumpObject"/> came from.
+		/// </summary>
+		public ILump Parent { get; private set; }
+
+		/// <summary>
+		/// Array of <c>byte</c>s used as the data source for this <see cref="ILumpObject"/>.
+		/// </summary>
+		public byte[] Data { get; private set; }
+
+		/// <summary>
+		/// The <see cref="LibBSP.MapType"/> to use to interpret <see cref="Data"/>.
+		/// </summary>
+		public MapType MapType {
+			get {
+				if (Parent == null || Parent.Bsp == null) {
+					return MapType.Undefined;
+				}
+				return Parent.Bsp.version;
+			}
+		}
+
+		/// <summary>
+		/// The version number of the <see cref="ILump"/> this <see cref="ILumpObject"/> came from.
+		/// </summary>
+		public int LumpVersion {
+			get {
+				if (Parent == null) {
+					return 0;
+				}
+				return Parent.LumpInfo.version;
+			}
+		}
 
 		public Vector3d startPosition {
 			get {
-				return new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
+				return new Vector3d(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8));
 			}
 			set {
-				value.GetBytes().CopyTo(data, 0);
+				value.GetBytes().CopyTo(Data, 0);
 			}
 		}
 		
 		public int dispVertStart {
 			get {
-				return BitConverter.ToInt32(data, 12);
+				return BitConverter.ToInt32(Data, 12);
 			}
 			set {
-				BitConverter.GetBytes(value).CopyTo(data, 12);
+				BitConverter.GetBytes(value).CopyTo(Data, 12);
 			}
 		}
 
 		public int dispTriStart {
 			get {
-				return BitConverter.ToInt32(data, 16);
+				return BitConverter.ToInt32(Data, 16);
 			}
 			set {
-				BitConverter.GetBytes(value).CopyTo(data, 16);
+				BitConverter.GetBytes(value).CopyTo(Data, 16);
 			}
 		}
 		
 		public int power {
 			get {
-				return BitConverter.ToInt32(data, 20);
+				return BitConverter.ToInt32(Data, 20);
 			}
 			set {
-				BitConverter.GetBytes(value).CopyTo(data, 20);
+				BitConverter.GetBytes(value).CopyTo(Data, 20);
 			}
 		}
 
 		public int minTess {
 			get {
-				return BitConverter.ToInt32(data, 24);
+				return BitConverter.ToInt32(Data, 24);
 			}
 			set {
-				BitConverter.GetBytes(value).CopyTo(data, 24);
+				BitConverter.GetBytes(value).CopyTo(Data, 24);
 			}
 		}
 
 		public float smoothingAngle {
 			get {
-				return BitConverter.ToSingle(data, 28);
+				return BitConverter.ToSingle(Data, 28);
 			}
 			set {
-				BitConverter.GetBytes(value).CopyTo(data, 28);
+				BitConverter.GetBytes(value).CopyTo(Data, 28);
 			}
 		}
 
 		public int contents {
 			get {
-				return BitConverter.ToInt32(data, 32);
+				return BitConverter.ToInt32(Data, 32);
 			}
 			set {
-				BitConverter.GetBytes(value).CopyTo(data, 32);
+				BitConverter.GetBytes(value).CopyTo(Data, 32);
 			}
 		}
 
 		public ushort mapFace {
 			get {
-				return BitConverter.ToUInt16(data, 36);
+				return BitConverter.ToUInt16(Data, 36);
 			}
 			set {
-				BitConverter.GetBytes(value).CopyTo(data, 36);
+				BitConverter.GetBytes(value).CopyTo(Data, 36);
 			}
 		}
 
 		public int lightmapAlphaStart {
 			get {
-				return BitConverter.ToInt32(data, 38);
+				return BitConverter.ToInt32(Data, 38);
 			}
 			set {
-				BitConverter.GetBytes(value).CopyTo(data, 38);
+				BitConverter.GetBytes(value).CopyTo(Data, 38);
 			}
 		}
 
 		public int lightmapSamplePositionStart {
 			get {
-				return BitConverter.ToInt32(data, 42);
+				return BitConverter.ToInt32(Data, 42);
 			}
 			set {
-				BitConverter.GetBytes(value).CopyTo(data, 42);
+				BitConverter.GetBytes(value).CopyTo(Data, 42);
 			}
 		}
 
@@ -115,7 +146,7 @@ namespace LibBSP {
 			get {
 				uint[] allowedVerts = new uint[10];
 				int offset = -1;
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -143,7 +174,7 @@ namespace LibBSP {
 				}
 				if (offset >= 0) {
 					for (int i = 0; i < 10; ++i) {
-						allowedVerts[i] = BitConverter.ToUInt32(data, offset + (i * 4));
+						allowedVerts[i] = BitConverter.ToUInt32(Data, offset + (i * 4));
 					}
 				}
 				return allowedVerts;
@@ -153,7 +184,7 @@ namespace LibBSP {
 					throw new ArgumentException("AllowedVerts array must have 10 elements.");
 				}
 				int offset = -1;
-				switch (type) {
+				switch (MapType) {
 					case MapType.Source17:
 					case MapType.Source18:
 					case MapType.Source19:
@@ -181,7 +212,7 @@ namespace LibBSP {
 				}
 				if (offset >= 0) {
 					for (int i = 0; i < value.Length; ++i) {
-						BitConverter.GetBytes(value[i]).CopyTo(data, offset + (i * 4));
+						BitConverter.GetBytes(value[i]).CopyTo(Data, offset + (i * 4));
 					}
 				}
 			}
@@ -191,33 +222,42 @@ namespace LibBSP {
 		/// Creates a new <see cref="DisplacementInfo"/> object from a <c>byte</c> array.
 		/// </summary>
 		/// <param name="data"><c>byte</c> array to parse.</param>
-		/// <param name="type">The map type.</param>
-		/// <param name="version">The version of this lump.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
-		public DisplacementInfo(byte[] data, MapType type, int version = 0) : this() {
+		/// <param name="parent">The <see cref="ILump"/> this <see cref="DisplacementInfo"/> came from.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
+		public DisplacementInfo(byte[] data, ILump parent = null) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			this.data = data;
-			this.type = type;
-			this.version = version;
+
+			Data = data;
+			Parent = parent;
 		}
 
 		/// <summary>
-		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <see cref="DisplacementInfo"/> objects.
+		/// Factory method to parse a <c>byte</c> array into a <see cref="Lump{DisplacementInfo}"/>.
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
-		/// <param name="type">The map type.</param>
-		/// <param name="version">The version of this lump.</param>
-		/// <returns>A <c>List</c> of <see cref="DisplacementInfo"/> objects.</returns>
-		/// <exception cref="ArgumentNullException"><paramref name="data" /> was <c>null</c>.</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
-		public static List<DisplacementInfo> LumpFactory(byte[] data, MapType type, int version = 0) {
+		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
+		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
+		/// <returns>A <see cref="Lump{DisplacementInfo}"/>.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> parameter was <c>null</c>.</exception>
+		public static Lump<DisplacementInfo> LumpFactory(byte[] data, BSP bsp, LumpInfo lumpInfo) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			int structLength = 0;
-			switch (type) {
+
+			return new Lump<DisplacementInfo>(data, GetStructLength(bsp.version, lumpInfo.version), bsp, lumpInfo);
+		}
+
+		/// <summary>
+		/// Gets the length of this struct's data for the given <paramref name="mapType"/> and <paramref name="lumpVersion"/>.
+		/// </summary>
+		/// <param name="mapType">The <see cref="LibBSP.MapType"/> of the BSP.</param>
+		/// <param name="lumpVersion">The version number for the lump.</param>
+		/// <returns>The length, in <c>byte</c>s, of this struct.</returns>
+		/// <exception cref="ArgumentException">This struct is not valid or is not implemented for the given <paramref name="mapType"/> and <paramref name="lumpVersion"/>.</exception>
+		public static int GetStructLength(MapType mapType, int lumpVersion = 0) {
+			switch (mapType) {
 				case MapType.Source17:
 				case MapType.Source18:
 				case MapType.Source19:
@@ -227,33 +267,21 @@ namespace LibBSP {
 				case MapType.L4D2:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.DMoMaM: {
-					structLength = 176;
-					break;
+					return 176;
 				}
 				case MapType.Source22: {
-					structLength = 180;
-					break;
+					return 180;
 				}
 				case MapType.Source23: {
-					structLength = 184;
-					break;
+					return 184;
 				}
 				case MapType.Vindictus: {
-					structLength = 232;
-					break;
+					return 232;
 				}
 				default: {
-					throw new ArgumentException("Map type " + type + " isn't supported by the SourceDispInfo lump factory.");
+					throw new ArgumentException("Lump object " + MethodBase.GetCurrentMethod().DeclaringType.Name + " does not exist in map type " + mapType + " or has not been implemented.");
 				}
 			}
-			int numObjects = data.Length / structLength;
-			List<DisplacementInfo> lump = new List<DisplacementInfo>(numObjects);
-			for (int i = 0; i < numObjects; ++i) {
-				byte[] bytes = new byte[structLength];
-				Array.Copy(data, (i * structLength), bytes, 0, structLength);
-				lump.Add(new DisplacementInfo(bytes, type, version));
-			}
-			return lump;
 		}
 
 		/// <summary>

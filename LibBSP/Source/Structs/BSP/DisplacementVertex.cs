@@ -3,6 +3,7 @@
 #endif
 
 using System;
+using System.Reflection;
 
 namespace LibBSP {
 #if UNITY
@@ -14,21 +15,51 @@ namespace LibBSP {
 	/// <summary>
 	/// Holds all the data for a displacement in a Source map.
 	/// </summary>
-	public struct DisplacementVertex {
+	public struct DisplacementVertex : ILumpObject {
 
-		public byte[] data;
-		public MapType type;
-		public int version;
+		/// <summary>
+		/// The <see cref="ILump"/> this <see cref="ILumpObject"/> came from.
+		/// </summary>
+		public ILump Parent { get; private set; }
+
+		/// <summary>
+		/// Array of <c>byte</c>s used as the data source for this <see cref="ILumpObject"/>.
+		/// </summary>
+		public byte[] Data { get; private set; }
+
+		/// <summary>
+		/// The <see cref="LibBSP.MapType"/> to use to interpret <see cref="Data"/>.
+		/// </summary>
+		public MapType MapType {
+			get {
+				if (Parent == null || Parent.Bsp == null) {
+					return MapType.Undefined;
+				}
+				return Parent.Bsp.version;
+			}
+		}
+
+		/// <summary>
+		/// The version number of the <see cref="ILump"/> this <see cref="ILumpObject"/> came from.
+		/// </summary>
+		public int LumpVersion {
+			get {
+				if (Parent == null) {
+					return 0;
+				}
+				return Parent.LumpInfo.version;
+			}
+		}
 
 		/// <summary>
 		/// The normalized vector direction this vertex points from "flat".
 		/// </summary>
 		public Vector3d normal {
 			get {
-				return new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
+				return new Vector3d(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8));
 			}
 			set {
-				value.GetBytes().CopyTo(data, 0);
+				value.GetBytes().CopyTo(Data, 0);
 			}
 		}
 
@@ -37,10 +68,10 @@ namespace LibBSP {
 		/// </summary>
 		public float dist {
 			get {
-				return BitConverter.ToSingle(data, 12);
+				return BitConverter.ToSingle(Data, 12);
 			}
 			set {
-				BitConverter.GetBytes(value).CopyTo(data, 12);
+				BitConverter.GetBytes(value).CopyTo(Data, 12);
 			}
 		}
 
@@ -49,10 +80,10 @@ namespace LibBSP {
 		/// </summary>
 		public float alpha {
 			get {
-				return BitConverter.ToSingle(data, 16);
+				return BitConverter.ToSingle(Data, 16);
 			}
 			set {
-				BitConverter.GetBytes(value).CopyTo(data, 16);
+				BitConverter.GetBytes(value).CopyTo(Data, 16);
 			}
 		}
 
@@ -60,31 +91,60 @@ namespace LibBSP {
 		/// Creates a new <see cref="DisplacementVertex"/> object from a <c>byte</c> array.
 		/// </summary>
 		/// <param name="data"><c>byte</c> array to parse.</param>
-		/// <param name="type">The map type.</param>
-		/// <param name="version">The version of this lump.</param>
+		/// <param name="parent">The <see cref="ILump"/> this <see cref="DisplacementVertex"/> came from.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
-		public DisplacementVertex(byte[] data, MapType type, int version = 0) : this() {
+		public DisplacementVertex(byte[] data, ILump parent = null) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			this.data = data;
-			this.type = type;
-			this.version = version;
+
+			Data = data;
+			Parent = parent;
 		}
 
 		/// <summary>
 		/// Factory method to parse a <c>byte</c> array into a <see cref="DisplacementVertices"/> object.
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
-		/// <param name="type">The map type.</param>
-		/// <param name="version">The version of this lump.</param>
+		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
+		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
 		/// <returns>A <see cref="DisplacementVertices"/> object.</returns>
-		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
-		public static DisplacementVertices LumpFactory(byte[] data, MapType type, int version = 0) {
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> parameter was <c>null</c>.</exception>
+		public static DisplacementVertices LumpFactory(byte[] data, BSP bsp, LumpInfo lumpInfo) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			return new DisplacementVertices(data, type, version);
+
+			return new DisplacementVertices(data, GetStructLength(bsp.version, lumpInfo.version), bsp, lumpInfo);
+		}
+
+		/// <summary>
+		/// Gets the length of this struct's data for the given <paramref name="mapType"/> and <paramref name="lumpVersion"/>.
+		/// </summary>
+		/// <param name="mapType">The <see cref="LibBSP.MapType"/> of the BSP.</param>
+		/// <param name="lumpVersion">The version number for the lump.</param>
+		/// <returns>The length, in <c>byte</c>s, of this struct.</returns>
+		/// <exception cref="ArgumentException">This struct is not valid or is not implemented for the given <paramref name="mapType"/> and <paramref name="lumpVersion"/>.</exception>
+		public static int GetStructLength(MapType mapType, int lumpVersion = 0) {
+			switch (mapType) {
+				case MapType.Vindictus:
+				case MapType.TacticalInterventionEncrypted:
+				case MapType.Source17:
+				case MapType.Source18:
+				case MapType.Source19:
+				case MapType.Source20:
+				case MapType.Source21:
+				case MapType.Source22:
+				case MapType.Source23:
+				case MapType.Source27:
+				case MapType.L4D2:
+				case MapType.DMoMaM: {
+					return 20;
+				}
+				default: {
+					throw new ArgumentException("Lump object " + MethodBase.GetCurrentMethod().DeclaringType.Name + " does not exist in map type " + mapType + " or has not been implemented.");
+				}
+			}
 		}
 
 		/// <summary>

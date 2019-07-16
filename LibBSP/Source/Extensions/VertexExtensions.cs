@@ -190,27 +190,26 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Factory method to parse a <c>byte</c> array into a <c>List</c> of <see cref="Vertex"/> objects.
+		/// Factory method to parse a <c>byte</c> array into a <see cref="Lump{Vertex}"/>.
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
-		/// <param name="type">The map type.</param>
-		/// <param name="version">The version of this lump.</param>
-		/// <returns>A <c>List</c> of <see cref="Vertex"/> objects.</returns>
+		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
+		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
+		/// <returns>A <see cref="Lump{Vertex}"/>.</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
-		/// <exception cref="ArgumentException">This structure is not implemented for the given maptype.</exception>
 		/// <remarks>This function goes here since it can't be in Unity's <c>UIVertex</c> class, and so I can't
 		/// depend on having a constructor taking a byte array.</remarks>
-		public static List<Vertex> LumpFactory(byte[] data, MapType type, int version = 0) {
+		public static Lump<Vertex> LumpFactory(byte[] data, BSP bsp, LumpInfo lumpInfo) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			int structLength = GetStructLength(type, version);
+			int structLength = GetStructLength(bsp.version, lumpInfo.version);
 			int numObjects = data.Length / structLength;
-			List<Vertex> lump = new List<Vertex>(numObjects);
+			Lump<Vertex> lump = new Lump<Vertex>(numObjects, bsp, lumpInfo);
 			byte[] bytes = new byte[structLength];
 			for (int i = 0; i < numObjects; ++i) {
 				Array.Copy(data, i * structLength, bytes, 0, structLength);
-				lump.Add(CreateVertex(bytes, type, version));
+				lump.Add(CreateVertex(bytes, bsp.version, lumpInfo.version));
 			}
 			return lump;
 		}
