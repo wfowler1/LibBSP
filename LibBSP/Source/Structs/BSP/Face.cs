@@ -342,7 +342,6 @@ namespace LibBSP {
 					case MapType.FAKK: {
 						return BitConverter.ToInt32(Data, 0);
 					}
-					case MapType.Quake:
 					case MapType.Quake2:
 					case MapType.Daikatana:
 					case MapType.SiN:
@@ -376,7 +375,6 @@ namespace LibBSP {
 						bytes.CopyTo(Data, 0);
 						break;
 					}
-					case MapType.Quake:
 					case MapType.Quake2:
 					case MapType.Daikatana:
 					case MapType.SiN:
@@ -520,6 +518,7 @@ namespace LibBSP {
 		public int textureInfo {
 			get {
 				switch (MapType) {
+					case MapType.Quake:
 					case MapType.Source18:
 					case MapType.Source19:
 					case MapType.Source20:
@@ -549,6 +548,7 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
+					case MapType.Quake:
 					case MapType.Source18:
 					case MapType.Source19:
 					case MapType.Source20:
