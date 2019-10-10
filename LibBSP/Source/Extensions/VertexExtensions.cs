@@ -6,90 +6,61 @@
 #endif
 
 using System;
-using System.Collections.Generic;
 
 namespace LibBSP {
 #if UNITY
-	using Vector2d = UnityEngine.Vector2;
-	using Vector3d = UnityEngine.Vector3;
-	using Vector4d = UnityEngine.Vector4;
+	using Vector2 = UnityEngine.Vector2;
+	using Vector3 = UnityEngine.Vector3;
+	using Vector4 = UnityEngine.Vector4;
 #if !OLDUNITY
 	using Vertex = UnityEngine.UIVertex;
 #endif
 #elif GODOT
-	using Vector2d = Godot.Vector2;
-	using Vector3d = Godot.Vector3;
-	using Vector4d = Godot.Quat;
+	using Vector2 = Godot.Vector2;
+	using Vector3 = Godot.Vector3;
+	using Vector4 = Godot.Quat;
+#else
+	using Vector2 = System.Numerics.Vector2;
+	using Vector3 = System.Numerics.Vector3;
+	using Vector4 = System.Numerics.Vector4;
 #endif
 
 	/// <summary>
 	/// Static class containing helper methods for <see cref="Vertex"/> objects.
 	/// </summary>
 	public static class VertexExtensions {
-
-#if !UNITY
-		/// <summary>
-		/// Scales the position of this <see cref="Vertex"/> by a scalar.
-		/// </summary>
-		/// <param name="v1">This <see cref="Vertex"/>.</param>
-		/// <param name="scalar">Scalar value.</param>
-		public static void Scale(this ref Vertex v1, float scalar) {
-			v1.position *= scalar;
-		}
-
-		/// <summary>
-		/// Adds the position of this <see cref="Vertex"/> to another <see cref="Vertex"/>.
-		/// </summary>
-		/// <param name="v1">This <see cref="Vertex"/>.</param>
-		/// <param name="v2">The other <see cref="Vertex"/>.</param>
-		public static void Add(this ref Vertex v1, Vertex v2) {
-			v1.position += v2.position;
-		}
-
-		/// <summary>
-		/// Adds the position of a <c>Vector3d</c> to this <see cref="Vertex"/>.
-		/// </summary>
-		/// <param name="v1">This <see cref="Vertex"/>.</param>
-		/// <param name="v2">The <see cref="Vector3d"/>.</param>
-		public static void Translate(this ref Vertex v1, Vector3d v2) {
-			v1.position += v2;
-		}
-#endif
-
-		// Extension methods using "ref" are features of C# 7.2. They will not work in Unity, no matter what.
-		// Instead use these vanilla static methods in any code intended to be used with Unity.
-
+		
 		/// <summary>
 		/// Scales the position of a <see cref="Vertex"/> by a scalar and returns the result.
 		/// </summary>
-		/// <param name="v1">The <see cref="Vertex"/> to scale.</param>
+		/// <param name="vertex">The <see cref="Vertex"/> to scale.</param>
 		/// <param name="scalar">Scalar value.</param>
 		/// <returns>The resulting <see cref="Vertex"/> of this scaling operation.</returns>
-		public static Vertex Scale(Vertex v1, float scalar) {
-			v1.position *= scalar;
-			return v1;
+		public static Vertex Scale(Vertex vertex, float scalar) {
+			vertex.position *= scalar;
+			return vertex;
 		}
 
 		/// <summary>
 		/// Adds the position of a <see cref="Vertex"/> to another <see cref="Vertex"/> and returns the result.
 		/// </summary>
-		/// <param name="v1">A <see cref="Vertex"/> to be added to another.</param>
-		/// <param name="v2">A <see cref="Vertex"/> to be added to another.</param>
+		/// <param name="vertex1">A <see cref="Vertex"/> to be added to another.</param>
+		/// <param name="vertex2">A <see cref="Vertex"/> to be added to another.</param>
 		/// <returns>The resulting <see cref="Vertex"/> of this addition.</returns>
-		public static Vertex Add(Vertex v1, Vertex v2) {
-			v1.position += v2.position;
-			return v1;
+		public static Vertex Add(Vertex vertex1, Vertex vertex2) {
+			vertex1.position += vertex2.position;
+			return vertex1;
 		}
 
 		/// <summary>
-		/// Adds the position of a <c>Vector3d</c> to a <see cref="Vertex"/> and returns the result.
+		/// Adds the position of a <c>Vector3</c> to a <see cref="Vertex"/> and returns the result.
 		/// </summary>
-		/// <param name="v1">The <see cref="Vertex"/> to translate.</param>
-		/// <param name="v2">The <see cref="Vector3d"/> to translate by.</param>
-		/// <returns>The resulting <see cref="Vertex"/> translated by <paramref name="v2"/>.</returns>
-		public static Vertex Translate(Vertex v1, Vector3d v2) {
-			v1.position += v2;
-			return v1;
+		/// <param name="vertex1">The <see cref="Vertex"/> to translate.</param>
+		/// <param name="vertex2">The <see cref="Vector3"/> to translate by.</param>
+		/// <returns>The resulting <see cref="Vertex"/> translated by <paramref name="vertex2"/>.</returns>
+		public static Vertex Translate(Vertex vertex1, Vector3 vertex2) {
+			vertex1.position += vertex2;
+			return vertex1;
 		}
 
 		/// <summary>
@@ -121,43 +92,43 @@ namespace LibBSP {
 				}
 				case MapType.CoD2:
 				case MapType.CoD4: {
-					result.normal = new Vector3d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20));
+					result.normal = new Vector3(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20));
 					result.color = ColorExtensions.FromArgb(data[27], data[24], data[25], data[26]);
-					result.uv0 = new Vector2d(BitConverter.ToSingle(data, 28), BitConverter.ToSingle(data, 32));
-					result.uv1 = new Vector2d(BitConverter.ToSingle(data, 36), BitConverter.ToSingle(data, 40));
+					result.uv0 = new Vector2(BitConverter.ToSingle(data, 28), BitConverter.ToSingle(data, 32));
+					result.uv1 = new Vector2(BitConverter.ToSingle(data, 36), BitConverter.ToSingle(data, 40));
 					// Use these fields to store additional unknown information
-					result.tangent = new Vector4d(BitConverter.ToSingle(data, 44), BitConverter.ToSingle(data, 48), BitConverter.ToSingle(data, 52), BitConverter.ToSingle(data, 56));
-					result.uv3 = new Vector2d(BitConverter.ToSingle(data, 60), BitConverter.ToSingle(data, 64));
+					result.tangent = new Vector4(BitConverter.ToSingle(data, 44), BitConverter.ToSingle(data, 48), BitConverter.ToSingle(data, 52), BitConverter.ToSingle(data, 56));
+					result.uv3 = new Vector2(BitConverter.ToSingle(data, 60), BitConverter.ToSingle(data, 64));
 					goto case MapType.Quake;
 				}
 				case MapType.MOHAA:
 				case MapType.Quake3:
 				case MapType.FAKK: {
-					result.uv0 = new Vector2d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16));
-					result.uv1 = new Vector2d(BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24));
-					result.normal = new Vector3d(BitConverter.ToSingle(data, 28), BitConverter.ToSingle(data, 32), BitConverter.ToSingle(data, 36));
+					result.uv0 = new Vector2(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16));
+					result.uv1 = new Vector2(BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24));
+					result.normal = new Vector3(BitConverter.ToSingle(data, 28), BitConverter.ToSingle(data, 32), BitConverter.ToSingle(data, 36));
 					result.color = ColorExtensions.FromArgb(data[43], data[40], data[41], data[42]);
 					goto case MapType.Quake;
 				}
 				case MapType.Raven: {
-					result.uv0 = new Vector2d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16));
-					result.uv1 = new Vector2d(BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24));
-					result.uv2 = new Vector2d(BitConverter.ToSingle(data, 28), BitConverter.ToSingle(data, 32));
-					result.uv3 = new Vector2d(BitConverter.ToSingle(data, 36), BitConverter.ToSingle(data, 40));
-					result.normal = new Vector3d(BitConverter.ToSingle(data, 52), BitConverter.ToSingle(data, 56), BitConverter.ToSingle(data, 60));
+					result.uv0 = new Vector2(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16));
+					result.uv1 = new Vector2(BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24));
+					result.uv2 = new Vector2(BitConverter.ToSingle(data, 28), BitConverter.ToSingle(data, 32));
+					result.uv3 = new Vector2(BitConverter.ToSingle(data, 36), BitConverter.ToSingle(data, 40));
+					result.normal = new Vector3(BitConverter.ToSingle(data, 52), BitConverter.ToSingle(data, 56), BitConverter.ToSingle(data, 60));
 					result.color = ColorExtensions.FromArgb(data[67], data[64], data[65], data[66]);
 					// Use for two more float fields and two more colors.
 					// There's actually another field that seems to be color but I've only ever seen it be 0xFFFFFFFF.
-					result.tangent = new Vector4d(BitConverter.ToSingle(data, 44), BitConverter.ToSingle(data, 48), BitConverter.ToSingle(data, 68), BitConverter.ToSingle(data, 72));
+					result.tangent = new Vector4(BitConverter.ToSingle(data, 44), BitConverter.ToSingle(data, 48), BitConverter.ToSingle(data, 68), BitConverter.ToSingle(data, 72));
 					goto case MapType.Quake;
 				}
 				case MapType.STEF2:
 				case MapType.STEF2Demo: {
-					result.uv0 = new Vector2d(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16));
-					result.uv1 = new Vector2d(BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24));
-					result.uv2 = new Vector2d(BitConverter.ToSingle(data, 28), 0);
+					result.uv0 = new Vector2(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16));
+					result.uv1 = new Vector2(BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24));
+					result.uv2 = new Vector2(BitConverter.ToSingle(data, 28), 0);
 					result.color = ColorExtensions.FromArgb(data[35], data[32], data[33], data[34]);
-					result.normal = new Vector3d(BitConverter.ToSingle(data, 36), BitConverter.ToSingle(data, 40), BitConverter.ToSingle(data, 44));
+					result.normal = new Vector3(BitConverter.ToSingle(data, 36), BitConverter.ToSingle(data, 40), BitConverter.ToSingle(data, 44));
 					goto case MapType.Quake;
 				}
 				case MapType.Quake:
@@ -179,7 +150,7 @@ namespace LibBSP {
 				case MapType.Daikatana:
 				case MapType.Vindictus:
 				case MapType.DMoMaM: {
-					result.position = new Vector3d(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
+					result.position = new Vector3(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
 					break;
 				}
 				default: {
@@ -417,13 +388,13 @@ namespace LibBSP {
 					v.uv1.GetBytes().CopyTo(bytes, 20);
 					v.uv2.GetBytes().CopyTo(bytes, 28);
 					v.uv3.GetBytes().CopyTo(bytes, 36);
-					BitConverter.GetBytes((float)v.tangent.x).CopyTo(bytes, 44);
-					BitConverter.GetBytes((float)v.tangent.y).CopyTo(bytes, 48);
+					BitConverter.GetBytes((float)v.tangent.X()).CopyTo(bytes, 44);
+					BitConverter.GetBytes((float)v.tangent.Y()).CopyTo(bytes, 48);
 					v.normal.GetBytes().CopyTo(bytes, 52);
 					v.color.GetBytes().CopyTo(bytes, 64);
-					BitConverter.GetBytes((float)v.tangent.z).CopyTo(bytes, 68);
-					BitConverter.GetBytes((float)v.tangent.w).CopyTo(bytes, 72);
-					// There's actually another field that seems to be a color but I've only ever seen it be FFFFFFFF.
+					BitConverter.GetBytes((float)v.tangent.Z()).CopyTo(bytes, 68);
+					BitConverter.GetBytes((float)v.tangent.W()).CopyTo(bytes, 72);
+					// There's actually another field that I've only ever seen it be FFFFFFFF.
 					bytes[76] = 255;
 					bytes[77] = 255;
 					bytes[78] = 255;
@@ -434,7 +405,7 @@ namespace LibBSP {
 				case MapType.STEF2Demo: {
 					v.uv0.GetBytes().CopyTo(bytes, 12);
 					v.uv1.GetBytes().CopyTo(bytes, 20);
-					BitConverter.GetBytes(v.uv2.x).CopyTo(bytes, 28);
+					BitConverter.GetBytes(v.uv2.X()).CopyTo(bytes, 28);
 					v.color.GetBytes().CopyTo(bytes, 32);
 					v.normal.GetBytes().CopyTo(bytes, 36);
 					goto case MapType.Quake;

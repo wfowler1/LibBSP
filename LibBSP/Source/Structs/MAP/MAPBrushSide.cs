@@ -8,13 +8,17 @@ using System.Globalization;
 
 namespace LibBSP {
 #if UNITY
-	using Vector2d = UnityEngine.Vector2;
-	using Vector3d = UnityEngine.Vector3;
+	using Vector2 = UnityEngine.Vector2;
+	using Vector3 = UnityEngine.Vector3;
 	using Plane = UnityEngine.Plane;
 #elif GODOT
-	using Vector2d = Godot.Vector2;
-	using Vector3d = Godot.Vector3;
+	using Vector2 = Godot.Vector2;
+	using Vector3 = Godot.Vector3;
 	using Plane = Godot.Plane;
+#else
+	using Vector2 = System.Numerics.Vector2;
+	using Vector3 = System.Numerics.Vector3;
+	using Plane = System.Numerics.Plane;
 #endif
 
 	/// <summary>
@@ -24,13 +28,13 @@ namespace LibBSP {
 
 		private static IFormatProvider _format = CultureInfo.CreateSpecificCulture("en-US");
 
-		public Vector3d[] vertices;
+		public Vector3[] vertices;
 		public Plane plane;
 		public string texture;
 		public TextureInfo textureInfo;
 		public string material;
-		public double lgtScale;
-		public double lgtRot;
+		public float lgtScale;
+		public float lgtRot;
 		public MAPDisplacement displacement;
 
 		/// <summary>
@@ -51,36 +55,36 @@ namespace LibBSP {
 
 				// If this succeeds, assume brushDef3
 				if (float.TryParse(tokens[4], out dist)) {
-					plane = new Plane(new Vector3d(float.Parse(tokens[1], _format), float.Parse(tokens[2], _format), float.Parse(tokens[3], _format)), dist);
-					textureInfo = new TextureInfo(new Vector3d(float.Parse(tokens[8], _format), float.Parse(tokens[9], _format), float.Parse(tokens[10], _format)),
-												  new Vector3d(float.Parse(tokens[13], _format), float.Parse(tokens[14], _format), float.Parse(tokens[15], _format)),
-												  new Vector2d(0, 0),
-												  new Vector2d(1, 1),
+					plane = new Plane(new Vector3(float.Parse(tokens[1], _format), float.Parse(tokens[2], _format), float.Parse(tokens[3], _format)), dist);
+					textureInfo = new TextureInfo(new Vector3(float.Parse(tokens[8], _format), float.Parse(tokens[9], _format), float.Parse(tokens[10], _format)),
+												  new Vector3(float.Parse(tokens[13], _format), float.Parse(tokens[14], _format), float.Parse(tokens[15], _format)),
+												  new Vector2(0, 0),
+												  new Vector2(1, 1),
 												  0, 0, 0);
 					texture = tokens[18];
 				} else {
-					Vector3d v1 = new Vector3d(float.Parse(tokens[1], _format), float.Parse(tokens[2], _format), float.Parse(tokens[3], _format));
-					Vector3d v2 = new Vector3d(float.Parse(tokens[6], _format), float.Parse(tokens[7], _format), float.Parse(tokens[8], _format));
-					Vector3d v3 = new Vector3d(float.Parse(tokens[11], _format), float.Parse(tokens[12], _format), float.Parse(tokens[13], _format));
-					vertices = new Vector3d[] { v1, v2, v3 };
-					plane = new Plane(v1, v2, v3);
+					Vector3 v1 = new Vector3(float.Parse(tokens[1], _format), float.Parse(tokens[2], _format), float.Parse(tokens[3], _format));
+					Vector3 v2 = new Vector3(float.Parse(tokens[6], _format), float.Parse(tokens[7], _format), float.Parse(tokens[8], _format));
+					Vector3 v3 = new Vector3(float.Parse(tokens[11], _format), float.Parse(tokens[12], _format), float.Parse(tokens[13], _format));
+					vertices = new Vector3[] { v1, v2, v3 };
+					plane = PlaneExtensions.CreateFromVertices(v1, v2, v3);
 					texture = tokens[15];
 					// GearCraft
 					if (tokens[16] == "[") {
-						textureInfo = new TextureInfo(new Vector3d(float.Parse(tokens[17], _format), float.Parse(tokens[18], _format), float.Parse(tokens[19], _format)),
-													  new Vector3d(float.Parse(tokens[23], _format), float.Parse(tokens[24], _format), float.Parse(tokens[25], _format)),
-						                              new Vector2d(float.Parse(tokens[20], _format), float.Parse(tokens[26], _format)),
-						                              new Vector2d(float.Parse(tokens[29], _format), float.Parse(tokens[30], _format)),
-													  int.Parse(tokens[31]), 0, double.Parse(tokens[28], _format));
+						textureInfo = new TextureInfo(new Vector3(float.Parse(tokens[17], _format), float.Parse(tokens[18], _format), float.Parse(tokens[19], _format)),
+													  new Vector3(float.Parse(tokens[23], _format), float.Parse(tokens[24], _format), float.Parse(tokens[25], _format)),
+						                              new Vector2(float.Parse(tokens[20], _format), float.Parse(tokens[26], _format)),
+						                              new Vector2(float.Parse(tokens[29], _format), float.Parse(tokens[30], _format)),
+													  int.Parse(tokens[31]), 0, float.Parse(tokens[28], _format));
 						material = tokens[32];
 					} else {
 						//<x_shift> <y_shift> <rotation> <x_scale> <y_scale> <content_flags> <surface_flags> <value>
-						Vector3d[] axes = TextureInfo.TextureAxisFromPlane(plane);
+						Vector3[] axes = TextureInfo.TextureAxisFromPlane(plane);
 						textureInfo = new TextureInfo(axes[0],
 						                              axes[1],
-						                              new Vector2d(float.Parse(tokens[16], _format), float.Parse(tokens[17], _format)),
-						                              new Vector2d(float.Parse(tokens[19], _format), float.Parse(tokens[20], _format)),
-						                              int.Parse(tokens[22]), 0, double.Parse(tokens[18], _format));
+						                              new Vector2(float.Parse(tokens[16], _format), float.Parse(tokens[17], _format)),
+						                              new Vector2(float.Parse(tokens[19], _format), float.Parse(tokens[20], _format)),
+						                              int.Parse(tokens[22]), 0, float.Parse(tokens[18], _format));
 					}
 				}
 			} else {
@@ -114,32 +118,32 @@ namespace LibBSP {
 							case "plane": {
 								string[] points = tokens[1].SplitUnlessBetweenDelimiters(' ', '(', ')', StringSplitOptions.RemoveEmptyEntries);
 								string[] components = points[0].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-								Vector3d v1 = new Vector3d(float.Parse(components[0], _format), float.Parse(components[1], _format), float.Parse(components[2], _format));
+								Vector3 v1 = new Vector3(float.Parse(components[0], _format), float.Parse(components[1], _format), float.Parse(components[2], _format));
 								components = points[1].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-								Vector3d v2 = new Vector3d(float.Parse(components[0], _format), float.Parse(components[1], _format), float.Parse(components[2], _format));
+								Vector3 v2 = new Vector3(float.Parse(components[0], _format), float.Parse(components[1], _format), float.Parse(components[2], _format));
 								components = points[2].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-								Vector3d v3 = new Vector3d(float.Parse(components[0], _format), float.Parse(components[1], _format), float.Parse(components[2], _format));
-								plane = new Plane(v1, v2, v3);
+								Vector3 v3 = new Vector3(float.Parse(components[0], _format), float.Parse(components[1], _format), float.Parse(components[2], _format));
+								plane = PlaneExtensions.CreateFromVertices(v1, v2, v3);
 								break;
 							}
 							case "uaxis": {
 								string[] split = tokens[1].SplitUnlessBetweenDelimiters(' ', '[', ']', StringSplitOptions.RemoveEmptyEntries);
-								textureInfo.scale = new Vector2d(float.Parse(split[1], _format), textureInfo.scale.y);
+								textureInfo.scale = new Vector2(float.Parse(split[1], _format), textureInfo.scale.Y());
 								split = split[0].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-								textureInfo.uAxis = new Vector3d(float.Parse(split[0], _format), float.Parse(split[1], _format), float.Parse(split[2], _format));
-								textureInfo.translation = new Vector2d(float.Parse(split[3], _format), textureInfo.translation.y);
+								textureInfo.uAxis = new Vector3(float.Parse(split[0], _format), float.Parse(split[1], _format), float.Parse(split[2], _format));
+								textureInfo.translation = new Vector2(float.Parse(split[3], _format), textureInfo.translation.Y());
 								break;
 							}
 							case "vaxis": {
 								string[] split = tokens[1].SplitUnlessBetweenDelimiters(' ', '[', ']', StringSplitOptions.RemoveEmptyEntries);
-								textureInfo.scale = new Vector2d(textureInfo.scale.x, float.Parse(split[1], _format));
+								textureInfo.scale = new Vector2(textureInfo.scale.X(), float.Parse(split[1], _format));
 								split = split[0].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-								textureInfo.vAxis = new Vector3d(float.Parse(split[0], _format), float.Parse(split[1], _format), float.Parse(split[2], _format));
-								textureInfo.translation = new Vector2d(textureInfo.translation.x, float.Parse(split[3], _format));
+								textureInfo.vAxis = new Vector3(float.Parse(split[0], _format), float.Parse(split[1], _format), float.Parse(split[2], _format));
+								textureInfo.translation = new Vector2(textureInfo.translation.X(), float.Parse(split[3], _format));
 								break;
 							}
 							case "rotation": {
-								textureInfo.rotation = double.Parse(tokens[1], _format);
+								textureInfo.rotation = float.Parse(tokens[1], _format);
 								break;
 							}
 						}

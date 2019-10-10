@@ -8,9 +8,11 @@ using System.Reflection;
 
 namespace LibBSP {
 #if UNITY
-	using Vector2d = UnityEngine.Vector2;
+	using Vector2 = UnityEngine.Vector2;
 #elif GODOT
-	using Vector2d = Godot.Vector2;
+	using Vector2 = Godot.Vector2;
+#else
+	using Vector2 = System.Numerics.Vector2;
 #endif
 
 	/// <summary>
@@ -885,7 +887,7 @@ namespace LibBSP {
 			}
 		}
 		
-		public Vector2d patchSize {
+		public Vector2 patchSize {
 			get {
 				switch (MapType) {
 					case MapType.Quake3:
@@ -894,10 +896,10 @@ namespace LibBSP {
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
 					case MapType.FAKK: {
-						return new Vector2d(BitConverter.ToInt32(Data, 96), BitConverter.ToInt32(Data, 100));
+						return new Vector2(BitConverter.ToInt32(Data, 96), BitConverter.ToInt32(Data, 100));
 					}
 					default: {
-						return new Vector2d(float.NaN, float.NaN);
+						return new Vector2(float.NaN, float.NaN);
 					}
 				}
 			}
@@ -909,9 +911,9 @@ namespace LibBSP {
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
 					case MapType.FAKK: {
-						byte[] bytes = BitConverter.GetBytes((int)value.x);
+						byte[] bytes = BitConverter.GetBytes((int)value.X());
 						bytes.CopyTo(Data, 96);
-						bytes = BitConverter.GetBytes((int)value.y);
+						bytes = BitConverter.GetBytes((int)value.Y());
 						bytes.CopyTo(Data, 100);
 						break;
 					}

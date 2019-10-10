@@ -8,9 +8,11 @@ using System.Reflection;
 
 namespace LibBSP {
 #if UNITY
-	using Vector2d = UnityEngine.Vector2;
+	using Vector2 = UnityEngine.Vector2;
 #elif GODOT
-	using Vector2d = Godot.Vector2;
+	using Vector2 = Godot.Vector2;
+#else
+	using Vector2 = System.Numerics.Vector2;
 #endif
 
 	/// <summary>
@@ -96,18 +98,18 @@ namespace LibBSP {
 			}
 		}
 		
-		public Vector2d dimensions {
+		public Vector2 dimensions {
 			get {
 				switch (MapType) {
 					case MapType.CoD: {
 						if (patchType == 0) {
-							return new Vector2d(BitConverter.ToInt16(Data, 4), BitConverter.ToInt16(Data, 6));
+							return new Vector2(BitConverter.ToInt16(Data, 4), BitConverter.ToInt16(Data, 6));
 						} else {
-							return new Vector2d(float.NaN, float.NaN);
+							return new Vector2(float.NaN, float.NaN);
 						}
 					}
 					default: {
-						return new Vector2d(float.NaN, float.NaN);
+						return new Vector2(float.NaN, float.NaN);
 					}
 				}
 			}
@@ -115,8 +117,8 @@ namespace LibBSP {
 				switch (MapType) {
 					case MapType.CoD: {
 						if (patchType == 0) {
-							BitConverter.GetBytes((short)value.x).CopyTo(Data, 4);
-							BitConverter.GetBytes((short)value.y).CopyTo(Data, 6);
+							BitConverter.GetBytes((short)value.X()).CopyTo(Data, 4);
+							BitConverter.GetBytes((short)value.Y()).CopyTo(Data, 6);
 						}
 						break;
 					}

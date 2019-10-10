@@ -9,9 +9,11 @@ using System.Text;
 
 namespace LibBSP {
 #if UNITY
-	using Vector3d = UnityEngine.Vector3;
+	using Vector3 = UnityEngine.Vector3;
 #elif GODOT
-	using Vector3d = Godot.Vector3;
+	using Vector3 = Godot.Vector3;
+#else
+	using Vector3 = System.Numerics.Vector3;
 #endif
 
 	/// <summary>
@@ -78,14 +80,14 @@ namespace LibBSP {
 			}
 		}
 		
-		public Vector3d origin {
+		public Vector3 origin {
 			get {
 				switch (MapType) {
 					case MapType.MOHAA: {
-						return new Vector3d(BitConverter.ToSingle(Data, 128), BitConverter.ToSingle(Data, 132), BitConverter.ToSingle(Data, 136));
+						return new Vector3(BitConverter.ToSingle(Data, 128), BitConverter.ToSingle(Data, 132), BitConverter.ToSingle(Data, 136));
 					}
 					default: {
-						return new Vector3d(float.NaN, float.NaN, float.NaN);
+						return new Vector3(float.NaN, float.NaN, float.NaN);
 					}
 				}
 			}
@@ -99,14 +101,14 @@ namespace LibBSP {
 			}
 		}
 		
-		public Vector3d angles {
+		public Vector3 angles {
 			get {
 				switch (MapType) {
 					case MapType.MOHAA: {
-						return new Vector3d(BitConverter.ToSingle(Data, 140), BitConverter.ToSingle(Data, 144), BitConverter.ToSingle(Data, 148));
+						return new Vector3(BitConverter.ToSingle(Data, 140), BitConverter.ToSingle(Data, 144), BitConverter.ToSingle(Data, 148));
 					}
 					default: {
-						return new Vector3d(float.NaN, float.NaN, float.NaN);
+						return new Vector3(float.NaN, float.NaN, float.NaN);
 					}
 				}
 			}

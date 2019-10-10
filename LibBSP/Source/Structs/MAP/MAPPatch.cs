@@ -11,17 +11,19 @@ using System.Globalization;
 
 namespace LibBSP {
 #if UNITY
-	using Vector2d = UnityEngine.Vector2;
-	using Vector3d = UnityEngine.Vector3;
+	using Vector2 = UnityEngine.Vector2;
+	using Vector3 = UnityEngine.Vector3;
 	using Color = UnityEngine.Color32;
 #if !OLDUNITY
 	using Vertex = UnityEngine.UIVertex;
 #endif
 #elif GODOT
-	using Vector2d = Godot.Vector2;
-	using Vector3d = Godot.Vector3;
+	using Vector2 = Godot.Vector2;
+	using Vector3 = Godot.Vector3;
 	using Color = Godot.Color;
 #else
+	using Vector2 = System.Numerics.Vector2;
+	using Vector3 = System.Numerics.Vector3;
 	using Color = System.Drawing.Color;
 #endif
 
@@ -33,7 +35,7 @@ namespace LibBSP {
 		private static IFormatProvider _format = CultureInfo.CreateSpecificCulture("en-US");
 
 		public Vertex[] points;
-		public Vector2d dims;
+		public Vector2 dims;
 		public string texture;
 
 		/// <summary>
@@ -54,12 +56,12 @@ namespace LibBSP {
 				case "patchDef3":
 				case "patchDef2": {
 					string[] line = lines[3].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-					dims = new Vector2d(float.Parse(line[1], _format), float.Parse(line[2], _format));
-					for (int i = 0; i < dims.x; ++i) {
+					dims = new Vector2(float.Parse(line[1], _format), float.Parse(line[2], _format));
+					for (int i = 0; i < dims.X(); ++i) {
 						line = lines[i + 5].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-						for (int j = 0; j < dims.y; ++j) {
-							Vector3d point = new Vector3d(float.Parse(line[2 + (j * 7)], _format), float.Parse(line[3 + (j * 7)], _format), float.Parse(line[4 + (j * 7)], _format));
-							Vector2d uv = new Vector2d(float.Parse(line[5 + (j * 7)], _format), float.Parse(line[6 + (j * 7)], _format));
+						for (int j = 0; j < dims.Y(); ++j) {
+							Vector3 point = new Vector3(float.Parse(line[2 + (j * 7)], _format), float.Parse(line[3 + (j * 7)], _format), float.Parse(line[4 + (j * 7)], _format));
+							Vector2 uv = new Vector2(float.Parse(line[5 + (j * 7)], _format), float.Parse(line[6 + (j * 7)], _format));
 							Vertex vertex = new Vertex() {
 								position = point,
 								uv0 = uv,
@@ -72,12 +74,12 @@ namespace LibBSP {
 				}
 				case "patchTerrainDef3": {
 					string[] line = lines[3].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-					dims = new Vector2d(float.Parse(line[1], _format), float.Parse(line[2], _format));
-					for (int i = 0; i < dims.x; ++i) {
+					dims = new Vector2(float.Parse(line[1], _format), float.Parse(line[2], _format));
+					for (int i = 0; i < dims.X(); ++i) {
 						line = lines[i + 5].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-						for (int j = 0; j < dims.y; ++j) {
-							Vector3d point = new Vector3d(float.Parse(line[2 + (j * 12)], _format), float.Parse(line[3 + (j * 12)], _format), float.Parse(line[4 + (j * 12)], _format));
-							Vector2d uv = new Vector2d(float.Parse(line[5 + (j * 12)], _format), float.Parse(line[6 + (j * 12)], _format));
+						for (int j = 0; j < dims.Y(); ++j) {
+							Vector3 point = new Vector3(float.Parse(line[2 + (j * 12)], _format), float.Parse(line[3 + (j * 12)], _format), float.Parse(line[4 + (j * 12)], _format));
+							Vector2 uv = new Vector2(float.Parse(line[5 + (j * 12)], _format), float.Parse(line[6 + (j * 12)], _format));
 							Color color = ColorExtensions.FromArgb(byte.Parse(line[7 + (j * 12)]), byte.Parse(line[8 + (j * 12)]), byte.Parse(line[9 + (j * 12)]), byte.Parse(line[10 + (j * 12)]));
 							Vertex vertex = new Vertex() {
 								position = point,

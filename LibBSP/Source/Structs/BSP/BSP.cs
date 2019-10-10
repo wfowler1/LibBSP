@@ -18,6 +18,8 @@ namespace LibBSP {
 #endif
 #elif GODOT
 	using Plane = Godot.Plane;
+#else
+	using Plane = System.Numerics.Plane;
 #endif
 
 	/// <summary>

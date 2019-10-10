@@ -47,7 +47,7 @@ namespace LibBSP {
 		/// <param name="first">The first vertex to get.</param>
 		/// <param name="power">The power of the displacement.</param>
 		/// <returns>Array of <see cref="DisplacementVertex"/> objects containing all the vertices in this displacement</returns>
-		public virtual DisplacementVertex[] GetVerticesInDisplacement(int first, int power) {
+		public DisplacementVertex[] GetVerticesInDisplacement(int first, int power) {
 			int side = (power * power) + 1;
 			int numVerts = side * side;
 			DisplacementVertex[] ret = new DisplacementVertex[numVerts];

@@ -7,11 +7,14 @@ using System.Globalization;
 
 namespace LibBSP {
 #if UNITY
-	using Vector4d = UnityEngine.Vector4;
-	using Vector3d = UnityEngine.Vector3;
+	using Vector4 = UnityEngine.Vector4;
+	using Vector3 = UnityEngine.Vector3;
 #elif GODOT
-	using Vector4d = Godot.Quat;
-	using Vector3d = Godot.Vector3;
+	using Vector4 = Godot.Quat;
+	using Vector3 = Godot.Vector3;
+#else
+	using Vector3 = System.Numerics.Vector3;
+	using Vector4 = System.Numerics.Vector4;
 #endif
 
 	/// <summary>
@@ -23,16 +26,16 @@ namespace LibBSP {
 
 		public int side;
 		public string texture;
-		public double textureShiftS;
-		public double textureShiftT;
+		public float textureShiftS;
+		public float textureShiftT;
 		public float texRot;
-		public double texScaleX;
-		public double texScaleY;
+		public float texScaleX;
+		public float texScaleY;
 		public int flags;
-		public double sideLength;
-		public Vector3d start;
-		public Vector4d IF;
-		public Vector4d LF;
+		public float sideLength;
+		public Vector3 start;
+		public Vector4 IF;
+		public Vector4 LF;
 		public float[,] heightMap;
 		public float[,] alphaMap;
 
@@ -59,22 +62,22 @@ namespace LibBSP {
 								textureShiftS = float.Parse(line[2], _format);
 								textureShiftT = float.Parse(line[3], _format);
 								texRot = float.Parse(line[4], _format);
-								texScaleX = double.Parse(line[5], _format);
-								texScaleY = double.Parse(line[6], _format);
+								texScaleX = float.Parse(line[5], _format);
+								texScaleY = float.Parse(line[6], _format);
 								flags = int.Parse(line[8]);
 								break;
 							}
 							case "TD(": {
 								sideLength = int.Parse(line[1], _format);
-								start = new Vector3d(float.Parse(line[2], _format), float.Parse(line[3], _format), float.Parse(line[4], _format));
+								start = new Vector3(float.Parse(line[2], _format), float.Parse(line[3], _format), float.Parse(line[4], _format));
 								break;
 							}
 							case "IF(": {
-								IF = new Vector4d(float.Parse(line[1], _format), float.Parse(line[2], _format), float.Parse(line[3], _format), float.Parse(line[4], _format));
+								IF = new Vector4(float.Parse(line[1], _format), float.Parse(line[2], _format), float.Parse(line[3], _format), float.Parse(line[4], _format));
 								break;
 							}
 							case "LF(": {
-								LF = new Vector4d(float.Parse(line[1], _format), float.Parse(line[2], _format), float.Parse(line[3], _format), float.Parse(line[4], _format));
+								LF = new Vector4(float.Parse(line[1], _format), float.Parse(line[2], _format), float.Parse(line[3], _format), float.Parse(line[4], _format));
 								break;
 							}
 							case "V(": {

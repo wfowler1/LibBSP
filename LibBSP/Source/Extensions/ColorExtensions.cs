@@ -60,5 +60,65 @@ namespace LibBSP {
 			return bytes;
 		}
 
+		/// <summary>
+		/// Gets the alpha component of this <see cref="Color"/>.
+		/// </summary>
+		/// <param name="color">This <see cref="Color"/>.</param>
+		/// <returns>The alpha component of this <see cref="Color"/>.</returns>
+		public static byte A(this Color color) {
+#if UNITY
+			return color.a;
+#elif GODOT
+			return (byte)color.a8;
+#else
+			return color.A;
+#endif
+		}
+
+		/// <summary>
+		/// Gets the red component of this <see cref="Color"/>.
+		/// </summary>
+		/// <param name="color">This <see cref="Color"/>.</param>
+		/// <returns>The red component of this <see cref="Color"/>.</returns>
+		public static byte R(this Color color) {
+#if UNITY
+			return color.r;
+#elif GODOT
+			return (byte)color.r8;
+#else
+			return color.R;
+#endif
+		}
+
+		/// <summary>
+		/// Gets the green component of this <see cref="Color"/>.
+		/// </summary>
+		/// <param name="color">This <see cref="Color"/>.</param>
+		/// <returns>The green component of this <see cref="Color"/>.</returns>
+		public static byte G(this Color color) {
+#if UNITY
+			return color.g;
+#elif GODOT
+			return (byte)color.g8;
+#else
+			return color.G;
+#endif
+		}
+
+		/// <summary>
+		/// Gets the blue component of this <see cref="Color"/>.
+		/// </summary>
+		/// <param name="color">This <see cref="Color"/>.</param>
+		/// <returns>The blue component of this <see cref="Color"/>.</returns>
+		public static byte B(this Color color) {
+#if UNITY
+			return color.b;
+#elif GODOT
+			return (byte)color.b8;
+#else
+			return color.B;
+#endif
+		}
+
 	}
 }

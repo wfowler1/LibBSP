@@ -7,11 +7,14 @@ using System.Text;
 
 namespace LibBSP {
 #if UNITY
-	using Vector2d = UnityEngine.Vector2;
-	using Vector3d = UnityEngine.Vector3;
+	using Vector2 = UnityEngine.Vector2;
+	using Vector3 = UnityEngine.Vector3;
 #elif GODOT
-	using Vector2d = Godot.Vector2;
-	using Vector3d = Godot.Vector3;
+	using Vector2 = Godot.Vector2;
+	using Vector3 = Godot.Vector3;
+#else
+	using Vector2 = System.Numerics.Vector2;
+	using Vector3 = System.Numerics.Vector3;
 #endif
 
 	/// <summary>
@@ -289,10 +292,10 @@ namespace LibBSP {
 					case MapType.SoF:
 					case MapType.Daikatana:
 					case MapType.SiN: {
-						return new TextureInfo(new Vector3d(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8)),
-						                       new Vector3d(BitConverter.ToSingle(Data, 16), BitConverter.ToSingle(Data, 20), BitConverter.ToSingle(Data, 24)),
-						                       new Vector2d(BitConverter.ToSingle(Data, 12), BitConverter.ToSingle(Data, 28)),
-						                       new Vector2d(1, 1),
+						return new TextureInfo(new Vector3(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8)),
+						                       new Vector3(BitConverter.ToSingle(Data, 16), BitConverter.ToSingle(Data, 20), BitConverter.ToSingle(Data, 24)),
+						                       new Vector2(BitConverter.ToSingle(Data, 12), BitConverter.ToSingle(Data, 28)),
+						                       new Vector2(1, 1),
 						                       -1, -1, 0);
 					}
 					default: {
@@ -310,9 +313,9 @@ namespace LibBSP {
 						bytes.CopyTo(Data, 0);
 						bytes = value.vAxis.GetBytes();
 						bytes.CopyTo(Data, 16);
-						bytes = BitConverter.GetBytes(value.translation.x);
+						bytes = BitConverter.GetBytes(value.translation.X());
 						bytes.CopyTo(Data, 12);
-						bytes = BitConverter.GetBytes(value.translation.y);
+						bytes = BitConverter.GetBytes(value.translation.Y());
 						bytes.CopyTo(Data, 28);
 						break;
 					}

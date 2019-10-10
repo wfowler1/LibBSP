@@ -7,11 +7,14 @@ using System.Collections.Generic;
 
 namespace LibBSP {
 #if UNITY
-	using Vector2d = UnityEngine.Vector2;
-	using Vector3d = UnityEngine.Vector3;
+	using Vector2 = UnityEngine.Vector2;
+	using Vector3 = UnityEngine.Vector3;
 #elif GODOT
-	using Vector2d = Godot.Vector2;
-	using Vector3d = Godot.Vector3;
+	using Vector2 = Godot.Vector2;
+	using Vector3 = Godot.Vector3;
+#else
+	using Vector2 = System.Numerics.Vector2;
+	using Vector3 = System.Numerics.Vector3;
 #endif
 
 	/// <summary>
@@ -19,9 +22,9 @@ namespace LibBSP {
 	/// </summary>
 	[Serializable] public class MAPTerrainMoHAA {
 
-		public Vector2d size;
+		public Vector2 size;
 		public int flags;
-		public Vector3d origin;
+		public Vector3 origin;
 		public List<Partition> partitions;
 		public List<Vertex> vertices;
 
@@ -49,9 +52,9 @@ namespace LibBSP {
 			public int unknown2;
 			public string shader;
 			public int[] textureShift;
-			public double rotation;
+			public float rotation;
 			public int unknown3;
-			public double[] textureScale;
+			public float[] textureScale;
 			public int unknown4;
 			public int flags;
 			public int unknown5;
@@ -64,7 +67,7 @@ namespace LibBSP {
 				textureShift = new int[2];
 				rotation = 0;
 				unknown3 = 0;
-				textureScale = new double[] { 1, 1 };
+				textureScale = new float[] { 1, 1 };
 				unknown4 = 0;
 				flags = 0;
 				unknown5 = 0;

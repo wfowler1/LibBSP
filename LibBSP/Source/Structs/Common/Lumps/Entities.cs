@@ -9,6 +9,11 @@ namespace LibBSP {
 	/// Class representing a group of <see cref="Entity"/> objects. Contains helpful methods to handle Entities in the <c>List</c>.
 	/// </summary>
 	[Serializable] public class Entities : Lump<Entity> {
+		
+		/// <summary>
+		/// Initializes a new empty <see cref="Entities"/> object.
+		/// </summary>
+		public Entities() : base(null, default(LumpInfo)) { }
 
 		/// <summary>
 		/// Initializes a new instance of an <see cref="Entities"/> object copying a passed <c>IEnumerable</c> of <see cref="Entity"/> objects.
@@ -27,7 +32,7 @@ namespace LibBSP {
 		public Entities(int initialCapacity, BSP bsp = null, LumpInfo lumpInfo = default(LumpInfo)) : base(initialCapacity, bsp, lumpInfo) { }
 
 		/// <summary>
-		/// Initializes a new empty <see cref="Entities"/> object.
+		/// Initializes a new <see cref="Entities"/> object.
 		/// </summary>
 		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
 		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>

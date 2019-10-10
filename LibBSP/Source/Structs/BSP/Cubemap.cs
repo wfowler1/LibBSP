@@ -8,9 +8,11 @@ using System.Reflection;
 
 namespace LibBSP {
 #if UNITY
-	using Vector3d = UnityEngine.Vector3;
+	using Vector3 = UnityEngine.Vector3;
 #elif GODOT
-	using Vector3d = Godot.Vector3;
+	using Vector3 = Godot.Vector3;
+#else
+	using Vector3 = System.Numerics.Vector3;
 #endif
 
 	/// <summary>
@@ -52,7 +54,7 @@ namespace LibBSP {
 			}
 		}
 
-		public Vector3d origin {
+		public Vector3 origin {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -67,10 +69,10 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.Vindictus:
 					case MapType.DMoMaM: {
-						return new Vector3d(BitConverter.ToInt32(Data, 0), BitConverter.ToInt32(Data, 4), BitConverter.ToInt32(Data, 8));
+						return new Vector3(BitConverter.ToInt32(Data, 0), BitConverter.ToInt32(Data, 4), BitConverter.ToInt32(Data, 8));
 					}
 					default: {
-						return new Vector3d(float.NaN, float.NaN, float.NaN);
+						return new Vector3(float.NaN, float.NaN, float.NaN);
 					}
 				}
 			}

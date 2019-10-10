@@ -8,9 +8,11 @@ using System.Globalization;
 
 namespace LibBSP {
 #if UNITY
-	using Vector3d = UnityEngine.Vector3;
+	using Vector3 = UnityEngine.Vector3;
 #elif GODOT
-	using Vector3d = Godot.Vector3;
+	using Vector3 = Godot.Vector3;
+#else
+	using Vector3 = System.Numerics.Vector3;
 #endif
 
 	/// <summary>
@@ -21,8 +23,8 @@ namespace LibBSP {
 		private static IFormatProvider _format = CultureInfo.CreateSpecificCulture("en-US");
 
 		public int power;
-		public Vector3d start;
-		public Vector3d[,] normals;
+		public Vector3 start;
+		public Vector3[,] normals;
 		public float[,] distances;
 		public float[,] alphas;
 
@@ -72,14 +74,14 @@ namespace LibBSP {
 						case "power": {
 							power = int.Parse(tokens[1]);
 							int side = (int)Math.Pow(2, power) + 1;
-							normals = new Vector3d[side, side];
+							normals = new Vector3[side, side];
 							distances = new float[side, side];
 							alphas = new float[side, side];
 							break;
 						}
 						case "startposition": {
 							string[] point = tokens[1].Substring(1, tokens[1].Length - 2).Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-							start = new Vector3d(float.Parse(point[0], _format), float.Parse(point[1], _format), float.Parse(point[2], _format));
+							start = new Vector3(float.Parse(point[0], _format), float.Parse(point[1], _format), float.Parse(point[2], _format));
 							break;
 						}
 					}
@@ -107,13 +109,13 @@ namespace LibBSP {
 				throw new ArgumentException("Bad data given to MAPDisplacement, no power specified!");
 			}
 
-			if (start.x == float.NaN) {
+			if (start.X() == float.NaN) {
 				throw new ArgumentException("Bad data given to MAPDisplacement, no starting point specified!");
 			}
 
 			foreach (int i in normalsTokens.Keys) {
 				for (int j = 0; j < normalsTokens[i].Length / 3; j++) {
-					normals[i, j] = new Vector3d(float.Parse(normalsTokens[i][j * 3], _format), float.Parse(normalsTokens[i][(j * 3) + 1], _format), float.Parse(normalsTokens[i][(j * 3) + 2], _format));
+					normals[i, j] = new Vector3(float.Parse(normalsTokens[i][j * 3], _format), float.Parse(normalsTokens[i][(j * 3) + 1], _format), float.Parse(normalsTokens[i][(j * 3) + 2], _format));
 					distances[i, j] = float.Parse(distancesTokens[i][j], _format);
 					alphas[i, j] = float.Parse(alphasTokens[i][j], _format);
 				}

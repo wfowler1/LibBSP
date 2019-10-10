@@ -7,9 +7,11 @@ using System.Reflection;
 
 namespace LibBSP {
 #if UNITY
-	using Vector3d = UnityEngine.Vector3;
+	using Vector3 = UnityEngine.Vector3;
 #elif GODOT
-	using Vector3d = Godot.Vector3;
+	using Vector3 = Godot.Vector3;
+#else
+	using Vector3 = System.Numerics.Vector3;
 #endif
 
 	/// <summary>
@@ -54,9 +56,9 @@ namespace LibBSP {
 		/// <summary>
 		/// The normalized vector direction this vertex points from "flat".
 		/// </summary>
-		public Vector3d normal {
+		public Vector3 normal {
 			get {
-				return new Vector3d(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8));
+				return new Vector3(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8));
 			}
 			set {
 				value.GetBytes().CopyTo(Data, 0);

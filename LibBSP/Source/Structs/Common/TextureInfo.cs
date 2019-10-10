@@ -3,18 +3,21 @@
 #endif
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace LibBSP {
 #if UNITY
-	using Vector2d = UnityEngine.Vector2;
-	using Vector3d = UnityEngine.Vector3;
+	using Vector2 = UnityEngine.Vector2;
+	using Vector3 = UnityEngine.Vector3;
 	using Plane = UnityEngine.Plane;
 #elif GODOT
-	using Vector2d = Godot.Vector2;
-	using Vector3d = Godot.Vector3;
+	using Vector2 = Godot.Vector2;
+	using Vector3 = Godot.Vector3;
 	using Plane = Godot.Plane;
+#else
+	using Vector2 = System.Numerics.Vector2;
+	using Vector3 = System.Numerics.Vector3;
+	using Plane = System.Numerics.Plane;
 #endif
 
 	/// <summary>
@@ -59,34 +62,34 @@ namespace LibBSP {
 		}
 
 		// No BSP format uses these so they are fields.
-		public Vector2d scale;
-		public double rotation;
+		public Vector2 scale;
+		public float rotation;
 
-		public Vector3d uAxis {
+		public Vector3 uAxis {
 			get {
-				return new Vector3d(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8));
+				return new Vector3(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8));
 			}
 			set {
 				value.GetBytes().CopyTo(Data, 0);
 			}
 		}
 
-		public Vector3d vAxis {
+		public Vector3 vAxis {
 			get {
-				return new Vector3d(BitConverter.ToSingle(Data, 16), BitConverter.ToSingle(Data, 20), BitConverter.ToSingle(Data, 24));
+				return new Vector3(BitConverter.ToSingle(Data, 16), BitConverter.ToSingle(Data, 20), BitConverter.ToSingle(Data, 24));
 			}
 			set {
 				value.GetBytes().CopyTo(Data, 16);
 			}
 		}
 
-		public Vector2d translation {
+		public Vector2 translation {
 			get {
-				return new Vector2d(BitConverter.ToSingle(Data, 12), BitConverter.ToSingle(Data, 28));
+				return new Vector2(BitConverter.ToSingle(Data, 12), BitConverter.ToSingle(Data, 28));
 			}
 			set {
-				BitConverter.GetBytes((float)value.x).CopyTo(Data, 12);
-				BitConverter.GetBytes((float)value.y).CopyTo(Data, 28);
+				BitConverter.GetBytes(value.X()).CopyTo(Data, 12);
+				BitConverter.GetBytes(value.Y()).CopyTo(Data, 28);
 			}
 		}
 
@@ -219,7 +222,7 @@ namespace LibBSP {
 
 			Data = data;
 			Parent = parent;
-			scale = new Vector2d(1, 1);
+			scale = new Vector2(1, 1);
 			rotation = 0;
 		}
 
@@ -233,7 +236,7 @@ namespace LibBSP {
 		/// <param name="flags">The flags for this <see cref="TextureInfo"/>.</param>
 		/// <param name="texture">Index into the texture list for the texture this <see cref="TextureInfo"/> uses.</param>
 		/// <param name="rotation">Rotation of the texutre axes.</param>
-		public TextureInfo(Vector3d uAxis, Vector3d vAxis, Vector2d translation, Vector2d scale, int flags, int texture, double rotation) {
+		public TextureInfo(Vector3 uAxis, Vector3 vAxis, Vector2 translation, Vector2 scale, int flags, int texture, float rotation) {
 			Data = new byte[40];
 			Parent = null;
 
@@ -251,9 +254,9 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="p"><see cref="Plane"/> of the surface.</param>
 		/// <returns>The best matching texture axes for the given <see cref="Plane"/>.</returns>
-		public static Vector3d[] TextureAxisFromPlane(Plane p) {
+		public static Vector3[] TextureAxisFromPlane(Plane p) {
 			int bestaxis = p.BestAxis();
-			Vector3d[] newAxes = new Vector3d[2];
+			Vector3[] newAxes = new Vector3[2];
 			newAxes[0] = PlaneExtensions.baseAxes[bestaxis * 3 + 1];
 			newAxes[1] = PlaneExtensions.baseAxes[bestaxis * 3 + 2];
 			return newAxes;

@@ -8,11 +8,12 @@ using System.Text;
 namespace LibBSP {
 #if UNITY
 	using Color = UnityEngine.Color32;
-	using Vector3d = UnityEngine.Vector3;
+	using Vector3 = UnityEngine.Vector3;
 #elif GODOT
 	using Color = Godot.Color;
-	using Vector3d = Godot.Vector3;
+	using Vector3 = Godot.Vector3;
 #else
+	using Vector3 = System.Numerics.Vector3;
 	using Color = System.Drawing.Color;
 #endif
 
@@ -55,7 +56,7 @@ namespace LibBSP {
 			}
 		}
 
-		public Vector3d origin {
+		public Vector3 origin {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -81,15 +82,15 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								return new Vector3d(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8));
+								return new Vector3(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8));
 							}
 							default: {
-								return new Vector3d(float.NaN, float.NaN, float.NaN);
+								return new Vector3(float.NaN, float.NaN, float.NaN);
 							}
 						}
 					}
 					default: {
-						return new Vector3d(float.NaN, float.NaN, float.NaN);
+						return new Vector3(float.NaN, float.NaN, float.NaN);
 					}
 				}
 			}
@@ -128,7 +129,7 @@ namespace LibBSP {
 			}
 		}
 		
-		public Vector3d angles {
+		public Vector3 angles {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -154,15 +155,15 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								return new Vector3d(BitConverter.ToSingle(Data, 12), BitConverter.ToSingle(Data, 16), BitConverter.ToSingle(Data, 20));
+								return new Vector3(BitConverter.ToSingle(Data, 12), BitConverter.ToSingle(Data, 16), BitConverter.ToSingle(Data, 20));
 							}
 							default: {
-								return new Vector3d(float.NaN, float.NaN, float.NaN);
+								return new Vector3(float.NaN, float.NaN, float.NaN);
 							}
 						}
 					}
 					default: {
-						return new Vector3d(float.NaN, float.NaN, float.NaN);
+						return new Vector3(float.NaN, float.NaN, float.NaN);
 					}
 				}
 			}
@@ -822,7 +823,7 @@ namespace LibBSP {
 			}
 		}
 
-		public Vector3d lightingOrigin {
+		public Vector3 lightingOrigin {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -847,22 +848,22 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								return new Vector3d(BitConverter.ToSingle(Data, 44), BitConverter.ToSingle(Data, 48), BitConverter.ToSingle(Data, 52));
+								return new Vector3(BitConverter.ToSingle(Data, 44), BitConverter.ToSingle(Data, 48), BitConverter.ToSingle(Data, 52));
 							}
 							case 9: {
 								if (Data.Length == 76) {
-									return new Vector3d(BitConverter.ToSingle(Data, 48), BitConverter.ToSingle(Data, 52), BitConverter.ToSingle(Data, 56));
+									return new Vector3(BitConverter.ToSingle(Data, 48), BitConverter.ToSingle(Data, 52), BitConverter.ToSingle(Data, 56));
 								} else {
-									return new Vector3d(BitConverter.ToSingle(Data, 44), BitConverter.ToSingle(Data, 48), BitConverter.ToSingle(Data, 52));
+									return new Vector3(BitConverter.ToSingle(Data, 44), BitConverter.ToSingle(Data, 48), BitConverter.ToSingle(Data, 52));
 								}
 							}
 							default: {
-								return new Vector3d(float.NaN, float.NaN, float.NaN);
+								return new Vector3(float.NaN, float.NaN, float.NaN);
 							}
 						}
 					}
 					default: {
-						return new Vector3d(float.NaN, float.NaN, float.NaN);
+						return new Vector3(float.NaN, float.NaN, float.NaN);
 					}
 				}
 			}

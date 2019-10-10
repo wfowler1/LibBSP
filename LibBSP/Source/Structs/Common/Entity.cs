@@ -10,11 +10,14 @@ using System.Globalization;
 
 namespace LibBSP {
 #if UNITY
-	using Vector3d = UnityEngine.Vector3;
-	using Vector4d = UnityEngine.Vector4;
+	using Vector3 = UnityEngine.Vector3;
+	using Vector4 = UnityEngine.Vector4;
 #elif GODOT
-	using Vector3d = Godot.Vector3;
-	using Vector4d = Godot.Quat;
+	using Vector3 = Godot.Vector3;
+	using Vector4 = Godot.Quat;
+#else
+	using Vector3 = System.Numerics.Vector3;
+	using Vector4 = System.Numerics.Vector4;
 #endif
 
 	/// <summary>
@@ -90,29 +93,35 @@ namespace LibBSP {
 					return 0;
 				}
 			}
-			set { this["spawnflags"] = value.ToString(); }
+			set {
+				this["spawnflags"] = value.ToString();
+			}
 		}
 
 		/// <summary>
 		/// Wrapper for the "origin" attribute.
 		/// </summary>
-		public Vector3d origin {
+		public Vector3 origin {
 			get {
-				Vector4d vec = GetVector("origin");
-				return new Vector3d(vec.x, vec.y, vec.z);
+				Vector4 vec = GetVector("origin");
+				return new Vector3(vec.X(), vec.Y(), vec.Z());
 			}
-			set { this["origin"] = value.x + " " + value.y + " " + value.z; }
+			set {
+				this["origin"] = value.X() + " " + value.Y() + " " + value.Z();
+			}
 		}
 
 		/// <summary>
 		/// Wrapper for the "angles" attribute.
 		/// </summary>
-		public Vector3d angles {
+		public Vector3 angles {
 			get {
-				Vector4d vec = GetVector("angles");
-				return new Vector3d(vec.x, vec.y, vec.z);
+				Vector4 vec = GetVector("angles");
+				return new Vector3(vec.X(), vec.Y(), vec.Z());
 			}
-			set { this["angles"] = value.x + " " + value.y + " " + value.z; }
+			set {
+				this["angles"] = value.X() + " " + value.Y() + " " + value.Z();
+			}
 		}
 
 		/// <summary>
@@ -128,7 +137,9 @@ namespace LibBSP {
 					return "";
 				}
 			}
-			set { this["targetname"] = value; }
+			set {
+				this["targetname"] = value;
+			}
 		}
 
 		/// <summary>
@@ -143,7 +154,9 @@ namespace LibBSP {
 					return "";
 				}
 			}
-			set { this["classname"] = value; }
+			set {
+				this["classname"] = value;
+			}
 		}
 
 		/// <summary>
@@ -196,8 +209,15 @@ namespace LibBSP {
 					return "";
 				}
 			}
-			set { base[key] = value; }
+			set {
+				base[key] = value;
+			}
 		}
+
+		/// <summary>
+		/// Initializes a new instance of an <see cref="Entity"/> object with no initial properties.
+		/// </summary>
+		public Entity() : base(StringComparer.InvariantCultureIgnoreCase) { }
 
 		/// <summary>
 		/// Initializes a new instance of an <see cref="Entity"/>, parsing the given <c>byte</c> array into an <see cref="Entity"/> structure.
@@ -219,9 +239,9 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Initializes a new instance of an <see cref="Entity"/> object with no initial properties.
+		/// Initializes a new instance of an <see cref="Entity"/> object with a given parent.
 		/// </summary>
-		public Entity(ILump parent = null) : base(StringComparer.InvariantCultureIgnoreCase) {
+		public Entity(ILump parent) : base(StringComparer.InvariantCultureIgnoreCase) {
 			Parent = parent;
 		}
 
@@ -400,7 +420,7 @@ namespace LibBSP {
 								target = connection[0],
 								action = connection[1],
 								param = connection[2],
-								delay = double.Parse(connection[3], _format),
+								delay = float.Parse(connection[3], _format),
 								fireOnce = int.Parse(connection[4]),
 								unknown0 = connection.Length > 5 ? connection[5] : "",
 								unknown1 = connection.Length > 6 ? connection[6] : "",
@@ -525,7 +545,7 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="key">Name of the attribute to retrieve.</param>
 		/// <returns>Vector representation of the components of the attribute.</returns>
-		public Vector4d GetVector(string key) {
+		public Vector4 GetVector(string key) {
 			float[] results = new float[4];
 			if (ContainsKey(key) && !string.IsNullOrEmpty(this[key])) {
 				string[] nums = this[key].Split(' ');
@@ -537,7 +557,7 @@ namespace LibBSP {
 					}
 				}
 			}
-			return new Vector4d(results[0], results[1], results[2], results[3]);
+			return new Vector4(results[0], results[1], results[2], results[3]);
 		}
 
 		#region IComparable
@@ -549,9 +569,13 @@ namespace LibBSP {
 		/// <returns>Less than zero if this entity is first, 0 if they occur at the same time, greater than zero otherwise.</returns>
 		/// <exception cref="ArgumentException"><paramref name="obj"/> was not of type <see cref="Entity"/>.</exception>
 		public int CompareTo(object obj) {
-			if (obj == null) { return 1; }
+			if (obj == null) {
+				return 1;
+			}
 			Entity other = obj as Entity;
-			if (other == null) { throw new ArgumentException("Object is not an Entity"); }
+			if (other == null) {
+				throw new ArgumentException("Object is not an Entity");
+			}
 
 			int firstTry = className.CompareTo(other.className);
 			return firstTry != 0 ? firstTry : name.CompareTo(other.name);
@@ -564,7 +588,9 @@ namespace LibBSP {
 		/// <param name="other"><see cref="Entity"/> to compare to.</param>
 		/// <returns>Less than zero if this entity is first, 0 if they occur at the same time, greater than zero otherwise.</returns>
 		public int CompareTo(Entity other) {
-			if (other == null) { return 1; }
+			if (other == null) {
+				return 1;
+			}
 			int firstTry = className.CompareTo(other.className);
 			return firstTry != 0 ? firstTry : name.CompareTo(other.name);
 		}
@@ -581,7 +607,6 @@ namespace LibBSP {
 			base.GetObjectData(info, context);
 			info.AddValue("connections", connections, typeof(List<EntityConnection>));
 			info.AddValue("brushes", brushes, typeof(List<MAPBrush>));
-
 		}
 		#endregion
 
@@ -661,7 +686,7 @@ namespace LibBSP {
 			public string target;
 			public string action;
 			public string param;
-			public double delay;
+			public float delay;
 			public int fireOnce;
 			// As I recall, these exist in Dark Messiah only. I have no idea what they are for.
 			public string unknown0;
