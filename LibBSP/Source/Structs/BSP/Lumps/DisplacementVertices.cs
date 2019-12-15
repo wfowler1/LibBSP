@@ -48,8 +48,8 @@ namespace LibBSP {
 		/// <param name="power">The power of the displacement.</param>
 		/// <returns>Array of <see cref="DisplacementVertex"/> objects containing all the vertices in this displacement</returns>
 		public DisplacementVertex[] GetVerticesInDisplacement(int first, int power) {
-			int side = (power * power) + 1;
-			int numVerts = side * side;
+			int numSideVerts = (int)Math.Pow(2, power) + 1;
+			int numVerts = numSideVerts * numSideVerts;
 			DisplacementVertex[] ret = new DisplacementVertex[numVerts];
 			for (int i = 0; i < numVerts; ++i) {
 				ret[i] = this[first + i];
