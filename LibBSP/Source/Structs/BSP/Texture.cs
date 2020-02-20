@@ -437,7 +437,7 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="name">The name of the texture to process.</param>
 		/// <param name="mapType">The <see cref="MapType"/> of the BSP this texture name is from.</param>
-		/// <returns>A sanitized version of the passed <param.</returns>
+		/// <returns>A sanitized version of the passed <paramref name="name"/>.</returns>
 		public static string SanitizeName(string name, MapType mapType) {
 			string sanitized = name.Replace('\\', '/');
 			switch (mapType) {
