@@ -433,7 +433,7 @@ namespace LibBSP {
 
 		/// <summary>
 		/// Returns a texture <see cref="name"/> with back slashes converted to forward slashes,
-		/// Source cubemap names fixed, and trimming leading "Textures/" in Quake 3.
+		/// Source cubemap names fixed, etc.
 		/// </summary>
 		/// <param name="name">The name of the texture to process.</param>
 		/// <param name="mapType">The <see cref="MapType"/> of the BSP this texture name is from.</param>
@@ -499,18 +499,6 @@ namespace LibBSP {
 								}
 							}
 						}
-					}
-					break;
-				}
-				case MapType.Quake3:
-				case MapType.MOHAA:
-				case MapType.CoD:
-				case MapType.STEF2:
-				case MapType.STEF2Demo:
-				case MapType.Raven:
-				case MapType.FAKK: {
-					if (sanitized.Length >= 9 && sanitized.Substring(0, 9).Equals("textures/", StringComparison.InvariantCultureIgnoreCase)) {
-						sanitized = sanitized.Substring(9);
 					}
 					break;
 				}
