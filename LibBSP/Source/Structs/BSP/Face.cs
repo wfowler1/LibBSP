@@ -891,12 +891,14 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake3:
-					case MapType.Raven:
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
 					case MapType.FAKK: {
 						return new Vector2(BitConverter.ToInt32(Data, 96), BitConverter.ToInt32(Data, 100));
+					}
+					case MapType.Raven: {
+						return new Vector2(BitConverter.ToInt32(Data, 140), BitConverter.ToInt32(Data, 144));
 					}
 					default: {
 						return new Vector2(float.NaN, float.NaN);
@@ -906,7 +908,6 @@ namespace LibBSP {
 			set {
 				switch (MapType) {
 					case MapType.Quake3:
-					case MapType.Raven:
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
@@ -915,6 +916,13 @@ namespace LibBSP {
 						bytes.CopyTo(Data, 96);
 						bytes = BitConverter.GetBytes((int)value.Y());
 						bytes.CopyTo(Data, 100);
+						break;
+					}
+					case MapType.Raven: {
+						byte[] bytes = BitConverter.GetBytes((int)value.X());
+						bytes.CopyTo(Data, 140);
+						bytes = BitConverter.GetBytes((int)value.Y());
+						bytes.CopyTo(Data, 144);
 						break;
 					}
 				}
