@@ -431,5 +431,92 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// Returns a texture <see cref="name"/> with back slashes converted to forward slashes,
+		/// Source cubemap names fixed, and trimming leading "Textures/" in Quake 3.
+		/// </summary>
+		/// <param name="name">The name of the texture to process.</param>
+		/// <param name="mapType">The <see cref="MapType"/> of the BSP this texture name is from.</param>
+		/// <returns>A sanitized version of the passed <param.</returns>
+		public static string SanitizeName(string name, MapType mapType) {
+			string sanitized = name.Replace('\\', '/');
+			switch (mapType) {
+				case MapType.Vindictus:
+				case MapType.TacticalInterventionEncrypted:
+				case MapType.Source17:
+				case MapType.Source18:
+				case MapType.Source19:
+				case MapType.Source20:
+				case MapType.Source21:
+				case MapType.Source22:
+				case MapType.Source23:
+				case MapType.Source27:
+				case MapType.L4D2:
+				case MapType.DMoMaM:
+				case MapType.Titanfall: {
+					if (sanitized.Length >= 5 && sanitized.Substring(0, 5).Equals("maps/", StringComparison.InvariantCultureIgnoreCase)) {
+						sanitized = sanitized.Substring(5);
+						for (int i = 0; i < sanitized.Length; ++i) {
+							if (sanitized[i] == '/') {
+								sanitized = sanitized.Substring(i + 1);
+								break;
+							}
+						}
+					}
+
+					// Parse cubemap textures
+					// TODO: Use regex? .{1,}(_-?[0-9]{1,}){3}$
+					int numUnderscores = 0;
+					bool validnumber = false;
+					for (int i = sanitized.Length - 1; i > 0; --i) {
+						if (sanitized[i] <= '9' && sanitized[i] >= '0') {
+							// Current is a number, this may be a cubemap reference
+							validnumber = true;
+						} else {
+							if (sanitized[i] == '-') {
+								// Current is a minus sign (-).
+								if (!validnumber) {
+									break; // Make sure there's a number to add the minus sign to. If not, kill the loop.
+								}
+							} else {
+								if (sanitized[i] == '_') {
+									// Current is an underscore (_)
+									if (validnumber) {
+										// Make sure there is a number in the current string
+										++numUnderscores; // before moving on to the next one.
+										if (numUnderscores == 3) {
+											// If we've got all our numbers
+											sanitized = sanitized.Substring(0, i); // Cut the texture string
+										}
+										validnumber = false;
+									} else {
+										// No number after the underscore
+										break;
+									}
+								} else {
+									// Not an acceptable character
+									break;
+								}
+							}
+						}
+					}
+					break;
+				}
+				case MapType.Quake3:
+				case MapType.MOHAA:
+				case MapType.CoD:
+				case MapType.STEF2:
+				case MapType.STEF2Demo:
+				case MapType.Raven:
+				case MapType.FAKK: {
+					if (sanitized.Length >= 9 && sanitized.Substring(0, 9).Equals("textures/", StringComparison.InvariantCultureIgnoreCase)) {
+						sanitized = sanitized.Substring(9);
+					}
+					break;
+				}
+			}
+			return sanitized;
+		}
+
 	}
 }
