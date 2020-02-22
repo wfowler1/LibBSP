@@ -63,7 +63,10 @@ namespace LibBSP {
 			}
 		}
 
-		public string name {
+		/// <summary>
+		/// Gets or sets the name of this <see cref="Texture"/>.
+		/// </summary>
+		public string Name {
 			get {
 				switch (MapType) {
 					case MapType.Quake: {
@@ -171,7 +174,10 @@ namespace LibBSP {
 			}
 		}
 
-		public string mask {
+		/// <summary>
+		/// Gets or sets the name of the mask used on this <see cref="Texture"/>.
+		/// </summary>
+		public string Mask {
 			get {
 				switch (MapType) {
 					case MapType.MOHAA: {
@@ -196,7 +202,10 @@ namespace LibBSP {
 			}
 		}
 
-		public int flags {
+		/// <summary>
+		/// Gets or sets the flags on this <see cref="Texture"/>.
+		/// </summary>
+		public int Flags {
 			get {
 				switch (MapType) {
 					case MapType.Quake2:
@@ -247,7 +256,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public int contents {
+		/// <summary>
+		/// Gets or sets the contents flags used by this <see cref="Texture"/>.
+		/// </summary>
+		public int Contents {
 			get {
 				switch (MapType) {
 					case MapType.STEF2:
@@ -285,7 +297,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public TextureInfo texAxes {
+		/// <summary>
+		/// Gets or sets the <see cref="LibBSP.TextureInfo"/> in this <see cref="Texture"/>.
+		/// </summary>
+		public TextureInfo TextureInfo {
 			get {
 				switch (MapType) {
 					case MapType.Quake2:
@@ -309,13 +324,13 @@ namespace LibBSP {
 					case MapType.SoF:
 					case MapType.Daikatana:
 					case MapType.SiN: {
-						byte[] bytes = value.uAxis.GetBytes();
+						byte[] bytes = value.UAxis.GetBytes();
 						bytes.CopyTo(Data, 0);
-						bytes = value.vAxis.GetBytes();
+						bytes = value.VAxis.GetBytes();
 						bytes.CopyTo(Data, 16);
-						bytes = BitConverter.GetBytes(value.translation.X());
+						bytes = BitConverter.GetBytes(value.Translation.X());
 						bytes.CopyTo(Data, 12);
-						bytes = BitConverter.GetBytes(value.translation.Y());
+						bytes = BitConverter.GetBytes(value.Translation.Y());
 						bytes.CopyTo(Data, 28);
 						break;
 					}

@@ -55,7 +55,10 @@ namespace LibBSP {
 			}
 		}
 
-		public string name {
+		/// <summary>
+		/// Gets or sets the name of the model.
+		/// </summary>
+		public string Name {
 			get {
 				switch (MapType) {
 					case MapType.MOHAA: {
@@ -80,7 +83,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public Vector3 origin {
+		/// <summary>
+		/// Gets or sets the origin of this model.
+		/// </summary>
+		public Vector3 Origin {
 			get {
 				switch (MapType) {
 					case MapType.MOHAA: {
@@ -101,7 +107,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public Vector3 angles {
+		/// <summary>
+		/// Gets or sets the Angles for this model.
+		/// </summary>
+		public Vector3 Angles {
 			get {
 				switch (MapType) {
 					case MapType.MOHAA: {
@@ -122,7 +131,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public float scale {
+		/// <summary>
+		/// Gets or sets the uniform scale of this model.
+		/// </summary>
+		public float Scale {
 			get {
 				switch (MapType) {
 					case MapType.MOHAA: {
@@ -138,50 +150,6 @@ namespace LibBSP {
 				switch (MapType) {
 					case MapType.MOHAA: {
 						bytes.CopyTo(Data, 152);
-						break;
-					}
-				}
-			}
-		}
-		
-		[Index("vertices")] public int firstVertex {
-			get {
-				switch (MapType) {
-					case MapType.MOHAA: {
-						return BitConverter.ToInt32(Data, 156);
-					}
-					default: {
-						return -1;
-					}
-				}
-			}
-			set {
-				byte[] bytes = BitConverter.GetBytes(value);
-				switch (MapType) {
-					case MapType.MOHAA: {
-						bytes.CopyTo(Data, 156);
-						break;
-					}
-				}
-			}
-		}
-		
-		[Count("vertices")] public short numVertices {
-			get {
-				switch (MapType) {
-					case MapType.MOHAA: {
-						return BitConverter.ToInt16(Data, 160);
-					}
-					default: {
-						return -1;
-					}
-				}
-			}
-			set {
-				byte[] bytes = BitConverter.GetBytes(value);
-				switch (MapType) {
-					case MapType.MOHAA: {
-						bytes.CopyTo(Data, 160);
 						break;
 					}
 				}

@@ -1,8 +1,19 @@
+#if UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER
+#define UNITY
+#endif
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
 namespace LibBSP {
+#if UNITY
+	using Plane = UnityEngine.Plane;
+#elif GODOT
+	using Plane = Godot.Plane;
+#else
+	using Plane = System.Numerics.Plane;
+#endif
 
 	/// <summary>
 	/// Contains all data needed for a node in a BSP tree.
@@ -43,7 +54,19 @@ namespace LibBSP {
 			}
 		}
 
-		public int plane {
+		/// <summary>
+		/// Gets the Plane used by this <see cref="Node"/>.
+		/// </summary>
+		public Plane Plane {
+			get {
+				return Parent.Bsp.planes[PlaneIndex];
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the Plane used by this <see cref="Node"/>.
+		/// </summary>
+		public int PlaneIndex {
 			get {
 				return BitConverter.ToInt32(Data, 0);
 			}
@@ -52,7 +75,23 @@ namespace LibBSP {
 			}
 		}
 
-		public int child1 {
+		/// <summary>
+		/// Gets the first child of this <see cref="Node"/>. If <see cref="Child1Index"/> is positive, the child will be
+		/// another <see cref="Node"/>. Otherwise it's a <see cref="Leaf"/>.
+		/// </summary>
+		public ILumpObject Child1 {
+			get {
+				if (Child1Index >= 0) {
+					return Parent.Bsp.nodes[Child1Index];
+				}
+				return Parent.Bsp.leaves[-Child1Index];
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the first child of this <see cref="Node"/>, positive for other <see cref="Node"/>s, negative for <see cref="Leaf"/>s.
+		/// </summary>
+		public int Child1Index {
 			get {
 				switch (MapType) {
 					case MapType.Quake: {
@@ -130,7 +169,23 @@ namespace LibBSP {
 			}
 		}
 
-		public int child2 {
+		/// <summary>
+		/// Gets the second child of this <see cref="Node"/>. If <see cref="Child2Index"/> is positive, the child will be
+		/// another <see cref="Node"/>. Otherwise it's a <see cref="Leaf"/>.
+		/// </summary>
+		public ILumpObject Child2 {
+			get {
+				if (Child2Index >= 0) {
+					return Parent.Bsp.nodes[Child2Index];
+				}
+				return Parent.Bsp.leaves[-Child2Index];
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the second child of this <see cref="Node"/>, positive for other <see cref="Node"/>s, negative for <see cref="Leaf"/>s.
+		/// </summary>
+		public int Child2Index {
 			get {
 				switch (MapType) {
 					case MapType.Quake: {

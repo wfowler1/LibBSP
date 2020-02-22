@@ -76,12 +76,12 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets whether this <see cref="Entity"/> is brush-based or not.
 		/// </summary>
-		public bool brushBased { get { return brushes.Count > 0 || modelNumber >= 0; } }
+		public bool IsBrushBased { get { return brushes.Count > 0 || ModelNumber >= 0; } }
 
 		/// <summary>
 		/// Wrapper for the "spawnflags" attribute.
 		/// </summary>
-		public uint spawnflags {
+		public uint Spawnflags {
 			get {
 				try {
 					if (ContainsKey("spawnflags")) {
@@ -101,7 +101,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Wrapper for the "origin" attribute.
 		/// </summary>
-		public Vector3 origin {
+		public Vector3 Origin {
 			get {
 				Vector4 vec = GetVector("origin");
 				return new Vector3(vec.X(), vec.Y(), vec.Z());
@@ -114,7 +114,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Wrapper for the "angles" attribute.
 		/// </summary>
-		public Vector3 angles {
+		public Vector3 Angles {
 			get {
 				Vector4 vec = GetVector("angles");
 				return new Vector3(vec.X(), vec.Y(), vec.Z());
@@ -127,7 +127,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Wrapper for the "targetname" attribute.
 		/// </summary>
-		public string name {
+		public string Name {
 			get {
 				if (ContainsKey("targetname")) {
 					return this["targetname"];
@@ -146,7 +146,7 @@ namespace LibBSP {
 		/// Wrapper for the "classname" attribute.
 		/// </summary>
 		/// <remarks>If an entity has no class, it has no behavior. It's either an error or metadata.</remarks>
-		public string className {
+		public string ClassName {
 			get {
 				if (ContainsKey("classname")) {
 					return this["classname"];
@@ -160,11 +160,27 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Gets or sets the model name for this <see cref="Entity"/>. If this is a
+		/// brush-based <see cref="Entity"/>, consider using <see cref="ModelNumber"/> instead.
+		/// </summary>
+		public string Model {
+			get {
+				if (ContainsKey("model")) {
+					return this["model"];
+				}
+				return null;
+			}
+			set {
+				this["model"] = value;
+			}
+		}
+
+		/// <summary>
 		/// If there's a model number in the attributes list, this method fetches it
 		/// and returns it. If there is no model defined, or it's not a numerical 
 		/// value, then -1 is returned. If it's the worldspawn then a 0 is returned.
 		/// </summary>
-		public int modelNumber {
+		public int ModelNumber {
 			get {
 				try {
 					if (this["classname"] == "worldspawn") {
@@ -476,7 +492,7 @@ namespace LibBSP {
 		/// <param name="bits">The bits to compare spawnflags to.</param>
 		/// <returns><c>true</c> if all bits that were set in <paramref name="bits"/> were set in spawnflags.</returns>
 		public bool SpawnflagsSet(uint bits) {
-			return ((spawnflags & bits) == bits);
+			return ((Spawnflags & bits) == bits);
 		}
 
 		/// <summary>
@@ -484,7 +500,7 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="bits">Bitmask of bits to toggle.</param>
 		public void ToggleSpawnflags(uint bits) {
-			this["spawnflags"] = (spawnflags ^ bits).ToString();
+			this["spawnflags"] = (Spawnflags ^ bits).ToString();
 		}
 
 		/// <summary>
@@ -493,7 +509,7 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="bits">Bitmask of bits to clear.</param>
 		public void ClearSpawnflags(uint bits) {
-			ToggleSpawnflags(spawnflags & bits);
+			ToggleSpawnflags(Spawnflags & bits);
 		}
 
 		/// <summary>
@@ -501,7 +517,7 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="bits">Bitmask of bits to set.</param>
 		public void SetSpawnflags(uint bits) {
-			this["spawnflags"] = (spawnflags | bits).ToString();
+			this["spawnflags"] = (Spawnflags | bits).ToString();
 		}
 
 		/// <summary>
@@ -577,8 +593,8 @@ namespace LibBSP {
 				throw new ArgumentException("Object is not an Entity");
 			}
 
-			int firstTry = className.CompareTo(other.className);
-			return firstTry != 0 ? firstTry : name.CompareTo(other.name);
+			int comparison = ClassName.CompareTo(other.ClassName);
+			return comparison != 0 ? comparison : Name.CompareTo(other.Name);
 		}
 
 		/// <summary>
@@ -591,8 +607,8 @@ namespace LibBSP {
 			if (other == null) {
 				return 1;
 			}
-			int firstTry = className.CompareTo(other.className);
-			return firstTry != 0 ? firstTry : name.CompareTo(other.name);
+			int comparison = ClassName.CompareTo(other.ClassName);
+			return comparison != 0 ? comparison : Name.CompareTo(other.Name);
 		}
 		#endregion
 

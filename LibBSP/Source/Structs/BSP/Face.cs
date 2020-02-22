@@ -1,5 +1,10 @@
 #if UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER
 #define UNITY
+#if !UNITY_5_6_OR_NEWER
+// UIVertex was introduced in Unity 4.5 but it only had color, position and one UV.
+// From 4.6.0 until 5.5.6 it was missing two sets of UVs.
+#define OLDUNITY
+#endif
 #endif
 
 using System;
@@ -9,10 +14,16 @@ using System.Reflection;
 namespace LibBSP {
 #if UNITY
 	using Vector2 = UnityEngine.Vector2;
+	using Plane = UnityEngine.Plane;
+#if !OLDUNITY
+	using Vertex = UnityEngine.UIVertex;
+#endif
 #elif GODOT
 	using Vector2 = Godot.Vector2;
+	using Plane = Godot.Plane;
 #else
 	using Vector2 = System.Numerics.Vector2;
+	using Plane = System.Numerics.Plane;
 #endif
 
 	/// <summary>
@@ -60,7 +71,19 @@ namespace LibBSP {
 			}
 		}
 
-		public int plane {
+		/// <summary>
+		/// Gets the Plane used by this <see cref="Face"/>.
+		/// </summary>
+		public Plane Plane {
+			get {
+				return Parent.Bsp.planes[PlaneIndex];
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the Plane used by this <see cref="Face"/>.
+		/// </summary>
+		public int PlaneIndex {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
@@ -128,7 +151,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public int side {
+		/// <summary>
+		/// Does the <see cref="Face"/>'s normal point in the same direction as the Plane's?
+		/// </summary>
+		public bool PlaneSide {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
@@ -136,7 +162,7 @@ namespace LibBSP {
 					case MapType.Daikatana:
 					case MapType.SiN:
 					case MapType.SoF: {
-						return BitConverter.ToUInt16(Data, 2);
+						return BitConverter.ToUInt16(Data, 2) > 0;
 					}
 					case MapType.Source18:
 					case MapType.Source19:
@@ -148,31 +174,26 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.DMoMaM: {
-						return (int)Data[2];
+						return Data[2] > 0;
 					}
 					case MapType.Vindictus: {
-						return (int)Data[4];
+						return Data[4] > 0;
 					}
 					case MapType.Source17: {
-						return (int)Data[34];
+						return Data[34] > 0;
 					}
 					default: {
-						return -1;
+						return true;
 					}
 				}
 			}
 			set {
-				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
 					case MapType.Quake:
 					case MapType.Quake2:
 					case MapType.Daikatana:
 					case MapType.SiN:
-					case MapType.SoF: {
-						Data[2] = bytes[0];
-						Data[3] = bytes[1];
-						break;
-					}
+					case MapType.SoF:
 					case MapType.Source18:
 					case MapType.Source19:
 					case MapType.Source20:
@@ -183,22 +204,40 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.DMoMaM: {
-						Data[2] = bytes[0];
+						Data[2] = (byte)(value ? 1 : 0);
 						break;
 					}
 					case MapType.Vindictus: {
-						Data[4] = bytes[0];
+						Data[4] = (byte)(value ? 1 : 0);
 						break;
 					}
 					case MapType.Source17: {
-						Data[34] = bytes[0];
+						Data[34] = (byte)(value ? 1 : 0);
 						break;
 					}
 				}
 			}
 		}
-		
-		[Index("edges")] public int firstEdge {
+
+		/// <summary>
+		/// For formats which use <see cref="Edge"/>s, enumerates the <see cref="Edge"/> indices referenced
+		/// by this <see cref="Face"/>. A negative index means the <see cref="Edge"/> is used backward from
+		/// its second <see cref="Vertex"/> to its first.
+		/// </summary>
+		public IEnumerable<int> EdgeIndices {
+			get {
+				for (int i = 0; i < NumEdgeIndices; ++i) {
+					yield return (int)Parent.Bsp.surfEdges[FirstEdgeIndexIndex + i];
+				}
+			}
+		}
+
+		/// <summary>
+		/// For formats which use <see cref="Edge"/>s, gets or sets the index of the first <see cref="Edge"/>
+		/// index in this <see cref="Face"/>. A negative index means the <see cref="Edge"/> is used backward
+		/// from its second <see cref="Vertex"/> to first.
+		/// </summary>
+		[Index("edges")] public int FirstEdgeIndexIndex {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
@@ -262,7 +301,11 @@ namespace LibBSP {
 			}
 		}
 		
-		[Count("edges")] public int numEdges {
+		/// <summary>
+		/// For formats which use <see cref="Edge"/>s, gets or sets the count of <see cref="Edge"/> indices
+		/// in this <see cref="Face"/>.
+		/// </summary>
+		[Count("edges")] public int NumEdgeIndices {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
@@ -327,8 +370,20 @@ namespace LibBSP {
 				}
 			}
 		}
+
+		/// <summary>
+		/// Gets the <see cref="LibBSP.Texture"/> referenced by this <see cref="Face"/>.
+		/// </summary>
+		public Texture Texture {
+			get {
+				return Parent.Bsp.textures[TextureIndex];
+			}
+		}
 		
-		public int texture {
+		/// <summary>
+		/// Gets or sets the index of the <see cref="LibBSP.Texture"/> used by this <see cref="Face"/>.
+		/// </summary>
+		public int TextureIndex {
 			get {
 				switch (MapType) {
 					case MapType.CoD:
@@ -392,8 +447,22 @@ namespace LibBSP {
 				}
 			}
 		}
+
+		/// <summary>
+		/// Enumerates the <see cref="Vertex"/> objects referenced by this <see cref="Face"/>.
+		/// </summary>
+		public IEnumerable<Vertex> Vertices {
+			get {
+				for (int i = 0; i < NumVertices; ++i) {
+					yield return Parent.Bsp.vertices[FirstVertexIndex + i];
+				}
+			}
+		}
 		
-		[Index("vertices")] public int firstVertex {
+		/// <summary>
+		/// Gets or sets the index of the first <see cref="Vertex"/> used by this <see cref="Face"/>.
+		/// </summary>
+		[Index("vertices")] public int FirstVertexIndex {
 			get {
 				switch (MapType) {
 					case MapType.CoD:
@@ -438,7 +507,10 @@ namespace LibBSP {
 			}
 		}
 		
-		[Count("vertices")] public int numVertices {
+		/// <summary>
+		/// Gets or sets the number of <see cref="Vertex"/> objects used by this <see cref="Face"/>.
+		/// </summary>
+		[Count("vertices")] public int NumVertices {
 			get {
 				switch (MapType) {
 					case MapType.CoD:
@@ -494,8 +566,20 @@ namespace LibBSP {
 				}
 			}
 		}
+
+		/// <summary>
+		/// For Nightfire, gets the material referenced by this <see cref="Face"/>.
+		/// </summary>
+		public Texture Material {
+			get {
+				return Parent.Bsp.materials[TextureIndex];
+			}
+		}
 		
-		public int material {
+		/// <summary>
+		/// For Nightfire, gets or sets the index of the material referenced by this <see cref="Face"/>.
+		/// </summary>
+		public int MaterialIndex {
 			get {
 				switch (MapType) {
 					case MapType.Nightfire: {
@@ -516,8 +600,20 @@ namespace LibBSP {
 				}
 			}
 		}
+
+		/// <summary>
+		/// Gets the <see cref="LibBSP.TextureInfo"/> returned by this <see cref="Face"/>.
+		/// </summary>
+		public TextureInfo TextureInfo {
+			get {
+				return Parent.Bsp.texInfo[TextureInfoIndex];
+			}
+		}
 		
-		public int textureInfo {
+		/// <summary>
+		/// Gets or sets the index of the <see cref="LibBSP.TextureInfo"/> used by this <see cref="Face"/>.
+		/// </summary>
+		public int TextureInfoIndex {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
@@ -582,7 +678,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public int displacement {
+		/// <summary>
+		/// Gets or sets the index of the <see cref="LibBSP.Displacement"/> using this <see cref="Face"/>.
+		/// </summary>
+		public int DisplacementIndex {
 			get {
 				switch (MapType) {
 					case MapType.Source18:
@@ -637,8 +736,20 @@ namespace LibBSP {
 				}
 			}
 		}
-		
-		public int original {
+
+		/// <summary>
+		/// Gets the original <see cref="Face"/> which was split to create this <see cref="Face"/>.
+		/// </summary>
+		public Face OriginalFace {
+			get {
+				return Parent.Bsp.originalFaces[OriginalFaceIndex];
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the original <see cref="Face"/> which was split to create this <see cref="Face"/>.
+		/// </summary>
+		public int OriginalFaceIndex {
 			get {
 				switch (MapType) {
 					case MapType.Source18:
@@ -702,7 +813,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public int flags {
+		/// <summary>
+		/// Gets or sets the type (flags) of this face.
+		/// </summary>
+		public int Type {
 			get {
 				switch (MapType) {
 					case MapType.Quake3:
@@ -740,8 +854,24 @@ namespace LibBSP {
 				}
 			}
 		}
+
+		/// <summary>
+		/// For formats which use triangle corner indices, enumerates the indices of <see cref="Vertex"/>
+		/// objects used by this <see cref="Face"/>.
+		/// </summary>
+		public IEnumerable<int> Indices {
+			get {
+				for (int i = 0; i < NumIndices; ++i) {
+					yield return (int)Parent.Bsp.indices[FirstIndexIndex + i];
+				}
+			}
+		}
 		
-		[Index("indices")] public int firstIndex {
+		/// <summary>
+		/// For formats which use triangle corner indices, gets or sets the index first <see cref="Vertex"/> index
+		/// used by this <see cref="Face"/>.
+		/// </summary>
+		[Index("indices")] public int FirstIndexIndex {
 			get {
 				switch (MapType) {
 					case MapType.CoD:
@@ -785,8 +915,12 @@ namespace LibBSP {
 				}
 			}
 		}
-		
-		[Count("indices")] public int numIndices {
+
+		/// <summary>
+		/// For formats which use triangle corner indices, gets or sets the count of <see cref="Vertex"/> indices
+		/// used by this <see cref="Face"/>.
+		/// </summary>
+		[Count("indices")] public int NumIndices {
 			get {
 				switch (MapType) {
 					case MapType.CoD:
@@ -843,7 +977,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public int lightStyles {
+		/// <summary>
+		/// Gets or sets the flags for lightmap style used by this <see cref="Face"/>.
+		/// </summary>
+		public int LightStyle {
 			get {
 				switch (MapType) {
 					case MapType.Nightfire: {
@@ -865,7 +1002,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public int lightMaps {
+		/// <summary>
+		/// Gets or sets the offset into the lightmap data this <see cref="Face"/> uses.
+		/// </summary>
+		public int LightMapOffset {
 			get {
 				switch (MapType) {
 					case MapType.Nightfire: {
@@ -887,7 +1027,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public Vector2 patchSize {
+		/// <summary>
+		/// Gets the size of the <see cref="Patch"/> used by this <see cref="Face"/>.
+		/// </summary>
+		public Vector2 PatchSize {
 			get {
 				switch (MapType) {
 					case MapType.Quake3:

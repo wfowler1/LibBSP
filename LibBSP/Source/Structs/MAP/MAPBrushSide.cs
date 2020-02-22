@@ -130,16 +130,16 @@ namespace LibBSP {
 								string[] split = tokens[1].SplitUnlessBetweenDelimiters(' ', '[', ']', StringSplitOptions.RemoveEmptyEntries);
 								textureInfo.scale = new Vector2(float.Parse(split[1], _format), textureInfo.scale.Y());
 								split = split[0].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-								textureInfo.uAxis = new Vector3(float.Parse(split[0], _format), float.Parse(split[1], _format), float.Parse(split[2], _format));
-								textureInfo.translation = new Vector2(float.Parse(split[3], _format), textureInfo.translation.Y());
+								textureInfo.UAxis = new Vector3(float.Parse(split[0], _format), float.Parse(split[1], _format), float.Parse(split[2], _format));
+								textureInfo.Translation = new Vector2(float.Parse(split[3], _format), textureInfo.Translation.Y());
 								break;
 							}
 							case "vaxis": {
 								string[] split = tokens[1].SplitUnlessBetweenDelimiters(' ', '[', ']', StringSplitOptions.RemoveEmptyEntries);
 								textureInfo.scale = new Vector2(textureInfo.scale.X(), float.Parse(split[1], _format));
 								split = split[0].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-								textureInfo.vAxis = new Vector3(float.Parse(split[0], _format), float.Parse(split[1], _format), float.Parse(split[2], _format));
-								textureInfo.translation = new Vector2(textureInfo.translation.X(), float.Parse(split[3], _format));
+								textureInfo.VAxis = new Vector3(float.Parse(split[0], _format), float.Parse(split[1], _format), float.Parse(split[2], _format));
+								textureInfo.Translation = new Vector2(textureInfo.Translation.X(), float.Parse(split[3], _format));
 								break;
 							}
 							case "rotation": {

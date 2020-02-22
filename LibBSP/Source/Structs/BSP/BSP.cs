@@ -106,6 +106,7 @@ namespace LibBSP {
 		private Lump<Patch> _patches;
 		private Lump<Vertex> _patchVerts;
 		private NumList _patchIndices;
+		private NumList _leafPatches;
 		// Nightfire
 		private Textures _materials;
 		private NumList _indices;
@@ -113,8 +114,8 @@ namespace LibBSP {
 		private Lump<Face> _originalFaces;
 		private NumList _texTable;
 		private Lump<TextureData> _texDatas;
-		private Lump<DisplacementInfo> _dispInfos;
-		private DisplacementVertices _dispVerts;
+		private Lump<Displacement> _dispInfos;
+		private Lump<DisplacementVertex> _dispVerts;
 		private NumList _displacementTriangles;
 		// public SourceOverlays overlays;
 		private Lump<Cubemap> _cubemaps;
@@ -372,14 +373,14 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// A <see cref="Lump{DisplacementInfo}"/> of <see cref="DisplacementInfo"/> objects in the BSP file, if available.
+		/// A <see cref="Lump{Displacement}"/> of <see cref="Displacement"/> objects in the BSP file, if available.
 		/// </summary>
-		public Lump<DisplacementInfo> dispInfos {
+		public Lump<Displacement> dispInfos {
 			get {
 				if (_dispInfos == null) {
-					int index = DisplacementInfo.GetIndexForLump(version);
+					int index = Displacement.GetIndexForLump(version);
 					if (index >= 0) {
-						_dispInfos = DisplacementInfo.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_dispInfos = Displacement.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
 				return _dispInfos;
@@ -387,9 +388,9 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// The <see cref="DisplacementVertices"/> object in the BSP file, if available.
+		/// The <see cref="Lump{DisplacementVertex}"/> object in the BSP file, if available.
 		/// </summary>
-		public DisplacementVertices dispVerts {
+		public Lump<DisplacementVertex> dispVerts {
 			get {
 				if (_dispVerts == null) {
 					int index = DisplacementVertex.GetIndexForLump(version);
@@ -544,6 +545,22 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// A <see cref="NumList"/> object containing the Leaf Patches lump, if available.
+		/// </summary>
+		public NumList leafPatches {
+			get {
+				if (_leafPatches == null) {
+					NumList.DataType type;
+					int index = NumList.GetIndexForLeafPatchesLump(version, out type);
+					if (index >= 0) {
+						_leafPatches = NumList.LumpFactory(reader.ReadLump(this[index]), type, this, this[index]);
+					}
+				}
+				return _leafPatches;
+			}
+		}
+
+		/// <summary>
 		/// A <see cref="NumList"/> object containing the Face Vertex Indices lump, if available.
 		/// </summary>
 		public NumList indices {
@@ -612,8 +629,8 @@ namespace LibBSP {
 		public StaticProps staticProps {
 			get {
 				if (_staticProps == null) {
-					if (gameLump != null && gameLump.ContainsKey(GameLumpType.sprp)) {
-						LumpInfo info = gameLump[GameLumpType.sprp];
+					if (gameLump != null && gameLump.ContainsKey(GameLumpType.prps)) {
+						LumpInfo info = gameLump[GameLumpType.prps];
 						byte[] thisLump;
 						// GameLump lumps may have their offset specified from either the beginning of the GameLump, or the beginning of the file.
 						if (gameLump.GetLowestLumpOffset() < this[GameLump.GetIndexForLump(version)].offset) {

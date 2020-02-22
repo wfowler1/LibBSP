@@ -133,9 +133,9 @@ namespace LibBSP {
 			for (int i = 0; i < Count; ++i) {
 				if (current < offset) {
 					// Add 1 for the missing null byte.
-					current += this[i].name.Length + 1;
+					current += this[i].Name.Length + 1;
 				} else {
-					return this[i].name;
+					return this[i].Name;
 				}
 			}
 			// If we get to this point, the strings ended before target offset was reached
@@ -150,10 +150,10 @@ namespace LibBSP {
 		public int GetOffsetOf(string name) {
 			int offset = 0;
 			for (int i = 0; i < Count; ++i) {
-				if (this[i].name.Equals(name, StringComparison.CurrentCultureIgnoreCase)) {
+				if (this[i].Name.Equals(name, StringComparison.CurrentCultureIgnoreCase)) {
 					return offset;
 				} else {
-					offset += this[i].name.Length + 1;
+					offset += this[i].Name.Length + 1;
 				}
 			}
 			// If we get here, the requested texture didn't exist.

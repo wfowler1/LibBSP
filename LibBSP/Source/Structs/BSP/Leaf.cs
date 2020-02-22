@@ -43,7 +43,10 @@ namespace LibBSP {
 			}
 		}
 
-		public int contents {
+		/// <summary>
+		/// Gets or sets the contents flags for this <see cref="Leaf"/>.
+		/// </summary>
+		public int Contents {
 			get {
 				switch (MapType) {
 					case MapType.SoF:
@@ -96,8 +99,22 @@ namespace LibBSP {
 				}
 			}
 		}
+
+		/// <summary>
+		/// Enumerates the brush indices used by this <see cref="Leaf"/>.
+		/// </summary>
+		public IEnumerable<int> MarkBrushes {
+			get {
+				for (int i = 0; i < NumMarkBrushIndices; ++i) {
+					yield return (int)Parent.Bsp.markBrushes[FirstMarkBrushIndex + i];
+				}
+			}
+		}
 		
-		[Index("markBrushes")] public int firstMarkBrush {
+		/// <summary>
+		/// Gets or sets the index of the first mark brush reference for this <see cref="Leaf"/>.
+		/// </summary>
+		[Index("markBrushes")] public int FirstMarkBrushIndex {
 			get {
 				switch (MapType) {
 					case MapType.CoD4: {
@@ -195,8 +212,11 @@ namespace LibBSP {
 				}
 			}
 		}
-		
-		[Count("markBrushes")] public int numMarkBrushes {
+
+		/// <summary>
+		/// Gets or sets the count of mark brush references for this <see cref="Leaf"/>.
+		/// </summary>
+		[Count("markBrushes")] public int NumMarkBrushIndices {
 			get {
 				switch (MapType) {
 					case MapType.CoD4: {
@@ -294,8 +314,22 @@ namespace LibBSP {
 				}
 			}
 		}
+
+		/// <summary>
+		/// Enumerates the <see cref="Face"/> indices used by this <see cref="Leaf"/>.
+		/// </summary>
+		public IEnumerable<int> MarkFaces {
+			get {
+				for (int i = 0; i < NumMarkFaceIndices; ++i) {
+					yield return (int)Parent.Bsp.markSurfaces[FirstMarkFaceIndex + i];
+				}
+			}
+		}
 		
-		[Index("markSurfaces")] public int firstMarkFace {
+		/// <summary>
+		/// Gets or sets the index of the first mark face reference for this <see cref="Leaf"/>.
+		/// </summary>
+		[Index("markSurfaces")] public int FirstMarkFaceIndex {
 			get {
 				switch (MapType) {
 					case MapType.CoD:
@@ -388,8 +422,11 @@ namespace LibBSP {
 				}
 			}
 		}
-		
-		[Count("markSurfaces")] public int numMarkFaces {
+
+		/// <summary>
+		/// Gets or sets the count of mark face references for this <see cref="Leaf"/>.
+		/// </summary>
+		[Count("markSurfaces")] public int NumMarkFaceIndices {
 			get {
 				switch (MapType) {
 					case MapType.CoD:
@@ -483,7 +520,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public int pvs {
+		/// <summary>
+		/// Gets or sets the offset in the visibility data used by this <see cref="Leaf"/>.
+		/// </summary>
+		public int VisibilityOffset {
 			get {
 				switch (MapType) {
 					case MapType.Nightfire: {

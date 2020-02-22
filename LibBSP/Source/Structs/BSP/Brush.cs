@@ -43,7 +43,21 @@ namespace LibBSP {
 			}
 		}
 
-		[Index("brushSides")] public int firstSide {
+		/// <summary>
+		/// Enumerates the <see cref="BrushSide"/>s referenced by this <see cref="Brush"/>.
+		/// </summary>
+		public IEnumerable<BrushSide> Sides {
+			get {
+				for (int i = 0; i < NumSides; ++i) {
+					yield return Parent.Bsp.brushSides[FirstSideIndex + i];
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the first side of this <see cref="Brush"/>.
+		/// </summary>
+		[Index("brushSides")] public int FirstSideIndex {
 			get {
 				switch (MapType) {
 					case MapType.Quake2:
@@ -114,7 +128,10 @@ namespace LibBSP {
 			}
 		}
 
-		[Count("brushSides")] public int numSides {
+		/// <summary>
+		/// Gets or sets the count of sides in this <see cref="Brush"/>.
+		/// </summary>
+		[Count("brushSides")] public int NumSides {
 			get {
 				switch (MapType) {
 					case MapType.CoD:
@@ -202,7 +219,19 @@ namespace LibBSP {
 			}
 		}
 
-		public int texture {
+		/// <summary>
+		/// Gets the <see cref="LibBSP.Texture"/> referenced by this <see cref="Brush"/>. Quake 3 engines only use this for contents.
+		/// </summary>
+		public Texture Texture {
+			get {
+				return Parent.Bsp.textures[TextureIndex];
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the <see cref="LibBSP.Texture"/> used by this <see cref="Brush"/>. Quake 3 engines only use this for contents.
+		/// </summary>
+		public int TextureIndex {
 			get {
 				switch (MapType) {
 					case MapType.CoD:
@@ -245,7 +274,10 @@ namespace LibBSP {
 			}
 		}
 
-		public int contents {
+		/// <summary>
+		/// Gets or sets the Contents mask for this <see cref="Brush"/>.
+		/// </summary>
+		public int Contents {
 			get {
 				switch (MapType) {
 					case MapType.Nightfire: {

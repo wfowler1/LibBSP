@@ -59,6 +59,7 @@
     <Compile Include="Source\Structs\BSP\Brush.cs" />
     <Compile Include="Source\Structs\BSP\BrushSide.cs" />
     <Compile Include="Source\Structs\BSP\BSP.cs" />
+    <Compile Include="Source\Structs\BSP\Displacement.cs" />
     <Compile Include="Source\Structs\BSP\Edge.cs" />
     <Compile Include="Source\Structs\BSP\Face.cs" />
     <Compile Include="Source\Structs\BSP\Leaf.cs" />
@@ -69,9 +70,7 @@
     <Compile Include="Source\Structs\BSP\Model.cs" />
     <Compile Include="Source\Structs\BSP\Node.cs" />
     <Compile Include="Source\Structs\BSP\Cubemap.cs" />
-    <Compile Include="Source\Structs\BSP\DisplacementInfo.cs" />
     <Compile Include="Source\Structs\BSP\DisplacementVertex.cs" />
-    <Compile Include="Source\Structs\BSP\Lumps\DisplacementVertices.cs" />
     <Compile Include="Source\Structs\BSP\Patch.cs" />
     <Compile Include="Source\Structs\BSP\StaticModel.cs" />
     <Compile Include="Source\Structs\BSP\StaticProp.cs" />

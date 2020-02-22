@@ -1,8 +1,20 @@
+#if UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER
+#define UNITY
+#if !UNITY_5_6_OR_NEWER
+#define OLDUNITY
+#endif
+#endif
+
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace LibBSP {
+#if UNITY
+	using Vector3 = UnityEngine.Vector3;
+#if !OLDUNITY
+	using Vertex = UnityEngine.UIVertex;
+#endif
+#endif
 
 	/// <summary>
 	/// Holds all the data for an edge in a BSP map.
@@ -43,7 +55,19 @@ namespace LibBSP {
 			}
 		}
 
-		public int firstVertex {
+		/// <summary>
+		/// Gets the first <see cref="Vertex"/> in this Edge.
+		/// </summary>
+		public Vertex FirstVertex {
+			get {
+				return Parent.Bsp.vertices[FirstVertexIndex];
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the first <see cref="Vertex"/> in this Edge.
+		/// </summary>
+		public int FirstVertexIndex {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
@@ -102,8 +126,20 @@ namespace LibBSP {
 				}
 			}
 		}
-		
-		public int secondVertex {
+
+		/// <summary>
+		/// Gets the second <see cref="Vertex"/> in this Edge.
+		/// </summary>
+		public Vertex SecondVertex {
+			get {
+				return Parent.Bsp.vertices[SecondVertexIndex];
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the second <see cref="Vertex"/> in this Edge.
+		/// </summary>
+		public int SecondVertexIndex {
 			get {
 				switch (MapType) {
 					case MapType.Quake:

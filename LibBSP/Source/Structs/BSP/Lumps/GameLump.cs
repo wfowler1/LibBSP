@@ -7,10 +7,14 @@ namespace LibBSP {
 	/// Enum containing known game lumps.
 	/// </summary>
 	public enum GameLumpType : int {
+		/// <summary> LDR detail prop lighting. </summary>
 		hlpd = 1685089384,
+		/// <summary> HDR detail prop lighting. </summary>
 		tlpd = 1685089396,
+		/// <summary> Detail props. </summary>
 		prpd = 1685090928,
-		sprp = 1936749168,
+		/// <summary> <see cref="StaticProps"/>. </summary>
+		prps = 1936749168,
 	}
 
 	/// <summary>

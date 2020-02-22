@@ -146,7 +146,7 @@ namespace LibBSP {
 		/// <param name="targetname">Targetname attribute to find.</param>
 		/// <returns><c>List</c>&lt;<see cref="Entity"/>&gt; with the specified targetname.</returns>
 		public List<Entity> GetAllWithName(string targetname) {
-			return FindAll(entity => { return entity.name.Equals(targetname, StringComparison.InvariantCultureIgnoreCase); });
+			return FindAll(entity => { return entity.Name.Equals(targetname, StringComparison.InvariantCultureIgnoreCase); });
 		}
 
 		/// <summary>
@@ -165,7 +165,7 @@ namespace LibBSP {
 		/// <param name="targetname">Targetname attribute to find.</param>
 		/// <returns><see cref="Entity"/> object with the specified targetname.</returns>
 		public Entity GetWithName(string targetname) {
-			return Find(entity => { return entity.name.Equals(targetname, StringComparison.InvariantCultureIgnoreCase); });
+			return Find(entity => { return entity.Name.Equals(targetname, StringComparison.InvariantCultureIgnoreCase); });
 		}
 	}
 }

@@ -1,8 +1,18 @@
+#if UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER
+#define UNITY
+#endif
+
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace LibBSP {
+#if UNITY
+	using Plane = UnityEngine.Plane;
+#elif GODOT
+	using Plane = Godot.Plane;
+#else
+	using Plane = System.Numerics.Plane;
+#endif
 
 	/// <summary>
 	/// Holds the data used by the brush side structures of all formats of BSP.
@@ -43,7 +53,19 @@ namespace LibBSP {
 			}
 		}
 
-		public int plane {
+		/// <summary>
+		/// Gets the Plane referenced by this <see cref="BrushSide"/>.
+		/// </summary>
+		public Plane Plane {
+			get {
+				return Parent.Bsp.planes[PlaneIndex];
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the Plane used by this <see cref="BrushSide"/>.
+		/// </summary>
+		public int PlaneIndex {
 			get {
 				switch (MapType) {
 					case MapType.SiN:
@@ -126,7 +148,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public float dist {
+		/// <summary>
+		/// In Call of Duty based maps, gets or sets the distance of this <see cref="BrushSide"/> from its axis.
+		/// </summary>
+		public float Distance {
 			get {
 				switch (MapType) {
 					case MapType.CoD:
@@ -152,7 +177,19 @@ namespace LibBSP {
 			}
 		}
 
-		public int texture {
+		/// <summary>
+		/// Gets the <see cref="LibBSP.Texture"/> referenced by this <see cref="BrushSide"/>.
+		/// </summary>
+		public Texture Texture {
+			get {
+				return Parent.Bsp.textures[TextureIndex];
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the <see cref="LibBSP.Texture"/> used by this <see cref="BrushSide"/>.
+		/// </summary>
+		public int TextureIndex {
 			get {
 				switch (MapType) {
 					case MapType.STEF2: {
@@ -232,8 +269,20 @@ namespace LibBSP {
 				}
 			}
 		}
-		
-		public int face {
+
+		/// <summary>
+		/// Gets the <see cref="LibBSP.Face"/> referenced by this <see cref="BrushSide"/>.
+		/// </summary>
+		public Face Face {
+			get {
+				return Parent.Bsp.faces[FaceIndex];
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the <see cref="LibBSP.Face"/> used by this <see cref="BrushSide"/>.
+		/// </summary>
+		public int FaceIndex {
 			get {
 				switch (MapType) {
 					case MapType.Nightfire: {
@@ -261,8 +310,22 @@ namespace LibBSP {
 				}
 			}
 		}
-		
-		public int displacement {
+
+		/// <summary>
+		/// In Source engine, gets the <see cref="LibBSP.Displacement"/> referenced by this <see cref="BrushSide"/>.
+		/// This is never used since the brushes used to create Displacements are optimized out.
+		/// </summary>
+		public Displacement Displacement {
+			get {
+				return Parent.Bsp.dispInfos[DisplacementIndex];
+			}
+		}
+
+		/// <summary>
+		/// In Source engine, gets or sets the index of the <see cref="LibBSP.Displacement"/> used by this <see cref="BrushSide"/>.
+		/// This is never used since the brushes used to create Displacements are optimized out.
+		/// </summary>
+		public int DisplacementIndex {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -311,8 +374,11 @@ namespace LibBSP {
 				}
 			}
 		}
-		
-		public bool bevel {
+
+		/// <summary>
+		/// Is this <see cref="BrushSide"/> a bevel?
+		/// </summary>
+		public bool IsBevel {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -360,7 +426,10 @@ namespace LibBSP {
 			}
 		}
 
-		public bool thin {
+		/// <summary>
+		/// Is this <see cref="BrushSide"/> thin?
+		/// </summary>
+		public bool IsThin {
 			get {
 				switch (MapType) {
 					case MapType.Source17:

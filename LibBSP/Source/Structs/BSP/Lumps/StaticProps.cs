@@ -9,7 +9,15 @@ namespace LibBSP {
 	/// </summary>
 	public class StaticProps : Lump<StaticProp> {
 
-		public string[] dictionary { get; private set; }
+		/// <summary>
+		/// Gets or sets the dictionary of prop model names.
+		/// </summary>
+		public string[] ModelDictionary { get; set; }
+
+		/// <summary>
+		/// Gets or sets the lists of leaves each <see cref="StaticProp"/> occupies.
+		/// </summary>
+		public short[] LeafIndices { get; set; }
 
 		/// <summary>
 		/// Creates an empty <see cref="StaticProps"/> object.
@@ -17,7 +25,7 @@ namespace LibBSP {
 		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
 		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
 		public StaticProps(BSP bsp = null, LumpInfo lumpInfo = default(LumpInfo)) : base(bsp, lumpInfo) {
-			dictionary = new string[] { };
+			ModelDictionary = new string[] { };
 		}
 
 		/// <summary>
@@ -28,7 +36,7 @@ namespace LibBSP {
 		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
 		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
 		public StaticProps(IEnumerable<StaticProp> items, IList<string> dictionary, BSP bsp = null, LumpInfo lumpInfo = default(LumpInfo)) : base(items, bsp, lumpInfo) {
-			this.dictionary = dictionary.ToArray();
+			this.ModelDictionary = dictionary.ToArray();
 		}
 
 		/// <summary>
@@ -38,7 +46,7 @@ namespace LibBSP {
 		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
 		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
 		public StaticProps(int capacity, BSP bsp = null, LumpInfo lumpInfo = default(LumpInfo)) : base(capacity, bsp, lumpInfo) {
-			dictionary = new string[] { };
+			ModelDictionary = new string[] { };
 		}
 
 		/// <summary>
@@ -54,17 +62,20 @@ namespace LibBSP {
 				throw new ArgumentNullException();
 			}
 			
-			dictionary = new string[0];
 			if (data.Length > 0) {
 				int offset = 0;
-				dictionary = new string[BitConverter.ToInt32(data, 0)];
+				ModelDictionary = new string[BitConverter.ToInt32(data, 0)];
 				offset += 4;
-				for (int i = 0; i < dictionary.Length; ++i) {
-					dictionary[i] = data.ToNullTerminatedString(offset, 128);
+				for (int i = 0; i < ModelDictionary.Length; ++i) {
+					ModelDictionary[i] = data.ToNullTerminatedString(offset, 128);
 					offset += 128;
 				}
-				int numLeafDefinitions = BitConverter.ToInt32(data, offset);
-				offset += 4 + (numLeafDefinitions * 2);
+				LeafIndices = new short[BitConverter.ToInt32(data, offset)];
+				offset += 4;
+				for (int i = 0; i < LeafIndices.Length; ++i) {
+					LeafIndices[i] = BitConverter.ToInt16(data, offset);
+					offset += 2;
+				}
 				if (Bsp.version == MapType.Vindictus && lumpInfo.version == 6) {
 					int numPropScales = BitConverter.ToInt32(data, offset);
 					offset += 4 + (numPropScales * 16);
@@ -84,6 +95,8 @@ namespace LibBSP {
 						offset += structLength;
 					}
 				}
+			} else {
+				ModelDictionary = new string[0];
 			}
 		}
 	}

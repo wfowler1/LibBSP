@@ -43,7 +43,19 @@ namespace LibBSP {
 			}
 		}
 
-		[Index("nodes")] public int headNode {
+		/// <summary>
+		/// Gets the head <see cref="Node"/> referenced by this <see cref="Model"/>.
+		/// </summary>
+		public Node HeadNode {
+			get {
+				return Parent.Bsp.nodes[HeadNodeIndex];
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the head <see cref="Node"/> used by this <see cref="Model"/>.
+		/// </summary>
+		[Index("nodes")] public int HeadNodeIndex {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
@@ -102,7 +114,21 @@ namespace LibBSP {
 			}
 		}
 
-		[Index("leaves")] public int firstLeaf {
+		/// <summary>
+		/// Enumerates the <see cref="Leaf"/>s used by this <see cref="Model"/>.
+		/// </summary>
+		public IEnumerable<Leaf> Leaves {
+			get {
+				for (int i = 0; i < NumLeaves; ++i) {
+					yield return Parent.Bsp.leaves[FirstLeafIndex + i];
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the first <see cref="Leaf"/> used by this <see cref="Model"/>.
+		/// </summary>
+		[Index("leaves")] public int FirstLeafIndex {
 			get {
 				switch (MapType) {
 					case MapType.Nightfire: {
@@ -124,7 +150,10 @@ namespace LibBSP {
 			}
 		}
 
-		[Count("leaves")] public int numLeaves {
+		/// <summary>
+		/// Gets or sets the count of <see cref="Leaf"/> objects used by this <see cref="Model"/>.
+		/// </summary>
+		[Count("leaves")] public int NumLeaves {
 			get {
 				switch (MapType) {
 					case MapType.Nightfire: {
@@ -146,7 +175,21 @@ namespace LibBSP {
 			}
 		}
 
-		[Index("brushes")] public int firstBrush {
+		/// <summary>
+		/// Enumerates the <see cref="Brush"/>es used by this <see cref="Model"/>.
+		/// </summary>
+		public IEnumerable<Brush> Brushes {
+			get {
+				for (int i = 0; i < NumBrushes; ++i) {
+					yield return Parent.Bsp.brushes[FirstBrushIndex + i];
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the first <see cref="Brush"/> used by this <see cref="Model"/>.
+		/// </summary>
+		[Index("brushes")] public int FirstBrushIndex {
 			get {
 				switch (MapType) {
 					case MapType.STEF2:
@@ -189,7 +232,10 @@ namespace LibBSP {
 			}
 		}
 
-		[Count("brushes")] public int numBrushes {
+		/// <summary>
+		/// Gets or sets the count of <see cref="Brush"/> objects referenced by this <see cref="Leaf"/>.
+		/// </summary>
+		[Count("brushes")] public int NumBrushes {
 			get {
 				switch (MapType) {
 					case MapType.STEF2:
@@ -232,7 +278,21 @@ namespace LibBSP {
 			}
 		}
 
-		[Index("faces")] public int firstFace {
+		/// <summary>
+		/// Enumerates the <see cref="Face"/>s used by this <see cref="Model"/>.
+		/// </summary>
+		public IEnumerable<Face> Faces {
+			get {
+				for (int i = 0; i < NumFaces; ++i) {
+					yield return Parent.Bsp.faces[FirstFaceIndex + i];
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the first <see cref="Face"/> used by this <see cref="Model"/>.
+		/// </summary>
+		[Index("faces")] public int FirstFaceIndex {
 			get {
 				switch (MapType) {
 					case MapType.CoD4: {
@@ -332,7 +392,10 @@ namespace LibBSP {
 			}
 		}
 
-		[Count("faces")] public int numFaces {
+		/// <summary>
+		/// Gets or sets the count of <see cref="Face"/> objects referenced by this <see cref="Leaf"/>.
+		/// </summary>
+		[Count("faces")] public int NumFaces {
 			get {
 				switch (MapType) {
 					case MapType.CoD4: {
@@ -432,12 +495,24 @@ namespace LibBSP {
 			}
 		}
 
-		[Index("markSurfaces")]
-		public int firstLeafPatch {
+		/// <summary>
+		/// Enumerates the patch indices used by this <see cref="Model"/>.
+		/// </summary>
+		public IEnumerable<int> PatchIndices {
+			get {
+				for (int i = 0; i < NumPatchIndices; ++i) {
+					yield return (int)Parent.Bsp.leafPatches[FirstPatchIndicesIndex + i];
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the first patch index for this <see cref="Model"/>.
+		/// </summary>
+		[Index("patchIndices")] public int FirstPatchIndicesIndex {
 			get {
 				switch (MapType) {
-					case MapType.CoD:
-					case MapType.CoD2: {
+					case MapType.CoD: {
 						return BitConverter.ToInt32(Data, 32);
 					}
 					default: {
@@ -448,8 +523,7 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
-					case MapType.CoD:
-					case MapType.CoD2: {
+					case MapType.CoD: {
 						bytes.CopyTo(Data, 32);
 						break;
 					}
@@ -457,11 +531,13 @@ namespace LibBSP {
 			}
 		}
 
-		[Count("markSurfaces")] public int numLeafPatches {
+		/// <summary>
+		/// Gets or sets the count of patch indices referenced by this <see cref="Model"/>.
+		/// </summary>
+		[Count("patchIndices")] public int NumPatchIndices {
 			get {
 				switch (MapType) {
-					case MapType.CoD:
-					case MapType.CoD2: {
+					case MapType.CoD: {
 						return BitConverter.ToInt32(Data, 36);
 					}
 					default: {
@@ -472,8 +548,7 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
-					case MapType.CoD:
-					case MapType.CoD2: {
+					case MapType.CoD: {
 						bytes.CopyTo(Data, 36);
 						break;
 					}

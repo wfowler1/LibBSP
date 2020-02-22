@@ -3,7 +3,6 @@
 #endif
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace LibBSP {
@@ -54,7 +53,10 @@ namespace LibBSP {
 			}
 		}
 
-		public Vector3 origin {
+		/// <summary>
+		/// Gets or sets the position of this <see cref="Cubemap"/>.
+		/// </summary>
+		public Vector3 Origin {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -90,14 +92,19 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.Vindictus:
 					case MapType.DMoMaM: {
-						value.GetBytes().CopyTo(Data, 0);
+						BitConverter.GetBytes((int)value.X()).CopyTo(Data, 0);
+						BitConverter.GetBytes((int)value.Y()).CopyTo(Data, 4);
+						BitConverter.GetBytes((int)value.Z()).CopyTo(Data, 8);
 						break;
 					}
 				}
 			}
 		}
 
-		public int size {
+		/// <summary>
+		/// Gets or sets the size of this <see cref="Cubemap"/>.
+		/// </summary>
+		public int Size {
 			get {
 				switch (MapType) {
 					case MapType.Source17:

@@ -21,7 +21,7 @@ namespace LibBSP {
 #endif
 
 	/// <summary>
-	/// This class contains the texture scaling information for certain formats.
+	/// This struct contains the texture scaling information for certain formats.
 	/// Some BSP formats lack this lump (or the information is contained in a
 	/// different lump) so their cases will be left out.
 	/// </summary>
@@ -65,7 +65,10 @@ namespace LibBSP {
 		public Vector2 scale;
 		public float rotation;
 
-		public Vector3 uAxis {
+		/// <summary>
+		/// Gets or sets the U axis, used to calculate the U coordinates for each <see cref="Vertex"/>.
+		/// </summary>
+		public Vector3 UAxis {
 			get {
 				return new Vector3(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8));
 			}
@@ -74,7 +77,10 @@ namespace LibBSP {
 			}
 		}
 
-		public Vector3 vAxis {
+		/// <summary>
+		/// Gets or sets the V axis, used to calculate the V coordinates for each <see cref="Vertex"/>.
+		/// </summary>
+		public Vector3 VAxis {
 			get {
 				return new Vector3(BitConverter.ToSingle(Data, 16), BitConverter.ToSingle(Data, 20), BitConverter.ToSingle(Data, 24));
 			}
@@ -83,7 +89,10 @@ namespace LibBSP {
 			}
 		}
 
-		public Vector2 translation {
+		/// <summary>
+		/// Gets or sets the translation of the texture along the U and V axes.
+		/// </summary>
+		public Vector2 Translation {
 			get {
 				return new Vector2(BitConverter.ToSingle(Data, 12), BitConverter.ToSingle(Data, 28));
 			}
@@ -93,7 +102,10 @@ namespace LibBSP {
 			}
 		}
 
-		public int flags {
+		/// <summary>
+		/// Gets or sets the flags for this <see cref="TextureInfo"/>.
+		/// </summary>
+		public int Flags {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -151,7 +163,16 @@ namespace LibBSP {
 			}
 		}
 
-		public int texture {
+		/// <summary>
+		/// Gets or sets the index of the <see cref="Texture"/> (or <see cref="TextureData"/> in Source engine)
+		/// used by this <see cref="TextureInfo"/>.
+		/// </summary>
+		/// <remarks>
+		/// Using one field for data access in different lumps because of the similarity between Source and
+		/// Quake II engines. Both engines reference texture data in this structure, Source just goes through
+		/// a few more steps.
+		/// </remarks>
+		public int TextureIndex {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -242,11 +263,11 @@ namespace LibBSP {
 
 			this.scale = scale;
 			this.rotation = rotation;
-			this.uAxis = uAxis;
-			this.vAxis = vAxis;
-			this.translation = translation;
-			this.flags = flags;
-			this.texture = texture;
+			UAxis = uAxis;
+			VAxis = vAxis;
+			Translation = translation;
+			Flags = flags;
+			TextureIndex = texture;
 		}
 
 		/// <summary>

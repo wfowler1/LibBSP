@@ -1,5 +1,10 @@
 #if UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER
 #define UNITY
+#if !UNITY_5_6_OR_NEWER
+// UIVertex was introduced in Unity 4.5 but it only had color, position and one UV.
+// From 4.6.0 until 5.5.6 it was missing two sets of UVs.
+#define OLDUNITY
+#endif
 #endif
 
 using System;
@@ -9,15 +14,27 @@ using System.Reflection;
 namespace LibBSP {
 #if UNITY
 	using Vector2 = UnityEngine.Vector2;
+	using Vector3 = UnityEngine.Vector3;
+#if !OLDUNITY
+	using Vertex = UnityEngine.UIVertex;
+#endif
 #elif GODOT
 	using Vector2 = Godot.Vector2;
+	using Vector3 = Godot.Vector3;
 #else
 	using Vector2 = System.Numerics.Vector2;
+	using Vector3 = System.Numerics.Vector3;
 #endif
 
 	/// <summary>
 	/// Holds the data for a patch in a CoD BSP.
 	/// </summary>
+	/// <remarks>
+	/// This lump only seems to be used for patch collision data, the visual parts of patch and terrain
+	/// meshes are still stored in the <see cref="Face"/>s lump. Since patches are stored this way and the
+	/// CoD <see cref="Face"/> structure does away with Quake 3's type field, there's no easy reliable way
+	/// of getting UVs for the vertices.
+	/// </remarks>
 	public struct Patch : ILumpObject {
 
 		/// <summary>
@@ -54,7 +71,19 @@ namespace LibBSP {
 			}
 		}
 
-		public short shader {
+		/// <summary>
+		/// Gets the <see cref="LibBSP.Texture"/> referenced by this <see cref="Patch"/>.
+		/// </summary>
+		public Texture Shader {
+			get {
+				return Parent.Bsp.textures[ShaderIndex];
+			}
+		}
+		
+		/// <summary>
+		/// Gets or sets the index of the <see cref="LibBSP.Texture"/> used by this <see cref="Patch"/>.
+		/// </summary>
+		public int ShaderIndex {
 			get {
 				switch (MapType) {
 					case MapType.CoD: {
@@ -76,7 +105,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public short patchType {
+		/// <summary>
+		/// Gets or sets the type of <see cref="Patch"/> this is. 0 is a typical patch, 1 is a terrain.
+		/// </summary>
+		public short Type {
 			get {
 				switch (MapType) {
 					case MapType.CoD: {
@@ -98,11 +130,14 @@ namespace LibBSP {
 			}
 		}
 		
-		public Vector2 dimensions {
+		/// <summary>
+		/// If this is a typical patch, gets or sets the dimensions of this patch.
+		/// </summary>
+		public Vector2 Dimensions {
 			get {
 				switch (MapType) {
 					case MapType.CoD: {
-						if (patchType == 0) {
+						if (Type == 0) {
 							return new Vector2(BitConverter.ToInt16(Data, 4), BitConverter.ToInt16(Data, 6));
 						} else {
 							return new Vector2(float.NaN, float.NaN);
@@ -116,7 +151,7 @@ namespace LibBSP {
 			set {
 				switch (MapType) {
 					case MapType.CoD: {
-						if (patchType == 0) {
+						if (Type == 0) {
 							BitConverter.GetBytes((short)value.X()).CopyTo(Data, 4);
 							BitConverter.GetBytes((short)value.Y()).CopyTo(Data, 6);
 						}
@@ -126,11 +161,14 @@ namespace LibBSP {
 			}
 		}
 		
-		public int flags {
+		/// <summary>
+		/// If this is a typical patch, gets or sets the flags on this patch.
+		/// </summary>
+		public int Flags {
 			get {
 				switch (MapType) {
 					case MapType.CoD: {
-						if (patchType == 0) {
+						if (Type == 0) {
 							return BitConverter.ToInt32(Data, 8);
 						} else {
 							return -1;
@@ -145,7 +183,7 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
 					case MapType.CoD: {
-						if (patchType == 0) {
+						if (Type == 0) {
 							bytes.CopyTo(Data, 8);
 						}
 						break;
@@ -153,14 +191,28 @@ namespace LibBSP {
 				}
 			}
 		}
-		
-		[Index("patchVerts")] public int firstVertex {
+
+		/// <summary>
+		/// Enumerates the Patch <see cref="Vertex"/>es referenced by this <see cref="Patch"/>.
+		/// </summary>
+		public IEnumerable<Vertex> Vertices {
+			get {
+				for (int i = 0; i < NumVertices; ++i) {
+					yield return Parent.Bsp.patchVerts[FirstVertex + i];
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the first Patch <see cref="Vertex"/> used by this <see cref="Patch"/>.
+		/// </summary>
+		[Index("patchVerts")] public int FirstVertex {
 			get {
 				switch (MapType) {
 					case MapType.CoD: {
-						if (patchType == 0) {
+						if (Type == 0) {
 							return BitConverter.ToInt32(Data, 12);
-						} else if (patchType == 1) {
+						} else if (Type == 1) {
 							return BitConverter.ToInt32(Data, 8);
 						} else {
 							return -1;
@@ -175,9 +227,9 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
 					case MapType.CoD: {
-						if (patchType == 0) {
+						if (Type == 0) {
 							bytes.CopyTo(Data, 12);
-						} else if (patchType == 1) {
+						} else if (Type == 1) {
 							bytes.CopyTo(Data, 8);
 						}
 						break;
@@ -185,14 +237,17 @@ namespace LibBSP {
 				}
 			}
 		}
-		
-		[Count("patchVerts")] public int numVertices {
+
+		/// <summary>
+		/// Gets the count of Patch <see cref="Vertex"/>es used by this <see cref="Patch"/>.
+		/// </summary>
+		[Count("patchVerts")] public int NumVertices {
 			get {
 				switch (MapType) {
 					case MapType.CoD: {
-						if (patchType == 0) {
+						if (Type == 0) {
 							return BitConverter.ToInt16(Data, 4) * BitConverter.ToInt16(Data, 6);
-						} else if (patchType == 1) {
+						} else if (Type == 1) {
 							return BitConverter.ToInt16(Data, 4);
 						} else {
 							return -1;
@@ -207,21 +262,39 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
 					case MapType.CoD: {
-						if (patchType == 1) {
+						if (Type == 1) {
 							Data[4] = bytes[0];
 							Data[5] = bytes[1];
+						} else {
+							throw new NotSupportedException("Cannot set count of Patch Vertices on a pure patch. Set Patch.Dimensions instead.");
 						}
 						break;
 					}
 				}
 			}
 		}
+
+		/// <summary>
+		/// If this <see cref="Patch"/> is a terrain, enumerates the Patch <see cref="Vertex"/> indices
+		/// referenced by this <see cref="Patch"/>.
+		/// </summary>
+		public IEnumerable<short> VertexIndices {
+			get {
+				for (int i = 0; i < NumVertexIndices; ++i) {
+					yield return (short)Parent.Bsp.patchIndices[FirstVertexIndex + i];
+				}
+			}
+		}
 		
-		[Count("patchIndices")] public int numIndices {
+		/// <summary>
+		/// If this <see cref="Patch"/> is a terrain, gets the count of Patch <see cref="Vertex"/> indices
+		/// used by this <see cref="Patch"/>.
+		/// </summary>
+		[Count("patchIndices")] public int NumVertexIndices {
 			get {
 				switch (MapType) {
 					case MapType.CoD: {
-						if (patchType == 1) {
+						if (Type == 1) {
 							return BitConverter.ToInt16(Data, 6);
 						} else {
 							return -1;
@@ -236,7 +309,7 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
 					case MapType.CoD: {
-						if (patchType == 1) {
+						if (Type == 1) {
 							Data[6] = bytes[0];
 							Data[7] = bytes[1];
 						}
@@ -245,12 +318,16 @@ namespace LibBSP {
 				}
 			}
 		}
-		
-		[Index("patchIndices")] public int firstIndex {
+
+		/// <summary>
+		/// If this <see cref="Patch"/> is a terrain, gets or sets the index of the first Patch <see cref="Vertex"/>
+		/// index used by this <see cref="Patch"/>.
+		/// </summary>
+		[Index("patchIndices")] public int FirstVertexIndex {
 			get {
 				switch (MapType) {
 					case MapType.CoD: {
-						if (patchType == 1) {
+						if (Type == 1) {
 							return BitConverter.ToInt32(Data, 12);
 						} else {
 							return -1;
@@ -265,7 +342,7 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
 					case MapType.CoD: {
-						if (patchType == 1) {
+						if (Type == 1) {
 							bytes.CopyTo(Data, 12);
 						}
 						break;

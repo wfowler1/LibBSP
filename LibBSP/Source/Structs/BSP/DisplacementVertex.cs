@@ -54,9 +54,9 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// The normalized vector direction this vertex points from "flat".
+		/// Gets or sets the normalized vector direction this vertex points from "flat".
 		/// </summary>
-		public Vector3 normal {
+		public Vector3 Normal {
 			get {
 				return new Vector3(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8));
 			}
@@ -66,9 +66,9 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Magnitude of normal, before normalization.
+		/// Gets or sets the magnitude of the vertex.
 		/// </summary>
-		public float dist {
+		public float Magnitude {
 			get {
 				return BitConverter.ToSingle(Data, 12);
 			}
@@ -78,9 +78,9 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Alpha value of texture at this vertex.
+		/// Gets or sets the alpha value of the material at this vertex.
 		/// </summary>
-		public float alpha {
+		public float Alpha {
 			get {
 				return BitConverter.ToSingle(Data, 16);
 			}
@@ -105,19 +105,19 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Factory method to parse a <c>byte</c> array into a <see cref="DisplacementVertices"/> object.
+		/// Factory method to parse a <c>byte</c> array into a <see cref="Lump{DisplacementVertex}"/> object.
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
 		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
 		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
-		/// <returns>A <see cref="DisplacementVertices"/> object.</returns>
+		/// <returns>A <see cref="Lump<DisplacementVertex>"/> object.</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> parameter was <c>null</c>.</exception>
-		public static DisplacementVertices LumpFactory(byte[] data, BSP bsp, LumpInfo lumpInfo) {
+		public static Lump<DisplacementVertex> LumpFactory(byte[] data, BSP bsp, LumpInfo lumpInfo) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
 
-			return new DisplacementVertices(data, GetStructLength(bsp.version, lumpInfo.version), bsp, lumpInfo);
+			return new Lump<DisplacementVertex>(data, GetStructLength(bsp.version, lumpInfo.version), bsp, lumpInfo);
 		}
 
 		/// <summary>

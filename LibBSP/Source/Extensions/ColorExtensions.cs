@@ -35,7 +35,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets this <c>Color</c> as R8G8B8A8.
+		/// Gets this <c>Color</c> as R8G8B8A8 (RGBA32).
 		/// </summary>
 		/// <param name="color">This <c>Color</c>.</param>
 		/// <returns>A <c>byte</c> array with four members, RGBA.</returns>

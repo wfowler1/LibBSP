@@ -3,6 +3,7 @@
 #endif
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace LibBSP {
@@ -13,8 +14,8 @@ namespace LibBSP {
 	using Color = Godot.Color;
 	using Vector3 = Godot.Vector3;
 #else
-	using Vector3 = System.Numerics.Vector3;
 	using Color = System.Drawing.Color;
+	using Vector3 = System.Numerics.Vector3;
 #endif
 
 	/// <summary>
@@ -56,7 +57,10 @@ namespace LibBSP {
 			}
 		}
 
-		public Vector3 origin {
+		/// <summary>
+		/// Gets or sets the origin of this model.
+		/// </summary>
+		public Vector3 Origin {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -128,8 +132,11 @@ namespace LibBSP {
 				}
 			}
 		}
-		
-		public Vector3 angles {
+
+		/// <summary>
+		/// Gets or sets the Angles for this model.
+		/// </summary>
+		public Vector3 Angles {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -201,8 +208,20 @@ namespace LibBSP {
 				}
 			}
 		}
+
+		/// <summary>
+		/// Gets the name of the model for this <see cref="StaticProp"/> from <see cref="StaticProps.ModelDictionary"/>.
+		/// </summary>
+		public string Model {
+			get {
+				return ((StaticProps)Parent).ModelDictionary[ModelIndex];
+			}
+		}
 		
-		public short dictionaryEntry {
+		/// <summary>
+		/// Gets or sets the index of this model's name in <see cref="StaticProps.ModelDictionary"/>.
+		/// </summary>
+		public short ModelIndex {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -276,7 +295,22 @@ namespace LibBSP {
 			}
 		}
 
-		public short firstLeaf {
+		/// <summary>
+		/// Enumerates the <see cref="Leaf"/> indices referenced by this <see cref="StaticProp"/>.
+		/// </summary>
+		public IEnumerable<short> LeafIndices {
+			get {
+				for (int i = 0; i < NumLeafIndices; ++i) {
+					yield return ((StaticProps)Parent).LeafIndices[FirstLeafIndexIndex + i];
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the first <see cref="Leaf"/> index in <see cref="StaticProps.LeafIndices"/>
+		/// for the leaves containing this <see cref="StaticProp"/>.
+		/// </summary>
+		public short FirstLeafIndexIndex {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -346,7 +380,11 @@ namespace LibBSP {
 			}
 		}
 
-		public short numLeafs {
+		/// <summary>
+		/// Gets the number of <see cref="Leaf"/> indices in <see cref="StaticProps.LeafIndices"/> for leaves
+		/// which contain this <see cref="StaticProp"/>.
+		/// </summary>
+		public short NumLeafIndices {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -416,7 +454,10 @@ namespace LibBSP {
 			}
 		}
 
-		public byte solidity {
+		/// <summary>
+		/// Gets or sets the solidity type of this <see cref="StaticProp"/>.
+		/// </summary>
+		public byte Solidity {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -489,7 +530,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public byte flags {
+		/// <summary>
+		/// Gets or sets the flags of this <see cref="StaticProp"/>.
+		/// </summary>
+		public byte Flags {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -562,7 +606,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public int skin {
+		/// <summary>
+		/// Gets or sets the model skin used by this <see cref="StaticProp"/>.
+		/// </summary>
+		public int Skin {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -649,7 +696,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public float minFadeDist {
+		/// <summary>
+		/// Gets or sets the distance at which this <see cref="StaticProp"/> will start to fade out.
+		/// </summary>
+		public float MinimumFadeDistance {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -735,8 +785,11 @@ namespace LibBSP {
 				}
 			}
 		}
-		
-		public float maxFadeDist {
+
+		/// <summary>
+		/// Gets or sets the distance at which this <see cref="StaticProp"/> will finish fading out.
+		/// </summary>
+		public float MaximumFadeDistance {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -823,7 +876,10 @@ namespace LibBSP {
 			}
 		}
 
-		public Vector3 lightingOrigin {
+		/// <summary>
+		/// Gets or sets the lighting origin of this <see cref="StaticProp"/>.
+		/// </summary>
+		public Vector3 LightingOrigin {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -910,7 +966,10 @@ namespace LibBSP {
 			}
 		}
 
-		public float forcedFadeScale {
+		/// <summary>
+		/// Gets or sets the fade distance scale for this <see cref="StaticProp"/>.
+		/// </summary>
+		public float ForcedFadeScale {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -995,7 +1054,10 @@ namespace LibBSP {
 			}
 		}
 
-		public short minDXLevel {
+		/// <summary>
+		/// Gets or sets the minimum DirectX version supported for this <see cref="StaticProp"/> to be visible.
+		/// </summary>
+		public short MinimumDirectXLevel {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -1049,7 +1111,10 @@ namespace LibBSP {
 			}
 		}
 
-		public short maxDXLevel {
+		/// <summary>
+		/// Gets or sets the maximum DirectX version supported for this <see cref="StaticProp"/> to be visible.
+		/// </summary>
+		public short MaximumDirectXLevel {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -1103,7 +1168,10 @@ namespace LibBSP {
 			}
 		}
 
-		public byte minCPULevel {
+		/// <summary>
+		/// Gets or sets the minimum CPU level supported for this <see cref="StaticProp"/> to be visible.
+		/// </summary>
+		public byte MinimumCPULevel {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -1181,7 +1249,10 @@ namespace LibBSP {
 			}
 		}
 
-		public byte maxCPULevel {
+		/// <summary>
+		/// Gets or sets the maximum CPU level supported for this <see cref="StaticProp"/> to be visible.
+		/// </summary>
+		public byte MaximumCPULevel {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -1259,7 +1330,10 @@ namespace LibBSP {
 			}
 		}
 
-		public byte minGPULevel {
+		/// <summary>
+		/// Gets or sets the minimum GPU level supported for this <see cref="StaticProp"/> to be visible.
+		/// </summary>
+		public byte MinimumGPULevel {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -1337,7 +1411,10 @@ namespace LibBSP {
 			}
 		}
 
-		public byte maxGPULevel {
+		/// <summary>
+		/// Gets or sets the maximum GPU level supported for this <see cref="StaticProp"/> to be visible.
+		/// </summary>
+		public byte MaximumGPULevel {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -1415,7 +1492,10 @@ namespace LibBSP {
 			}
 		}
 
-		public Color diffuseModulaton {
+		/// <summary>
+		/// Gets or sets the diffuse modulation of this <see cref="StaticProp"/>.
+		/// </summary>
+		public Color DiffuseModulaton {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -1495,7 +1575,10 @@ namespace LibBSP {
 			}
 		}
 
-		public float scale {
+		/// <summary>
+		/// Gets or sets the uniform scale of this <see cref="StaticProp"/>.
+		/// </summary>
+		public float Scale {
 			get {
 				switch (MapType) {
 					case MapType.Source17:
@@ -1551,7 +1634,10 @@ namespace LibBSP {
 			}
 		}
 
-		public string targetname {
+		/// <summary>
+		/// Gets or sets the <see cref="Entity.Name"/> of this <see cref="StaticProp"/> <see cref="Entity"/>.
+		/// </summary>
+		public string Name {
 			get {
 				switch (MapType) {
 					case MapType.Source20: {

@@ -8,11 +8,14 @@ using System.Reflection;
 
 namespace LibBSP {
 #if UNITY
-	using Vector3 = UnityEngine.Vector3;
+	using Color = UnityEngine.Color32;
+	using Vector2 = UnityEngine.Vector2;
 #elif GODOT
-	using Vector3 = Godot.Vector3;
+	using Color = Godot.Color;
+	using Vector2 = Godot.Vector2;
 #else
-	using Vector3 = System.Numerics.Vector3;
+	using Color = System.Drawing.Color;
+	using Vector2 = System.Numerics.Vector2;
 #endif
 
 	/// <summary>
@@ -54,16 +57,35 @@ namespace LibBSP {
 			}
 		}
 
-		public Vector3 reflectivity {
+		/// <summary>
+		/// Gets or sets the reflectivity color of this <see cref="TextureData"/>.
+		/// </summary>
+		public Color Reflectivity {
 			get {
-				return new Vector3(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8));
+				return ColorExtensions.FromArgb((int)(BitConverter.ToSingle(Data, 0) * 255), (int)(BitConverter.ToSingle(Data, 4) * 255), (int)(BitConverter.ToSingle(Data, 8) * 255), 255);
 			}
 			set {
+				float r = value.R() / 255f;
+				float g = value.G() / 255f;
+				float b = value.B() / 255f;
 				value.GetBytes().CopyTo(Data, 0);
 			}
 		}
+
+		/// <summary>
+		/// Gets the offset into <see cref="BSP.textures"/> for the texture name for this <see cref="TextureData"/>.
+		/// </summary>
+		public uint TextureStringOffset {
+			get {
+				return (uint)Parent.Bsp.texTable[TextureStringOffsetIndex];
+			}
+		}
 		
-		public int stringTableIndex {
+		/// <summary>
+		/// Gets or sets the index into <see cref="BSP.texTable"/>, which is an offset into <see cref="BSP.textures"/> for
+		/// the texture name for this <see cref="TextureData"/>.
+		/// </summary>
+		public int TextureStringOffsetIndex {
 			get {
 				return BitConverter.ToInt32(Data, 12);
 			}
@@ -72,39 +94,33 @@ namespace LibBSP {
 			}
 		}
 		
-		public int width {
+		/// <summary>
+		/// Gets or sets the actual size of the <see cref="Texture"/> referenced by this <see cref="TextureData"/>.
+		/// </summary>
+		public Vector2 Size {
 			get {
-				return BitConverter.ToInt32(Data, 16);
+				return new Vector2(BitConverter.ToInt32(Data, 16), BitConverter.ToInt32(Data, 20));
 			}
 			set {
-				BitConverter.GetBytes(value).CopyTo(Data, 16);
+				int width = (int)value.X();
+				int height = (int)value.Y();
+				BitConverter.GetBytes(width).CopyTo(Data, 16);
+				BitConverter.GetBytes(height).CopyTo(Data, 20);
 			}
 		}
-		
-		public int height {
+
+		/// <summary>
+		/// Gets or sets the internal size of the <see cref="Texture"/> referenced by this <see cref="TextureData"/>.
+		/// </summary>
+		public Vector2 ViewSize {
 			get {
-				return BitConverter.ToInt32(Data, 20);
+				return new Vector2(BitConverter.ToInt32(Data, 24), BitConverter.ToInt32(Data, 28));
 			}
 			set {
-				BitConverter.GetBytes(value).CopyTo(Data, 20);
-			}
-		}
-		
-		public int view_width {
-			get {
-				return BitConverter.ToInt32(Data, 24);
-			}
-			set {
-				BitConverter.GetBytes(value).CopyTo(Data, 24);
-			}
-		}
-		
-		public int view_height {
-			get {
-				return BitConverter.ToInt32(Data, 28);
-			}
-			set {
-				BitConverter.GetBytes(value).CopyTo(Data, 28);
+				int width = (int)value.X();
+				int height = (int)value.Y();
+				BitConverter.GetBytes(width).CopyTo(Data, 24);
+				BitConverter.GetBytes(height).CopyTo(Data, 28);
 			}
 		}
 

@@ -43,7 +43,10 @@ namespace LibBSP {
 			}
 		}
 
-		public byte flags {
+		/// <summary>
+		/// Gets or sets the flags for this terrain.
+		/// </summary>
+		public byte Flags {
 			get {
 				switch (MapType) {
 					case MapType.MOHAA: {
@@ -64,7 +67,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public byte scale {
+		/// <summary>
+		/// Gets or sets the scale of this terrain.
+		/// </summary>
+		public byte Scale {
 			get {
 				switch (MapType) {
 					case MapType.MOHAA: {
@@ -85,7 +91,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public byte[] lightmapCoords {
+		/// <summary>
+		/// Gets or sets the lightmap UVs for this terrain.
+		/// </summary>
+		public byte[] LightmapCoordinates {
 			get {
 				switch (MapType) {
 					case MapType.MOHAA: {
@@ -98,7 +107,7 @@ namespace LibBSP {
 			}
 			set {
 				if (value.Length != 2) {
-					throw new ArgumentException("LightmapCoords array must have 2 elements.");
+					throw new ArgumentException("LightmapCoordinates array must have 2 elements.");
 				}
 				switch (MapType) {
 					case MapType.MOHAA: {
@@ -110,7 +119,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public float[] textureCoords {
+		/// <summary>
+		/// Gets or sets the texture UVs for this terrain.
+		/// </summary>
+		public float[] UVs {
 			get {
 				switch (MapType) {
 					case MapType.MOHAA: {
@@ -132,7 +144,7 @@ namespace LibBSP {
 			}
 			set {
 				if (value.Length != 8) {
-					throw new ArgumentException("TextureCoords array must have 8 elements.");
+					throw new ArgumentException("UVs array must have 8 elements.");
 				}
 				switch (MapType) {
 					case MapType.MOHAA: {
@@ -146,7 +158,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public sbyte x {
+		/// <summary>
+		/// Gets or sets the X position of this terrain, on a 64x64 grid.
+		/// </summary>
+		public sbyte X {
 			get {
 				switch (MapType) {
 					case MapType.MOHAA: {
@@ -166,8 +181,11 @@ namespace LibBSP {
 				}
 			}
 		}
-		
-		public sbyte y {
+
+		/// <summary>
+		/// Gets or sets the Y position of this terrain, on a 64x64 grid.
+		/// </summary>
+		public sbyte Y {
 			get {
 				switch (MapType) {
 					case MapType.MOHAA: {
@@ -187,8 +205,11 @@ namespace LibBSP {
 				}
 			}
 		}
-		
-		public short baseZ {
+
+		/// <summary>
+		/// Gets or sets the Z position of this terrain.
+		/// </summary>
+		public short BaseZ {
 			get {
 				switch (MapType) {
 					case MapType.MOHAA: {
@@ -209,8 +230,20 @@ namespace LibBSP {
 				}
 			}
 		}
+
+		/// <summary>
+		/// Gets the <see cref="LibBSP.Texture"/> referenced by this terrain.
+		/// </summary>
+		public Texture Texture {
+			get {
+				return Parent.Bsp.textures[TextureIndex];
+			}
+		}
 		
-		public ushort texture {
+		/// <summary>
+		/// Gets or sets the <see cref="Texture"/> index for this terrain.
+		/// </summary>
+		public ushort TextureIndex {
 			get {
 				switch (MapType) {
 					case MapType.MOHAA: {
@@ -232,7 +265,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public short lightmap {
+		/// <summary>
+		/// Gets or sets the lightmap index for this terrain.
+		/// </summary>
+		public short Lightmap {
 			get {
 				switch (MapType) {
 					case MapType.MOHAA: {
@@ -254,7 +290,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public ushort[,] vertexFlags {
+		/// <summary>
+		/// Gets or sets the vertex flags for each vertex in this terrain.
+		/// </summary>
+		public ushort[,] VertexFlags {
 			get {
 				ushort[,] ret = new ushort[2,63];
 				switch (MapType) {
@@ -281,7 +320,10 @@ namespace LibBSP {
 			}
 		}
 		
-		public byte[,] heightmap {
+		/// <summary>
+		/// Gets or sets the heightmap for each vertex in this terrain.
+		/// </summary>
+		public byte[,] Heightmap {
 			get {
 				byte[,] ret = new byte[9, 9];
 				switch (MapType) {
