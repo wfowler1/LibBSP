@@ -319,8 +319,8 @@ namespace LibBSP {
 		public static int GetIndexForPatchIndicesLump(MapType version, out DataType dataType) {
 			switch (version) {
 				case MapType.CoD: {
-					dataType = DataType.UInt16;
-					return 26;
+					dataType = DataType.UInt32;
+					return 23;
 				}
 			}
 			dataType = DataType.Invalid;
