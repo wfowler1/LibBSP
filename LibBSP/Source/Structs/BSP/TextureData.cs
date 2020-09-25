@@ -10,12 +10,15 @@ namespace LibBSP {
 #if UNITY
 	using Color = UnityEngine.Color32;
 	using Vector2 = UnityEngine.Vector2;
+	using Vector3 = UnityEngine.Vector3;
 #elif GODOT
 	using Color = Godot.Color;
 	using Vector2 = Godot.Vector2;
+	using Vector3 = Godot.Vector3;
 #else
 	using Color = System.Drawing.Color;
 	using Vector2 = System.Numerics.Vector2;
+	using Vector3 = System.Numerics.Vector3;
 #endif
 
 	/// <summary>
@@ -68,7 +71,7 @@ namespace LibBSP {
 				float r = value.R() / 255f;
 				float g = value.G() / 255f;
 				float b = value.B() / 255f;
-				value.GetBytes().CopyTo(Data, 0);
+				new Vector3(r, g, b).GetBytes().CopyTo(Data, 0);
 			}
 		}
 
