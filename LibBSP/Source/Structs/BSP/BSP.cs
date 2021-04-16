@@ -102,6 +102,7 @@ namespace LibBSP {
 		// MoHAA
 		private Lump<LODTerrain> _lodTerrains;
 		private Lump<StaticModel> _staticModels;
+		private NumList _leafStaticModels;
 		// CoD
 		private Lump<Patch> _patches;
 		private Lump<Vertex> _patchVerts;
@@ -496,6 +497,23 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// A <see cref="NumList"/> object containing the Leaf Static Models lump, if available.
+		/// These are a list of MOHAA static model indices, referenced by leaves.
+		/// </summary>
+		public NumList leafStaticModels {
+			get {
+				if (_leafStaticModels == null) {
+					NumList.DataType type;
+					int index = NumList.GetIndexForLeafStaticModelsLump(version, out type);
+					if (index >= 0) {
+						_leafStaticModels = NumList.LumpFactory(reader.ReadLump(this[index]), type, this, this[index]);
+					}
+				}
+				return _leafStaticModels;
+			}
+		}
+
+		/// <summary>
 		/// A <see cref="Lump{Patch}"/> of <see cref="Patch"/> objects in the BSP file, if available.
 		/// </summary>
 		public Lump<Patch> patches {
@@ -727,7 +745,6 @@ namespace LibBSP {
 				case MapType.Quake: {
 					return 15;
 				}
-				case MapType.Daikatana:
 				case MapType.Quake2: {
 					return 16;
 				}
@@ -741,6 +758,9 @@ namespace LibBSP {
 				case MapType.FAKK:
 				case MapType.SiN: {
 					return 20;
+				}
+				case MapType.Daikatana: {
+					return 21;
 				}
 				case MapType.SoF: {
 					return 22;

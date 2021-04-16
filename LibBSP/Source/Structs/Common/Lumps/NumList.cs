@@ -345,6 +345,23 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Gets the index for the leaf static models indices lump in the BSP file for a specific map format, and the type of data the format uses.
+		/// </summary>
+		/// <param name="version">The map type.</param>
+		/// <param name="dataType"><c>out</c> parameter that will contain the data type this version uses.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
+		public static int GetIndexForLeafStaticModelsLump(MapType version, out DataType dataType) {
+			switch (version) {
+				case MapType.MOHAA: {
+					dataType = DataType.UInt16;
+					return 26;
+				}
+			}
+			dataType = DataType.Invalid;
+			return -1;
+		}
+
+		/// <summary>
 		/// Gets the index for the texture table lump in the BSP file for a specific map format, and the type of data the format uses.
 		/// </summary>
 		/// <param name="version">The map type.</param>
