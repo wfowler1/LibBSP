@@ -279,7 +279,7 @@ namespace LibBSP {
 			int numObjects = data.Length / structLength;
 			Lump<Plane> lump = new Lump<Plane>(numObjects, bsp, lumpInfo);
 			for (int i = 0; i < numObjects; ++i) {
-				Vector3 normal = new Vector3(BitConverter.ToSingle(data, structLength * i), BitConverter.ToSingle(data, (structLength * i) + 4), BitConverter.ToSingle(data, (structLength * i) + 8));
+				Vector3 normal = Vector3Extensions.ToVector3(data, structLength * i);
 				float distance = BitConverter.ToSingle(data, (structLength * i) + 12);
 				lump.Add(new Plane(normal, distance));
 			}

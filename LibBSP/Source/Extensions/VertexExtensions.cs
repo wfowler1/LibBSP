@@ -92,43 +92,43 @@ namespace LibBSP {
 				}
 				case MapType.CoD2:
 				case MapType.CoD4: {
-					result.normal = new Vector3(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16), BitConverter.ToSingle(data, 20));
+					result.normal = Vector3Extensions.ToVector3(data, 12);
 					result.color = ColorExtensions.FromArgb(data[27], data[24], data[25], data[26]);
-					result.uv0 = new Vector2(BitConverter.ToSingle(data, 28), BitConverter.ToSingle(data, 32));
-					result.uv1 = new Vector2(BitConverter.ToSingle(data, 36), BitConverter.ToSingle(data, 40));
+					result.uv0 = Vector2Extensions.ToVector2(data, 28);
+					result.uv1 = Vector2Extensions.ToVector2(data, 36);
 					// Use these fields to store additional unknown information
-					result.tangent = new Vector4(BitConverter.ToSingle(data, 44), BitConverter.ToSingle(data, 48), BitConverter.ToSingle(data, 52), BitConverter.ToSingle(data, 56));
-					result.uv3 = new Vector2(BitConverter.ToSingle(data, 60), BitConverter.ToSingle(data, 64));
+					result.tangent = Vector4Extensions.ToVector4(data, 44);
+					result.uv3 = Vector2Extensions.ToVector2(data, 60);
 					goto case MapType.Quake;
 				}
 				case MapType.MOHAA:
 				case MapType.Quake3:
 				case MapType.FAKK: {
-					result.uv0 = new Vector2(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16));
-					result.uv1 = new Vector2(BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24));
-					result.normal = new Vector3(BitConverter.ToSingle(data, 28), BitConverter.ToSingle(data, 32), BitConverter.ToSingle(data, 36));
+					result.uv0 = Vector2Extensions.ToVector2(data, 12);
+					result.uv1 = Vector2Extensions.ToVector2(data, 20);
+					result.normal = Vector3Extensions.ToVector3(data, 28);
 					result.color = ColorExtensions.FromArgb(data[43], data[40], data[41], data[42]);
 					goto case MapType.Quake;
 				}
 				case MapType.Raven: {
-					result.uv0 = new Vector2(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16));
-					result.uv1 = new Vector2(BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24));
-					result.uv2 = new Vector2(BitConverter.ToSingle(data, 28), BitConverter.ToSingle(data, 32));
-					result.uv3 = new Vector2(BitConverter.ToSingle(data, 36), BitConverter.ToSingle(data, 40));
-					result.normal = new Vector3(BitConverter.ToSingle(data, 52), BitConverter.ToSingle(data, 56), BitConverter.ToSingle(data, 60));
+					result.uv0 = Vector2Extensions.ToVector2(data, 12);
+					result.uv1 = Vector2Extensions.ToVector2(data, 20);
+					result.uv2 = Vector2Extensions.ToVector2(data, 28);
+					result.uv3 = Vector2Extensions.ToVector2(data, 36);
+					result.normal = Vector3Extensions.ToVector3(data, 52);
 					result.color = ColorExtensions.FromArgb(data[67], data[64], data[65], data[66]);
 					// Use for two more float fields and two more colors.
 					// There's actually another field that seems to be color but I've only ever seen it be 0xFFFFFFFF.
-					result.tangent = new Vector4(BitConverter.ToSingle(data, 44), BitConverter.ToSingle(data, 48), BitConverter.ToSingle(data, 68), BitConverter.ToSingle(data, 72));
+					result.tangent = Vector4Extensions.ToVector4(data, 44);
 					goto case MapType.Quake;
 				}
 				case MapType.STEF2:
 				case MapType.STEF2Demo: {
-					result.uv0 = new Vector2(BitConverter.ToSingle(data, 12), BitConverter.ToSingle(data, 16));
-					result.uv1 = new Vector2(BitConverter.ToSingle(data, 20), BitConverter.ToSingle(data, 24));
+					result.uv0 = Vector2Extensions.ToVector2(data, 12);
+					result.uv1 = Vector2Extensions.ToVector2(data, 20);
 					result.uv2 = new Vector2(BitConverter.ToSingle(data, 28), 0);
 					result.color = ColorExtensions.FromArgb(data[35], data[32], data[33], data[34]);
-					result.normal = new Vector3(BitConverter.ToSingle(data, 36), BitConverter.ToSingle(data, 40), BitConverter.ToSingle(data, 44));
+					result.normal = Vector3Extensions.ToVector3(data, 36);
 					goto case MapType.Quake;
 				}
 				case MapType.Quake:
@@ -150,7 +150,7 @@ namespace LibBSP {
 				case MapType.Daikatana:
 				case MapType.Vindictus:
 				case MapType.DMoMaM: {
-					result.position = new Vector3(BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
+					result.position = Vector3Extensions.ToVector3(data, 0);
 					break;
 				}
 				default: {

@@ -138,6 +138,16 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Returns a <see cref="Vector2"/> converted from eight bytes at a specified position in a byte array.
+		/// </summary>
+		/// <param name="value">An array of bytes.</param>
+		/// <param name="startIndex">The starting position within <paramref name="value"/>.</param>
+		/// <returns>A <see cref="Vector2"/> representing the converted bytes.</returns>
+		public static Vector2 ToVector2(byte[] value, int startIndex) {
+			return new Vector2(BitConverter.ToSingle(value, startIndex), BitConverter.ToSingle(value, startIndex + 4));
+		}
+
+		/// <summary>
 		/// Gets the X component of this <see cref="Vector2"/>.
 		/// </summary>
 		/// <param name="vector">This <see cref="Vector2"/>.</param>
