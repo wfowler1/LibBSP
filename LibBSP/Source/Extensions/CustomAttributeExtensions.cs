@@ -6,7 +6,7 @@ namespace LibBSP {
 	/// <summary>
 	/// Contains static methods for retrieving custom attributes.
 	/// </summary>
-	public static class CustomAttributeExtensions {
+	public static partial class CustomAttributeExtensions {
 		
 		/// <summary>
 		/// Retrieves a custom attribute of a specified type that is applied to a specified member.

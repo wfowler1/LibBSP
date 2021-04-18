@@ -14,7 +14,7 @@ namespace LibBSP {
 	/// <summary>
 	/// Static class containing helper methods for <c>Color</c> objects.
 	/// </summary>
-	public static class ColorExtensions {
+	public static partial class ColorExtensions {
 		
 		/// <summary>
 		/// Constructs a new <c>Color</c> from the passed values.

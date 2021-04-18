@@ -8,7 +8,7 @@ namespace LibBSP {
 	/// <summary>
 	/// Static class containing helper methods for <c>string</c> objects.
 	/// </summary>
-	public static class StringExtensions {
+	public static partial class StringExtensions {
 
 		/// <summary>
 		/// Splits a <c>string</c> using a Unicode character, unless that character is between two instances of a container.

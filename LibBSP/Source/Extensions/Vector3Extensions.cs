@@ -16,7 +16,7 @@ namespace LibBSP {
 	/// <summary>
 	/// Class containing helper methods for <see cref="Vector3"/> objects.
 	/// </summary>
-	public static class Vector3Extensions {
+	public static partial class Vector3Extensions {
 
 #if !GODOT
 		/// <summary>

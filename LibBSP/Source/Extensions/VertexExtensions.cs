@@ -11,24 +11,21 @@ namespace LibBSP {
 #if UNITY
 	using Vector2 = UnityEngine.Vector2;
 	using Vector3 = UnityEngine.Vector3;
-	using Vector4 = UnityEngine.Vector4;
 #if !OLDUNITY
 	using Vertex = UnityEngine.UIVertex;
 #endif
 #elif GODOT
 	using Vector2 = Godot.Vector2;
 	using Vector3 = Godot.Vector3;
-	using Vector4 = Godot.Quat;
 #else
 	using Vector2 = System.Numerics.Vector2;
 	using Vector3 = System.Numerics.Vector3;
-	using Vector4 = System.Numerics.Vector4;
 #endif
 
 	/// <summary>
 	/// Static class containing helper methods for <see cref="Vertex"/> objects.
 	/// </summary>
-	public static class VertexExtensions {
+	public static partial class VertexExtensions {
 		
 		/// <summary>
 		/// Scales the position of a <see cref="Vertex"/> by a scalar and returns the result.

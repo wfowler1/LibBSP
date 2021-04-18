@@ -20,7 +20,7 @@ namespace LibBSP {
 	/// <summary>
 	/// Static class containing helper methods for <see cref="Plane"/> objects.
 	/// </summary>
-	public static class PlaneExtensions {
+	public static partial class PlaneExtensions {
 
 		/// <summary>
 		/// Array of base texture axes. When referenced properly, provides a good default texture axis for any given plane.
