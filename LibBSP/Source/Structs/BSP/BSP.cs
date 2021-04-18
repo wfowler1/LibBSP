@@ -745,15 +745,15 @@ namespace LibBSP {
 				case MapType.Quake: {
 					return 15;
 				}
-				case MapType.Quake2: {
-					return 16;
-				}
 				case MapType.Quake3: {
 					return 17;
 				}
 				case MapType.Raven:
 				case MapType.Nightfire: {
 					return 18;
+				}
+				case MapType.Quake2: {
+					return 19;
 				}
 				case MapType.FAKK:
 				case MapType.SiN: {
