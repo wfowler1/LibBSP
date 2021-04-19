@@ -1,8 +1,19 @@
+#if UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER
+#define UNITY
+#endif
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
 namespace LibBSP {
+#if UNITY
+	using Vector3 = UnityEngine.Vector3;
+#elif GODOT
+	using Vector3 = Godot.Vector3;
+#else
+	using Vector3 = System.Numerics.Vector3;
+#endif
 
 	/// <summary>
 	/// A class containing all data needed for the models lump in any given BSP.
@@ -58,6 +69,9 @@ namespace LibBSP {
 		[Index("nodes")] public int HeadNodeIndex {
 			get {
 				switch (MapType) {
+					case MapType.Nightfire: {
+						return BitConverter.ToInt32(Data, 24);
+					}
 					case MapType.Quake:
 					case MapType.Quake2:
 					case MapType.Daikatana:
@@ -87,6 +101,10 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
+					case MapType.Nightfire: {
+						bytes.CopyTo(Data, 24);
+						break;
+					}
 					case MapType.Quake:
 					case MapType.Quake2:
 					case MapType.Daikatana:
@@ -108,6 +126,102 @@ namespace LibBSP {
 					}
 					case MapType.DMoMaM: {
 						bytes.CopyTo(Data, 40);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the first head ClipNode used by this <see cref="Model"/>.
+		/// </summary>
+		public int HeadClipNode1Index {
+			get {
+				switch (MapType) {
+					case MapType.Nightfire: {
+						return BitConverter.ToInt32(Data, 28);
+					}
+					case MapType.Quake: {
+						return BitConverter.ToInt32(Data, 40);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Nightfire: {
+						bytes.CopyTo(Data, 28);
+						break;
+					}
+					case MapType.Quake: {
+						bytes.CopyTo(Data, 40);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the second head ClipNode used by this <see cref="Model"/>.
+		/// </summary>
+		public int HeadClipNode2Index {
+			get {
+				switch (MapType) {
+					case MapType.Nightfire: {
+						return BitConverter.ToInt32(Data, 32);
+					}
+					case MapType.Quake: {
+						return BitConverter.ToInt32(Data, 44);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Nightfire: {
+						bytes.CopyTo(Data, 32);
+						break;
+					}
+					case MapType.Quake: {
+						bytes.CopyTo(Data, 44);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the third head ClipNode used by this <see cref="Model"/>.
+		/// </summary>
+		public int HeadClipNode3Index {
+			get {
+				switch (MapType) {
+					case MapType.Nightfire: {
+						return BitConverter.ToInt32(Data, 36);
+					}
+					case MapType.Quake: {
+						return BitConverter.ToInt32(Data, 48);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Nightfire: {
+						bytes.CopyTo(Data, 36);
+						break;
+					}
+					case MapType.Quake: {
+						bytes.CopyTo(Data, 48);
 						break;
 					}
 				}
@@ -159,6 +273,9 @@ namespace LibBSP {
 					case MapType.Nightfire: {
 						return BitConverter.ToInt32(Data, 44);
 					}
+					case MapType.Quake: {
+						return BitConverter.ToInt32(Data, 52);
+					}
 					default: {
 						return -1;
 					}
@@ -169,6 +286,10 @@ namespace LibBSP {
 				switch (MapType) {
 					case MapType.Nightfire: {
 						bytes.CopyTo(Data, 44);
+						break;
+					}
+					case MapType.Quake: {
+						bytes.CopyTo(Data, 52);
 						break;
 					}
 				}
@@ -557,6 +678,212 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Gets or sets the bounding box minimums for this model.
+		/// </summary>
+		public Vector3 Minimums {
+			get {
+				switch (MapType) {
+					case MapType.Quake:
+					case MapType.Quake2:
+					case MapType.Quake3:
+					case MapType.SiN:
+					case MapType.SoF:
+					case MapType.Raven:
+					case MapType.Nightfire:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.MOHAA:
+					case MapType.FAKK:
+					case MapType.CoD:
+					case MapType.CoD2:
+					case MapType.CoD4:
+					case MapType.Titanfall:
+					case MapType.Daikatana:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.Vindictus:
+					case MapType.DMoMaM: {
+						return new Vector3(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8));
+					}
+					default: {
+						return new Vector3(0, 0, 0);
+					}
+				}
+			}
+			set {
+				switch (MapType) {
+					case MapType.Quake:
+					case MapType.Quake2:
+					case MapType.Quake3:
+					case MapType.SiN:
+					case MapType.SoF:
+					case MapType.Raven:
+					case MapType.Nightfire:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.MOHAA:
+					case MapType.FAKK:
+					case MapType.CoD:
+					case MapType.CoD2:
+					case MapType.CoD4:
+					case MapType.Titanfall:
+					case MapType.Daikatana:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.Vindictus:
+					case MapType.DMoMaM: {
+						value.GetBytes().CopyTo(Data, 0);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the bounding box maximums for this model.
+		/// </summary>
+		public Vector3 Maximums {
+			get {
+				switch (MapType) {
+					case MapType.Quake:
+					case MapType.Quake2:
+					case MapType.Quake3:
+					case MapType.Nightfire:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.MOHAA:
+					case MapType.FAKK:
+					case MapType.CoD:
+					case MapType.CoD2:
+					case MapType.CoD4:
+					case MapType.Titanfall:
+					case MapType.Daikatana:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.Vindictus:
+					case MapType.DMoMaM: {
+						return new Vector3(BitConverter.ToSingle(Data, 12), BitConverter.ToSingle(Data, 16), BitConverter.ToSingle(Data, 20));
+					}
+					default: {
+						return new Vector3(0, 0, 0);
+					}
+				}
+			}
+			set {
+				switch (MapType) {
+					case MapType.Quake:
+					case MapType.Quake2:
+					case MapType.Quake3:
+					case MapType.Nightfire:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.MOHAA:
+					case MapType.FAKK:
+					case MapType.CoD:
+					case MapType.CoD2:
+					case MapType.CoD4:
+					case MapType.Titanfall:
+					case MapType.Daikatana:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.Vindictus:
+					case MapType.DMoMaM: {
+						value.GetBytes().CopyTo(Data, 12);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the origin for this model.
+		/// </summary>
+		public Vector3 Origin {
+			get {
+				switch (MapType) {
+					case MapType.Quake2:
+					case MapType.Titanfall:
+					case MapType.Daikatana:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.SiN:
+					case MapType.SoF:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.Vindictus:
+					case MapType.DMoMaM: {
+						return new Vector3(BitConverter.ToSingle(Data, 24), BitConverter.ToSingle(Data, 28), BitConverter.ToSingle(Data, 32));
+					}
+					default: {
+						return new Vector3(0, 0, 0);
+					}
+				}
+			}
+			set {
+				switch (MapType) {
+					case MapType.Quake2:
+					case MapType.Titanfall:
+					case MapType.Daikatana:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.SiN:
+					case MapType.SoF:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.Vindictus:
+					case MapType.DMoMaM: {
+						value.GetBytes().CopyTo(Data, 24);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
 		/// Creates a new <see cref="Model"/> object from a <c>byte</c> array.
 		/// </summary>
 		/// <param name="data"><c>byte</c> array to parse.</param>
@@ -569,6 +896,54 @@ namespace LibBSP {
 
 			Data = data;
 			Parent = parent;
+		}
+
+		/// <summary>
+		/// Creates a new <see cref="Model"/> by copying the fields in <paramref name="source"/>, using
+		/// <paramref name="parent"/> to get <see cref="LibBSP.MapType"/> and <see cref="LumpInfo.version"/>
+		/// to use when creating the new <see cref="Model"/>.
+		/// If the <paramref name="parent"/>'s <see cref="BSP"/>'s <see cref="LibBSP.MapType"/> is different from
+		/// the one from <paramref name="source"/>, it does not matter, because fields are copied by name.
+		/// </summary>
+		/// <param name="source">The <see cref="Model"/> to copy.</param>
+		/// <param name="parent">
+		/// The <see cref="ILump"/> to use as the <see cref="Parent"/> of the new <see cref="Model"/>.
+		/// Use <c>null</c> to use the <paramref name="source"/>'s <see cref="Parent"/> instead.
+		/// </param>
+		public Model(Model source, ILump parent = null) {
+			Parent = parent;
+
+			if (parent != null && parent.Bsp != null) {
+				if (source.Parent != null && source.Parent.Bsp != null && source.Parent.Bsp.version == parent.Bsp.version && source.LumpVersion == parent.LumpInfo.version) {
+					Data = new byte[source.Data.Length];
+					Array.Copy(source.Data, Data, source.Data.Length);
+					return;
+				} else {
+					Data = new byte[GetStructLength(parent.Bsp.version, parent.LumpInfo.version)];
+				}
+			} else {
+				if (source.Parent != null && source.Parent.Bsp != null) {
+					Data = new byte[GetStructLength(source.Parent.Bsp.version, source.Parent.LumpInfo.version)];
+				} else {
+					Data = new byte[GetStructLength(MapType.Undefined, 0)];
+				}
+			}
+			
+			HeadNodeIndex = source.HeadNodeIndex;
+			HeadClipNode1Index = source.HeadClipNode1Index;
+			HeadClipNode2Index = source.HeadClipNode2Index;
+			HeadClipNode3Index = source.HeadClipNode3Index;
+			FirstLeafIndex = source.FirstLeafIndex;
+			NumLeaves = source.NumLeaves;
+			FirstBrushIndex = source.FirstBrushIndex;
+			NumBrushes = source.NumBrushes;
+			FirstFaceIndex = source.FirstFaceIndex;
+			NumFaces = source.NumFaces;
+			FirstPatchIndicesIndex = source.FirstPatchIndicesIndex;
+			NumPatchIndices = source.NumPatchIndices;
+			Minimums = source.Minimums;
+			Maximums = source.Maximums;
+			Origin = source.Origin;
 		}
 
 		/// <summary>
