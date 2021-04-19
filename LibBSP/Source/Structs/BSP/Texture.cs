@@ -339,6 +339,252 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Gets or sets the width of this <see cref="Texture"/>.
+		/// </summary>
+		public uint Width {
+			get {
+				switch (MapType) {
+					case MapType.Quake: {
+						return BitConverter.ToUInt32(Data, 16);
+					}
+					default: {
+						return 0;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Quake: {
+						bytes.CopyTo(Data, 16);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the height of this <see cref="Texture"/>.
+		/// </summary>
+		public uint Height {
+			get {
+				switch (MapType) {
+					case MapType.Quake: {
+						return BitConverter.ToUInt32(Data, 20);
+					}
+					default: {
+						return 0;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Quake: {
+						bytes.CopyTo(Data, 20);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the offset to the full version of this <see cref="Texture"/>.
+		/// </summary>
+		public uint OffsetFull {
+			get {
+				switch (MapType) {
+					case MapType.Quake: {
+						return BitConverter.ToUInt32(Data, 24);
+					}
+					default: {
+						return 0;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Quake: {
+						bytes.CopyTo(Data, 24);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the offset to the half version of this <see cref="Texture"/>.
+		/// </summary>
+		public uint OffsetHalf {
+			get {
+				switch (MapType) {
+					case MapType.Quake: {
+						return BitConverter.ToUInt32(Data, 28);
+					}
+					default: {
+						return 0;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Quake: {
+						bytes.CopyTo(Data, 28);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the offset to the quarter version of this <see cref="Texture"/>.
+		/// </summary>
+		public uint OffsetQuarter {
+			get {
+				switch (MapType) {
+					case MapType.Quake: {
+						return BitConverter.ToUInt32(Data, 32);
+					}
+					default: {
+						return 0;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Quake: {
+						bytes.CopyTo(Data, 32);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the offset to the eighth version of this <see cref="Texture"/>.
+		/// </summary>
+		public uint OffsetEighth {
+			get {
+				switch (MapType) {
+					case MapType.Quake: {
+						return BitConverter.ToUInt32(Data, 36);
+					}
+					default: {
+						return 0;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Quake: {
+						bytes.CopyTo(Data, 36);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the miscellaneous value for this <see cref="Texture"/>.
+		/// </summary>
+		public int Value {
+			get {
+				switch (MapType) {
+					case MapType.Quake2:
+					case MapType.SoF:
+					case MapType.Daikatana: {
+						return BitConverter.ToInt32(Data, 36);
+					}
+					default: {
+						return 0;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Quake2:
+					case MapType.SoF:
+					case MapType.Daikatana: {
+						bytes.CopyTo(Data, 36);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the next frame's <see cref="Texture"/> if this one is animated.
+		/// </summary>
+		public int Next {
+			get {
+				switch (MapType) {
+					case MapType.Quake2:
+					case MapType.SoF:
+					case MapType.Daikatana: {
+						return BitConverter.ToInt32(Data, 72);
+					}
+					case MapType.SiN: {
+						return BitConverter.ToInt32(Data, 100);
+					}
+					default: {
+						return 0;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Quake2:
+					case MapType.SoF:
+					case MapType.Daikatana: {
+						bytes.CopyTo(Data, 72);
+						break;
+					}
+					case MapType.SiN: {
+						bytes.CopyTo(Data, 100);
+						break;
+					}
+				}
+			}
+		}
+		
+		/// <summary>
+		/// Gets or sets the number of curve subdivisions for this <see cref="Texture"/>.
+		/// </summary>
+		public int Subdivisions {
+			get {
+				switch (MapType) {
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.MOHAA:
+					case MapType.FAKK: {
+						return BitConverter.ToInt32(Data, 72);
+					}
+					default: {
+						return 16;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.MOHAA:
+					case MapType.FAKK: {
+						bytes.CopyTo(Data, 72);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
 		/// Creates a new <see cref="Texture"/> object from a <c>byte</c> array.
 		/// </summary>
 		/// <param name="data"><c>byte</c> array to parse.</param>
@@ -351,6 +597,53 @@ namespace LibBSP {
 
 			Data = data;
 			Parent = parent;
+		}
+
+		/// <summary>
+		/// Creates a new <see cref="Texture"/> by copying the fields in <paramref name="source"/>, using
+		/// <paramref name="parent"/> to get <see cref="LibBSP.MapType"/> and <see cref="LumpInfo.version"/>
+		/// to use when creating the new <see cref="Texture"/>.
+		/// If the <paramref name="parent"/>'s <see cref="BSP"/>'s <see cref="LibBSP.MapType"/> is different from
+		/// the one from <paramref name="source"/>, it does not matter, because fields are copied by name.
+		/// </summary>
+		/// <param name="source">The <see cref="Texture"/> to copy.</param>
+		/// <param name="parent">
+		/// The <see cref="ILump"/> to use as the <see cref="Parent"/> of the new <see cref="Texture"/>.
+		/// Use <c>null</c> to use the <paramref name="source"/>'s <see cref="Parent"/> instead.
+		/// </param>
+		public Texture(Texture source, ILump parent) {
+			Parent = parent;
+
+			if (parent != null && parent.Bsp != null) {
+				if (source.Parent != null && source.Parent.Bsp != null && source.Parent.Bsp.version == parent.Bsp.version && source.LumpVersion == parent.LumpInfo.version) {
+					Data = new byte[source.Data.Length];
+					Array.Copy(source.Data, Data, source.Data.Length);
+					return;
+				} else {
+					Data = new byte[GetStructLength(parent.Bsp.version, parent.LumpInfo.version)];
+				}
+			} else {
+				if (source.Parent != null && source.Parent.Bsp != null) {
+					Data = new byte[GetStructLength(source.Parent.Bsp.version, source.Parent.LumpInfo.version)];
+				} else {
+					Data = new byte[GetStructLength(MapType.Undefined, 0)];
+				}
+			}
+
+			Name = source.Name;
+			Mask = source.Mask;
+			Flags = source.Flags;
+			Contents = source.Contents;
+			TextureInfo = source.TextureInfo;
+			Width = source.Width;
+			Height = source.Height;
+			OffsetFull = source.OffsetFull;
+			OffsetHalf = source.OffsetHalf;
+			OffsetQuarter = source.OffsetQuarter;
+			OffsetEighth = source.OffsetEighth;
+			Value = source.Value;
+			Next = source.Next;
+			Subdivisions = source.Subdivisions;
 		}
 
 		/// <summary>
