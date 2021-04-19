@@ -215,6 +215,41 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Creates a new <see cref="Edge"/> by copying the fields in <paramref name="source"/>, using
+		/// <paramref name="parent"/> to get <see cref="LibBSP.MapType"/> and <see cref="LumpInfo.version"/>
+		/// to use when creating the new <see cref="Edge"/>.
+		/// If the <paramref name="parent"/>'s <see cref="BSP"/>'s <see cref="LibBSP.MapType"/> is different from
+		/// the one from <paramref name="source"/>, it does not matter, because fields are copied by name.
+		/// </summary>
+		/// <param name="source">The <see cref="Edge"/> to copy.</param>
+		/// <param name="parent">
+		/// The <see cref="ILump"/> to use as the <see cref="Parent"/> of the new <see cref="Edge"/>.
+		/// Use <c>null</c> to use the <paramref name="source"/>'s <see cref="Parent"/> instead.
+		/// </param>
+		public Edge(Edge source, ILump parent) {
+			Parent = parent;
+
+			if (parent != null && parent.Bsp != null) {
+				if (source.Parent != null && source.Parent.Bsp != null && source.Parent.Bsp.version == parent.Bsp.version && source.LumpVersion == parent.LumpInfo.version) {
+					Data = new byte[source.Data.Length];
+					Array.Copy(source.Data, Data, source.Data.Length);
+					return;
+				} else {
+					Data = new byte[GetStructLength(parent.Bsp.version, parent.LumpInfo.version)];
+				}
+			} else {
+				if (source.Parent != null && source.Parent.Bsp != null) {
+					Data = new byte[GetStructLength(source.Parent.Bsp.version, source.Parent.LumpInfo.version)];
+				} else {
+					Data = new byte[GetStructLength(MapType.Undefined, 0)];
+				}
+			}
+
+			FirstVertexIndex = source.FirstVertexIndex;
+			SecondVertexIndex = source.SecondVertexIndex;
+		}
+
+		/// <summary>
 		/// Factory method to parse a <c>byte</c> array into a <see cref="Lump{Edge}"/>.
 		/// </summary>
 		/// <param name="data">The data to parse.</param>
