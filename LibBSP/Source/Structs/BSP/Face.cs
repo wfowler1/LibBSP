@@ -13,16 +13,22 @@ using System.Reflection;
 
 namespace LibBSP {
 #if UNITY
+	using Color = UnityEngine.Color32;
 	using Vector2 = UnityEngine.Vector2;
+	using Vector3 = UnityEngine.Vector3;
 	using Plane = UnityEngine.Plane;
 #if !OLDUNITY
 	using Vertex = UnityEngine.UIVertex;
 #endif
 #elif GODOT
+	using Color = Godot.Color;
 	using Vector2 = Godot.Vector2;
+	using Vector3 = Godot.Vector3;
 	using Plane = Godot.Plane;
 #else
+	using Color = System.Drawing.Color;
 	using Vector2 = System.Numerics.Vector2;
+	using Vector3 = System.Numerics.Vector3;
 	using Plane = System.Numerics.Plane;
 #endif
 
@@ -213,6 +219,62 @@ namespace LibBSP {
 					}
 					case MapType.Source17: {
 						Data[34] = (byte)(value ? 1 : 0);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Does the <see cref="Face"/> lie on a node?
+		/// </summary>
+		public bool IsOnNode {
+			get {
+				switch (MapType) {
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						return Data[3] > 0;
+					}
+					case MapType.Vindictus: {
+						return Data[5] > 0;
+					}
+					case MapType.Source17: {
+						return Data[35] > 0;
+					}
+					default: {
+						return false;
+					}
+				}
+			}
+			set {
+				switch (MapType) {
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						Data[3] = (byte)(value ? 1 : 0);
+						break;
+					}
+					case MapType.Vindictus: {
+						Data[5] = (byte)(value ? 1 : 0);
+						break;
+					}
+					case MapType.Source17: {
+						Data[35] = (byte)(value ? 1 : 0);
 						break;
 					}
 				}
@@ -677,7 +739,32 @@ namespace LibBSP {
 				}
 			}
 		}
-		
+
+		/// <summary>
+		/// Gets or sets the index of the <see cref="LibBSP.TextureInfo"/> used for lightmaps by this <see cref="Face"/>.
+		/// </summary>
+		public int LightmapTextureInfoIndex {
+			get {
+				switch (MapType) {
+					case MapType.Nightfire: {
+						return BitConverter.ToInt32(Data, 32);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Nightfire: {
+						bytes.CopyTo(Data, 32);
+						break;
+					}
+				}
+			}
+		}
+
 		/// <summary>
 		/// Gets or sets the index of the <see cref="LibBSP.Displacement"/> using this <see cref="Face"/>.
 		/// </summary>
@@ -731,6 +818,65 @@ namespace LibBSP {
 					case MapType.Source17: {
 						Data[44] = bytes[0];
 						Data[45] = bytes[1];
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the surface fog volume ID of this <see cref="Face"/>.
+		/// </summary>
+		public int SurfaceFogVolumeID {
+			get {
+				switch (MapType) {
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						return BitConverter.ToInt16(Data, 14);
+					}
+					case MapType.Vindictus: {
+						return BitConverter.ToInt32(Data, 24);
+					}
+					case MapType.Source17: {
+						return BitConverter.ToInt16(Data, 46);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						Data[14] = bytes[0];
+						Data[15] = bytes[1];
+						break;
+					}
+					case MapType.Vindictus: {
+						bytes.CopyTo(Data, 24);
+						break;
+					}
+					case MapType.Source17: {
+						Data[46] = bytes[0];
+						Data[47] = bytes[1];
 						break;
 					}
 				}
@@ -856,6 +1002,47 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Gets or sets the Effect used by this face.
+		/// </summary>
+		public int Effect {
+			get {
+				switch (MapType) {
+					case MapType.Quake3:
+					case MapType.Raven:
+					case MapType.MOHAA:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.FAKK: {
+						return BitConverter.ToInt32(Data, 4);
+					}
+					
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Quake3:
+					case MapType.Raven:
+					case MapType.MOHAA:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.FAKK: {
+						bytes.CopyTo(Data, 4);
+						break;
+					}
+					
+					case MapType.Nightfire: {
+						bytes.CopyTo(Data, 20);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
 		/// For formats which use triangle corner indices, enumerates the indices of <see cref="Vertex"/>
 		/// objects used by this <see cref="Face"/>.
 		/// </summary>
@@ -953,7 +1140,7 @@ namespace LibBSP {
 					case MapType.CoD2: {
 						Data[10] = bytes[0];
 						Data[11] = bytes[1];
-						return;
+						break;
 					}
 					case MapType.Nightfire: {
 						bytes.CopyTo(Data, 16);
@@ -962,7 +1149,7 @@ namespace LibBSP {
 					case MapType.CoD4: {
 						Data[18] = bytes[0];
 						Data[19] = bytes[1];
-						return;
+						break;
 					}
 					case MapType.Quake3:
 					case MapType.Raven:
@@ -976,14 +1163,324 @@ namespace LibBSP {
 				}
 			}
 		}
+
+		/// <summary>
+		/// Gets or sets the average light colors for this <see cref="Face"/> in a Source v17 BSP.
+		/// </summary>
+		public Color[] AverageLightColors {
+			get {
+				switch (MapType) {
+					case MapType.Source17: {
+						Color[] colors = new Color[8];
+						for (int i = 0; i < colors.Length; ++i) {
+							colors[i] = ColorExtensions.FromArgb(Data[(i * 4) + 3], Data[(i * 4)], Data[(i * 4) + 1], Data[(i * 4) + 2]);
+						}
+						return colors;
+					}
+					default: {
+						return new Color[0];
+					}
+				}
+			}
+			set {
+				switch (MapType) {
+					case MapType.Source17: {
+						for (int i = 0; i < value.Length; ++i) {
+							value[i].GetBytes().CopyTo(Data, i * 4);
+						}
+						break;
+					}
+				}
+			}
+		}
 		
 		/// <summary>
 		/// Gets or sets the flags for lightmap style used by this <see cref="Face"/>.
 		/// </summary>
-		public int LightStyle {
+		public byte[] LightmapStyles {
 			get {
 				switch (MapType) {
+					case MapType.Quake:
+					case MapType.Quake2:
+					case MapType.Daikatana: {
+						byte[] bytes = new byte[4];
+						Array.Copy(Data, 12, bytes, 0, bytes.Length);
+						return bytes;
+					}
+					case MapType.SiN: {
+						byte[] bytes = new byte[16];
+						Array.Copy(Data, 12, bytes, 0, bytes.Length);
+						return bytes;
+					}
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						byte[] bytes = new byte[4];
+						Array.Copy(Data, 16, bytes, 0, bytes.Length);
+						return bytes;
+					}
+					case MapType.SoF: {
+						byte[] bytes = new byte[4];
+						Array.Copy(Data, 22, bytes, 0, bytes.Length);
+						return bytes;
+					}
+					case MapType.Vindictus: {
+						byte[] bytes = new byte[8];
+						if (LumpVersion == 2) {
+							Array.Copy(Data, 28, bytes, 0, bytes.Length);
+						} else {
+							Array.Copy(Data, 24, bytes, 0, bytes.Length);
+						}
+						return bytes;
+					}
 					case MapType.Nightfire: {
+						byte[] bytes = new byte[4];
+						Array.Copy(Data, 40, bytes, 0, bytes.Length);
+						return bytes;
+					}
+					case MapType.Source17: {
+						byte[] bytes = new byte[8];
+						Array.Copy(Data, 48, bytes, 0, bytes.Length);
+						return bytes;
+					}
+					default: {
+						return new byte[0];
+					}
+				}
+			}
+			set {
+				switch (MapType) {
+					case MapType.Quake:
+					case MapType.Quake2:
+					case MapType.Daikatana: {
+						Array.Copy(value, 0, Data, 12, Math.Min(value.Length, 4));
+						break;
+					}
+					case MapType.SiN: {
+						Array.Copy(value, 0, Data, 12, Math.Min(value.Length, 16));
+						break;
+					}
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						Array.Copy(value, 0, Data, 16, Math.Min(value.Length, 4));
+						break;
+					}
+					case MapType.SoF: {
+						Array.Copy(value, 0, Data, 22, Math.Min(value.Length, 4));
+						break;
+					}
+					case MapType.Vindictus: {
+						if (LumpVersion == 2) {
+							Array.Copy(value, 0, Data, 28, Math.Min(value.Length, 8));
+						} else {
+							Array.Copy(value, 0, Data, 24, Math.Min(value.Length, 8));
+						}
+						break;
+					}
+					case MapType.Nightfire: {
+						Array.Copy(value, 0, Data, 40, Math.Min(value.Length, 4));
+						break;
+					}
+					case MapType.Source17: {
+						Array.Copy(value, 0, Data, 48, Math.Min(value.Length, 8));
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the flags for day lightmap style used by this <see cref="Face"/> in a Source v17 BSP.
+		/// </summary>
+		public byte[] DayLightStyle {
+			get {
+				switch (MapType) {
+					case MapType.Source17: {
+						byte[] bytes = new byte[8];
+						Array.Copy(Data, 56, bytes, 0, bytes.Length);
+						return bytes;
+					}
+					default: {
+						return new byte[0];
+					}
+				}
+			}
+			set {
+				switch (MapType) {
+					case MapType.Source17: {
+						Array.Copy(value, 0, Data, 56, Math.Min(value.Length, 8));
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the flags for night lightmap style used by this <see cref="Face"/> in a Source v17 BSP.
+		/// </summary>
+		public byte[] NightLightStyle {
+			get {
+				switch (MapType) {
+					case MapType.Source17: {
+						byte[] bytes = new byte[8];
+						Array.Copy(Data, 64, bytes, 0, bytes.Length);
+						return bytes;
+					}
+					default: {
+						return new byte[0];
+					}
+				}
+			}
+			set {
+				switch (MapType) {
+					case MapType.Source17: {
+						Array.Copy(value, 0, Data, 64, Math.Min(value.Length, 8));
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the offset or index into the lightmap data this <see cref="Face"/> uses.
+		/// </summary>
+		public int Lightmap {
+			get {
+				switch (MapType) {
+					case MapType.CoD:
+					case MapType.CoD2: {
+						return BitConverter.ToInt16(Data, 2);
+					}
+					case MapType.Quake:
+					case MapType.Quake2:
+					case MapType.Daikatana: {
+						return BitConverter.ToInt32(Data, 16);
+					}
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						return BitConverter.ToInt32(Data, 20);
+					}
+					case MapType.SiN:
+					case MapType.SoF:
+					case MapType.Quake3:
+					case MapType.MOHAA:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.FAKK: {
+						return BitConverter.ToInt32(Data, 28);
+					}
+					case MapType.Raven: {
+						return BitConverter.ToInt32(Data, 36);
+					}
+					case MapType.Vindictus: {
+						if (LumpVersion == 2) {
+							return BitConverter.ToInt32(Data, 36);
+						} else {
+							return BitConverter.ToInt32(Data, 32);
+						}
+					}
+					case MapType.Nightfire: {
+						return BitConverter.ToInt32(Data, 44);
+					}
+					case MapType.Source17: {
+						return BitConverter.ToInt32(Data, 72);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.CoD:
+					case MapType.CoD2: {
+						Data[2] = bytes[0];
+						Data[3] = bytes[1];
+						break;
+					}
+					case MapType.Quake:
+					case MapType.Quake2:
+					case MapType.Daikatana: {
+						bytes.CopyTo(Data, 16);
+						break;
+					}
+					case MapType.SiN:
+					case MapType.SoF:
+					case MapType.Quake3:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.FAKK: {
+						bytes.CopyTo(Data, 28);
+						break;
+					}
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						bytes.CopyTo(Data, 20);
+						break;
+					}
+					case MapType.Raven: {
+						bytes.CopyTo(Data, 36);
+						break;
+					}
+					case MapType.Vindictus: {
+						if (LumpVersion == 2) {
+							bytes.CopyTo(Data, 36);
+						} else {
+							bytes.CopyTo(Data, 32);
+						}
+						break;
+					}
+					case MapType.Nightfire: {
+						bytes.CopyTo(Data, 44);
+						break;
+					}
+					case MapType.Source17: {
+						bytes.CopyTo(Data, 72);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the second index into the lightmap data this <see cref="Face"/> uses, in a <see cref="MapType.Raven"/> BSP.
+		/// </summary>
+		public int Lightmap2 {
+			get {
+				switch (MapType) {
+					case MapType.Raven: {
 						return BitConverter.ToInt32(Data, 40);
 					}
 					default: {
@@ -994,21 +1491,21 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
-					case MapType.Nightfire: {
+					case MapType.Raven: {
 						bytes.CopyTo(Data, 40);
 						break;
 					}
 				}
 			}
 		}
-		
+
 		/// <summary>
-		/// Gets or sets the offset into the lightmap data this <see cref="Face"/> uses.
+		/// Gets or sets the third index into the lightmap data this <see cref="Face"/> uses, in a <see cref="MapType.Raven"/> BSP.
 		/// </summary>
-		public int LightMapOffset {
+		public int Lightmap3 {
 			get {
 				switch (MapType) {
-					case MapType.Nightfire: {
+					case MapType.Raven: {
 						return BitConverter.ToInt32(Data, 44);
 					}
 					default: {
@@ -1019,16 +1516,506 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
-					case MapType.Nightfire: {
+					case MapType.Raven: {
 						bytes.CopyTo(Data, 44);
 						break;
 					}
 				}
 			}
 		}
-		
+
 		/// <summary>
-		/// Gets the size of the <see cref="Patch"/> used by this <see cref="Face"/>.
+		/// Gets or sets the fourth index into the lightmap data this <see cref="Face"/> uses, in a <see cref="MapType.Raven"/> BSP.
+		/// </summary>
+		public int Lightmap4 {
+			get {
+				switch (MapType) {
+					case MapType.Raven: {
+						return BitConverter.ToInt32(Data, 48);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Raven: {
+						bytes.CopyTo(Data, 48);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the area of this <see cref="Face"/>.
+		/// </summary>
+		public float Area {
+			get {
+				switch (MapType) {
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						return BitConverter.ToSingle(Data, 24);
+					}
+					case MapType.Vindictus: {
+						if (LumpVersion == 2) {
+							return BitConverter.ToSingle(Data, 40);
+						} else {
+							return BitConverter.ToSingle(Data, 36);
+						}
+					}
+					case MapType.Source17: {
+						return BitConverter.ToSingle(Data, 76);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						bytes.CopyTo(Data, 24);
+						break;
+					}
+					case MapType.Vindictus: {
+						if (LumpVersion == 2) {
+							bytes.CopyTo(Data, 40);
+						} else {
+							bytes.CopyTo(Data, 36);
+						}
+						break;
+					}
+					case MapType.Source17: {
+						bytes.CopyTo(Data, 76);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the lightmap texture mins used by this <see cref="Face"/>.
+		/// </summary>
+		public Vector2 LightmapStart {
+			get {
+				switch (MapType) {
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						return new Vector2(BitConverter.ToInt32(Data, 28), BitConverter.ToInt32(Data, 32));
+					}
+					case MapType.Quake3:
+					case MapType.MOHAA:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.FAKK: {
+						return new Vector2(BitConverter.ToInt32(Data, 32), BitConverter.ToInt32(Data, 36));
+					}
+					case MapType.Vindictus: {
+						if (LumpVersion == 2) {
+							return new Vector2(BitConverter.ToInt32(Data, 44), BitConverter.ToInt32(Data, 48));
+						} else {
+							return new Vector2(BitConverter.ToInt32(Data, 40), BitConverter.ToInt32(Data, 44));
+						}
+					}
+					case MapType.Raven: {
+						return new Vector2(BitConverter.ToInt32(Data, 52), BitConverter.ToInt32(Data, 56));
+					}
+					case MapType.Source17: {
+						return new Vector2(BitConverter.ToInt32(Data, 80), BitConverter.ToInt32(Data, 84));
+					}
+					default: {
+						return new Vector2(0, 0);
+					}
+				}
+			}
+			set {
+				switch (MapType) {
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						value.GetBytes().CopyTo(Data, 28);
+						break;
+					}
+					case MapType.Quake3:
+					case MapType.MOHAA:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.FAKK: {
+						value.GetBytes().CopyTo(Data, 32);
+						break;
+					}
+					case MapType.Vindictus: {
+						if (LumpVersion == 2) {
+							value.GetBytes().CopyTo(Data, 44);
+						} else {
+							value.GetBytes().CopyTo(Data, 40);
+						}
+						break;
+					}
+					case MapType.Raven: {
+						value.GetBytes().CopyTo(Data, 52);
+						break;
+					}
+					case MapType.Source17: {
+						value.GetBytes().CopyTo(Data, 80);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the second lightmap texture mins used by this <see cref="Face"/>, in a <see cref="MapType.Raven"/> BSP.
+		/// </summary>
+		public Vector2 Lightmap2Start {
+			get {
+				switch (MapType) {
+					case MapType.Raven: {
+						return new Vector2(BitConverter.ToInt32(Data, 60), BitConverter.ToInt32(Data, 64));
+					}
+					default: {
+						return new Vector2(0, 0);
+					}
+				}
+			}
+			set {
+				switch (MapType) {
+					case MapType.Raven: {
+						value.GetBytes().CopyTo(Data, 60);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the third lightmap texture mins used by this <see cref="Face"/>, in a <see cref="MapType.Raven"/> BSP.
+		/// </summary>
+		public Vector2 Lightmap3Start {
+			get {
+				switch (MapType) {
+					case MapType.Raven: {
+						return new Vector2(BitConverter.ToInt32(Data, 68), BitConverter.ToInt32(Data, 72));
+					}
+					default: {
+						return new Vector2(0, 0);
+					}
+				}
+			}
+			set {
+				switch (MapType) {
+					case MapType.Raven: {
+						value.GetBytes().CopyTo(Data, 68);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the fourth lightmap texture mins used by this <see cref="Face"/>, in a <see cref="MapType.Raven"/> BSP.
+		/// </summary>
+		public Vector2 Lightmap4Start {
+			get {
+				switch (MapType) {
+					case MapType.Raven: {
+						return new Vector2(BitConverter.ToInt32(Data, 76), BitConverter.ToInt32(Data, 80));
+					}
+					default: {
+						return new Vector2(0, 0);
+					}
+				}
+			}
+			set {
+				switch (MapType) {
+					case MapType.Raven: {
+						value.GetBytes().CopyTo(Data, 76);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the lightmap texture size used by this <see cref="Face"/> in luxels.
+		/// </summary>
+		public Vector2 LightmapSize {
+			get {
+				switch (MapType) {
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						return new Vector2(BitConverter.ToInt32(Data, 36), BitConverter.ToInt32(Data, 40));
+					}
+					case MapType.Quake3:
+					case MapType.MOHAA:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.FAKK: {
+						return new Vector2(BitConverter.ToInt32(Data, 40), BitConverter.ToInt32(Data, 44));
+					}
+					case MapType.Vindictus: {
+						if (LumpVersion == 2) {
+							return new Vector2(BitConverter.ToInt32(Data, 52), BitConverter.ToInt32(Data, 56));
+						} else {
+							return new Vector2(BitConverter.ToInt32(Data, 48), BitConverter.ToInt32(Data, 52));
+						}
+					}
+					case MapType.Raven: {
+						return new Vector2(BitConverter.ToInt32(Data, 84), BitConverter.ToInt32(Data, 88));
+					}
+					case MapType.Source17: {
+						return new Vector2(BitConverter.ToInt32(Data, 88), BitConverter.ToInt32(Data, 92));
+					}
+					default: {
+						return new Vector2(0, 0);
+					}
+				}
+			}
+			set {
+				switch (MapType) {
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						value.GetBytes().CopyTo(Data, 36);
+						break;
+					}
+					case MapType.Quake3:
+					case MapType.MOHAA:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.FAKK: {
+						value.GetBytes().CopyTo(Data, 40);
+						break;
+					}
+					case MapType.Vindictus: {
+						if (LumpVersion == 2) {
+							value.GetBytes().CopyTo(Data, 52);
+						} else {
+							value.GetBytes().CopyTo(Data, 48);
+						}
+						break;
+					}
+					case MapType.Raven: {
+						value.GetBytes().CopyTo(Data, 84);
+						break;
+					}
+					case MapType.Source17: {
+						value.GetBytes().CopyTo(Data, 88);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the lightmap origin for this <see cref="Face"/>.
+		/// </summary>
+		public Vector3 LightmapOrigin {
+			get {
+				switch (MapType) {
+					case MapType.Quake3:
+					case MapType.MOHAA:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.FAKK: {
+						return new Vector3(BitConverter.ToSingle(Data, 48), BitConverter.ToSingle(Data, 52), BitConverter.ToSingle(Data, 56));
+					}
+					case MapType.Raven: {
+						return new Vector3(BitConverter.ToSingle(Data, 92), BitConverter.ToSingle(Data, 96), BitConverter.ToSingle(Data, 100));
+					}
+					default: {
+						return new Vector3(0, 0, 0);
+					}
+				}
+			}
+			set {
+				switch (MapType) {
+					case MapType.Quake3:
+					case MapType.MOHAA:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.FAKK: {
+						value.GetBytes().CopyTo(Data, 48);
+						break;
+					}
+					case MapType.Raven: {
+						value.GetBytes().CopyTo(Data, 92);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the lightmap U axis for this <see cref="Face"/>.
+		/// </summary>
+		public Vector3 LightmapUAxis {
+			get {
+				switch (MapType) {
+					case MapType.Quake3:
+					case MapType.MOHAA:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.FAKK: {
+						return new Vector3(BitConverter.ToSingle(Data, 60), BitConverter.ToSingle(Data, 64), BitConverter.ToSingle(Data, 68));
+					}
+					case MapType.Raven: {
+						return new Vector3(BitConverter.ToSingle(Data, 104), BitConverter.ToSingle(Data, 108), BitConverter.ToSingle(Data, 112));
+					}
+					default: {
+						return new Vector3(0, 0, 0);
+					}
+				}
+			}
+			set {
+				switch (MapType) {
+					case MapType.Quake3:
+					case MapType.MOHAA:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.FAKK: {
+						value.GetBytes().CopyTo(Data, 60);
+						break;
+					}
+					case MapType.Raven: {
+						value.GetBytes().CopyTo(Data, 104);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the lightmap V Axis for this <see cref="Face"/>.
+		/// </summary>
+		public Vector3 LightmapVAxis {
+			get {
+				switch (MapType) {
+					case MapType.Quake3:
+					case MapType.MOHAA:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.FAKK: {
+						return new Vector3(BitConverter.ToSingle(Data, 72), BitConverter.ToSingle(Data, 76), BitConverter.ToSingle(Data, 80));
+					}
+					case MapType.Raven: {
+						return new Vector3(BitConverter.ToSingle(Data, 116), BitConverter.ToSingle(Data, 120), BitConverter.ToSingle(Data, 124));
+					}
+					default: {
+						return new Vector3(0, 0, 0);
+					}
+				}
+			}
+			set {
+				switch (MapType) {
+					case MapType.Quake3:
+					case MapType.MOHAA:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.FAKK: {
+						value.GetBytes().CopyTo(Data, 72);
+						break;
+					}
+					case MapType.Raven: {
+						value.GetBytes().CopyTo(Data, 116);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the normal for this <see cref="Face"/>.
+		/// </summary>
+		public Vector3 Normal {
+			get {
+				switch (MapType) {
+					case MapType.Quake3:
+					case MapType.MOHAA:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.FAKK: {
+						return new Vector3(BitConverter.ToSingle(Data, 84), BitConverter.ToSingle(Data, 88), BitConverter.ToSingle(Data, 92));
+					}
+					case MapType.Raven: {
+						return new Vector3(BitConverter.ToSingle(Data, 128), BitConverter.ToSingle(Data, 132), BitConverter.ToSingle(Data, 136));
+					}
+					default: {
+						return new Vector3(0, 0, 0);
+					}
+				}
+			}
+			set {
+				switch (MapType) {
+					case MapType.Quake3:
+					case MapType.MOHAA:
+					case MapType.STEF2:
+					case MapType.STEF2Demo:
+					case MapType.FAKK: {
+						value.GetBytes().CopyTo(Data, 84);
+						break;
+					}
+					case MapType.Raven: {
+						value.GetBytes().CopyTo(Data, 128);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the size of the <see cref="Patch"/> used by this <see cref="Face"/>.
 		/// </summary>
 		public Vector2 PatchSize {
 			get {
@@ -1044,7 +2031,7 @@ namespace LibBSP {
 						return new Vector2(BitConverter.ToInt32(Data, 140), BitConverter.ToInt32(Data, 144));
 					}
 					default: {
-						return new Vector2(float.NaN, float.NaN);
+						return new Vector2(0, 0);
 					}
 				}
 			}
@@ -1055,17 +2042,195 @@ namespace LibBSP {
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
 					case MapType.FAKK: {
-						byte[] bytes = BitConverter.GetBytes((int)value.X());
-						bytes.CopyTo(Data, 96);
-						bytes = BitConverter.GetBytes((int)value.Y());
-						bytes.CopyTo(Data, 100);
+						value.GetBytes().CopyTo(Data, 96);
 						break;
 					}
 					case MapType.Raven: {
-						byte[] bytes = BitConverter.GetBytes((int)value.X());
-						bytes.CopyTo(Data, 140);
-						bytes = BitConverter.GetBytes((int)value.Y());
-						bytes.CopyTo(Data, 144);
+						value.GetBytes().CopyTo(Data, 140);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets number of primitives for this <see cref="Face"/>.
+		/// </summary>
+		public int NumPrimitives {
+			get {
+				switch (MapType) {
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						return BitConverter.ToInt16(Data, 48);
+					}
+					case MapType.Vindictus: {
+						if (LumpVersion == 2) {
+							return BitConverter.ToInt32(Data, 64);
+						} else {
+							return BitConverter.ToInt32(Data, 60);
+						}
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						Data[48] = bytes[0];
+						Data[49] = bytes[1];
+						break;
+					}
+					case MapType.Vindictus: {
+						if (LumpVersion == 2) {
+							bytes.CopyTo(Data, 64);
+						} else {
+							bytes.CopyTo(Data, 60);
+						}
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets first primitive used by this <see cref="Face"/>.
+		/// </summary>
+		public int FirstPrimitive {
+			get {
+				switch (MapType) {
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						return BitConverter.ToInt16(Data, 50);
+					}
+					case MapType.Vindictus: {
+						if (LumpVersion == 2) {
+							return BitConverter.ToInt32(Data, 68);
+						} else {
+							return BitConverter.ToInt32(Data, 64);
+						}
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						Data[50] = bytes[0];
+						Data[51] = bytes[1];
+						break;
+					}
+					case MapType.Vindictus: {
+						if (LumpVersion == 2) {
+							bytes.CopyTo(Data, 68);
+						} else {
+							bytes.CopyTo(Data, 64);
+						}
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the smoothing groups for this <see cref="Face"/>.
+		/// </summary>
+		public int SmoothingGroups {
+			get {
+				switch (MapType) {
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						return BitConverter.ToInt16(Data, 52);
+					}
+					case MapType.Vindictus: {
+						if (LumpVersion == 2) {
+							return BitConverter.ToInt32(Data, 72);
+						} else {
+							return BitConverter.ToInt32(Data, 68);
+						}
+					}
+					case MapType.Source17: {
+						return BitConverter.ToInt32(Data, 100);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						Data[52] = bytes[0];
+						Data[53] = bytes[1];
+						break;
+					}
+					case MapType.Vindictus: {
+						if (LumpVersion == 2) {
+							bytes.CopyTo(Data, 72);
+						} else {
+							bytes.CopyTo(Data, 68);
+						}
+						break;
+					}
+					case MapType.Source17: {
+						bytes.CopyTo(Data, 100);
 						break;
 					}
 				}
@@ -1085,6 +2250,79 @@ namespace LibBSP {
 
 			Data = data;
 			Parent = parent;
+		}
+
+		/// <summary>
+		/// Creates a new <see cref="Face"/> by copying the fields in <paramref name="source"/>, using
+		/// <paramref name="parent"/> to get <see cref="LibBSP.MapType"/> and <see cref="LumpInfo.version"/>
+		/// to use when creating the new <see cref="Face"/>.
+		/// If the <paramref name="parent"/>'s <see cref="BSP"/>'s <see cref="LibBSP.MapType"/> is different from
+		/// the one from <paramref name="source"/>, it does not matter, because fields are copied by name.
+		/// </summary>
+		/// <param name="source">The <see cref="Face"/> to copy.</param>
+		/// <param name="parent">
+		/// The <see cref="ILump"/> to use as the <see cref="Parent"/> of the new <see cref="Face"/>.
+		/// Use <c>null</c> to use the <paramref name="source"/>'s <see cref="Parent"/> instead.
+		/// </param>
+		public Face(Face source, ILump parent) {
+			Parent = parent;
+
+			if (parent != null && parent.Bsp != null) {
+				if (source.Parent != null && source.Parent.Bsp != null && source.Parent.Bsp.version == parent.Bsp.version && source.LumpVersion == parent.LumpInfo.version) {
+					Data = new byte[source.Data.Length];
+					Array.Copy(source.Data, Data, source.Data.Length);
+					return;
+				} else {
+					Data = new byte[GetStructLength(parent.Bsp.version, parent.LumpInfo.version)];
+				}
+			} else {
+				if (source.Parent != null && source.Parent.Bsp != null) {
+					Data = new byte[GetStructLength(source.Parent.Bsp.version, source.Parent.LumpInfo.version)];
+				} else {
+					Data = new byte[GetStructLength(MapType.Undefined, 0)];
+				}
+			}
+
+			PlaneIndex = source.PlaneIndex;
+			PlaneSide = source.PlaneSide;
+			IsOnNode = source.IsOnNode;
+			FirstEdgeIndexIndex = source.FirstEdgeIndexIndex;
+			NumEdgeIndices = source.NumEdgeIndices;
+			TextureIndex = source.TextureIndex;
+			FirstVertexIndex = source.FirstVertexIndex;
+			NumVertices = source.NumVertices;
+			MaterialIndex = source.MaterialIndex;
+			TextureInfoIndex = source.TextureInfoIndex;
+			LightmapTextureInfoIndex = source.LightmapTextureInfoIndex;
+			DisplacementIndex = source.DisplacementIndex;
+			SurfaceFogVolumeID = source.SurfaceFogVolumeID;
+			OriginalFaceIndex = source.OriginalFaceIndex;
+			Type = source.Type;
+			Effect = source.Effect;
+			FirstIndexIndex = source.FirstIndexIndex;
+			NumIndices = source.NumIndices;
+			AverageLightColors = source.AverageLightColors;
+			LightmapStyles = source.LightmapStyles;
+			DayLightStyle = source.DayLightStyle;
+			NightLightStyle = source.NightLightStyle;
+			Lightmap = source.Lightmap;
+			Lightmap2 = source.Lightmap2;
+			Lightmap3 = source.Lightmap3;
+			Lightmap4 = source.Lightmap4;
+			Area = source.Area;
+			LightmapStart = source.LightmapStart;
+			Lightmap2Start = source.Lightmap2Start;
+			Lightmap3Start = source.Lightmap3Start;
+			Lightmap4Start = source.Lightmap4Start;
+			LightmapSize = source.LightmapSize;
+			LightmapOrigin = source.LightmapOrigin;
+			LightmapUAxis = source.LightmapUAxis;
+			LightmapVAxis = source.LightmapVAxis;
+			Normal = source.Normal;
+			PatchSize = source.PatchSize;
+			NumPrimitives = source.NumPrimitives;
+			FirstPrimitive = source.FirstPrimitive;
+			SmoothingGroups = source.SmoothingGroups;
 		}
 
 		/// <summary>
