@@ -9,10 +9,13 @@ using System.Reflection;
 namespace LibBSP {
 #if UNITY
 	using Plane = UnityEngine.Plane;
+	using Vector3 = UnityEngine.Vector3;
 #elif GODOT
 	using Plane = Godot.Plane;
+	using Vector3 = Godot.Vector3;
 #else
 	using Plane = System.Numerics.Plane;
+	using Vector3 = System.Numerics.Vector3;
 #endif
 
 	/// <summary>
@@ -264,6 +267,399 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Gets or sets the bounding box minimums for this leaf.
+		/// </summary>
+		public Vector3 Minimums {
+			get {
+				switch (MapType) {
+					case MapType.Quake: {
+						return new Vector3(BitConverter.ToInt16(Data, 8), BitConverter.ToInt16(Data, 10), BitConverter.ToInt16(Data, 12));
+					}
+					case MapType.Quake2:
+					case MapType.Daikatana:
+					case MapType.SiN:
+					case MapType.SoF:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						return new Vector3(BitConverter.ToInt16(Data, 12), BitConverter.ToInt16(Data, 14), BitConverter.ToInt16(Data, 16));
+					}
+					case MapType.Quake3:
+					case MapType.FAKK:
+					case MapType.CoD:
+					case MapType.CoD2:
+					case MapType.CoD4:
+					case MapType.MOHAA:
+					case MapType.STEF2Demo:
+					case MapType.STEF2:
+					case MapType.Raven:
+					case MapType.Vindictus: {
+						return new Vector3(BitConverter.ToInt32(Data, 12), BitConverter.ToInt32(Data, 16), BitConverter.ToInt32(Data, 20));
+					}
+					case MapType.Nightfire: {
+						return new Vector3(BitConverter.ToSingle(Data, 12), BitConverter.ToSingle(Data, 16), BitConverter.ToSingle(Data, 20));
+					}
+					default: {
+						return new Vector3(0, 0, 0);
+					}
+				}
+			}
+			set {
+				switch (MapType) {
+					case MapType.Quake: {
+						BitConverter.GetBytes((short)value.X()).CopyTo(Data, 8);
+						BitConverter.GetBytes((short)value.Y()).CopyTo(Data, 10);
+						BitConverter.GetBytes((short)value.Z()).CopyTo(Data, 12);
+						break;
+					}
+					case MapType.Quake2:
+					case MapType.Daikatana:
+					case MapType.SiN:
+					case MapType.SoF:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						BitConverter.GetBytes((short)value.X()).CopyTo(Data, 12);
+						BitConverter.GetBytes((short)value.Y()).CopyTo(Data, 14);
+						BitConverter.GetBytes((short)value.Z()).CopyTo(Data, 16);
+						break;
+					}
+					case MapType.Quake3:
+					case MapType.FAKK:
+					case MapType.CoD:
+					case MapType.CoD2:
+					case MapType.CoD4:
+					case MapType.MOHAA:
+					case MapType.STEF2Demo:
+					case MapType.STEF2:
+					case MapType.Raven:
+					case MapType.Vindictus: {
+						BitConverter.GetBytes((int)value.X()).CopyTo(Data, 12);
+						BitConverter.GetBytes((int)value.Y()).CopyTo(Data, 16);
+						BitConverter.GetBytes((int)value.Z()).CopyTo(Data, 20);
+						break;
+					}
+					case MapType.Nightfire: {
+						BitConverter.GetBytes(value.X()).CopyTo(Data, 12);
+						BitConverter.GetBytes(value.Y()).CopyTo(Data, 16);
+						BitConverter.GetBytes(value.Z()).CopyTo(Data, 20);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the bounding box maximums for this leaf.
+		/// </summary>
+		public Vector3 Maximums {
+			get {
+				switch (MapType) {
+					case MapType.Quake: {
+						return new Vector3(BitConverter.ToInt16(Data, 14), BitConverter.ToInt16(Data, 16), BitConverter.ToInt16(Data, 18));
+					}
+					case MapType.Quake2:
+					case MapType.Daikatana:
+					case MapType.SiN:
+					case MapType.SoF:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						return new Vector3(BitConverter.ToInt16(Data, 18), BitConverter.ToInt16(Data, 20), BitConverter.ToInt16(Data, 22));
+					}
+					case MapType.Quake3:
+					case MapType.FAKK:
+					case MapType.CoD:
+					case MapType.CoD2:
+					case MapType.CoD4:
+					case MapType.MOHAA:
+					case MapType.STEF2Demo:
+					case MapType.STEF2:
+					case MapType.Raven:
+					case MapType.Vindictus: {
+						return new Vector3(BitConverter.ToInt32(Data, 24), BitConverter.ToInt32(Data, 28), BitConverter.ToInt32(Data, 32));
+					}
+					case MapType.Nightfire: {
+						return new Vector3(BitConverter.ToSingle(Data, 24), BitConverter.ToSingle(Data, 28), BitConverter.ToSingle(Data, 32));
+					}
+					default: {
+						return new Vector3(0, 0, 0);
+					}
+				}
+			}
+			set {
+				switch (MapType) {
+					case MapType.Quake: {
+						BitConverter.GetBytes((short)value.X()).CopyTo(Data, 14);
+						BitConverter.GetBytes((short)value.Y()).CopyTo(Data, 16);
+						BitConverter.GetBytes((short)value.Z()).CopyTo(Data, 18);
+						break;
+					}
+					case MapType.Quake2:
+					case MapType.Daikatana:
+					case MapType.SiN:
+					case MapType.SoF:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						BitConverter.GetBytes((short)value.X()).CopyTo(Data, 18);
+						BitConverter.GetBytes((short)value.Y()).CopyTo(Data, 20);
+						BitConverter.GetBytes((short)value.Z()).CopyTo(Data, 22);
+						break;
+					}
+					case MapType.Quake3:
+					case MapType.FAKK:
+					case MapType.CoD:
+					case MapType.CoD2:
+					case MapType.CoD4:
+					case MapType.MOHAA:
+					case MapType.STEF2Demo:
+					case MapType.STEF2:
+					case MapType.Raven:
+					case MapType.Vindictus: {
+						BitConverter.GetBytes((short)value.X()).CopyTo(Data, 24);
+						BitConverter.GetBytes((short)value.Y()).CopyTo(Data, 28);
+						BitConverter.GetBytes((short)value.Z()).CopyTo(Data, 32);
+						break;
+					}
+					case MapType.Nightfire: {
+						BitConverter.GetBytes(value.X()).CopyTo(Data, 24);
+						BitConverter.GetBytes(value.Y()).CopyTo(Data, 28);
+						BitConverter.GetBytes(value.Z()).CopyTo(Data, 32);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Enumerates the <see cref="Face"/> indices used by this <see cref="Node"/>.
+		/// </summary>
+		public IEnumerable<Face> Faces {
+			get {
+				for (int i = 0; i < NumFaceIndices; ++i) {
+					yield return Parent.Bsp.faces[FirstFaceIndex + i];
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the index of the first face reference for this <see cref="Node"/>.
+		/// </summary>
+		[Index("faces")]
+		public int FirstFaceIndex {
+			get {
+				switch (MapType) {
+					case MapType.Quake: {
+						return BitConverter.ToUInt16(Data, 20);
+					}
+					case MapType.Quake2:
+					case MapType.Daikatana:
+					case MapType.SiN:
+					case MapType.SoF:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						return BitConverter.ToUInt16(Data, 24);
+					}
+					case MapType.Vindictus: {
+						return BitConverter.ToInt32(Data, 36);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Quake: {
+						Data[20] = bytes[0];
+						Data[21] = bytes[1];
+						break;
+					}
+					case MapType.Quake2:
+					case MapType.Daikatana:
+					case MapType.SiN:
+					case MapType.SoF:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						Data[24] = bytes[0];
+						Data[25] = bytes[1];
+						break;
+					}
+					case MapType.Vindictus: {
+						bytes.CopyTo(Data, 36);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the count of face references for this <see cref="Node"/>.
+		/// </summary>
+		[Count("faces")]
+		public int NumFaceIndices {
+			get {
+				switch (MapType) {
+					case MapType.Quake: {
+						return BitConverter.ToUInt16(Data, 22);
+					}
+					case MapType.Quake2:
+					case MapType.SiN:
+					case MapType.SoF:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						return BitConverter.ToUInt16(Data, 26);
+					}
+					case MapType.Vindictus: {
+						return BitConverter.ToInt32(Data, 40);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Quake: {
+						Data[22] = bytes[0];
+						Data[23] = bytes[1];
+						break;
+					}
+					case MapType.Quake2:
+					case MapType.SiN:
+					case MapType.SoF:
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						Data[26] = bytes[0];
+						Data[27] = bytes[1];
+						break;
+					}
+					case MapType.Vindictus: {
+						bytes.CopyTo(Data, 40);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the area reference for this <see cref="Node"/>.
+		/// </summary>
+		public int AreaIndex {
+			get {
+				switch (MapType) {
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						return BitConverter.ToUInt16(Data, 28);
+					}
+					default: {
+						return -1;
+					}
+				}
+			}
+			set {
+				byte[] bytes = BitConverter.GetBytes(value);
+				switch (MapType) {
+					case MapType.Source17:
+					case MapType.Source18:
+					case MapType.Source19:
+					case MapType.Source20:
+					case MapType.Source21:
+					case MapType.Source22:
+					case MapType.Source23:
+					case MapType.Source27:
+					case MapType.L4D2:
+					case MapType.TacticalInterventionEncrypted:
+					case MapType.DMoMaM: {
+						Data[28] = bytes[0];
+						Data[29] = bytes[1];
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
 		/// Creates a new <see cref="Node"/> object from a <c>byte</c> array.
 		/// </summary>
 		/// <param name="data"><c>byte</c> array to parse.</param>
@@ -276,6 +672,47 @@ namespace LibBSP {
 
 			Data = data;
 			Parent = parent;
+		}
+
+		/// <summary>
+		/// Creates a new <see cref="Node"/> by copying the fields in <paramref name="source"/>, using
+		/// <paramref name="parent"/> to get <see cref="LibBSP.MapType"/> and <see cref="LumpInfo.version"/>
+		/// to use when creating the new <see cref="Node"/>.
+		/// If the <paramref name="parent"/>'s <see cref="BSP"/>'s <see cref="LibBSP.MapType"/> is different from
+		/// the one from <paramref name="source"/>, it does not matter, because fields are copied by name.
+		/// </summary>
+		/// <param name="source">The <see cref="Node"/> to copy.</param>
+		/// <param name="parent">
+		/// The <see cref="ILump"/> to use as the <see cref="Parent"/> of the new <see cref="Node"/>.
+		/// Use <c>null</c> to use the <paramref name="source"/>'s <see cref="Parent"/> instead.
+		/// </param>
+		public Node(Node source, ILump parent) {
+			Parent = parent;
+
+			if (parent != null && parent.Bsp != null) {
+				if (source.Parent != null && source.Parent.Bsp != null && source.Parent.Bsp.version == parent.Bsp.version && source.LumpVersion == parent.LumpInfo.version) {
+					Data = new byte[source.Data.Length];
+					Array.Copy(source.Data, Data, source.Data.Length);
+					return;
+				} else {
+					Data = new byte[GetStructLength(parent.Bsp.version, parent.LumpInfo.version)];
+				}
+			} else {
+				if (source.Parent != null && source.Parent.Bsp != null) {
+					Data = new byte[GetStructLength(source.Parent.Bsp.version, source.Parent.LumpInfo.version)];
+				} else {
+					Data = new byte[GetStructLength(MapType.Undefined, 0)];
+				}
+			}
+
+			PlaneIndex = source.PlaneIndex;
+			Child1Index = source.Child1Index;
+			Child2Index = source.Child2Index;
+			Minimums = source.Minimums;
+			Maximums = source.Maximums;
+			FirstFaceIndex = source.FirstFaceIndex;
+			NumFaceIndices = source.NumFaceIndices;
+			AreaIndex = source.AreaIndex;
 		}
 
 		/// <summary>
