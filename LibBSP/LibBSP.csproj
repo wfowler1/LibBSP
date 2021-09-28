@@ -65,6 +65,7 @@
     <Compile Include="Source\Structs\BSP\Leaf.cs" />
     <Compile Include="Source\Structs\BSP\LODTerrain.cs" />
     <Compile Include="Source\Structs\BSP\Lumps\GameLump.cs" />
+    <Compile Include="Source\Structs\BSP\Lumps\Lightmaps.cs" />
     <Compile Include="Source\Structs\BSP\Lumps\StaticProps.cs" />
     <Compile Include="Source\Structs\BSP\Lumps\Textures.cs" />
     <Compile Include="Source\Structs\BSP\Model.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="Source\Structs\BSP\StaticModel.cs" />
     <Compile Include="Source\Structs\BSP\StaticProp.cs" />
     <Compile Include="Source\Structs\BSP\TextureData.cs" />
+    <Compile Include="Source\Structs\BSP\Lumps\Visibility.cs" />
     <Compile Include="Source\Structs\Common\ILumpObject.cs" />
     <Compile Include="Source\Structs\Common\Lumps\ILump.cs" />
     <Compile Include="Source\Structs\Common\Lumps\Lump.cs" />

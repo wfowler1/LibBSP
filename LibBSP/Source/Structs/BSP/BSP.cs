@@ -94,7 +94,8 @@ namespace LibBSP {
 		private Lump<Edge> _edges;
 		private NumList _surfEdges;
 		private Lump<Model> _models;
-		// public byte[] pvs;
+		private Visibility _visibility;
+		private Lightmaps _lightmaps;
 		// Quake 2
 		private Lump<Brush> _brushes;
 		private Lump<BrushSide> _brushSides;
@@ -356,6 +357,36 @@ namespace LibBSP {
 					}
 				}
 				return _materials;
+			}
+		}
+
+		/// <summary>
+		/// A <see cref="Visibility"/> object holding leaf visiblity data for this <see cref="BSP"/>.
+		/// </summary>
+		public Visibility visibility {
+			get {
+				if (_visibility == null) {
+					int index = Visibility.GetIndexForLump(version);
+					if (index >= 0) {
+						_visibility = new Visibility(reader.ReadLump(this[index]), this, this[index]);
+					}
+				}
+				return _visibility;
+			}
+		}
+
+		/// <summary>
+		/// A <see cref="Lightmaps"/> object holding lightmap data for this <see cref="BSP"/>.
+		/// </summary>
+		public Lightmaps lightmaps {
+			get {
+				if (_lightmaps == null) {
+					int index = Lightmaps.GetIndexForLump(version);
+					if (index >= 0) {
+						_lightmaps = new Lightmaps(reader.ReadLump(this[index]), this, this[index]);
+					}
+				}
+				return _lightmaps;
 			}
 		}
 
