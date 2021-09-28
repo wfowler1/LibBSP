@@ -238,6 +238,22 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Gets the index for the vertex normals lump in the BSP file for a specific map format.
+		/// </summary>
+		/// <param name="type">The map type.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
+		public static int GetIndexForNormalsLump(MapType type) {
+			switch (type) {
+				case MapType.Nightfire: {
+					return 5;
+				}
+				default: {
+					return -1;
+				}
+			}
+		}
+
+		/// <summary>
 		/// Gets the index for the patch vertices lump in the BSP file for a specific map format.
 		/// </summary>
 		/// <param name="type">The map type.</param>

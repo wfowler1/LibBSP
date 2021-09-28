@@ -111,6 +111,7 @@ namespace LibBSP {
 		// Nightfire
 		private Textures _materials;
 		private NumList _indices;
+		private Lump<Vertex> _normals;
 		// Source
 		private Lump<Face> _originalFaces;
 		private NumList _texTable;
@@ -205,6 +206,21 @@ namespace LibBSP {
 					}
 				}
 				return _vertices;
+			}
+		}
+
+		/// <summary>
+		/// A <see cref="Lump{Vertex}"/> of <see cref="Vertex"/> objects in the BSP file representing the vertex normals of the BSP, if available.
+		/// </summary>
+		public Lump<Vertex> normals {
+			get {
+				if (_normals == null) {
+					int index = VertexExtensions.GetIndexForNormalsLump(version);
+					if (index >= 0) {
+						_normals = VertexExtensions.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+					}
+				}
+				return _normals;
 			}
 		}
 
