@@ -1033,11 +1033,6 @@ namespace LibBSP {
 						bytes.CopyTo(Data, 4);
 						break;
 					}
-					
-					case MapType.Nightfire: {
-						bytes.CopyTo(Data, 20);
-						break;
-					}
 				}
 			}
 		}
