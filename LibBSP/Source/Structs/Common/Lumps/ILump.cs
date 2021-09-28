@@ -11,7 +11,7 @@ namespace LibBSP {
 		BSP Bsp { get; }
 
 		/// <summary>
-		/// The <see cref="LumpInfo"/> associated with this <see cref="ILump"/>.
+		/// The <see cref="LibBSP.LumpInfo"/> associated with this <see cref="ILump"/>.
 		/// </summary>
 		LumpInfo LumpInfo { get; }
 

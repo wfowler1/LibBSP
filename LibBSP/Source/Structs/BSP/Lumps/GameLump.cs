@@ -29,7 +29,7 @@ namespace LibBSP {
 		public BSP Bsp { get; protected set; }
 
 		/// <summary>
-		/// The <see cref="LumpInfo"/> associated with this <see cref="ILump"/>.
+		/// The <see cref="LibBSP.LumpInfo"/> associated with this <see cref="ILump"/>.
 		/// </summary>
 		public LumpInfo LumpInfo { get; protected set; }
 
