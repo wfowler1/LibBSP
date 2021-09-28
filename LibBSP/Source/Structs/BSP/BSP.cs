@@ -28,7 +28,7 @@ namespace LibBSP {
 	public enum MapType : int {
 		Undefined = 0,
 		Quake = 29,
-		// TYPE_GOLDSRC = 30, // Uses mostly the same structures as Quake
+		GoldSrc = 30, // Uses mostly the same structures as Quake
 		Nightfire = 42,
 		Vindictus = 346131372,
 		STEF2 = 556942937,
@@ -758,7 +758,8 @@ namespace LibBSP {
 		/// <returns>The number of lumps used by a BSP of version <paramref name="version"/>.</returns>
 		public static int GetNumLumps(MapType version) {
 			switch (version) {
-				case MapType.Quake: {
+				case MapType.Quake:
+				case MapType.GoldSrc: {
 					return 15;
 				}
 				case MapType.Quake3: {

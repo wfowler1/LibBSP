@@ -125,6 +125,7 @@ namespace LibBSP {
 						return BitConverter.ToInt32(Data, 88);
 					}
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Undefined: {
 						return BitConverter.ToInt32(Data, 36);
 					}
@@ -155,6 +156,7 @@ namespace LibBSP {
 						break;
 					}
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Undefined: {
 						bytes.CopyTo(Data, 36);
 						break;
@@ -192,6 +194,7 @@ namespace LibBSP {
 						return BitConverter.ToInt32(Data, 92);
 					}
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Undefined: {
 						return BitConverter.ToInt32(Data, 32);
 					}
@@ -222,6 +225,7 @@ namespace LibBSP {
 						break;
 					}
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Undefined: {
 						bytes.CopyTo(Data, 32);
 						break;
@@ -312,6 +316,7 @@ namespace LibBSP {
 					return 32;
 				}
 				case MapType.Quake:
+				case MapType.GoldSrc:
 				case MapType.Undefined: {
 					return 40;
 				}
@@ -345,6 +350,7 @@ namespace LibBSP {
 		public static int GetIndexForLump(MapType type) {
 			switch (type) {
 				case MapType.Quake:
+				case MapType.GoldSrc:
 				case MapType.Vindictus:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Source17:

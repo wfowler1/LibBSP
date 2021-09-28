@@ -130,7 +130,8 @@ namespace LibBSP {
 					dataType = DataType.UInt32;
 					return 9;
 				}
-				case MapType.Quake: {
+				case MapType.Quake:
+				case MapType.GoldSrc: {
 					dataType = DataType.UInt16;
 					return 11;
 				}
@@ -181,6 +182,7 @@ namespace LibBSP {
 					return 12;
 				}
 				case MapType.Quake:
+				case MapType.GoldSrc:
 				case MapType.Vindictus:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Source17:

@@ -93,6 +93,7 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Quake2:
 					case MapType.Daikatana:
 					case MapType.SiN:
@@ -125,6 +126,7 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Quake2:
 					case MapType.Daikatana:
 					case MapType.SiN:
@@ -164,6 +166,7 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Quake2:
 					case MapType.Daikatana:
 					case MapType.SiN:
@@ -196,6 +199,7 @@ namespace LibBSP {
 			set {
 				switch (MapType) {
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Quake2:
 					case MapType.Daikatana:
 					case MapType.SiN:
@@ -303,6 +307,7 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Quake2:
 					case MapType.Daikatana:
 					case MapType.SiN:
@@ -334,6 +339,7 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Quake2:
 					case MapType.Daikatana:
 					case MapType.SiN:
@@ -371,6 +377,7 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Quake2:
 					case MapType.Daikatana:
 					case MapType.SiN:
@@ -402,6 +409,7 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Quake2:
 					case MapType.Daikatana:
 					case MapType.SiN:
@@ -679,6 +687,7 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Source18:
 					case MapType.Source19:
 					case MapType.Source20:
@@ -709,6 +718,7 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Source18:
 					case MapType.Source19:
 					case MapType.Source20:
@@ -1196,6 +1206,7 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Quake2:
 					case MapType.Daikatana: {
 						byte[] bytes = new byte[4];
@@ -1253,6 +1264,7 @@ namespace LibBSP {
 			set {
 				switch (MapType) {
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Quake2:
 					case MapType.Daikatana: {
 						Array.Copy(value, 0, Data, 12, Math.Min(value.Length, 4));
@@ -1362,6 +1374,7 @@ namespace LibBSP {
 						return BitConverter.ToInt16(Data, 2);
 					}
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Quake2:
 					case MapType.Daikatana: {
 						return BitConverter.ToInt32(Data, 16);
@@ -1418,6 +1431,7 @@ namespace LibBSP {
 						break;
 					}
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Quake2:
 					case MapType.Daikatana: {
 						bytes.CopyTo(Data, 16);
@@ -2350,6 +2364,7 @@ namespace LibBSP {
 					return 16;
 				}
 				case MapType.Quake:
+				case MapType.GoldSrc:
 				case MapType.Quake2:
 				case MapType.Daikatana: {
 					return 20;
@@ -2443,7 +2458,8 @@ namespace LibBSP {
 				case MapType.Source27:
 				case MapType.L4D2:
 				case MapType.DMoMaM:
-				case MapType.Quake: {
+				case MapType.Quake:
+				case MapType.GoldSrc: {
 					return 7;
 				}
 				case MapType.Nightfire:

@@ -297,6 +297,7 @@ namespace LibBSP {
 			byte[] bytes = new byte[GetStructLength(type, version)];
 			switch (type) {
 				case MapType.Quake:
+				case MapType.GoldSrc:
 				case MapType.Nightfire:
 				case MapType.SiN:
 				case MapType.SoF:
@@ -401,6 +402,7 @@ namespace LibBSP {
 				case MapType.STEF2:
 				case MapType.STEF2Demo:
 				case MapType.Quake:
+				case MapType.GoldSrc:
 				case MapType.Quake2:
 				case MapType.SiN:
 				case MapType.Daikatana:
@@ -446,6 +448,7 @@ namespace LibBSP {
 			int structLength = 0;
 			switch (type) {
 				case MapType.Quake:
+				case MapType.GoldSrc:
 				case MapType.Nightfire:
 				case MapType.SiN:
 				case MapType.SoF:

@@ -100,7 +100,8 @@ namespace LibBSP {
 					}
 					return;
 				}
-				case MapType.Quake: {
+				case MapType.Quake:
+				case MapType.GoldSrc: {
 					int numElements = BitConverter.ToInt32(data, 0);
 					structLength = 40;
 					for (int i = 0; i < numElements; ++i) {

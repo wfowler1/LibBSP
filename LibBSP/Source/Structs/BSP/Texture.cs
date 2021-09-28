@@ -69,7 +69,8 @@ namespace LibBSP {
 		public string Name {
 			get {
 				switch (MapType) {
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						return Data.ToNullTerminatedString(0, 16);
 					}
 					case MapType.STEF2:
@@ -115,7 +116,8 @@ namespace LibBSP {
 			set {
 				byte[] bytes = Encoding.ASCII.GetBytes(value);
 				switch (MapType) {
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						for (int i = 0; i < 16; ++i) {
 							Data[i] = 0;
 						}
@@ -344,7 +346,8 @@ namespace LibBSP {
 		public uint Width {
 			get {
 				switch (MapType) {
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						return BitConverter.ToUInt32(Data, 16);
 					}
 					default: {
@@ -355,7 +358,8 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						bytes.CopyTo(Data, 16);
 						break;
 					}
@@ -369,7 +373,8 @@ namespace LibBSP {
 		public uint Height {
 			get {
 				switch (MapType) {
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						return BitConverter.ToUInt32(Data, 20);
 					}
 					default: {
@@ -380,7 +385,8 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						bytes.CopyTo(Data, 20);
 						break;
 					}
@@ -394,7 +400,8 @@ namespace LibBSP {
 		public uint OffsetFull {
 			get {
 				switch (MapType) {
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						return BitConverter.ToUInt32(Data, 24);
 					}
 					default: {
@@ -405,7 +412,8 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						bytes.CopyTo(Data, 24);
 						break;
 					}
@@ -419,7 +427,8 @@ namespace LibBSP {
 		public uint OffsetHalf {
 			get {
 				switch (MapType) {
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						return BitConverter.ToUInt32(Data, 28);
 					}
 					default: {
@@ -430,7 +439,8 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						bytes.CopyTo(Data, 28);
 						break;
 					}
@@ -444,7 +454,8 @@ namespace LibBSP {
 		public uint OffsetQuarter {
 			get {
 				switch (MapType) {
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						return BitConverter.ToUInt32(Data, 32);
 					}
 					default: {
@@ -455,7 +466,8 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						bytes.CopyTo(Data, 32);
 						break;
 					}
@@ -469,7 +481,8 @@ namespace LibBSP {
 		public uint OffsetEighth {
 			get {
 				switch (MapType) {
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						return BitConverter.ToUInt32(Data, 36);
 					}
 					default: {
@@ -480,7 +493,8 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						bytes.CopyTo(Data, 36);
 						break;
 					}
@@ -693,6 +707,7 @@ namespace LibBSP {
 					return 1;
 				}
 				case MapType.Quake:
+				case MapType.GoldSrc:
 				case MapType.Nightfire: {
 					return 2;
 				}

@@ -129,6 +129,7 @@ namespace LibBSP {
 					goto case MapType.Quake;
 				}
 				case MapType.Quake:
+				case MapType.GoldSrc:
 				case MapType.Nightfire:
 				case MapType.SiN:
 				case MapType.SoF:
@@ -196,6 +197,7 @@ namespace LibBSP {
 					return 2;
 				}
 				case MapType.Quake:
+				case MapType.GoldSrc:
 				case MapType.Vindictus:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Source17:
@@ -279,6 +281,7 @@ namespace LibBSP {
 			int structLength = 0;
 			switch (type) {
 				case MapType.Quake:
+				case MapType.GoldSrc:
 				case MapType.Nightfire:
 				case MapType.SiN:
 				case MapType.SoF:
@@ -347,6 +350,7 @@ namespace LibBSP {
 
 			switch (type) {
 				case MapType.Quake:
+				case MapType.GoldSrc:
 				case MapType.Nightfire:
 				case MapType.SiN:
 				case MapType.SoF:

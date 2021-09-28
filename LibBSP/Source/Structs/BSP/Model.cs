@@ -73,6 +73,7 @@ namespace LibBSP {
 						return BitConverter.ToInt32(Data, 24);
 					}
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Quake2:
 					case MapType.Daikatana:
 					case MapType.SiN:
@@ -106,6 +107,7 @@ namespace LibBSP {
 						break;
 					}
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Quake2:
 					case MapType.Daikatana:
 					case MapType.SiN:
@@ -141,7 +143,8 @@ namespace LibBSP {
 					case MapType.Nightfire: {
 						return BitConverter.ToInt32(Data, 28);
 					}
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						return BitConverter.ToInt32(Data, 40);
 					}
 					default: {
@@ -156,7 +159,8 @@ namespace LibBSP {
 						bytes.CopyTo(Data, 28);
 						break;
 					}
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						bytes.CopyTo(Data, 40);
 						break;
 					}
@@ -173,7 +177,8 @@ namespace LibBSP {
 					case MapType.Nightfire: {
 						return BitConverter.ToInt32(Data, 32);
 					}
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						return BitConverter.ToInt32(Data, 44);
 					}
 					default: {
@@ -188,7 +193,8 @@ namespace LibBSP {
 						bytes.CopyTo(Data, 32);
 						break;
 					}
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						bytes.CopyTo(Data, 44);
 						break;
 					}
@@ -205,7 +211,8 @@ namespace LibBSP {
 					case MapType.Nightfire: {
 						return BitConverter.ToInt32(Data, 36);
 					}
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						return BitConverter.ToInt32(Data, 48);
 					}
 					default: {
@@ -220,7 +227,8 @@ namespace LibBSP {
 						bytes.CopyTo(Data, 36);
 						break;
 					}
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						bytes.CopyTo(Data, 48);
 						break;
 					}
@@ -273,7 +281,8 @@ namespace LibBSP {
 					case MapType.Nightfire: {
 						return BitConverter.ToInt32(Data, 44);
 					}
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						return BitConverter.ToInt32(Data, 52);
 					}
 					default: {
@@ -288,7 +297,8 @@ namespace LibBSP {
 						bytes.CopyTo(Data, 44);
 						break;
 					}
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						bytes.CopyTo(Data, 52);
 						break;
 					}
@@ -452,7 +462,8 @@ namespace LibBSP {
 					case MapType.Nightfire: {
 						return BitConverter.ToInt32(Data, 48);
 					}
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						return BitConverter.ToInt32(Data, 56);
 					}
 					default: {
@@ -505,7 +516,8 @@ namespace LibBSP {
 						bytes.CopyTo(Data, 48);
 						break;
 					}
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						bytes.CopyTo(Data, 56);
 						break;
 					}
@@ -555,7 +567,8 @@ namespace LibBSP {
 					case MapType.Nightfire: {
 						return BitConverter.ToInt32(Data, 52);
 					}
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						return BitConverter.ToInt32(Data, 60);
 					}
 					default: {
@@ -608,7 +621,8 @@ namespace LibBSP {
 						bytes.CopyTo(Data, 52);
 						break;
 					}
-					case MapType.Quake: {
+					case MapType.Quake:
+					case MapType.GoldSrc: {
 						bytes.CopyTo(Data, 60);
 						break;
 					}
@@ -684,6 +698,7 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Quake2:
 					case MapType.Quake3:
 					case MapType.SiN:
@@ -721,6 +736,7 @@ namespace LibBSP {
 			set {
 				switch (MapType) {
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Quake2:
 					case MapType.Quake3:
 					case MapType.SiN:
@@ -762,6 +778,7 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Quake2:
 					case MapType.Quake3:
 					case MapType.Nightfire:
@@ -796,6 +813,7 @@ namespace LibBSP {
 			set {
 				switch (MapType) {
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.Quake2:
 					case MapType.Quake3:
 					case MapType.Nightfire:
@@ -1008,7 +1026,8 @@ namespace LibBSP {
 				case MapType.Nightfire: {
 					return 56;
 				}
-				case MapType.Quake: {
+				case MapType.Quake:
+				case MapType.GoldSrc: {
 					return 64;
 				}
 				default: {
@@ -1037,6 +1056,7 @@ namespace LibBSP {
 					return 13;
 				}
 				case MapType.Quake:
+				case MapType.GoldSrc:
 				case MapType.Nightfire:
 				case MapType.Vindictus:
 				case MapType.TacticalInterventionEncrypted:

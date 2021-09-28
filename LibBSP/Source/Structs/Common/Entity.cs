@@ -651,6 +651,7 @@ namespace LibBSP {
 				case MapType.Raven:
 				case MapType.Quake3:
 				case MapType.Quake:
+				case MapType.GoldSrc:
 				case MapType.Quake2:
 				case MapType.SiN:
 				case MapType.Daikatana:

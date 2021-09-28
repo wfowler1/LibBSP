@@ -71,6 +71,7 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.SiN:
 					case MapType.Daikatana:
 					case MapType.Source17:
@@ -100,6 +101,7 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.SiN:
 					case MapType.Daikatana:
 					case MapType.Source17:
@@ -143,6 +145,7 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.SiN:
 					case MapType.Daikatana:
 					case MapType.Source17:
@@ -172,6 +175,7 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
 					case MapType.Quake:
+					case MapType.GoldSrc:
 					case MapType.SiN:
 					case MapType.Daikatana:
 					case MapType.Source17:
@@ -275,6 +279,7 @@ namespace LibBSP {
 		public static int GetStructLength(MapType mapType, int lumpVersion = 0) {
 			switch (mapType) {
 				case MapType.Quake:
+				case MapType.GoldSrc:
 				case MapType.SiN:
 				case MapType.Daikatana:
 				case MapType.Source17:
@@ -315,6 +320,7 @@ namespace LibBSP {
 					return 11;
 				}
 				case MapType.Quake:
+				case MapType.GoldSrc:
 				case MapType.Vindictus:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Source17:
