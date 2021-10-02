@@ -231,7 +231,7 @@ namespace LibBSP {
 		/// </returns>
 		public byte[] ReadLump(int offset, int length, string fileName = null) {
 			byte[] output;
-			if (string.IsNullOrWhiteSpace(fileName)) {
+			if (string.IsNullOrEmpty(fileName)) {
 				fileName = bspFile.FullName;
 			}
 			using (FileStream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read)) {
