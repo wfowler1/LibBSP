@@ -197,35 +197,49 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Reads the lump in the BSP file using the information in "<paramref name="info"/>".
+		/// Reads the lump in the BSP file or lump file using the information in "<paramref name="info"/>".
 		/// </summary>
 		/// <param name="info">The <see cref="LumpInfo"/> object representing the lump's information.</param>
-		/// <returns>A <c>byte</c> array containing the data from the file for the lump at the offset with the length from "<paramref name="info"/>".</returns>
+		/// <returns>
+		/// A <c>byte</c> array containing the data from the file for the lump at the offset with the length from "<paramref name="info"/>".
+		/// </returns>
 		public byte[] ReadLump(LumpInfo info) {
 			if (info.length == 0) { return new byte[0]; }
 			byte[] output;
 
 			if (info.lumpFile != null) {
-				using (FileStream fs = new FileStream(info.lumpFile.FullName, FileMode.Open, FileAccess.Read)) {
-					BinaryReader br = new BinaryReader(fs);
-					fs.Seek(info.offset, SeekOrigin.Begin);
-					output = br.ReadBytes(info.length);
-					br.Close();
-					return output;
-				}
+				output = ReadLump(info.offset, info.length, info.lumpFile.FullName);
+			} else {
+				output = ReadLump(info.offset, info.length);
 			}
-
-			using (FileStream stream = new FileStream(bspFile.FullName, FileMode.Open, FileAccess.Read)) {
-				BinaryReader binaryReader = new BinaryReader(stream);
-				stream.Seek(info.offset, SeekOrigin.Begin);
-				output = binaryReader.ReadBytes(info.length);
-				binaryReader.Close();
-			}
-
+			
 			if (key.Length != 0) {
 				output = XorWithKeyStartingAtIndex(output, info.offset);
 			}
 
+			return output;
+		}
+
+		/// <summary>
+		/// Reads the data in the specified file at <paramref name="offset"/> and length <paramref name="length"/>.
+		/// </summary>
+		/// <param name="offset">The offset to begin reading from.</param>
+		/// <param name="length">The number of bytes to read.</param>
+		/// <param name="fileName">The path of the file to read from, or <c>null</c> to read from the BSP file instead.</param>
+		/// <returns>
+		/// A <c>byte</c> array containing the data from the BSP or <paramref name="fileName"/> at <paramref name="offset"/> with <paramref name="length"/>.
+		/// </returns>
+		public byte[] ReadLump(int offset, int length, string fileName = null) {
+			byte[] output;
+			if (string.IsNullOrWhiteSpace(fileName)) {
+				fileName = bspFile.FullName;
+			}
+			using (FileStream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read)) {
+				BinaryReader binaryReader = new BinaryReader(stream);
+				stream.Seek(offset, SeekOrigin.Begin);
+				output = binaryReader.ReadBytes(length);
+				binaryReader.Close();
+			}
 			return output;
 		}
 
