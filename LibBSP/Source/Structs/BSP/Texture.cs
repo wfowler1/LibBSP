@@ -30,6 +30,27 @@ namespace LibBSP {
 	public struct Texture : ILumpObject {
 
 		/// <summary>
+		/// Number of MipMap levels used by Quake/GoldSrc engines.
+		/// </summary>
+		public const int NumMipmaps = 4;
+		/// <summary>
+		/// Index of the full mipmap.
+		/// </summary>
+		public const int FullMipmap = 0;
+		/// <summary>
+		/// Index of the half mipmap.
+		/// </summary>
+		public const int HalfMipmap = 1;
+		/// <summary>
+		/// Index of the quarter mipmap.
+		/// </summary>
+		public const int QuarterMipmap = 2;
+		/// <summary>
+		/// Index of the eighth mipmap.
+		/// </summary>
+		public const int EighthMipmap = 3;
+
+		/// <summary>
 		/// The <see cref="ILump"/> this <see cref="ILumpObject"/> came from.
 		/// </summary>
 		public ILump Parent { get; private set; }
@@ -38,6 +59,19 @@ namespace LibBSP {
 		/// Array of <c>byte</c>s used as the data source for this <see cref="ILumpObject"/>.
 		/// </summary>
 		public byte[] Data { get; private set; }
+
+		private byte[][] _mipmaps;
+		/// <summary>
+		/// Mipmap image data for this <see cref="Texture"/>.
+		/// </summary>
+		public byte[][] Mipmaps {
+			get {
+				if (_mipmaps == null && MipmapFullOffset >= 0) {
+					_mipmaps = new byte[NumMipmaps][];
+				}
+				return _mipmaps;
+			}
+		}
 
 		/// <summary>
 		/// The <see cref="LibBSP.MapType"/> to use to interpret <see cref="Data"/>.
@@ -341,26 +375,26 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets or sets the width of this <see cref="Texture"/>.
+		/// Gets or sets the dimensions of this <see cref="Texture"/>.
 		/// </summary>
-		public uint Width {
+		public Vector2 Dimensions {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
 					case MapType.GoldSrc: {
-						return BitConverter.ToUInt32(Data, 16);
+						return new Vector2(BitConverter.ToUInt32(Data, 16), BitConverter.ToUInt32(Data, 20));
 					}
 					default: {
-						return 0;
+						return new Vector2(0, 0);
 					}
 				}
 			}
 			set {
-				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
 					case MapType.Quake:
 					case MapType.GoldSrc: {
-						bytes.CopyTo(Data, 16);
+						BitConverter.GetBytes((int)value.X()).CopyTo(Data, 16);
+						BitConverter.GetBytes((int)value.Y()).CopyTo(Data, 20);
 						break;
 					}
 				}
@@ -368,44 +402,17 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets or sets the height of this <see cref="Texture"/>.
+		/// Gets the offset to the full mipmap of this <see cref="Texture"/>.
 		/// </summary>
-		public uint Height {
+		public int MipmapFullOffset {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
 					case MapType.GoldSrc: {
-						return BitConverter.ToUInt32(Data, 20);
+						return BitConverter.ToInt32(Data, 24);
 					}
 					default: {
-						return 0;
-					}
-				}
-			}
-			set {
-				byte[] bytes = BitConverter.GetBytes(value);
-				switch (MapType) {
-					case MapType.Quake:
-					case MapType.GoldSrc: {
-						bytes.CopyTo(Data, 20);
-						break;
-					}
-				}
-			}
-		}
-
-		/// <summary>
-		/// Gets the offset to the full version of this <see cref="Texture"/>.
-		/// </summary>
-		public uint OffsetFull {
-			get {
-				switch (MapType) {
-					case MapType.Quake:
-					case MapType.GoldSrc: {
-						return BitConverter.ToUInt32(Data, 24);
-					}
-					default: {
-						return 0;
+						return -1;
 					}
 				}
 			}
@@ -422,17 +429,17 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets the offset to the half version of this <see cref="Texture"/>.
+		/// Gets the offset to the half mipmap of this <see cref="Texture"/>.
 		/// </summary>
-		public uint OffsetHalf {
+		public int MipmapHalfOffset {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
 					case MapType.GoldSrc: {
-						return BitConverter.ToUInt32(Data, 28);
+						return BitConverter.ToInt32(Data, 28);
 					}
 					default: {
-						return 0;
+						return -1;
 					}
 				}
 			}
@@ -449,17 +456,17 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets the offset to the quarter version of this <see cref="Texture"/>.
+		/// Gets the offset to the quarter mipmap of this <see cref="Texture"/>.
 		/// </summary>
-		public uint OffsetQuarter {
+		public int MipmapQuarterOffset {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
 					case MapType.GoldSrc: {
-						return BitConverter.ToUInt32(Data, 32);
+						return BitConverter.ToInt32(Data, 32);
 					}
 					default: {
-						return 0;
+						return -1;
 					}
 				}
 			}
@@ -476,17 +483,17 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets the offset to the eighth version of this <see cref="Texture"/>.
+		/// Gets the offset to the eighth mipmap of this <see cref="Texture"/>.
 		/// </summary>
-		public uint OffsetEighth {
+		public int MipmapEighthOffset {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
 					case MapType.GoldSrc: {
-						return BitConverter.ToUInt32(Data, 36);
+						return BitConverter.ToInt32(Data, 36);
 					}
 					default: {
-						return 0;
+						return -1;
 					}
 				}
 			}
@@ -604,13 +611,23 @@ namespace LibBSP {
 		/// <param name="data"><c>byte</c> array to parse.</param>
 		/// <param name="parent">The <see cref="ILump"/> this <see cref="Texture"/> came from.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
-		public Texture(byte[] data, ILump parent) {
+		public Texture(byte[] data, ILump parent) : this(data, parent, null) { }
+
+		/// <summary>
+		/// Creates a new <see cref="Texture"/> object from a <c>byte</c> array.
+		/// </summary>
+		/// <param name="data"><c>byte</c> array to parse.</param>
+		/// <param name="parent">The <see cref="ILump"/> this <see cref="Texture"/> came from.</param>
+		/// <param name="mipmaps">Data for the mipmap levels.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
+		public Texture(byte[] data, ILump parent, byte[][] mipmaps) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
 
 			Data = data;
 			Parent = parent;
+			_mipmaps = mipmaps;
 		}
 
 		/// <summary>
@@ -632,6 +649,7 @@ namespace LibBSP {
 				if (source.Parent != null && source.Parent.Bsp != null && source.Parent.Bsp.version == parent.Bsp.version && source.LumpVersion == parent.LumpInfo.version) {
 					Data = new byte[source.Data.Length];
 					Array.Copy(source.Data, Data, source.Data.Length);
+					_mipmaps = source.Mipmaps;
 					return;
 				} else {
 					Data = new byte[GetStructLength(parent.Bsp.version, parent.LumpInfo.version)];
@@ -644,17 +662,17 @@ namespace LibBSP {
 				}
 			}
 
+			_mipmaps = source.Mipmaps;
 			Name = source.Name;
 			Mask = source.Mask;
 			Flags = source.Flags;
 			Contents = source.Contents;
 			TextureInfo = source.TextureInfo;
-			Width = source.Width;
-			Height = source.Height;
-			OffsetFull = source.OffsetFull;
-			OffsetHalf = source.OffsetHalf;
-			OffsetQuarter = source.OffsetQuarter;
-			OffsetEighth = source.OffsetEighth;
+			Dimensions = source.Dimensions;
+			MipmapFullOffset = source.MipmapFullOffset;
+			MipmapHalfOffset = source.MipmapHalfOffset;
+			MipmapQuarterOffset = source.MipmapQuarterOffset;
+			MipmapEighthOffset = source.MipmapEighthOffset;
 			Value = source.Value;
 			Next = source.Next;
 			Subdivisions = source.Subdivisions;

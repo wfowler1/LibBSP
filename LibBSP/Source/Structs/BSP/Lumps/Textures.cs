@@ -104,10 +104,30 @@ namespace LibBSP {
 				case MapType.GoldSrc: {
 					int numElements = BitConverter.ToInt32(data, 0);
 					structLength = 40;
+					int currentOffset;
+					int width;
+					int height;
+					int power;
+					int mipmapOffset;
 					for (int i = 0; i < numElements; ++i) {
 						byte[] myBytes = new byte[structLength];
-						Array.Copy(data, BitConverter.ToInt32(data, (i + 1) * 4), myBytes, 0, structLength);
-						Add(new Texture(myBytes, this));
+						byte[][] mipmaps = new byte[Texture.NumMipmaps][];
+						currentOffset = BitConverter.ToInt32(data, (i + 1) * 4);
+						if (currentOffset >= 0) {
+							Array.Copy(data, currentOffset, myBytes, 0, structLength);
+							width = BitConverter.ToInt32(myBytes, 16);
+							height = BitConverter.ToInt32(myBytes, 20);
+							power = 1;
+							for (int j = 0; j < mipmaps.Length; ++j) {
+								mipmapOffset = BitConverter.ToInt32(myBytes, 24 + (4 * j));
+								if (mipmapOffset > 0) {
+									mipmaps[j] = new byte[(width / power) * (height / power)];
+									Array.Copy(data, currentOffset + mipmapOffset, mipmaps[j], 0, mipmaps[j].Length);
+								}
+								power *= 2;
+							}
+						}
+						Add(new Texture(myBytes, this, mipmaps));
 					}
 					return;
 				}
