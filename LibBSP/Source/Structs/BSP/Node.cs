@@ -98,7 +98,8 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						return BitConverter.ToInt16(Data, 4);
 					}
 					case MapType.SiN:
@@ -137,7 +138,8 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						Data[4] = bytes[0];
 						Data[5] = bytes[1];
 						break;
@@ -194,7 +196,8 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						return BitConverter.ToInt16(Data, 6);
 					}
 					case MapType.SiN:
@@ -233,7 +236,8 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						Data[6] = bytes[0];
 						Data[7] = bytes[1];
 						break;
@@ -277,7 +281,8 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						return new Vector3(BitConverter.ToInt16(Data, 8), BitConverter.ToInt16(Data, 10), BitConverter.ToInt16(Data, 12));
 					}
 					case MapType.Quake2:
@@ -320,7 +325,8 @@ namespace LibBSP {
 			set {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						BitConverter.GetBytes((short)value.X()).CopyTo(Data, 8);
 						BitConverter.GetBytes((short)value.Y()).CopyTo(Data, 10);
 						BitConverter.GetBytes((short)value.Z()).CopyTo(Data, 12);
@@ -378,7 +384,8 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						return new Vector3(BitConverter.ToInt16(Data, 14), BitConverter.ToInt16(Data, 16), BitConverter.ToInt16(Data, 18));
 					}
 					case MapType.Quake2:
@@ -421,7 +428,8 @@ namespace LibBSP {
 			set {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						BitConverter.GetBytes((short)value.X()).CopyTo(Data, 14);
 						BitConverter.GetBytes((short)value.Y()).CopyTo(Data, 16);
 						BitConverter.GetBytes((short)value.Z()).CopyTo(Data, 18);
@@ -491,7 +499,8 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						return BitConverter.ToUInt16(Data, 20);
 					}
 					case MapType.Quake2:
@@ -523,7 +532,8 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						Data[20] = bytes[0];
 						Data[21] = bytes[1];
 						break;
@@ -563,7 +573,8 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						return BitConverter.ToUInt16(Data, 22);
 					}
 					case MapType.Quake2:
@@ -594,7 +605,8 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						Data[22] = bytes[0];
 						Data[23] = bytes[1];
 						break;
@@ -753,7 +765,8 @@ namespace LibBSP {
 		public static int GetStructLength(MapType mapType, int lumpVersion = 0) {
 			switch (mapType) {
 				case MapType.Quake:
-				case MapType.GoldSrc: {
+				case MapType.GoldSrc:
+				case MapType.BlueShift: {
 					return 24;
 				}
 				case MapType.Quake2:
@@ -814,6 +827,7 @@ namespace LibBSP {
 				}
 				case MapType.Quake:
 				case MapType.GoldSrc:
+				case MapType.BlueShift:
 				case MapType.Vindictus:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Source17:

@@ -76,6 +76,7 @@ namespace LibBSP {
 				}
 				case MapType.Quake:
 				case MapType.GoldSrc:
+				case MapType.BlueShift:
 				case MapType.Vindictus:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Source17:

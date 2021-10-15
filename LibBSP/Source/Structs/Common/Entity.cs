@@ -672,6 +672,9 @@ namespace LibBSP {
 				case MapType.Titanfall: {
 					return 0;
 				}
+				case MapType.BlueShift: {
+					return 1;
+				}
 				case MapType.FAKK:
 				case MapType.MOHAA: {
 					return 14;

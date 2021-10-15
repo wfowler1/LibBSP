@@ -29,6 +29,7 @@ namespace LibBSP {
 		Undefined = 0,
 		Quake = 29,
 		GoldSrc = 30, // Uses mostly the same structures as Quake
+		BlueShift = 31, // Blue Shift has a different lump order
 		Nightfire = 42,
 		Vindictus = 346131372,
 		STEF2 = 556942937,
@@ -790,7 +791,8 @@ namespace LibBSP {
 		public static int GetNumLumps(MapType version) {
 			switch (version) {
 				case MapType.Quake:
-				case MapType.GoldSrc: {
+				case MapType.GoldSrc:
+				case MapType.BlueShift: {
 					return 15;
 				}
 				case MapType.Quake3: {

@@ -62,6 +62,7 @@ namespace LibBSP {
 				switch (MapType) {
 					case MapType.Quake:
 					case MapType.GoldSrc:
+					case MapType.BlueShift:
 					case MapType.Quake2:
 					case MapType.SoF:
 					case MapType.SiN:
@@ -91,6 +92,7 @@ namespace LibBSP {
 				switch (MapType) {
 					case MapType.Quake:
 					case MapType.GoldSrc:
+					case MapType.BlueShift:
 					case MapType.Quake2:
 					case MapType.SoF:
 					case MapType.SiN:
@@ -134,6 +136,7 @@ namespace LibBSP {
 					}
 					case MapType.Quake:
 					case MapType.GoldSrc:
+					case MapType.BlueShift:
 					case MapType.Nightfire:
 					case MapType.Vindictus: {
 						return BitConverter.ToInt32(Data, 4);
@@ -177,6 +180,7 @@ namespace LibBSP {
 					}
 					case MapType.Quake:
 					case MapType.GoldSrc:
+					case MapType.BlueShift:
 					case MapType.Nightfire:
 					case MapType.Vindictus: {
 						bytes.CopyTo(Data, 4);
@@ -353,6 +357,7 @@ namespace LibBSP {
 					}
 					case MapType.Quake:
 					case MapType.GoldSrc:
+					case MapType.BlueShift:
 					case MapType.Quake2:
 					case MapType.Daikatana:
 					case MapType.SiN:
@@ -398,6 +403,7 @@ namespace LibBSP {
 					}
 					case MapType.Quake:
 					case MapType.GoldSrc:
+					case MapType.BlueShift:
 					case MapType.Quake2:
 					case MapType.Daikatana:
 					case MapType.SiN:
@@ -455,6 +461,7 @@ namespace LibBSP {
 					}
 					case MapType.Quake:
 					case MapType.GoldSrc:
+					case MapType.BlueShift:
 					case MapType.Quake2:
 					case MapType.Daikatana:
 					case MapType.SiN:
@@ -500,6 +507,7 @@ namespace LibBSP {
 					}
 					case MapType.Quake:
 					case MapType.GoldSrc:
+					case MapType.BlueShift:
 					case MapType.Quake2:
 					case MapType.Daikatana:
 					case MapType.SiN:
@@ -775,6 +783,7 @@ namespace LibBSP {
 				switch (MapType) {
 					case MapType.Quake:
 					case MapType.GoldSrc:
+					case MapType.BlueShift:
 					case MapType.Quake2:
 					case MapType.SiN:
 					case MapType.Source17:
@@ -816,6 +825,7 @@ namespace LibBSP {
 				switch (MapType) {
 					case MapType.Quake:
 					case MapType.GoldSrc:
+					case MapType.BlueShift:
 					case MapType.Quake2:
 					case MapType.SiN:
 					case MapType.Source17:
@@ -865,6 +875,7 @@ namespace LibBSP {
 				switch (MapType) {
 					case MapType.Quake:
 					case MapType.GoldSrc:
+					case MapType.BlueShift:
 					case MapType.Quake2:
 					case MapType.SiN:
 					case MapType.Source17:
@@ -906,6 +917,7 @@ namespace LibBSP {
 				switch (MapType) {
 					case MapType.Quake:
 					case MapType.GoldSrc:
+					case MapType.BlueShift:
 					case MapType.Quake2:
 					case MapType.SiN:
 					case MapType.Source17:
@@ -954,7 +966,8 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						return Data[24];
 					}
 					default: {
@@ -965,7 +978,8 @@ namespace LibBSP {
 			set {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						Data[24] = value;
 						break;
 					}
@@ -980,7 +994,8 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						return Data[25];
 					}
 					default: {
@@ -991,7 +1006,8 @@ namespace LibBSP {
 			set {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						Data[25] = value;
 						break;
 					}
@@ -1006,7 +1022,8 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						return Data[26];
 					}
 					default: {
@@ -1017,7 +1034,8 @@ namespace LibBSP {
 			set {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						Data[26] = value;
 						break;
 					}
@@ -1032,7 +1050,8 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						return Data[27];
 					}
 					default: {
@@ -1043,7 +1062,8 @@ namespace LibBSP {
 			set {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						Data[27] = value;
 						break;
 					}
@@ -1273,6 +1293,7 @@ namespace LibBSP {
 				}
 				case MapType.Quake:
 				case MapType.GoldSrc:
+				case MapType.BlueShift:
 				case MapType.Quake2:
 				case MapType.SiN: {
 					return 28;
@@ -1339,6 +1360,7 @@ namespace LibBSP {
 				case MapType.STEF2Demo:
 				case MapType.Quake:
 				case MapType.GoldSrc:
+				case MapType.BlueShift:
 				case MapType.Vindictus:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Source17:

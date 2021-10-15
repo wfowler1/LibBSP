@@ -131,7 +131,8 @@ namespace LibBSP {
 					return 9;
 				}
 				case MapType.Quake:
-				case MapType.GoldSrc: {
+				case MapType.GoldSrc:
+				case MapType.BlueShift: {
 					dataType = DataType.UInt16;
 					return 11;
 				}
@@ -183,6 +184,7 @@ namespace LibBSP {
 				}
 				case MapType.Quake:
 				case MapType.GoldSrc:
+				case MapType.BlueShift:
 				case MapType.Vindictus:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Source17:

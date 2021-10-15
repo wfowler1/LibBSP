@@ -298,6 +298,7 @@ namespace LibBSP {
 			switch (type) {
 				case MapType.Quake:
 				case MapType.GoldSrc:
+				case MapType.BlueShift:
 				case MapType.Nightfire:
 				case MapType.SiN:
 				case MapType.SoF:
@@ -397,6 +398,9 @@ namespace LibBSP {
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForLump(MapType type) {
 			switch (type) {
+				case MapType.BlueShift: {
+					return 0;
+				}
 				case MapType.FAKK:
 				case MapType.MOHAA:
 				case MapType.STEF2:
@@ -449,6 +453,7 @@ namespace LibBSP {
 			switch (type) {
 				case MapType.Quake:
 				case MapType.GoldSrc:
+				case MapType.BlueShift:
 				case MapType.Nightfire:
 				case MapType.SiN:
 				case MapType.SoF:

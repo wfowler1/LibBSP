@@ -126,6 +126,7 @@ namespace LibBSP {
 					}
 					case MapType.Quake:
 					case MapType.GoldSrc:
+					case MapType.BlueShift:
 					case MapType.Undefined: {
 						return BitConverter.ToInt32(Data, 36);
 					}
@@ -157,6 +158,7 @@ namespace LibBSP {
 					}
 					case MapType.Quake:
 					case MapType.GoldSrc:
+					case MapType.BlueShift:
 					case MapType.Undefined: {
 						bytes.CopyTo(Data, 36);
 						break;
@@ -195,6 +197,7 @@ namespace LibBSP {
 					}
 					case MapType.Quake:
 					case MapType.GoldSrc:
+					case MapType.BlueShift:
 					case MapType.Undefined: {
 						return BitConverter.ToInt32(Data, 32);
 					}
@@ -226,6 +229,7 @@ namespace LibBSP {
 					}
 					case MapType.Quake:
 					case MapType.GoldSrc:
+					case MapType.BlueShift:
 					case MapType.Undefined: {
 						bytes.CopyTo(Data, 32);
 						break;
@@ -317,6 +321,7 @@ namespace LibBSP {
 				}
 				case MapType.Quake:
 				case MapType.GoldSrc:
+				case MapType.BlueShift:
 				case MapType.Undefined: {
 					return 40;
 				}
@@ -351,6 +356,7 @@ namespace LibBSP {
 			switch (type) {
 				case MapType.Quake:
 				case MapType.GoldSrc:
+				case MapType.BlueShift:
 				case MapType.Vindictus:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Source17:

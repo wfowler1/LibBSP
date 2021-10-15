@@ -130,6 +130,7 @@ namespace LibBSP {
 				}
 				case MapType.Quake:
 				case MapType.GoldSrc:
+				case MapType.BlueShift:
 				case MapType.Nightfire:
 				case MapType.SiN:
 				case MapType.SoF:
@@ -198,6 +199,7 @@ namespace LibBSP {
 				}
 				case MapType.Quake:
 				case MapType.GoldSrc:
+				case MapType.BlueShift:
 				case MapType.Vindictus:
 				case MapType.TacticalInterventionEncrypted:
 				case MapType.Source17:
@@ -282,6 +284,7 @@ namespace LibBSP {
 			switch (type) {
 				case MapType.Quake:
 				case MapType.GoldSrc:
+				case MapType.BlueShift:
 				case MapType.Nightfire:
 				case MapType.SiN:
 				case MapType.SoF:
@@ -351,6 +354,7 @@ namespace LibBSP {
 			switch (type) {
 				case MapType.Quake:
 				case MapType.GoldSrc:
+				case MapType.BlueShift:
 				case MapType.Nightfire:
 				case MapType.SiN:
 				case MapType.SoF:

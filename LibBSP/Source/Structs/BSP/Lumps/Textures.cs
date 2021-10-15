@@ -101,7 +101,8 @@ namespace LibBSP {
 					return;
 				}
 				case MapType.Quake:
-				case MapType.GoldSrc: {
+				case MapType.GoldSrc:
+				case MapType.BlueShift: {
 					int numElements = BitConverter.ToInt32(data, 0);
 					structLength = 40;
 					int currentOffset;

@@ -104,7 +104,8 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						return Data.ToNullTerminatedString(0, 16);
 					}
 					case MapType.STEF2:
@@ -151,7 +152,8 @@ namespace LibBSP {
 				byte[] bytes = Encoding.ASCII.GetBytes(value);
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						for (int i = 0; i < 16; ++i) {
 							Data[i] = 0;
 						}
@@ -381,7 +383,8 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						return new Vector2(BitConverter.ToUInt32(Data, 16), BitConverter.ToUInt32(Data, 20));
 					}
 					default: {
@@ -392,7 +395,8 @@ namespace LibBSP {
 			set {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						BitConverter.GetBytes((int)value.X()).CopyTo(Data, 16);
 						BitConverter.GetBytes((int)value.Y()).CopyTo(Data, 20);
 						break;
@@ -408,7 +412,8 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						return BitConverter.ToInt32(Data, 24);
 					}
 					default: {
@@ -420,7 +425,8 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						bytes.CopyTo(Data, 24);
 						break;
 					}
@@ -435,7 +441,8 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						return BitConverter.ToInt32(Data, 28);
 					}
 					default: {
@@ -447,7 +454,8 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						bytes.CopyTo(Data, 28);
 						break;
 					}
@@ -462,7 +470,8 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						return BitConverter.ToInt32(Data, 32);
 					}
 					default: {
@@ -474,7 +483,8 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						bytes.CopyTo(Data, 32);
 						break;
 					}
@@ -489,7 +499,8 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						return BitConverter.ToInt32(Data, 36);
 					}
 					default: {
@@ -501,7 +512,8 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
 					case MapType.Quake:
-					case MapType.GoldSrc: {
+					case MapType.GoldSrc:
+					case MapType.BlueShift: {
 						bytes.CopyTo(Data, 36);
 						break;
 					}
@@ -726,6 +738,7 @@ namespace LibBSP {
 				}
 				case MapType.Quake:
 				case MapType.GoldSrc:
+				case MapType.BlueShift:
 				case MapType.Nightfire: {
 					return 2;
 				}

@@ -10,6 +10,12 @@ namespace LibBSP {
 	/// </summary>
 	public class BSPReader {
 
+		/// <summary>
+		/// A short and simple string that will always occur in the entities lump, but is extremely
+		/// unlikely to show up in any kind of binary data.
+		/// </summary>
+		private const string entityPattern = "\"classname\"";
+
 		private FileInfo bspFile;
 		private Dictionary<int, LumpInfo> lumpFiles = null;
 
@@ -52,6 +58,7 @@ namespace LibBSP {
 			switch (version) {
 				case MapType.Quake:
 				case MapType.GoldSrc:
+				case MapType.BlueShift:
 				case MapType.Nightfire: {
 					return GetLumpInfoAtOffset(4 + (8 * index), version);
 				}
@@ -554,7 +561,25 @@ namespace LibBSP {
 						break;
 					}
 					case 30: {
-						current = MapType.GoldSrc;
+						current = MapType.BlueShift;
+						stream.Seek(4, SeekOrigin.Begin);
+						int lump0offset = binaryReader.ReadInt32();
+						int lump0length = binaryReader.ReadInt32();
+						stream.Seek(lump0offset, SeekOrigin.Begin);
+						char currentChar;
+						int patternMatch = 0;
+						for (int i = 0; i < lump0length - entityPattern.Length; ++i) {
+							currentChar = (char)stream.ReadByte();
+							if (currentChar == entityPattern[patternMatch]) {
+								++patternMatch;
+								if (patternMatch == entityPattern.Length) {
+									current = MapType.GoldSrc;
+									break;
+								}
+							} else {
+								patternMatch = 0;
+							}
+						}
 						break;
 					}
 					case 42: {
