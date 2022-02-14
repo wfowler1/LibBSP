@@ -1892,10 +1892,10 @@ namespace LibBSP {
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.FAKK: {
-						return new Vector3(BitConverter.ToSingle(Data, 48), BitConverter.ToSingle(Data, 52), BitConverter.ToSingle(Data, 56));
+						return Vector3Extensions.ToVector3(Data, 48);
 					}
 					case MapType.Raven: {
-						return new Vector3(BitConverter.ToSingle(Data, 92), BitConverter.ToSingle(Data, 96), BitConverter.ToSingle(Data, 100));
+						return Vector3Extensions.ToVector3(Data, 92);
 					}
 					default: {
 						return new Vector3(0, 0, 0);
@@ -1931,10 +1931,10 @@ namespace LibBSP {
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.FAKK: {
-						return new Vector3(BitConverter.ToSingle(Data, 60), BitConverter.ToSingle(Data, 64), BitConverter.ToSingle(Data, 68));
+						return Vector3Extensions.ToVector3(Data, 60);
 					}
 					case MapType.Raven: {
-						return new Vector3(BitConverter.ToSingle(Data, 104), BitConverter.ToSingle(Data, 108), BitConverter.ToSingle(Data, 112));
+						return Vector3Extensions.ToVector3(Data, 104);
 					}
 					default: {
 						return new Vector3(0, 0, 0);
@@ -1970,10 +1970,10 @@ namespace LibBSP {
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.FAKK: {
-						return new Vector3(BitConverter.ToSingle(Data, 72), BitConverter.ToSingle(Data, 76), BitConverter.ToSingle(Data, 80));
+						return Vector3Extensions.ToVector3(Data, 72);
 					}
 					case MapType.Raven: {
-						return new Vector3(BitConverter.ToSingle(Data, 116), BitConverter.ToSingle(Data, 120), BitConverter.ToSingle(Data, 124));
+						return Vector3Extensions.ToVector3(Data, 116);
 					}
 					default: {
 						return new Vector3(0, 0, 0);
@@ -2009,10 +2009,10 @@ namespace LibBSP {
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.FAKK: {
-						return new Vector3(BitConverter.ToSingle(Data, 84), BitConverter.ToSingle(Data, 88), BitConverter.ToSingle(Data, 92));
+						return Vector3Extensions.ToVector3(Data, 84);
 					}
 					case MapType.Raven: {
-						return new Vector3(BitConverter.ToSingle(Data, 128), BitConverter.ToSingle(Data, 132), BitConverter.ToSingle(Data, 136));
+						return Vector3Extensions.ToVector3(Data, 128);
 					}
 					default: {
 						return new Vector3(0, 0, 0);

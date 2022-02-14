@@ -86,7 +86,7 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								return new Vector3(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8));
+								return Vector3Extensions.ToVector3(Data);
 							}
 							default: {
 								return new Vector3(0, 0, 0);
@@ -163,7 +163,7 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								return new Vector3(BitConverter.ToSingle(Data, 12), BitConverter.ToSingle(Data, 16), BitConverter.ToSingle(Data, 20));
+								return Vector3Extensions.ToVector3(Data, 12);
 							}
 							default: {
 								return new Vector3(0, 0, 0);
@@ -906,13 +906,13 @@ namespace LibBSP {
 							case 10:
 							case 11:
 							case 12: {
-								return new Vector3(BitConverter.ToSingle(Data, 44), BitConverter.ToSingle(Data, 48), BitConverter.ToSingle(Data, 52));
+								return Vector3Extensions.ToVector3(Data, 44);
 							}
 							case 9: {
 								if (Data.Length == 76) {
-									return new Vector3(BitConverter.ToSingle(Data, 48), BitConverter.ToSingle(Data, 52), BitConverter.ToSingle(Data, 56));
+									return Vector3Extensions.ToVector3(Data, 48);
 								} else {
-									return new Vector3(BitConverter.ToSingle(Data, 44), BitConverter.ToSingle(Data, 48), BitConverter.ToSingle(Data, 52));
+									return Vector3Extensions.ToVector3(Data, 44);
 								}
 							}
 							default: {

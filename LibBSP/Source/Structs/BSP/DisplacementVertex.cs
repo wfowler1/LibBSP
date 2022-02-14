@@ -58,7 +58,7 @@ namespace LibBSP {
 		/// </summary>
 		public Vector3 Normal {
 			get {
-				return new Vector3(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8));
+				return Vector3Extensions.ToVector3(Data);
 			}
 			set {
 				value.GetBytes().CopyTo(Data, 0);

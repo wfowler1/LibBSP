@@ -70,7 +70,7 @@ namespace LibBSP {
 		/// </summary>
 		public Vector3 UAxis {
 			get {
-				return new Vector3(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8));
+				return Vector3Extensions.ToVector3(Data);
 			}
 			set {
 				value.GetBytes().CopyTo(Data, 0);
@@ -82,7 +82,7 @@ namespace LibBSP {
 		/// </summary>
 		public Vector3 VAxis {
 			get {
-				return new Vector3(BitConverter.ToSingle(Data, 16), BitConverter.ToSingle(Data, 20), BitConverter.ToSingle(Data, 24));
+				return Vector3Extensions.ToVector3(Data, 16);
 			}
 			set {
 				value.GetBytes().CopyTo(Data, 16);

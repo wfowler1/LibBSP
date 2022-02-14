@@ -345,8 +345,8 @@ namespace LibBSP {
 					case MapType.SoF:
 					case MapType.Daikatana:
 					case MapType.SiN: {
-						return new TextureInfo(new Vector3(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8)),
-						                       new Vector3(BitConverter.ToSingle(Data, 16), BitConverter.ToSingle(Data, 20), BitConverter.ToSingle(Data, 24)),
+						return new TextureInfo(Vector3Extensions.ToVector3(Data),
+						                       Vector3Extensions.ToVector3(Data, 16),
 						                       new Vector2(BitConverter.ToSingle(Data, 12), BitConverter.ToSingle(Data, 28)),
 						                       new Vector2(1, 1),
 						                       -1, -1, 0);

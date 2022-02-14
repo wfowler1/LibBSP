@@ -315,7 +315,7 @@ namespace LibBSP {
 						return new Vector3(BitConverter.ToInt32(Data, 12), BitConverter.ToInt32(Data, 16), BitConverter.ToInt32(Data, 20));
 					}
 					case MapType.Nightfire: {
-						return new Vector3(BitConverter.ToSingle(Data, 12), BitConverter.ToSingle(Data, 16), BitConverter.ToSingle(Data, 20));
+						return Vector3Extensions.ToVector3(Data, 12);
 					}
 					default: {
 						return new Vector3(0, 0, 0);
@@ -418,7 +418,7 @@ namespace LibBSP {
 						return new Vector3(BitConverter.ToInt32(Data, 24), BitConverter.ToInt32(Data, 28), BitConverter.ToInt32(Data, 32));
 					}
 					case MapType.Nightfire: {
-						return new Vector3(BitConverter.ToSingle(Data, 24), BitConverter.ToSingle(Data, 28), BitConverter.ToSingle(Data, 32));
+						return Vector3Extensions.ToVector3(Data, 24);
 					}
 					default: {
 						return new Vector3(0, 0, 0);

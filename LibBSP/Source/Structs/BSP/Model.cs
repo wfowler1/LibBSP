@@ -741,7 +741,7 @@ namespace LibBSP {
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
 					case MapType.DMoMaM: {
-						return new Vector3(BitConverter.ToSingle(Data, 0), BitConverter.ToSingle(Data, 4), BitConverter.ToSingle(Data, 8));
+						return Vector3Extensions.ToVector3(Data);
 					}
 					default: {
 						return new Vector3(0, 0, 0);
@@ -820,7 +820,7 @@ namespace LibBSP {
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
 					case MapType.DMoMaM: {
-						return new Vector3(BitConverter.ToSingle(Data, 12), BitConverter.ToSingle(Data, 16), BitConverter.ToSingle(Data, 20));
+						return Vector3Extensions.ToVector3(Data, 12);
 					}
 					default: {
 						return new Vector3(0, 0, 0);
@@ -886,7 +886,7 @@ namespace LibBSP {
 					case MapType.TacticalInterventionEncrypted:
 					case MapType.Vindictus:
 					case MapType.DMoMaM: {
-						return new Vector3(BitConverter.ToSingle(Data, 24), BitConverter.ToSingle(Data, 28), BitConverter.ToSingle(Data, 32));
+						return Vector3Extensions.ToVector3(Data, 24);
 					}
 					default: {
 						return new Vector3(0, 0, 0);

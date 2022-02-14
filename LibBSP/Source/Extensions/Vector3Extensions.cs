@@ -70,7 +70,7 @@ namespace LibBSP {
 		/// <param name="vector">This <see cref="Vector3"/>.</param>
 		/// <returns><paramref name="vector"/> with a length of one.</returns>
 		public static Vector3 GetNormalized(this Vector3 vector) {
-			if ((float.IsNaN(vector.X()) || float.IsNaN(vector.Y()) || float.IsNaN(vector.Z())) || vector.X() == 0 && vector.Y() == 0 && vector.Z() == 0) {
+			if (float.IsNaN(vector.X()) || float.IsNaN(vector.Y()) || float.IsNaN(vector.Z()) || (vector.X() == 0 && vector.Y() == 0 && vector.Z() == 0)) {
 				return new Vector3(0, 0, 0);
 			}
 #if UNITY
@@ -155,7 +155,7 @@ namespace LibBSP {
 		/// <param name="value">An array of bytes.</param>
 		/// <param name="startIndex">The starting position within <paramref name="value"/>.</param>
 		/// <returns>A <see cref="Vector3"/> representing the converted bytes.</returns>
-		public static Vector3 ToVector3(byte[] value, int startIndex) {
+		public static Vector3 ToVector3(byte[] value, int startIndex = 0) {
 			return new Vector3(BitConverter.ToSingle(value, startIndex), BitConverter.ToSingle(value, startIndex + 4), BitConverter.ToSingle(value, startIndex + 8));
 		}
 

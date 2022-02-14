@@ -90,7 +90,7 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.MOHAA: {
-						return new Vector3(BitConverter.ToSingle(Data, 128), BitConverter.ToSingle(Data, 132), BitConverter.ToSingle(Data, 136));
+						return Vector3Extensions.ToVector3(Data, 128);
 					}
 					default: {
 						return new Vector3(float.NaN, float.NaN, float.NaN);
@@ -114,7 +114,7 @@ namespace LibBSP {
 			get {
 				switch (MapType) {
 					case MapType.MOHAA: {
-						return new Vector3(BitConverter.ToSingle(Data, 140), BitConverter.ToSingle(Data, 144), BitConverter.ToSingle(Data, 148));
+						return Vector3Extensions.ToVector3(Data, 140);
 					}
 					default: {
 						return new Vector3(float.NaN, float.NaN, float.NaN);

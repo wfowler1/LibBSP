@@ -36,7 +36,7 @@ namespace LibBSP {
 		/// <param name="vector">This <see cref="Vector4"/>.</param>
 		/// <returns><paramref name="vector"/> with a length of one.</returns>
 		public static Vector4 GetNormalized(this Vector4 vector) {
-			if ((vector.X() == 0 && vector.Y() == 0 && vector.Z() == 0 && vector.W() == 0) || float.IsNaN(vector.X()) || float.IsNaN(vector.Y()) || float.IsNaN(vector.Z()) || float.IsNaN(vector.W())) {
+			if (float.IsNaN(vector.X()) || float.IsNaN(vector.Y()) || float.IsNaN(vector.Z()) || float.IsNaN(vector.W()) || (vector.X() == 0 && vector.Y() == 0 && vector.Z() == 0 && vector.W() == 0)) {
 				return new Vector4(0, 0, 0, 0);
 			}
 #if UNITY
@@ -157,7 +157,7 @@ namespace LibBSP {
 		/// <param name="value">An array of bytes.</param>
 		/// <param name="startIndex">The starting position within <paramref name="value"/>.</param>
 		/// <returns>A <see cref="Vector4"/> representing the converted bytes.</returns>
-		public static Vector4 ToVector4(byte[] value, int startIndex) {
+		public static Vector4 ToVector4(byte[] value, int startIndex = 0) {
 			return new Vector4(BitConverter.ToSingle(value, startIndex), BitConverter.ToSingle(value, startIndex + 4), BitConverter.ToSingle(value, startIndex + 8), BitConverter.ToSingle(value, startIndex + 12));
 		}
 
