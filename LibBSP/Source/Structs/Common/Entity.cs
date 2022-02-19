@@ -650,6 +650,7 @@ namespace LibBSP {
 			switch (type) {
 				case MapType.Raven:
 				case MapType.Quake3:
+				case MapType.ET:
 				case MapType.Quake:
 				case MapType.GoldSrc:
 				case MapType.Quake2:
@@ -675,8 +676,10 @@ namespace LibBSP {
 				case MapType.BlueShift: {
 					return 1;
 				}
-				case MapType.FAKK:
-				case MapType.MOHAA: {
+				case MapType.FAKK2:
+				case MapType.Alice:
+				case MapType.MOHAA:
+				case MapType.MOHAABT: {
 					return 14;
 				}
 				case MapType.STEF2:

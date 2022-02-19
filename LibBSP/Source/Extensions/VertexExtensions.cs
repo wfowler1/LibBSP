@@ -99,8 +99,11 @@ namespace LibBSP {
 					goto case MapType.Quake;
 				}
 				case MapType.MOHAA:
+				case MapType.MOHAABT:
 				case MapType.Quake3:
-				case MapType.FAKK: {
+				case MapType.ET:
+				case MapType.FAKK2:
+				case MapType.Alice: {
 					result.uv0 = Vector2Extensions.ToVector2(data, 12);
 					result.uv1 = Vector2Extensions.ToVector2(data, 20);
 					result.normal = Vector3Extensions.ToVector3(data, 28);
@@ -216,7 +219,9 @@ namespace LibBSP {
 					return 3;
 				}
 				case MapType.MOHAA:
-				case MapType.FAKK:
+				case MapType.MOHAABT:
+				case MapType.FAKK2:
+				case MapType.Alice:
 				case MapType.Nightfire: {
 					return 4;
 				}
@@ -232,7 +237,8 @@ namespace LibBSP {
 				}
 				case MapType.CoD4:
 				case MapType.Raven:
-				case MapType.Quake3: {
+				case MapType.Quake3:
+				case MapType.ET: {
 					return 10;
 				}
 				default: {
@@ -320,8 +326,11 @@ namespace LibBSP {
 					break;
 				}
 				case MapType.MOHAA:
+				case MapType.MOHAABT:
 				case MapType.Quake3:
-				case MapType.FAKK: {
+				case MapType.ET:
+				case MapType.FAKK2:
+				case MapType.Alice: {
 					structLength = 44;
 					break;
 				}
@@ -396,8 +405,11 @@ namespace LibBSP {
 					break;
 				}
 				case MapType.MOHAA:
+				case MapType.ET:
 				case MapType.Quake3:
-				case MapType.FAKK: {
+				case MapType.MOHAABT:
+				case MapType.FAKK2:
+				case MapType.Alice: {
 					v.uv0.GetBytes().CopyTo(bytes, 12);
 					v.uv1.GetBytes().CopyTo(bytes, 20);
 					v.normal.GetBytes().CopyTo(bytes, 28);

@@ -26,39 +26,163 @@ namespace LibBSP {
 	/// Enum of the known different map formats.
 	/// </summary>
 	public enum MapType : int {
-		Undefined = 0,
-		Quake = 29,
-		GoldSrc = 30, // Uses mostly the same structures as Quake
-		BlueShift = 31, // Blue Shift has a different lump order
-		Nightfire = 42,
-		Vindictus = 346131372,
-		STEF2 = 556942937,
-		MOHAA = 892416069,
-		// TYPE_MOHBT = 1095516506, // Similar enough to MOHAA to use the same structures
-		STEF2Demo = 1263223129,
-		FAKK = 1263223152,
-		TacticalInterventionEncrypted = 1268885814,
-		CoD2 = 1347633741,
-		SiN = 1347633747, // The headers for SiN and Jedi Outcast are exactly the same
-		Raven = 1347633748,
-		CoD4 = 1347633759,
-		Source17 = 1347633767,
-		Source18 = 1347633768,
-		Source19 = 1347633769,
-		Source20 = 1347633770,
-		Source21 = 1347633771,
-		Source22 = 1347633772,
-		Source23 = 1347633773,
-		L4D2 = 1347633774,
-		Quake2 = 1347633775,
-		Source27 = 1347633777,
-		Daikatana = 1347633778,
-		SoF = 1347633782, // Uses the same header as Q3.
-		Quake3 = 1347633783,
-		// TYPE_RTCW = 1347633784, // Uses same structures as Quake 3
-		CoD = 1347633796,
-		Titanfall = 1347633807,
-		DMoMaM = 1347895914,
+		/// <summary>
+		/// Unknown or unsupported map type
+		/// </summary>
+		Undefined = 0x00000000,
+
+		/// <summary>
+		/// Quake or Quake Engine flags, including <see cref="GoldSrc"/> and <see cref="BlueShift"/>.
+		/// </summary>
+		Quake = 0x01000000,
+		/// <summary>
+		/// GoldSrc engine, especially Half-Life. As flags includes <see cref="BlueShift"/>.
+		/// </summary>
+		GoldSrc = 0x01010000,
+		/// <summary>
+		/// Half-Life Blue Shift
+		/// </summary>
+		BlueShift = 0x01010001,
+
+		/// <summary>
+		/// Quake 2 or Quake 2 Engine flags, including <see cref="Daikatana"/> <see cref="SoF"/>
+		/// and <see cref="SiN"/>.
+		/// </summary>
+		Quake2 = 0x02000000,
+		/// <summary>
+		/// Daikatana
+		/// </summary>
+		Daikatana = 0x02000001,
+		/// <summary>
+		/// Soldier of Fortune
+		/// </summary>
+		SoF = 0x02000002,
+		/// <summary>
+		/// SiN
+		/// </summary>
+		SiN = 0x02000003,
+
+		/// <summary>
+		/// Quake 3 or Quake 3 Engine flags, including <see cref="ET"/> <see cref="Raven"/> <see cref="STEF2"/>
+		/// <see cref="STEF2Demo"/> <see cref="MOHAA"/> <see cref="MOHAABT"/> <see cref="FAKK2"/> <see cref="Alice"/>
+		/// <see cref="CoD"/> <see cref="CoD2"/> and <see cref="CoD4"/>.
+		/// </summary>
+		Quake3 = 0x03000000,
+		/// <summary>
+		/// Wolfenstein: Enemy Territory or Return to Castle Wolfenstein
+		/// </summary>
+		ET = 0x03000001,
+		/// <summary>
+		/// Raven Software (Jedi Outcast, Jedi Academy, Soldier of Fortune 2)
+		/// </summary>
+		Raven = 0x03010000,
+		/// <summary>
+		/// Call of Duty or flags including Call of Duty 2 and 4.
+		/// </summary>
+		CoD = 0x03020000,
+		/// <summary>
+		/// Call of Duty 2
+		/// </summary>
+		CoD2 = 0x03020001,
+		/// <summary>
+		/// Call of Duty 4
+		/// </summary>
+		CoD4 = 0x03020002,
+		/// <summary>
+		/// Quake 3 "Ubertools" including <see cref="STEF2"/> <see cref="STEF2Demo"/> <see cref="MOHAA"/>
+		/// <see cref="MOHAABT"/> <see cref="FAKK2"/> and <see cref="Alice"/>.
+		/// </summary>
+		UberTools = 0x03030000,
+		/// <summary>
+		/// Star Trek Elite Force 2. As flags includes <see cref="STEF2Demo"/>.
+		/// </summary>
+		STEF2 = 0x03030100,
+		/// <summary>
+		/// Star Trek Elite Force 2 Demo version
+		/// </summary>
+		STEF2Demo = 0x03030101,
+		/// <summary>
+		/// Medal of Honor Allied Assault. As flags includes <see cref="MOHAABT"/>.
+		/// </summary>
+		MOHAA = 0x03030200,
+		/// <summary>
+		/// Medal of Honor Allied Assault Spearhead and BreakThrough expansion packs.
+		/// </summary>
+		MOHAABT = 0x03030201,
+		/// <summary>
+		/// Heavy Metal FAKK2
+		/// </summary>
+		FAKK2 = 0x03030301,
+		/// <summary>
+		/// American McGee's Alice
+		/// </summary>
+		Alice = 0x03030302,
+
+		/// <summary>
+		/// 007 Nightfire
+		/// </summary>
+		Nightfire = 0x04000000,
+
+		/// <summary>
+		/// Source Engine, including <see cref="Source17" /> <see cref="Source18"/> <see cref="Source19"/>
+		/// <see cref="Source20"/> <see cref="DMoMaM"/> <see cref="Vindictus"/> <see cref="Source21"/>
+		/// <see cref="L4D2"/> <see cref="TacticalInterventionEncrypted"/> <see cref="Source22"/>
+		/// <see cref="Source23"/> <see cref="Source27"/> and <see cref="Titanfall"/>.
+		/// </summary>
+		Source = 0x05000000,
+		/// <summary>
+		/// Source Engine v17. Vampire the Masquerade: Bloodlines
+		/// </summary>
+		Source17 = 0x05001100,
+		/// <summary>
+		/// Source Engine v18. Half-Life 2 Beta
+		/// </summary>
+		Source18 = 0x05001200,
+		/// <summary>
+		/// Source Engine v19. Half-Life 2
+		/// </summary>
+		Source19 = 0x05001300,
+		/// <summary>
+		/// Source Engine v20. As flags includes <see cref="DMoMaM"/> and <see cref="Vindictus"/>.
+		/// </summary>
+		Source20 = 0x05001400,
+		/// <summary>
+		/// Dark Messiah of Might &amp; Magic
+		/// </summary>
+		DMoMaM = 0x05001401,
+		/// <summary>
+		/// Vindictus
+		/// </summary>
+		Vindictus = 0x05001402,
+		/// <summary>
+		/// Source Engine v21. As flags includes <see cref="L4D2"/> and <see cref="TacticalInterventionEncrypted"/>.
+		/// </summary>
+		Source21 = 0x05001500,
+		/// <summary>
+		/// Left 4 Dead 2
+		/// </summary>
+		L4D2 = 0x05001501,
+		/// <summary>
+		/// Tactical Intervention, original encrypted release. Steam version is <see cref="Source22"/>.
+		/// </summary>
+		TacticalInterventionEncrypted = 0x05001502,
+		/// <summary>
+		/// Source Engine v22, Tactical Intervention
+		/// </summary>
+		Source22 = 0x05001600,
+		/// <summary>
+		/// Source Engine v23. DotA 2
+		/// </summary>
+		Source23 = 0x05001700,
+		/// <summary>
+		/// Source Engine v27. Contagion
+		/// </summary>
+		Source27 = 0x05001B00,
+		/// <summary>
+		/// rBSP v29. Titanfall
+		/// </summary>
+		Titanfall = 0x05001D00,
+
 	}
 
 	/// <summary>
@@ -795,7 +919,8 @@ namespace LibBSP {
 				case MapType.BlueShift: {
 					return 15;
 				}
-				case MapType.Quake3: {
+				case MapType.Quake3:
+				case MapType.ET: {
 					return 17;
 				}
 				case MapType.Raven:
@@ -805,7 +930,8 @@ namespace LibBSP {
 				case MapType.Quake2: {
 					return 19;
 				}
-				case MapType.FAKK:
+				case MapType.FAKK2:
+				case MapType.Alice:
 				case MapType.SiN: {
 					return 20;
 				}
@@ -815,7 +941,8 @@ namespace LibBSP {
 				case MapType.SoF: {
 					return 22;
 				}
-				case MapType.MOHAA: {
+				case MapType.MOHAA:
+				case MapType.MOHAABT: {
 					return 28;
 				}
 				case MapType.STEF2:

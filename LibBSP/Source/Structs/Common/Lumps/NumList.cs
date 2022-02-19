@@ -109,12 +109,15 @@ namespace LibBSP {
 		public static int GetIndexForMarkSurfacesLump(MapType version, out DataType dataType) {
 			switch (version) {
 				case MapType.Raven:
-				case MapType.Quake3: {
+				case MapType.Quake3:
+				case MapType.ET: {
 					dataType = DataType.Int32;
 					return 5;
 				}
-				case MapType.FAKK:
-				case MapType.MOHAA: {
+				case MapType.FAKK2:
+				case MapType.Alice:
+				case MapType.MOHAA:
+				case MapType.MOHAABT: {
 					dataType = DataType.Int32;
 					return 7;
 				}
@@ -214,8 +217,11 @@ namespace LibBSP {
 		public static int GetIndexForMarkBrushesLump(MapType version, out DataType dataType) {
 			switch (version) {
 				case MapType.Quake3:
+				case MapType.ET:
 				case MapType.MOHAA:
-				case MapType.FAKK: {
+				case MapType.MOHAABT:
+				case MapType.FAKK2:
+				case MapType.Alice: {
 					dataType = DataType.UInt32;
 					return 6;
 				}
@@ -278,8 +284,10 @@ namespace LibBSP {
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForIndicesLump(MapType version, out DataType dataType) {
 			switch (version) {
-				case MapType.FAKK:
-				case MapType.MOHAA: {
+				case MapType.FAKK2:
+				case MapType.Alice:
+				case MapType.MOHAA:
+				case MapType.MOHAABT: {
 					dataType = DataType.UInt32;
 					return 5;
 				}
@@ -305,7 +313,8 @@ namespace LibBSP {
 					return 11;
 				}
 				case MapType.Raven:
-				case MapType.Quake3: {
+				case MapType.Quake3:
+				case MapType.ET: {
 					dataType = DataType.UInt32;
 					return 11;
 				}
@@ -356,7 +365,8 @@ namespace LibBSP {
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForLeafStaticModelsLump(MapType version, out DataType dataType) {
 			switch (version) {
-				case MapType.MOHAA: {
+				case MapType.MOHAA:
+				case MapType.MOHAABT: {
 					dataType = DataType.UInt16;
 					return 26;
 				}

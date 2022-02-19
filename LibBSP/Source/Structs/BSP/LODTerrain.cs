@@ -49,7 +49,8 @@ namespace LibBSP {
 		public byte Flags {
 			get {
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						return Data[0];
 					}
 					default: {
@@ -59,7 +60,8 @@ namespace LibBSP {
 			}
 			set {
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						Data[0] = value;
 						break;
 					}
@@ -73,7 +75,8 @@ namespace LibBSP {
 		public byte Scale {
 			get {
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						return Data[1];
 					}
 					default: {
@@ -83,7 +86,8 @@ namespace LibBSP {
 			}
 			set {
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						Data[1] = value;
 						break;
 					}
@@ -97,7 +101,8 @@ namespace LibBSP {
 		public byte[] LightmapCoordinates {
 			get {
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						return new byte[] { Data[2], Data[3] };
 					}
 					default: {
@@ -110,7 +115,8 @@ namespace LibBSP {
 					throw new ArgumentException("LightmapCoordinates array must have 2 elements.");
 				}
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						Data[2] = value[0];
 						Data[3] = value[1];
 						break;
@@ -125,7 +131,8 @@ namespace LibBSP {
 		public float[] UVs {
 			get {
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						return new float[] {
 							BitConverter.ToSingle(Data, 4),
 							BitConverter.ToSingle(Data, 8),
@@ -147,7 +154,8 @@ namespace LibBSP {
 					throw new ArgumentException("UVs array must have 8 elements.");
 				}
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						int offset = 4;
 						for (int i = 0; i < value.Length; ++i) {
 							BitConverter.GetBytes(value[i]).CopyTo(Data, offset + (i * 4));
@@ -164,7 +172,8 @@ namespace LibBSP {
 		public sbyte X {
 			get {
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						return (sbyte)Data[36];
 					}
 					default: {
@@ -174,7 +183,8 @@ namespace LibBSP {
 			}
 			set {
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						Data[36] = (byte)value;
 						break;
 					}
@@ -188,7 +198,8 @@ namespace LibBSP {
 		public sbyte Y {
 			get {
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						return (sbyte)Data[37];
 					}
 					default: {
@@ -198,7 +209,8 @@ namespace LibBSP {
 			}
 			set {
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						Data[37] = (byte)value;
 						break;
 					}
@@ -212,7 +224,8 @@ namespace LibBSP {
 		public short BaseZ {
 			get {
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						return BitConverter.ToInt16(Data, 38);
 					}
 					default: {
@@ -223,7 +236,8 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						bytes.CopyTo(Data, 38);
 						break;
 					}
@@ -246,7 +260,8 @@ namespace LibBSP {
 		public ushort TextureIndex {
 			get {
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						return BitConverter.ToUInt16(Data, 40);
 					}
 					default: {
@@ -257,7 +272,8 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						bytes.CopyTo(Data, 40);
 						break;
 					}
@@ -271,7 +287,8 @@ namespace LibBSP {
 		public short Lightmap {
 			get {
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						return BitConverter.ToInt16(Data, 42);
 					}
 					default: {
@@ -282,7 +299,8 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						bytes.CopyTo(Data, 42);
 						break;
 					}
@@ -297,7 +315,8 @@ namespace LibBSP {
 			get {
 				ushort[,] ret = new ushort[2,63];
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						for (int i = 0; i < ret.GetLength(0); ++i) {
 							for (int j = 0; j < ret.GetLength(1); ++j) {
 								ret[i, j] = BitConverter.ToUInt16(Data, 52 + (i * 126) + (j * 2));
@@ -309,12 +328,18 @@ namespace LibBSP {
 				return ret;
 			}
 			set {
-				if (value.GetLength(0) != 2 || value.GetLength(1) != 63) {
-					throw new ArgumentException("VertexFlags array must be size (2, 63) elements.");
-				}
-				for (int i = 0; i < value.GetLength(0); ++i) {
-					for (int j = 0; j < value.GetLength(1); ++j) {
-						BitConverter.GetBytes(value[i, j]).CopyTo(Data, 52 + (i * 126) + (j * 2));
+				switch (MapType) {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
+						if (value.GetLength(0) != 2 || value.GetLength(1) != 63) {
+							throw new ArgumentException("VertexFlags array must be size (2, 63) elements.");
+						}
+						for (int i = 0; i < value.GetLength(0); ++i) {
+							for (int j = 0; j < value.GetLength(1); ++j) {
+								BitConverter.GetBytes(value[i, j]).CopyTo(Data, 52 + (i * 126) + (j * 2));
+							}
+						}
+						break;
 					}
 				}
 			}
@@ -327,7 +352,8 @@ namespace LibBSP {
 			get {
 				byte[,] ret = new byte[9, 9];
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						for (int i = 0; i < ret.GetLength(0); ++i) {
 							for (int j = 0; j < ret.GetLength(1); ++j) {
 								ret[i, j] = Data[304 + (i * 9) + j];
@@ -339,12 +365,18 @@ namespace LibBSP {
 				return ret;
 			}
 			set {
-				if (value.GetLength(0) != 9 || value.GetLength(1) != 9) {
-					throw new ArgumentException("Heightmap array must be size (9, 9) elements.");
-				}
-				for (int i = 0; i < value.GetLength(0); ++i) {
-					for (int j = 0; j < value.GetLength(1); ++j) {
-						Data[304 + (i * 9) + j] = value[i, j];
+				switch (MapType) {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
+						if (value.GetLength(0) != 9 || value.GetLength(1) != 9) {
+							throw new ArgumentException("Heightmap array must be size (9, 9) elements.");
+						}
+						for (int i = 0; i < value.GetLength(0); ++i) {
+							for (int j = 0; j < value.GetLength(1); ++j) {
+								Data[304 + (i * 9) + j] = value[i, j];
+							}
+						}
+						break;
 					}
 				}
 			}
@@ -434,7 +466,8 @@ namespace LibBSP {
 		/// <exception cref="ArgumentException">This struct is not valid or is not implemented for the given <paramref name="mapType"/> and <paramref name="lumpVersion"/>.</exception>
 		public static int GetStructLength(MapType mapType, int lumpVersion = 0) {
 			switch (mapType) {
-				case MapType.MOHAA: {
+				case MapType.MOHAA:
+				case MapType.MOHAABT: {
 					return 388;
 				}
 				default: {
@@ -450,7 +483,8 @@ namespace LibBSP {
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForLump(MapType type) {
 			switch (type) {
-				case MapType.MOHAA: {
+				case MapType.MOHAA:
+				case MapType.MOHAABT: {
 					return 22;
 				}
 				default: {

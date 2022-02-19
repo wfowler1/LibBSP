@@ -61,7 +61,8 @@ namespace LibBSP {
 		public string Name {
 			get {
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						return Data.ToNullTerminatedString(0, 128);
 					}
 					default: {
@@ -71,7 +72,8 @@ namespace LibBSP {
 			}
 			set {
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						for (int i = 0; i < 128; ++i) {
 							Data[i] = 0;
 						}
@@ -89,7 +91,8 @@ namespace LibBSP {
 		public Vector3 Origin {
 			get {
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						return Vector3Extensions.ToVector3(Data, 128);
 					}
 					default: {
@@ -99,7 +102,8 @@ namespace LibBSP {
 			}
 			set {
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						value.GetBytes().CopyTo(Data, 128);
 						break;
 					}
@@ -113,7 +117,8 @@ namespace LibBSP {
 		public Vector3 Angles {
 			get {
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						return Vector3Extensions.ToVector3(Data, 140);
 					}
 					default: {
@@ -123,7 +128,8 @@ namespace LibBSP {
 			}
 			set {
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						value.GetBytes().CopyTo(Data, 140);
 						break;
 					}
@@ -137,7 +143,8 @@ namespace LibBSP {
 		public float Scale {
 			get {
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						return BitConverter.ToSingle(Data, 152);
 					}
 					default: {
@@ -148,7 +155,8 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 				switch (MapType) {
-					case MapType.MOHAA: {
+					case MapType.MOHAA:
+					case MapType.MOHAABT: {
 						bytes.CopyTo(Data, 152);
 						break;
 					}
@@ -234,7 +242,8 @@ namespace LibBSP {
 		/// <exception cref="ArgumentException">This struct is not valid or is not implemented for the given <paramref name="mapType"/> and <paramref name="lumpVersion"/>.</exception>
 		public static int GetStructLength(MapType mapType, int lumpVersion = 0) {
 			switch (mapType) {
-				case MapType.MOHAA: {
+				case MapType.MOHAA:
+				case MapType.MOHAABT: {
 					return 164;
 				}
 				default: {
@@ -250,7 +259,8 @@ namespace LibBSP {
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
 		public static int GetIndexForLump(MapType type) {
 			switch (type) {
-				case MapType.MOHAA: {
+				case MapType.MOHAA:
+				case MapType.MOHAABT: {
 					return 25;
 				}
 				default: {

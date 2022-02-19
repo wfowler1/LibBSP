@@ -75,7 +75,7 @@ namespace LibBSP {
 				case MapType.STEF2:
 				case MapType.STEF2Demo:
 				case MapType.MOHAA:
-				case MapType.FAKK: {
+				case MapType.FAKK2: {
 					return GetLumpInfoAtOffset(12 + (8 * index), version);
 				}
 				case MapType.Source17:
@@ -395,7 +395,7 @@ namespace LibBSP {
 								break;
 							}
 							case 47: {
-								current = MapType.Quake3;
+								current = MapType.ET;
 								break;
 							}
 							case 59: {
@@ -405,11 +405,14 @@ namespace LibBSP {
 						}
 						break;
 					}
-					case 892416050:
-					case 1095516485: {
+					case 892416050: {
 						// 892416050 reads in ASCII as "2015," the game studio which developed MoHAA
-						// 1095516485 reads in ASCII as "EALA," the ones who developed MoHAA Spearhead and Breakthrough
 						current = MapType.MOHAA;
+						break;
+					}
+					case 1095516485: {
+						// 1095516485 reads in ASCII as "EALA," the ones who developed MoHAA Spearhead and Breakthrough
+						current = MapType.MOHAABT;
 						break;
 					}
 					case 1347633750: {
@@ -534,7 +537,7 @@ namespace LibBSP {
 					}
 					case 1263223110: {
 						// "FAKK"
-						// Formats: STEF2 demo, Heavy Metal FAKK2 (American McGee's Alice)
+						// Formats: STEF2 demo, Heavy Metal FAKK2, American McGee's Alice
 						int num2 = binaryReader.ReadInt32();
 						if (bigEndian) {
 							byte[] bytes = BitConverter.GetBytes(num2);
@@ -542,13 +545,16 @@ namespace LibBSP {
 							num2 = BitConverter.ToInt32(bytes, 0);
 						}
 						switch (num2) {
+							case 12: {
+								current = MapType.FAKK2;
+								break;
+							}
 							case 19: {
 								current = MapType.STEF2Demo;
 								break;
 							}
-							case 12:
 							case 42: {// American McGee's Alice
-								current = MapType.FAKK;
+								current = MapType.Alice;
 								break;
 							}
 						}

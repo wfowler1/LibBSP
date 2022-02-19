@@ -52,6 +52,7 @@ namespace LibBSP {
 					break;
 				}
 				case MapType.Quake3:
+				case MapType.ET:
 				case MapType.Raven:
 				case MapType.CoD:
 				case MapType.CoD2:
@@ -64,11 +65,13 @@ namespace LibBSP {
 				case MapType.SoF:
 				case MapType.STEF2:
 				case MapType.STEF2Demo:
-				case MapType.FAKK: {
+				case MapType.FAKK2:
+				case MapType.Alice: {
 					structLength = 76;
 					break;
 				}
-				case MapType.MOHAA: {
+				case MapType.MOHAA:
+				case MapType.MOHAABT: {
 					structLength = 140;
 					break;
 				}

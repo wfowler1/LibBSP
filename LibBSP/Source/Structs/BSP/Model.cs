@@ -336,9 +336,12 @@ namespace LibBSP {
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.Quake3:
+					case MapType.ET:
 					case MapType.MOHAA:
+					case MapType.MOHAABT:
 					case MapType.Raven:
-					case MapType.FAKK: {
+					case MapType.FAKK2:
+					case MapType.Alice: {
 						return BitConverter.ToInt32(Data, 32);
 					}
 					case MapType.CoD:
@@ -357,9 +360,12 @@ namespace LibBSP {
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.Quake3:
+					case MapType.ET:
 					case MapType.MOHAA:
+					case MapType.MOHAABT:
 					case MapType.Raven:
-					case MapType.FAKK: {
+					case MapType.FAKK2:
+					case MapType.Alice: {
 						bytes.CopyTo(Data, 32);
 						break;
 					}
@@ -382,9 +388,12 @@ namespace LibBSP {
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.Quake3:
+					case MapType.ET:
 					case MapType.MOHAA:
+					case MapType.MOHAABT:
 					case MapType.Raven:
-					case MapType.FAKK: {
+					case MapType.FAKK2:
+					case MapType.Alice: {
 						return BitConverter.ToInt32(Data, 36);
 					}
 					case MapType.CoD:
@@ -403,9 +412,12 @@ namespace LibBSP {
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.Quake3:
+					case MapType.ET:
 					case MapType.MOHAA:
+					case MapType.MOHAABT:
 					case MapType.Raven:
-					case MapType.FAKK: {
+					case MapType.FAKK2:
+					case MapType.Alice: {
 						bytes.CopyTo(Data, 36);
 						break;
 					}
@@ -444,9 +456,12 @@ namespace LibBSP {
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.Quake3:
+					case MapType.ET:
 					case MapType.MOHAA:
+					case MapType.MOHAABT:
 					case MapType.Raven:
-					case MapType.FAKK: {
+					case MapType.FAKK2:
+					case MapType.Alice: {
 						return BitConverter.ToInt32(Data, 24);
 					}
 					case MapType.Quake2:
@@ -495,9 +510,12 @@ namespace LibBSP {
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.Quake3:
+					case MapType.ET:
 					case MapType.MOHAA:
+					case MapType.MOHAABT:
 					case MapType.Raven:
-					case MapType.FAKK: {
+					case MapType.FAKK2:
+					case MapType.Alice: {
 						bytes.CopyTo(Data, 24);
 						break;
 					}
@@ -551,9 +569,12 @@ namespace LibBSP {
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.Quake3:
+					case MapType.ET:
 					case MapType.MOHAA:
+					case MapType.MOHAABT:
 					case MapType.Raven:
-					case MapType.FAKK: {
+					case MapType.FAKK2:
+					case MapType.Alice: {
 						return BitConverter.ToInt32(Data, 28);
 					}
 					case MapType.Quake2:
@@ -602,9 +623,12 @@ namespace LibBSP {
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.Quake3:
+					case MapType.ET:
 					case MapType.MOHAA:
+					case MapType.MOHAABT:
 					case MapType.Raven:
-					case MapType.FAKK: {
+					case MapType.FAKK2:
+					case MapType.Alice: {
 						bytes.CopyTo(Data, 28);
 						break;
 					}
@@ -716,6 +740,7 @@ namespace LibBSP {
 					case MapType.BlueShift:
 					case MapType.Quake2:
 					case MapType.Quake3:
+					case MapType.ET:
 					case MapType.SiN:
 					case MapType.SoF:
 					case MapType.Raven:
@@ -723,7 +748,9 @@ namespace LibBSP {
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
-					case MapType.FAKK:
+					case MapType.MOHAABT:
+					case MapType.FAKK2:
+					case MapType.Alice:
 					case MapType.CoD:
 					case MapType.CoD2:
 					case MapType.CoD4:
@@ -755,6 +782,7 @@ namespace LibBSP {
 					case MapType.BlueShift:
 					case MapType.Quake2:
 					case MapType.Quake3:
+					case MapType.ET:
 					case MapType.SiN:
 					case MapType.SoF:
 					case MapType.Raven:
@@ -762,7 +790,9 @@ namespace LibBSP {
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
-					case MapType.FAKK:
+					case MapType.MOHAABT:
+					case MapType.FAKK2:
+					case MapType.Alice:
 					case MapType.CoD:
 					case MapType.CoD2:
 					case MapType.CoD4:
@@ -798,11 +828,14 @@ namespace LibBSP {
 					case MapType.BlueShift:
 					case MapType.Quake2:
 					case MapType.Quake3:
+					case MapType.ET:
 					case MapType.Nightfire:
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
-					case MapType.FAKK:
+					case MapType.MOHAABT:
+					case MapType.FAKK2:
+					case MapType.Alice:
 					case MapType.CoD:
 					case MapType.CoD2:
 					case MapType.CoD4:
@@ -834,11 +867,14 @@ namespace LibBSP {
 					case MapType.BlueShift:
 					case MapType.Quake2:
 					case MapType.Quake3:
+					case MapType.ET:
 					case MapType.Nightfire:
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
-					case MapType.FAKK:
+					case MapType.MOHAABT:
+					case MapType.FAKK2:
+					case MapType.Alice:
 					case MapType.CoD:
 					case MapType.CoD2:
 					case MapType.CoD4:
@@ -1011,11 +1047,14 @@ namespace LibBSP {
 					return 32;
 				}
 				case MapType.Quake3:
+				case MapType.ET:
 				case MapType.Raven:
 				case MapType.STEF2:
 				case MapType.STEF2Demo:
 				case MapType.MOHAA:
-				case MapType.FAKK: {
+				case MapType.MOHAABT:
+				case MapType.FAKK2:
+				case MapType.Alice: {
 					return 40;
 				}
 				case MapType.Quake2:
@@ -1063,11 +1102,14 @@ namespace LibBSP {
 		public static int GetIndexForLump(MapType type) {
 			switch (type) {
 				case MapType.Raven:
-				case MapType.Quake3: {
+				case MapType.Quake3:
+				case MapType.ET: {
 					return 7;
 				}
 				case MapType.MOHAA:
-				case MapType.FAKK:
+				case MapType.MOHAABT:
+				case MapType.FAKK2:
+				case MapType.Alice:
 				case MapType.Quake2:
 				case MapType.SiN:
 				case MapType.Daikatana:

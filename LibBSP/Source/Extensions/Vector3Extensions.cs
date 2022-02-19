@@ -150,7 +150,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Returns a <see cref="Vector3"/> converted from twelve bytes at a specified position in a byte array.
+		/// Returns a <see cref="Vector3"/> converted from 12 bytes at a specified position in a byte array.
 		/// </summary>
 		/// <param name="value">An array of bytes.</param>
 		/// <param name="startIndex">The starting position within <paramref name="value"/>.</param>

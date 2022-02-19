@@ -45,10 +45,13 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.DMoMaM:
 					case MapType.Quake3:
+					case MapType.ET:
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
-					case MapType.FAKK:
+					case MapType.MOHAABT:
+					case MapType.FAKK2:
+					case MapType.Alice:
 					case MapType.CoD:
 					case MapType.CoD2:
 					case MapType.Raven: {
@@ -77,10 +80,13 @@ namespace LibBSP {
 					case MapType.L4D2:
 					case MapType.DMoMaM:
 					case MapType.Quake3:
+					case MapType.ET:
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
-					case MapType.FAKK:
+					case MapType.MOHAABT:
+					case MapType.FAKK2:
+					case MapType.Alice:
 					case MapType.CoD:
 					case MapType.CoD2:
 					case MapType.Raven: {
@@ -98,10 +104,13 @@ namespace LibBSP {
 			get {
 				switch (Bsp.version) {
 					case MapType.Quake3:
+					case MapType.ET:
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
-					case MapType.FAKK:
+					case MapType.MOHAABT:
+					case MapType.FAKK2:
+					case MapType.Alice:
 					case MapType.CoD:
 					case MapType.CoD2:
 					case MapType.Raven: {
@@ -114,10 +123,13 @@ namespace LibBSP {
 			set {
 				switch (Bsp.version) {
 					case MapType.Quake3:
+					case MapType.ET:
 					case MapType.STEF2:
 					case MapType.STEF2Demo:
 					case MapType.MOHAA:
-					case MapType.FAKK:
+					case MapType.MOHAABT:
+					case MapType.FAKK2:
+					case MapType.Alice:
 					case MapType.CoD:
 					case MapType.CoD2:
 					case MapType.Raven: {
@@ -274,11 +286,14 @@ namespace LibBSP {
 				case MapType.Nightfire: {
 					return 7;
 				}
-				case MapType.FAKK:
-				case MapType.MOHAA: {
+				case MapType.FAKK2:
+				case MapType.Alice:
+				case MapType.MOHAA:
+				case MapType.MOHAABT: {
 					return 15;
 				}
 				case MapType.Quake3:
+				case MapType.ET:
 				case MapType.Raven: {
 					return 16;
 				}

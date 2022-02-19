@@ -63,9 +63,11 @@ namespace LibBSP {
 					return 1;
 				}
 				case MapType.MOHAA:
+				case MapType.MOHAABT:
 				case MapType.STEF2:
 				case MapType.STEF2Demo:
-				case MapType.FAKK: {
+				case MapType.FAKK2:
+				case MapType.Alice: {
 					return 2;
 				}
 				case MapType.Quake2:
@@ -95,6 +97,7 @@ namespace LibBSP {
 					return 10;
 				}
 				case MapType.Quake3:
+				case MapType.ET: // Unused in ET?
 				case MapType.Raven: {
 					return 14;
 				}

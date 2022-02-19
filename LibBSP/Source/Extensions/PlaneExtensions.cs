@@ -401,8 +401,10 @@ namespace LibBSP {
 				case MapType.BlueShift: {
 					return 0;
 				}
-				case MapType.FAKK:
+				case MapType.FAKK2:
+				case MapType.Alice:
 				case MapType.MOHAA:
+				case MapType.MOHAABT:
 				case MapType.STEF2:
 				case MapType.STEF2Demo:
 				case MapType.Quake:
@@ -429,7 +431,8 @@ namespace LibBSP {
 				}
 				case MapType.CoD:
 				case MapType.Raven:
-				case MapType.Quake3: {
+				case MapType.Quake3:
+				case MapType.ET: {
 					return 2;
 				}
 				case MapType.CoD2:
@@ -476,10 +479,13 @@ namespace LibBSP {
 				}
 				case MapType.STEF2:
 				case MapType.MOHAA:
+				case MapType.MOHAABT:
 				case MapType.STEF2Demo:
 				case MapType.Raven:
 				case MapType.Quake3:
-				case MapType.FAKK:
+				case MapType.ET:
+				case MapType.FAKK2:
+				case MapType.Alice:
 				case MapType.CoD:
 				case MapType.CoD2:
 				case MapType.CoD4:
