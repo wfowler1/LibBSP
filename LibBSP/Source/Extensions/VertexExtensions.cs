@@ -75,90 +75,45 @@ namespace LibBSP {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
+
 			Vertex result = new Vertex();
-			switch (type) {
-				case MapType.CoD: {
-					if (version == 0) {
-						goto case MapType.Quake3;
-					} else if (version == 1) {
-						// Patch vertex. Set color to white (makes things easier in CoDRadiant) and simply read position.
-						result.color = ColorExtensions.FromArgb(255, 255, 255, 255);
-						goto case MapType.Quake;
-					}
-					break;
-				}
-				case MapType.CoD2:
-				case MapType.CoD4: {
-					result.normal = Vector3Extensions.ToVector3(data, 12);
-					result.color = ColorExtensions.FromArgb(data[27], data[24], data[25], data[26]);
-					result.uv0 = Vector2Extensions.ToVector2(data, 28);
-					result.uv1 = Vector2Extensions.ToVector2(data, 36);
-					// Use these fields to store additional unknown information
-					result.tangent = Vector4Extensions.ToVector4(data, 44);
-					result.uv3 = Vector2Extensions.ToVector2(data, 60);
-					goto case MapType.Quake;
-				}
-				case MapType.MOHAA:
-				case MapType.MOHAABT:
-				case MapType.Quake3:
-				case MapType.ET:
-				case MapType.FAKK2:
-				case MapType.Alice: {
-					result.uv0 = Vector2Extensions.ToVector2(data, 12);
-					result.uv1 = Vector2Extensions.ToVector2(data, 20);
-					result.normal = Vector3Extensions.ToVector3(data, 28);
-					result.color = ColorExtensions.FromArgb(data[43], data[40], data[41], data[42]);
-					goto case MapType.Quake;
-				}
-				case MapType.Raven: {
-					result.uv0 = Vector2Extensions.ToVector2(data, 12);
-					result.uv1 = Vector2Extensions.ToVector2(data, 20);
-					result.uv2 = Vector2Extensions.ToVector2(data, 28);
-					result.uv3 = Vector2Extensions.ToVector2(data, 36);
-					result.normal = Vector3Extensions.ToVector3(data, 52);
-					result.color = ColorExtensions.FromArgb(data[67], data[64], data[65], data[66]);
-					// Use for two more float fields and two more colors.
-					// There's actually another field that seems to be color but I've only ever seen it be 0xFFFFFFFF.
-					result.tangent = Vector4Extensions.ToVector4(data, 44);
-					goto case MapType.Quake;
-				}
-				case MapType.STEF2:
-				case MapType.STEF2Demo: {
-					result.uv0 = Vector2Extensions.ToVector2(data, 12);
-					result.uv1 = Vector2Extensions.ToVector2(data, 20);
-					result.uv2 = new Vector2(BitConverter.ToSingle(data, 28), 0);
-					result.color = ColorExtensions.FromArgb(data[35], data[32], data[33], data[34]);
-					result.normal = Vector3Extensions.ToVector3(data, 36);
-					goto case MapType.Quake;
-				}
-				case MapType.Quake:
-				case MapType.GoldSrc:
-				case MapType.BlueShift:
-				case MapType.Nightfire:
-				case MapType.SiN:
-				case MapType.SoF:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Titanfall:
-				case MapType.Quake2:
-				case MapType.Daikatana:
-				case MapType.Vindictus:
-				case MapType.DMoMaM: {
-					result.position = Vector3Extensions.ToVector3(data, 0);
-					break;
-				}
-				default: {
-					throw new ArgumentException("Map type " + type + " doesn't use Vertex objects, or reading them isn't implemented.");
-				}
+
+			if (type == MapType.CoD && version == 1) {
+				// Patch vertex. Set color to white (makes things easier in CoDRadiant) and simply read position.
+				result.color = ColorExtensions.FromArgb(255, 255, 255, 255);
+			} else if (type == MapType.CoD2
+				|| type == MapType.CoD4) {
+				result.normal = Vector3Extensions.ToVector3(data, 12);
+				result.color = ColorExtensions.FromArgb(data[27], data[24], data[25], data[26]);
+				result.uv0 = Vector2Extensions.ToVector2(data, 28);
+				result.uv1 = Vector2Extensions.ToVector2(data, 36);
+				// Use these fields to store additional unknown information
+				result.tangent = Vector4Extensions.ToVector4(data, 44);
+				result.uv3 = Vector2Extensions.ToVector2(data, 60);
+			} else if (type.IsSubtypeOf(MapType.STEF2)) {
+				result.uv0 = Vector2Extensions.ToVector2(data, 12);
+				result.uv1 = Vector2Extensions.ToVector2(data, 20);
+				result.uv2 = new Vector2(BitConverter.ToSingle(data, 28), 0);
+				result.color = ColorExtensions.FromArgb(data[35], data[32], data[33], data[34]);
+				result.normal = Vector3Extensions.ToVector3(data, 36);
+			} else if (type == MapType.Raven) {
+				result.uv0 = Vector2Extensions.ToVector2(data, 12);
+				result.uv1 = Vector2Extensions.ToVector2(data, 20);
+				result.uv2 = Vector2Extensions.ToVector2(data, 28);
+				result.uv3 = Vector2Extensions.ToVector2(data, 36);
+				result.normal = Vector3Extensions.ToVector3(data, 52);
+				result.color = ColorExtensions.FromArgb(data[67], data[64], data[65], data[66]);
+				// Use for two more float fields and two more colors.
+				// There's actually another field that seems to be color but I've only ever seen it be 0xFFFFFFFF.
+				result.tangent = Vector4Extensions.ToVector4(data, 44);
+			} else if (type.IsSubtypeOf(MapType.Quake3)) {
+				result.uv0 = Vector2Extensions.ToVector2(data, 12);
+				result.uv1 = Vector2Extensions.ToVector2(data, 20);
+				result.normal = Vector3Extensions.ToVector3(data, 28);
+				result.color = ColorExtensions.FromArgb(data[43], data[40], data[41], data[42]);
 			}
+
+			result.position = Vector3Extensions.ToVector3(data, 0);
 			return result;
 		}
 
@@ -193,58 +148,27 @@ namespace LibBSP {
 		/// <param name="type">The map type.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
 		public static int GetIndexForLump(MapType type) {
-			switch (type) {
-				case MapType.Quake2:
-				case MapType.SiN:
-				case MapType.Daikatana:
-				case MapType.SoF: {
-					return 2;
-				}
-				case MapType.Quake:
-				case MapType.GoldSrc:
-				case MapType.BlueShift:
-				case MapType.Vindictus:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.DMoMaM:
-				case MapType.Titanfall: {
-					return 3;
-				}
-				case MapType.MOHAA:
-				case MapType.MOHAABT:
-				case MapType.FAKK2:
-				case MapType.Alice:
-				case MapType.Nightfire: {
-					return 4;
-				}
-				case MapType.STEF2:
-				case MapType.STEF2Demo: {
-					return 6;
-				}
-				case MapType.CoD: {
-					return 7;
-				}
-				case MapType.CoD2: {
-					return 8;
-				}
-				case MapType.CoD4:
-				case MapType.Raven:
-				case MapType.Quake3:
-				case MapType.ET: {
-					return 10;
-				}
-				default: {
-					return -1;
-				}
+			if (type.IsSubtypeOf(MapType.Quake2)) {
+				return 2;
+			} else if (type.IsSubtypeOf(MapType.Quake)
+				|| type.IsSubtypeOf(MapType.Source)
+				|| type == MapType.Titanfall) {
+				return 3;
+			} else if (type.IsSubtypeOf(MapType.MOHAA)
+				|| type.IsSubtypeOf(MapType.FAKK2)
+				|| type == MapType.Nightfire) {
+				return 4;
+			} else if (type.IsSubtypeOf(MapType.STEF2)) {
+				return 6;
+			} else if (type == MapType.CoD) {
+				return 7;
+			} else if (type == MapType.CoD2) {
+				return 8;
+			} else if (type.IsSubtypeOf(MapType.Quake3)) {
+				return 10;
 			}
+
+			return -1;
 		}
 
 		/// <summary>
@@ -253,14 +177,11 @@ namespace LibBSP {
 		/// <param name="type">The map type.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
 		public static int GetIndexForNormalsLump(MapType type) {
-			switch (type) {
-				case MapType.Nightfire: {
-					return 5;
-				}
-				default: {
-					return -1;
-				}
+			if (type == MapType.Nightfire) {
+				return 5;
 			}
+
+			return -1;
 		}
 
 		/// <summary>
@@ -269,14 +190,11 @@ namespace LibBSP {
 		/// <param name="type">The map type.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
 		public static int GetIndexForPatchVertsLump(MapType type) {
-			switch (type) {
-				case MapType.CoD: {
-					return 25;
-				}
-				default: {
-					return -1;
-				}
+			if (type == MapType.CoD) {
+				return 25;
 			}
+
+			return -1;
 		}
 
 		/// <summary>
@@ -286,68 +204,25 @@ namespace LibBSP {
 		/// <param name="version">Version of the lump.</param>
 		/// <returns>The length of the struct for the given <see cref="MapType"/> of the given <paramref name="version"/>.</returns>
 		public static int GetStructLength(MapType type, int version) {
-			int structLength = 0;
-			switch (type) {
-				case MapType.Quake:
-				case MapType.GoldSrc:
-				case MapType.BlueShift:
-				case MapType.Nightfire:
-				case MapType.SiN:
-				case MapType.SoF:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Quake2:
-				case MapType.Daikatana:
-				case MapType.Vindictus:
-				case MapType.DMoMaM:
-				case MapType.Titanfall: {
-					structLength = 12;
-					break;
-				}
-				case MapType.CoD: {
-					if (version == 0) {
-						goto case MapType.Quake3;
-					} else if (version == 1) {
-						goto case MapType.Quake;
-					}
-					break;
-				}
-				case MapType.CoD2:
-				case MapType.CoD4: {
-					structLength = 68;
-					break;
-				}
-				case MapType.MOHAA:
-				case MapType.MOHAABT:
-				case MapType.Quake3:
-				case MapType.ET:
-				case MapType.FAKK2:
-				case MapType.Alice: {
-					structLength = 44;
-					break;
-				}
-				case MapType.STEF2:
-				case MapType.STEF2Demo: {
-					structLength = 48;
-					break;
-				}
-				case MapType.Raven: {
-					structLength = 80;
-					break;
-				}
-				default: {
-					throw new ArgumentException("Map type " + type + " doesn't use a Vertex lump or the lump is unknown.");
-				}
+			if (type.IsSubtypeOf(MapType.Quake)
+				|| type.IsSubtypeOf(MapType.Quake2)
+				|| type == MapType.Nightfire
+				|| type.IsSubtypeOf(MapType.Source)
+				|| type == MapType.Titanfall
+				|| (type == MapType.CoD && version == 1)) {
+				return 12;
+			} else if (type == MapType.CoD2
+				|| type == MapType.CoD4) {
+				return 68;
+			} else if (type.IsSubtypeOf(MapType.STEF2)) {
+				return 48;
+			} else if (type == MapType.Raven) {
+				return 80;
+			} else if (type.IsSubtypeOf(MapType.Quake3)) {
+				return 44;
 			}
-			return structLength;
+
+			return -1;
 		}
 
 		/// <summary>
@@ -360,94 +235,47 @@ namespace LibBSP {
 		public static byte[] GetBytes(this Vertex v, MapType type, int version) {
 			byte[] bytes = new byte[GetStructLength(type, version)];
 
-			switch (type) {
-				case MapType.Quake:
-				case MapType.GoldSrc:
-				case MapType.BlueShift:
-				case MapType.Nightfire:
-				case MapType.SiN:
-				case MapType.SoF:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Quake2:
-				case MapType.Daikatana:
-				case MapType.Vindictus:
-				case MapType.DMoMaM:
-				case MapType.Titanfall: {
-					v.position.GetBytes().CopyTo(bytes, 0);
-					break;
-				}
-				case MapType.CoD: {
-					if (version == 0) {
-						goto case MapType.Quake3;
-					} else if (version == 1) {
-						goto case MapType.Quake;
-					}
-					break;
-				}
-				case MapType.CoD2:
-				case MapType.CoD4: {
-					v.normal.GetBytes().CopyTo(bytes, 12);
-					v.color.GetBytes().CopyTo(bytes, 24);
-					v.uv0.GetBytes().CopyTo(bytes, 28);
-					v.uv1.GetBytes().CopyTo(bytes, 36);
-					// Use these fields to store additional unknown information
-					v.tangent.GetBytes().CopyTo(bytes, 44);
-					v.uv3.GetBytes().CopyTo(bytes, 60);
-					break;
-				}
-				case MapType.MOHAA:
-				case MapType.ET:
-				case MapType.Quake3:
-				case MapType.MOHAABT:
-				case MapType.FAKK2:
-				case MapType.Alice: {
-					v.uv0.GetBytes().CopyTo(bytes, 12);
-					v.uv1.GetBytes().CopyTo(bytes, 20);
-					v.normal.GetBytes().CopyTo(bytes, 28);
-					v.color.GetBytes().CopyTo(bytes, 40);
-					goto case MapType.Quake;
-				}
-				case MapType.Raven: {
-					v.uv0.GetBytes().CopyTo(bytes, 12);
-					v.uv1.GetBytes().CopyTo(bytes, 20);
-					v.uv2.GetBytes().CopyTo(bytes, 28);
-					v.uv3.GetBytes().CopyTo(bytes, 36);
-					BitConverter.GetBytes((float)v.tangent.X()).CopyTo(bytes, 44);
-					BitConverter.GetBytes((float)v.tangent.Y()).CopyTo(bytes, 48);
-					v.normal.GetBytes().CopyTo(bytes, 52);
-					v.color.GetBytes().CopyTo(bytes, 64);
-					BitConverter.GetBytes((float)v.tangent.Z()).CopyTo(bytes, 68);
-					BitConverter.GetBytes((float)v.tangent.W()).CopyTo(bytes, 72);
-					// There's actually another field that I've only ever seen it be FFFFFFFF.
-					bytes[76] = 255;
-					bytes[77] = 255;
-					bytes[78] = 255;
-					bytes[79] = 255;
-					goto case MapType.Quake;
-				}
-				case MapType.STEF2:
-				case MapType.STEF2Demo: {
-					v.uv0.GetBytes().CopyTo(bytes, 12);
-					v.uv1.GetBytes().CopyTo(bytes, 20);
-					BitConverter.GetBytes(v.uv2.X()).CopyTo(bytes, 28);
-					v.color.GetBytes().CopyTo(bytes, 32);
-					v.normal.GetBytes().CopyTo(bytes, 36);
-					goto case MapType.Quake;
-				}
-				default: {
-					bytes = new byte[0];
-					break;
-				}
+			if (type == MapType.CoD2
+				|| type == MapType.CoD4) {
+				v.normal.GetBytes().CopyTo(bytes, 12);
+				v.color.GetBytes().CopyTo(bytes, 24);
+				v.uv0.GetBytes().CopyTo(bytes, 28);
+				v.uv1.GetBytes().CopyTo(bytes, 36);
+				// Use these fields to store additional unknown information
+				v.tangent.GetBytes().CopyTo(bytes, 44);
+				v.uv3.GetBytes().CopyTo(bytes, 60);
+			} else if (type == MapType.Raven) {
+				v.uv0.GetBytes().CopyTo(bytes, 12);
+				v.uv1.GetBytes().CopyTo(bytes, 20);
+				v.uv2.GetBytes().CopyTo(bytes, 28);
+				v.uv3.GetBytes().CopyTo(bytes, 36);
+				BitConverter.GetBytes((float)v.tangent.X()).CopyTo(bytes, 44);
+				BitConverter.GetBytes((float)v.tangent.Y()).CopyTo(bytes, 48);
+				v.normal.GetBytes().CopyTo(bytes, 52);
+				v.color.GetBytes().CopyTo(bytes, 64);
+				BitConverter.GetBytes((float)v.tangent.Z()).CopyTo(bytes, 68);
+				BitConverter.GetBytes((float)v.tangent.W()).CopyTo(bytes, 72);
+				// There's actually another field that I've only ever seen it be FFFFFFFF.
+				bytes[76] = 255;
+				bytes[77] = 255;
+				bytes[78] = 255;
+				bytes[79] = 255;
+			} else if (type.IsSubtypeOf(MapType.STEF2)) {
+				v.uv0.GetBytes().CopyTo(bytes, 12);
+				v.uv1.GetBytes().CopyTo(bytes, 20);
+				BitConverter.GetBytes(v.uv2.X()).CopyTo(bytes, 28);
+				v.color.GetBytes().CopyTo(bytes, 32);
+				v.normal.GetBytes().CopyTo(bytes, 36);
+			} else if ((type.IsSubtypeOf(MapType.Quake3) && type != MapType.CoD)
+				|| (type == MapType.CoD && version == 0)) {
+				v.uv0.GetBytes().CopyTo(bytes, 12);
+				v.uv1.GetBytes().CopyTo(bytes, 20);
+				v.normal.GetBytes().CopyTo(bytes, 28);
+				v.color.GetBytes().CopyTo(bytes, 40);
 			}
+
+			v.position.GetBytes().CopyTo(bytes, 0);
+
 			return bytes;
 		}
 

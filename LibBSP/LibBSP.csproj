@@ -49,6 +49,7 @@
     <Compile Include="Source\Attributes\IndexAttribute.cs" />
     <Compile Include="Source\Extensions\ColorExtensions.cs" />
     <Compile Include="Source\Extensions\CustomAttributeExtensions.cs" />
+    <Compile Include="Source\Extensions\MapTypeExtensions.cs" />
     <Compile Include="Source\Extensions\PlaneExtensions.cs" />
     <Compile Include="Source\Extensions\StringExtensions.cs" />
     <Compile Include="Source\Extensions\Vector2Extensions.cs" />

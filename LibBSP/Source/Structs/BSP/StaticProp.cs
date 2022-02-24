@@ -62,73 +62,41 @@ namespace LibBSP {
 		/// </summary>
 		public Vector3 Origin {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 9:
-							case 10:
-							case 11:
-							case 12: {
-								return Vector3Extensions.ToVector3(Data);
-							}
-							default: {
-								return new Vector3(0, 0, 0);
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 9:
+						case 10:
+						case 11:
+						case 12: {
+							return Vector3Extensions.ToVector3(Data);
 						}
-					}
-					default: {
-						return new Vector3(0, 0, 0);
 					}
 				}
+
+				return new Vector3(0, 0, 0);
 			}
 			set {
-				byte[] bytes = value.GetBytes();
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 9:
-							case 10:
-							case 11:
-							case 12: {
-								bytes.CopyTo(Data, 0);
-								break;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 9:
+						case 10:
+						case 11:
+						case 12: {
+							value.GetBytes().CopyTo(Data, 0);
+							break;
 						}
-						break;
 					}
 				}
 			}
@@ -139,73 +107,41 @@ namespace LibBSP {
 		/// </summary>
 		public Vector3 Angles {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 9:
-							case 10:
-							case 11:
-							case 12: {
-								return Vector3Extensions.ToVector3(Data, 12);
-							}
-							default: {
-								return new Vector3(0, 0, 0);
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 9:
+						case 10:
+						case 11:
+						case 12: {
+							return Vector3Extensions.ToVector3(Data, 12);
 						}
-					}
-					default: {
-						return new Vector3(0, 0, 0);
 					}
 				}
+
+				return new Vector3(0, 0, 0);
 			}
 			set {
-				byte[] bytes = value.GetBytes();
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 9:
-							case 10:
-							case 11:
-							case 12: {
-								bytes.CopyTo(Data, 12);
-								break;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 9:
+						case 10:
+						case 11:
+						case 12: {
+							value.GetBytes().CopyTo(Data, 12);
+							break;
 						}
-						break;
 					}
 				}
 			}
@@ -225,73 +161,41 @@ namespace LibBSP {
 		/// </summary>
 		public short ModelIndex {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 9:
-							case 10:
-							case 11:
-							case 12: {
-								return BitConverter.ToInt16(Data, 24);
-							}
-							default: {
-								return -1;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 9:
+						case 10:
+						case 11:
+						case 12: {
+							return BitConverter.ToInt16(Data, 24);
 						}
-					}
-					default: {
-						return -1;
 					}
 				}
+
+				return -1;
 			}
 			set {
-				byte[] bytes = BitConverter.GetBytes(value);
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 9:
-							case 10:
-							case 11:
-							case 12: {
-								bytes.CopyTo(Data, 24);
-								break;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 9:
+						case 10:
+						case 11:
+						case 12: {
+							BitConverter.GetBytes(value).CopyTo(Data, 24);
+							break;
 						}
-						break;
 					}
 				}
 			}
@@ -314,69 +218,37 @@ namespace LibBSP {
 		/// </summary>
 		public short FirstLeafIndexIndex {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 9:
-							case 10:
-							case 11: {
-								return BitConverter.ToInt16(Data, 26);
-							}
-							default: {
-								return -1;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 9:
+						case 10:
+						case 11: {
+							return BitConverter.ToInt16(Data, 26);
 						}
-					}
-					default: {
-						return -1;
 					}
 				}
+
+				return -1;
 			}
 			set {
-				byte[] bytes = BitConverter.GetBytes(value);
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 9:
-							case 10:
-							case 11: {
-								bytes.CopyTo(Data, 26);
-								break;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 9:
+						case 10:
+						case 11: {
+							BitConverter.GetBytes(value).CopyTo(Data, 26);
+							break;
 						}
-						break;
 					}
 				}
 			}
@@ -388,69 +260,37 @@ namespace LibBSP {
 		/// </summary>
 		public short NumLeafIndices {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 9:
-							case 10:
-							case 11: {
-								return BitConverter.ToInt16(Data, 28);
-							}
-							default: {
-								return -1;
-							}
+				if (MapType == MapType.Source) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 9:
+						case 10:
+						case 11: {
+							return BitConverter.ToInt16(Data, 28);
 						}
-					}
-					default: {
-						return -1;
 					}
 				}
+
+				return -1;
 			}
 			set {
-				byte[] bytes = BitConverter.GetBytes(value);
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 9:
-							case 10:
-							case 11: {
-								bytes.CopyTo(Data, 28);
-								break;
-							}
+				if (MapType == MapType.Source) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 9:
+						case 10:
+						case 11: {
+							BitConverter.GetBytes(value).CopyTo(Data, 28);
+							break;
 						}
-						break;
 					}
 				}
 			}
@@ -461,72 +301,41 @@ namespace LibBSP {
 		/// </summary>
 		public byte Solidity {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 9:
-							case 10:
-							case 11:
-							case 12: {
-								return Data[30];
-							}
-							default: {
-								return 0;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 9:
+						case 10:
+						case 11:
+						case 12: {
+							return Data[30];
 						}
-					}
-					default: {
-						return 0;
 					}
 				}
+
+				return 0;
 			}
 			set {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 9:
-							case 10:
-							case 11:
-							case 12: {
-								Data[30] = value;
-								break;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 9:
+						case 10:
+						case 11:
+						case 12: {
+							Data[30] = value;
+							break;
 						}
-						break;
 					}
 				}
 			}
@@ -537,72 +346,41 @@ namespace LibBSP {
 		/// </summary>
 		public byte Flags {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 9:
-							case 10:
-							case 11:
-							case 12: {
-								return Data[31];
-							}
-							default: {
-								return 0;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 9:
+						case 10:
+						case 11:
+						case 12: {
+							return Data[31];
 						}
-					}
-					default: {
-						return 0;
 					}
 				}
+
+				return 0;
 			}
 			set {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 9:
-							case 10:
-							case 11:
-							case 12: {
-								Data[31] = value;
-								break;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 9:
+						case 10:
+						case 11:
+						case 12: {
+							Data[31] = value;
+							break;
 						}
-						break;
 					}
 				}
 			}
@@ -613,86 +391,53 @@ namespace LibBSP {
 		/// </summary>
 		public int Skin {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 10:
-							case 11:
-							case 12: {
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 10:
+						case 11:
+						case 12: {
+							return BitConverter.ToInt32(Data, 32);
+						}
+						case 9: {
+							if (Data.Length == 76) {
+								return BitConverter.ToInt32(Data, 36);
+							} else {
 								return BitConverter.ToInt32(Data, 32);
 							}
-							case 9: {
-								if (Data.Length == 76) {
-									return BitConverter.ToInt32(Data, 36);
-								} else {
-									return BitConverter.ToInt32(Data, 32);
-								}
-							}
-							default: {
-								return -1;
-							}
 						}
-					}
-					default: {
-						return -1;
 					}
 				}
+				return -1;
 			}
 			set {
-				byte[] bytes = BitConverter.GetBytes(value);
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 10:
-							case 11:
-							case 12: {
-								bytes.CopyTo(Data, 32);
-								break;
-							}
-							case 9: {
-								if (Data.Length == 76) {
-									bytes.CopyTo(Data, 36);
-								} else {
-									bytes.CopyTo(Data, 32);
-								}
-								break;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 10:
+						case 11:
+						case 12: {
+							BitConverter.GetBytes(value).CopyTo(Data, 32);
+							break;
 						}
-						break;
+						case 9: {
+							if (Data.Length == 76) {
+								BitConverter.GetBytes(value).CopyTo(Data, 36);
+							} else {
+								BitConverter.GetBytes(value).CopyTo(Data, 32);
+							}
+							break;
+						}
 					}
 				}
 			}
@@ -703,86 +448,54 @@ namespace LibBSP {
 		/// </summary>
 		public float MinimumFadeDistance {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 10:
-							case 11:
-							case 12: {
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 10:
+						case 11:
+						case 12: {
+							return BitConverter.ToSingle(Data, 36);
+						}
+						case 9: {
+							if (Data.Length == 76) {
+								return BitConverter.ToSingle(Data, 40);
+							} else {
 								return BitConverter.ToSingle(Data, 36);
 							}
-							case 9: {
-								if (Data.Length == 76) {
-									return BitConverter.ToSingle(Data, 40);
-								} else {
-									return BitConverter.ToSingle(Data, 36);
-								}
-							}
-							default: {
-								return float.NaN;
-							}
 						}
-					}
-					default: {
-						return float.NaN;
 					}
 				}
+
+				return float.NaN;
 			}
 			set {
-				byte[] bytes = BitConverter.GetBytes(value);
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 10:
-							case 11:
-							case 12: {
-								bytes.CopyTo(Data, 36);
-								break;
-							}
-							case 9: {
-								if (Data.Length == 76) {
-									bytes.CopyTo(Data, 40);
-								} else {
-									bytes.CopyTo(Data, 36);
-								}
-								break;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 10:
+						case 11:
+						case 12: {
+							BitConverter.GetBytes(value).CopyTo(Data, 36);
+							break;
 						}
-						break;
+						case 9: {
+							if (Data.Length == 76) {
+								BitConverter.GetBytes(value).CopyTo(Data, 40);
+							} else {
+								BitConverter.GetBytes(value).CopyTo(Data, 36);
+							}
+							break;
+						}
 					}
 				}
 			}
@@ -793,86 +506,54 @@ namespace LibBSP {
 		/// </summary>
 		public float MaximumFadeDistance {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 10:
-							case 11:
-							case 12: {
-								return BitConverter.ToSingle(Data, 40);
-							}
-							case 9: {
-								if (Data.Length == 76) {
-									return BitConverter.ToInt32(Data, 44);
-								} else {
-									return BitConverter.ToInt32(Data, 40);
-								}
-							}
-							default: {
-								return float.NaN;
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 10:
+						case 11:
+						case 12: {
+							return BitConverter.ToSingle(Data, 40);
+						}
+						case 9: {
+							if (Data.Length == 76) {
+								return BitConverter.ToInt32(Data, 44);
+							} else {
+								return BitConverter.ToInt32(Data, 40);
 							}
 						}
-					}
-					default: {
-						return float.NaN;
 					}
 				}
+
+				return float.NaN;
 			}
 			set {
-				byte[] bytes = BitConverter.GetBytes(value);
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 10:
-							case 11:
-							case 12: {
-								bytes.CopyTo(Data, 40);
-								break;
-							}
-							case 9: {
-								if (Data.Length == 76) {
-									bytes.CopyTo(Data, 44);
-								} else {
-									bytes.CopyTo(Data, 40);
-								}
-								break;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 10:
+						case 11:
+						case 12: {
+							BitConverter.GetBytes(value).CopyTo(Data, 40);
+							break;
 						}
-						break;
+						case 9: {
+							if (Data.Length == 76) {
+								BitConverter.GetBytes(value).CopyTo(Data, 44);
+							} else {
+								BitConverter.GetBytes(value).CopyTo(Data, 40);
+							}
+							break;
+						}
 					}
 				}
 			}
@@ -883,86 +564,54 @@ namespace LibBSP {
 		/// </summary>
 		public Vector3 LightingOrigin {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 10:
-							case 11:
-							case 12: {
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 10:
+						case 11:
+						case 12: {
+							return Vector3Extensions.ToVector3(Data, 44);
+						}
+						case 9: {
+							if (Data.Length == 76) {
+								return Vector3Extensions.ToVector3(Data, 48);
+							} else {
 								return Vector3Extensions.ToVector3(Data, 44);
 							}
-							case 9: {
-								if (Data.Length == 76) {
-									return Vector3Extensions.ToVector3(Data, 48);
-								} else {
-									return Vector3Extensions.ToVector3(Data, 44);
-								}
-							}
-							default: {
-								return new Vector3(0, 0, 0);
-							}
 						}
-					}
-					default: {
-						return new Vector3(0, 0, 0);
 					}
 				}
+
+				return new Vector3(0, 0, 0);
 			}
 			set {
-				byte[] bytes = value.GetBytes();
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 4:
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 10:
-							case 11:
-							case 12: {
-								bytes.CopyTo(Data, 44);
-								break;
-							}
-							case 9: {
-								if (Data.Length == 76) {
-									bytes.CopyTo(Data, 48);
-								} else {
-									bytes.CopyTo(Data, 44);
-								}
-								break;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 4:
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 10:
+						case 11:
+						case 12: {
+							value.GetBytes().CopyTo(Data, 44);
+							break;
 						}
-						break;
+						case 9: {
+							if (Data.Length == 76) {
+								value.GetBytes().CopyTo(Data, 48);
+							} else {
+								value.GetBytes().CopyTo(Data, 44);
+							}
+							break;
+						}
 					}
 				}
 			}
@@ -973,84 +622,52 @@ namespace LibBSP {
 		/// </summary>
 		public float ForcedFadeScale {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 10:
-							case 11:
-							case 12: {
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 10:
+						case 11:
+						case 12: {
+							return BitConverter.ToSingle(Data, 56);
+						}
+						case 9: {
+							if (Data.Length == 76) {
+								return BitConverter.ToSingle(Data, 60);
+							} else {
 								return BitConverter.ToSingle(Data, 56);
 							}
-							case 9: {
-								if (Data.Length == 76) {
-									return BitConverter.ToSingle(Data, 60);
-								} else {
-									return BitConverter.ToSingle(Data, 56);
-								}
-							}
-							default: {
-								return float.NaN;
-							}
 						}
-					}
-					default: {
-						return float.NaN;
 					}
 				}
+
+				return float.NaN;
 			}
 			set {
-				byte[] bytes = BitConverter.GetBytes(value);
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 5:
-							case 6:
-							case 7:
-							case 8:
-							case 10:
-							case 11:
-							case 12: {
-								bytes.CopyTo(Data, 56);
-								break;
-							}
-							case 9: {
-								if (Data.Length == 76) {
-									bytes.CopyTo(Data, 60);
-								} else {
-									bytes.CopyTo(Data, 56);
-								}
-								break;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 5:
+						case 6:
+						case 7:
+						case 8:
+						case 10:
+						case 11:
+						case 12: {
+							BitConverter.GetBytes(value).CopyTo(Data, 56);
+							break;
 						}
-						break;
+						case 9: {
+							if (Data.Length == 76) {
+								BitConverter.GetBytes(value).CopyTo(Data, 60);
+							} else {
+								BitConverter.GetBytes(value).CopyTo(Data, 56);
+							}
+							break;
+						}
 					}
 				}
 			}
@@ -1061,53 +678,25 @@ namespace LibBSP {
 		/// </summary>
 		public short MinimumDirectXLevel {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted: {
-						switch (LumpVersion) {
-							case 6:
-							case 7: {
-								return BitConverter.ToInt16(Data, 60);
-							}
-							default: {
-								return -1;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)) {
+					switch (LumpVersion) {
+						case 6:
+						case 7: {
+							return BitConverter.ToInt16(Data, 60);
 						}
-					}
-					default: {
-						return -1;
 					}
 				}
+
+				return -1;
 			}
 			set {
-				byte[] bytes = BitConverter.GetBytes(value);
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted: {
-						switch (LumpVersion) {
-							case 6:
-							case 7: {
-								bytes.CopyTo(Data, 60);
-								break;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)) {
+					switch (LumpVersion) {
+						case 6:
+						case 7: {
+							BitConverter.GetBytes(value).CopyTo(Data, 60);
+							break;
 						}
-						break;
 					}
 				}
 			}
@@ -1118,53 +707,25 @@ namespace LibBSP {
 		/// </summary>
 		public short MaximumDirectXLevel {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted: {
-						switch (LumpVersion) {
-							case 6:
-							case 7: {
-								return BitConverter.ToInt16(Data, 62);
-							}
-							default: {
-								return -1;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)) {
+					switch (LumpVersion) {
+						case 6:
+						case 7: {
+							return BitConverter.ToInt16(Data, 62);
 						}
-					}
-					default: {
-						return -1;
 					}
 				}
+
+				return -1;
 			}
 			set {
-				byte[] bytes = BitConverter.GetBytes(value);
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted: {
-						switch (LumpVersion) {
-							case 6:
-							case 7: {
-								bytes.CopyTo(Data, 62);
-								break;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)) {
+					switch (LumpVersion) {
+						case 6:
+						case 7: {
+							BitConverter.GetBytes(value).CopyTo(Data, 62);
+							break;
 						}
-						break;
 					}
 				}
 			}
@@ -1175,77 +736,46 @@ namespace LibBSP {
 		/// </summary>
 		public byte MinimumCPULevel {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 8:
-							case 10:
-							case 11:
-							case 12: {
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 8:
+						case 10:
+						case 11:
+						case 12: {
+							return Data[60];
+						}
+						case 9: {
+							if (Data.Length == 76) {
+								return Data[64];
+							} else {
 								return Data[60];
 							}
-							case 9: {
-								if (Data.Length == 76) {
-									return Data[64];
-								} else {
-									return Data[60];
-								}
-							}
-							default: {
-								return 0;
-							}
 						}
-					}
-					default: {
-						return 0;
 					}
 				}
+
+				return 0;
 			}
 			set {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 8:
-							case 10:
-							case 11:
-							case 12: {
-								Data[60] = value;
-								break;
-							}
-							case 9: {
-								if (Data.Length == 76) {
-									Data[64] = value;
-								} else {
-									Data[60] = value;
-								}
-								break;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 8:
+						case 10:
+						case 11:
+						case 12: {
+							Data[60] = value;
+							break;
 						}
-						break;
+						case 9: {
+							if (Data.Length == 76) {
+								Data[64] = value;
+							} else {
+								Data[60] = value;
+							}
+							break;
+						}
 					}
 				}
 			}
@@ -1256,77 +786,46 @@ namespace LibBSP {
 		/// </summary>
 		public byte MaximumCPULevel {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 8:
-							case 10:
-							case 11:
-							case 12: {
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 8:
+						case 10:
+						case 11:
+						case 12: {
+							return Data[61];
+						}
+						case 9: {
+							if (Data.Length == 76) {
+								return Data[65];
+							} else {
 								return Data[61];
 							}
-							case 9: {
-								if (Data.Length == 76) {
-									return Data[65];
-								} else {
-									return Data[61];
-								}
-							}
-							default: {
-								return 0;
-							}
 						}
-					}
-					default: {
-						return 0;
 					}
 				}
+
+				return 0;
 			}
 			set {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 8:
-							case 10:
-							case 11:
-							case 12: {
-								Data[61] = value;
-								break;
-							}
-							case 9: {
-								if (Data.Length == 76) {
-									Data[65] = value;
-								} else {
-									Data[61] = value;
-								}
-								break;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 8:
+						case 10:
+						case 11:
+						case 12: {
+							Data[61] = value;
+							break;
 						}
-						break;
+						case 9: {
+							if (Data.Length == 76) {
+								Data[65] = value;
+							} else {
+								Data[61] = value;
+							}
+							break;
+						}
 					}
 				}
 			}
@@ -1337,77 +836,46 @@ namespace LibBSP {
 		/// </summary>
 		public byte MinimumGPULevel {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 8:
-							case 10:
-							case 11:
-							case 12: {
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 8:
+						case 10:
+						case 11:
+						case 12: {
+							return Data[62];
+						}
+						case 9: {
+							if (Data.Length == 76) {
+								return Data[66];
+							} else {
 								return Data[62];
 							}
-							case 9: {
-								if (Data.Length == 76) {
-									return Data[66];
-								} else {
-									return Data[62];
-								}
-							}
-							default: {
-								return 0;
-							}
 						}
-					}
-					default: {
-						return 0;
 					}
 				}
+				
+				return 0;
 			}
 			set {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 8:
-							case 10:
-							case 11:
-							case 12: {
-								Data[62] = value;
-								break;
-							}
-							case 9: {
-								if (Data.Length == 76) {
-									Data[66] = value;
-								} else {
-									Data[62] = value;
-								}
-								break;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 8:
+						case 10:
+						case 11:
+						case 12: {
+							Data[62] = value;
+							break;
 						}
-						break;
+						case 9: {
+							if (Data.Length == 76) {
+								Data[66] = value;
+							} else {
+								Data[62] = value;
+							}
+							break;
+						}
 					}
 				}
 			}
@@ -1418,77 +886,46 @@ namespace LibBSP {
 		/// </summary>
 		public byte MaximumGPULevel {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 8:
-							case 10:
-							case 11:
-							case 12: {
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 8:
+						case 10:
+						case 11:
+						case 12: {
+							return Data[63];
+						}
+						case 9: {
+							if (Data.Length == 76) {
+								return Data[67];
+							} else {
 								return Data[63];
 							}
-							case 9: {
-								if (Data.Length == 76) {
-									return Data[67];
-								} else {
-									return Data[63];
-								}
-							}
-							default: {
-								return 0;
-							}
 						}
-					}
-					default: {
-						return 0;
 					}
 				}
+
+				return 0;
 			}
 			set {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 8:
-							case 10:
-							case 11:
-							case 12: {
-								Data[63] = value;
-								break;
-							}
-							case 9: {
-								if (Data.Length == 76) {
-									Data[67] = value;
-								} else {
-									Data[63] = value;
-								}
-								break;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 8:
+						case 10:
+						case 11:
+						case 12: {
+							Data[63] = value;
+							break;
 						}
-						break;
+						case 9: {
+							if (Data.Length == 76) {
+								Data[67] = value;
+							} else {
+								Data[63] = value;
+							}
+							break;
+						}
 					}
 				}
 			}
@@ -1499,80 +936,48 @@ namespace LibBSP {
 		/// </summary>
 		public Color DiffuseModulaton {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 7:
-							case 8:
-							case 10:
-							case 11:
-							case 12: {
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 7:
+						case 8:
+						case 10:
+						case 11:
+						case 12: {
+							return ColorExtensions.FromArgb(Data[67], Data[64], Data[65], Data[66]);
+						}
+						case 9: {
+							if (Data.Length == 76) {
+								return ColorExtensions.FromArgb(Data[72], Data[69], Data[70], Data[71]);
+							} else {
 								return ColorExtensions.FromArgb(Data[67], Data[64], Data[65], Data[66]);
 							}
-							case 9: {
-								if (Data.Length == 76) {
-									return ColorExtensions.FromArgb(Data[72], Data[69], Data[70], Data[71]);
-								} else {
-									return ColorExtensions.FromArgb(Data[67], Data[64], Data[65], Data[66]);
-								}
-							}
-							default: {
-								return ColorExtensions.FromArgb(255, 255, 255, 255);
-							}
 						}
-					}
-					default: {
-						return ColorExtensions.FromArgb(255, 255, 255, 255);
 					}
 				}
+
+				return ColorExtensions.FromArgb(255, 255, 255, 255);
 			}
 			set {
-				byte[] bytes = value.GetBytes();
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM:
-					case MapType.Titanfall: {
-						switch (LumpVersion) {
-							case 7:
-							case 8:
-							case 10:
-							case 11:
-							case 12: {
-								bytes.CopyTo(Data, 64);
-								break;
-							}
-							case 9: {
-								if (Data.Length == 76) {
-									bytes.CopyTo(Data, 69);
-								} else {
-									bytes.CopyTo(Data, 64);
-								}
-									break;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)
+					|| MapType == MapType.Titanfall) {
+					switch (LumpVersion) {
+						case 7:
+						case 8:
+						case 10:
+						case 11:
+						case 12: {
+							value.GetBytes().CopyTo(Data, 64);
+							break;
 						}
-						break;
+						case 9: {
+							if (Data.Length == 76) {
+								value.GetBytes().CopyTo(Data, 69);
+							} else {
+								value.GetBytes().CopyTo(Data, 64);
+							}
+							break;
+						}
 					}
 				}
 			}
@@ -1583,55 +988,23 @@ namespace LibBSP {
 		/// </summary>
 		public float Scale {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM: {
-						switch (LumpVersion) {
-							case 11: {
-								return BitConverter.ToSingle(Data, 76);
-							}
-							default: {
-								return float.NaN;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)) {
+					switch (LumpVersion) {
+						case 11: {
+							return BitConverter.ToSingle(Data, 76);
 						}
-					}
-					default: {
-						return float.NaN;
 					}
 				}
+
+				return float.NaN;
 			}
 			set {
-				byte[] bytes = BitConverter.GetBytes(value);
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus:
-					case MapType.DMoMaM: {
-						switch (LumpVersion) {
-							case 11: {
-								bytes.CopyTo(Data, 76);
-								break;
-							}
+				if (MapType.IsSubtypeOf(MapType.Source)) {
+					switch (LumpVersion) {
+						case 11: {
+							BitConverter.GetBytes(value).CopyTo(Data, 76);
+							break;
 						}
-						break;
 					}
 				}
 			}
@@ -1642,46 +1015,37 @@ namespace LibBSP {
 		/// </summary>
 		public string Name {
 			get {
-				switch (MapType) {
-					case MapType.Source20: {
-						switch (LumpVersion) {
-							case 5:
-							case 6: {
-								if (Data.Length > 128) {
-									return Data.ToNullTerminatedString(Data.Length - 128, 128);
-								}
-								return null;
+				if (MapType == MapType.Source20) {
+					switch (LumpVersion) {
+						case 5:
+						case 6: {
+							if (Data.Length > 128) {
+								return Data.ToNullTerminatedString(Data.Length - 128, 128);
 							}
-							default: {
-								return null;
-							}
+							return null;
 						}
-					}
-					default: {
-						return null;
 					}
 				}
+
+				return null;
 			}
 			set {
-				switch (MapType) {
-					case MapType.Source20: {
-						switch (LumpVersion) {
-							case 5:
-							case 6: {
-								if (Data.Length > 128) {
-									// Zero out the bytes
-									for (int i = 0; i < 128; ++i) {
-										Data[Data.Length - i - 1] = 0;
-									}
-									if (value != null) {
-										byte[] strBytes = Encoding.ASCII.GetBytes(value);
-										Array.Copy(strBytes, 0, Data, Data.Length - 128, Math.Min(strBytes.Length, 127));
-									}
+				if (MapType == MapType.Source20) {
+					switch (LumpVersion) {
+						case 5:
+						case 6: {
+							if (Data.Length > 128) {
+								// Zero out the bytes
+								for (int i = 0; i < 128; ++i) {
+									Data[Data.Length - i - 1] = 0;
 								}
-								break;
+								if (value != null) {
+									byte[] strBytes = Encoding.ASCII.GetBytes(value);
+									Array.Copy(strBytes, 0, Data, Data.Length - 128, Math.Min(strBytes.Length, 127));
+								}
 							}
+							break;
 						}
-						break;
 					}
 				}
 			}

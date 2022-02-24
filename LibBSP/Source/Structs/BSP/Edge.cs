@@ -69,64 +69,26 @@ namespace LibBSP {
 		/// </summary>
 		public int FirstVertexIndex {
 			get {
-				switch (MapType) {
-					case MapType.Quake:
-					case MapType.GoldSrc:
-					case MapType.BlueShift:
-					case MapType.SiN:
-					case MapType.Daikatana:
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.DMoMaM:
-					case MapType.Quake2:
-					case MapType.SoF: {
-						return BitConverter.ToUInt16(Data, 0);
-					}
-					case MapType.Vindictus: {
-						return BitConverter.ToInt32(Data, 0);
-					}
-					default: {
-						return -1;
-					}
+				if (MapType == MapType.Vindictus) {
+					return BitConverter.ToInt32(Data, 0);
+				} else if (MapType.IsSubtypeOf(MapType.Quake)
+					|| MapType.IsSubtypeOf(MapType.Quake2)
+					|| MapType.IsSubtypeOf(MapType.Source)) {
+					return BitConverter.ToUInt16(Data, 0);
 				}
+
+				return -1;
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (MapType) {
-					case MapType.Quake:
-					case MapType.GoldSrc:
-					case MapType.BlueShift:
-					case MapType.SiN:
-					case MapType.Daikatana:
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.DMoMaM:
-					case MapType.Quake2:
-					case MapType.SoF: {
-						Data[0] = bytes[0];
-						Data[1] = bytes[1];
-						break;
-					}
-					case MapType.Vindictus: {
-						bytes.CopyTo(Data, 0);
-						break;
-					}
+
+				if (MapType == MapType.Vindictus) {
+					bytes.CopyTo(Data, 0);
+				} else if (MapType.IsSubtypeOf(MapType.Quake)
+					|| MapType.IsSubtypeOf(MapType.Quake2)
+					|| MapType.IsSubtypeOf(MapType.Source)) {
+					Data[0] = bytes[0];
+					Data[1] = bytes[1];
 				}
 			}
 		}
@@ -145,64 +107,26 @@ namespace LibBSP {
 		/// </summary>
 		public int SecondVertexIndex {
 			get {
-				switch (MapType) {
-					case MapType.Quake:
-					case MapType.GoldSrc:
-					case MapType.BlueShift:
-					case MapType.SiN:
-					case MapType.Daikatana:
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.DMoMaM:
-					case MapType.Quake2:
-					case MapType.SoF: {
-						return BitConverter.ToUInt16(Data, 2);
-					}
-					case MapType.Vindictus: {
-						return BitConverter.ToInt32(Data, 4);
-					}
-					default: {
-						return -1;
-					}
+				if (MapType == MapType.Vindictus) {
+					return BitConverter.ToInt32(Data, 4);
+				} else if (MapType.IsSubtypeOf(MapType.Quake)
+					|| MapType.IsSubtypeOf(MapType.Quake2)
+					|| MapType.IsSubtypeOf(MapType.Source)) {
+					return BitConverter.ToUInt16(Data, 2);
 				}
+
+				return -1;
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (MapType) {
-					case MapType.Quake:
-					case MapType.GoldSrc:
-					case MapType.BlueShift:
-					case MapType.SiN:
-					case MapType.Daikatana:
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.DMoMaM:
-					case MapType.Quake2:
-					case MapType.SoF: {
-						Data[2] = bytes[0];
-						Data[3] = bytes[1];
-						break;
-					}
-					case MapType.Vindictus: {
-						BitConverter.GetBytes(value).CopyTo(Data, 4);
-						break;
-					}
+
+				if (MapType == MapType.Vindictus) {
+					BitConverter.GetBytes(value).CopyTo(Data, 4);
+				} else if (MapType.IsSubtypeOf(MapType.Quake)
+					|| MapType.IsSubtypeOf(MapType.Quake2)
+					|| MapType.IsSubtypeOf(MapType.Source)) {
+					Data[2] = bytes[0];
+					Data[3] = bytes[1];
 				}
 			}
 		}
@@ -281,34 +205,15 @@ namespace LibBSP {
 		/// <returns>The length, in <c>byte</c>s, of this struct.</returns>
 		/// <exception cref="ArgumentException">This struct is not valid or is not implemented for the given <paramref name="mapType"/> and <paramref name="lumpVersion"/>.</exception>
 		public static int GetStructLength(MapType mapType, int lumpVersion = 0) {
-			switch (mapType) {
-				case MapType.Quake:
-				case MapType.GoldSrc:
-				case MapType.BlueShift:
-				case MapType.SiN:
-				case MapType.Daikatana:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.DMoMaM:
-				case MapType.Quake2:
-				case MapType.SoF: {
-					return 4;
-				}
-				case MapType.Vindictus: {
-					return 8;
-				}
-				default: {
-					throw new ArgumentException("Lump object " + MethodBase.GetCurrentMethod().DeclaringType.Name + " does not exist in map type " + mapType + " or has not been implemented.");
-				}
+			if (mapType == MapType.Vindictus) {
+				return 8;
+			} else if (mapType.IsSubtypeOf(MapType.Quake)
+				|| mapType.IsSubtypeOf(MapType.Quake2)
+				|| mapType.IsSubtypeOf(MapType.Source)) {
+				return 4;
 			}
+
+			throw new ArgumentException("Lump object " + MethodBase.GetCurrentMethod().DeclaringType.Name + " does not exist in map type " + mapType + " or has not been implemented.");
 		}
 
 		/// <summary>
@@ -317,34 +222,14 @@ namespace LibBSP {
 		/// <param name="type">The map type.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
 		public static int GetIndexForLump(MapType type) {
-			switch (type) {
-				case MapType.Quake2:
-				case MapType.SiN:
-				case MapType.Daikatana:
-				case MapType.SoF: {
-					return 11;
-				}
-				case MapType.Quake:
-				case MapType.GoldSrc:
-				case MapType.BlueShift:
-				case MapType.Vindictus:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.DMoMaM: {
-					return 12;
-				}
-				default: {
-					return -1;
-				}
+			if (type.IsSubtypeOf(MapType.Quake2)) {
+				return 11;
+			} else if (type.IsSubtypeOf(MapType.Quake)
+				|| type.IsSubtypeOf(MapType.Source)) {
+				return 12;
 			}
+
+			return -1;
 		}
 
 	}

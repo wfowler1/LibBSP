@@ -56,56 +56,22 @@ namespace LibBSP {
 		/// <param name="type">The map type.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
 		public static int GetIndexForLump(MapType type) {
-			switch (type) {
-				case MapType.CoD:
-				case MapType.CoD2:
-				case MapType.CoD4: {
-					return 1;
-				}
-				case MapType.MOHAA:
-				case MapType.MOHAABT:
-				case MapType.STEF2:
-				case MapType.STEF2Demo:
-				case MapType.FAKK2:
-				case MapType.Alice: {
-					return 2;
-				}
-				case MapType.Quake2:
-				case MapType.Daikatana:
-				case MapType.SiN:
-				case MapType.SoF: {
-					return 7;
-				}
-				case MapType.Quake:
-				case MapType.GoldSrc:
-				case MapType.BlueShift:
-				case MapType.Vindictus:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.DMoMaM: {
-					return 8;
-				}
-				case MapType.Nightfire: {
-					return 10;
-				}
-				case MapType.Quake3:
-				case MapType.ET: // Unused in ET?
-				case MapType.Raven: {
-					return 14;
-				}
-				case MapType.Titanfall:
-				default: {
-					return -1;
-				}
+			if (type.IsSubtypeOf(MapType.CoD)) {
+				return 1;
+			} else if (type.IsSubtypeOf(MapType.UberTools)) {
+				return 2;
+			} else if (type.IsSubtypeOf(MapType.Quake2)) {
+				return 7;
+			} else if (type.IsSubtypeOf(MapType.Quake)
+				|| type.IsSubtypeOf(MapType.Source)) {
+				return 8;
+			} else if (type == MapType.Nightfire) {
+				return 10;
+			} else if (type.IsSubtypeOf(MapType.Quake3)) {
+				return 14;
 			}
+
+			return -1;
 		}
 
 	}

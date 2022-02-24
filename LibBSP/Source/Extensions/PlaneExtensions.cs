@@ -295,31 +295,14 @@ namespace LibBSP {
 		/// <returns><c>byte</c> array representing this <see cref="Plane"/>'s components.</returns>
 		public static byte[] GetBytes(this Plane p, MapType type, int version = 0) {
 			byte[] bytes = new byte[GetStructLength(type, version)];
-			switch (type) {
-				case MapType.Quake:
-				case MapType.GoldSrc:
-				case MapType.BlueShift:
-				case MapType.Nightfire:
-				case MapType.SiN:
-				case MapType.SoF:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.DMoMaM:
-				case MapType.Vindictus:
-				case MapType.Quake2:
-				case MapType.Daikatana:
-				case MapType.TacticalInterventionEncrypted: {
-					BitConverter.GetBytes(p.Type()).CopyTo(bytes, 16);
-					break;
-				}
+
+			if (type.IsSubtypeOf(MapType.Quake)
+				|| type.IsSubtypeOf(MapType.Quake2)
+				|| type.IsSubtypeOf(MapType.Source)
+				|| type == MapType.Nightfire) {
+				BitConverter.GetBytes(p.Type()).CopyTo(bytes, 16);
 			}
+
 			p.Normal().GetBytes().CopyTo(bytes, 0);
 			BitConverter.GetBytes(p.Distance()).CopyTo(bytes, 12);
 			return bytes;
@@ -397,52 +380,25 @@ namespace LibBSP {
 		/// <param name="type">The map type.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForLump(MapType type) {
-			switch (type) {
-				case MapType.BlueShift: {
-					return 0;
-				}
-				case MapType.FAKK2:
-				case MapType.Alice:
-				case MapType.MOHAA:
-				case MapType.MOHAABT:
-				case MapType.STEF2:
-				case MapType.STEF2Demo:
-				case MapType.Quake:
-				case MapType.GoldSrc:
-				case MapType.Quake2:
-				case MapType.SiN:
-				case MapType.Daikatana:
-				case MapType.SoF:
-				case MapType.Nightfire:
-				case MapType.Vindictus:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.DMoMaM:
-				case MapType.Titanfall: {
-					return 1;
-				}
-				case MapType.CoD:
-				case MapType.Raven:
-				case MapType.Quake3:
-				case MapType.ET: {
-					return 2;
-				}
-				case MapType.CoD2:
-				case MapType.CoD4: {
-					return 4;
-				}
-				default: {
-					return -1;
-				}
+			if (type == MapType.BlueShift) {
+				return 0;
+			} else if (type.IsSubtypeOf(MapType.Source)
+				|| type.IsSubtypeOf(MapType.STEF2)
+				|| type.IsSubtypeOf(MapType.MOHAA)
+				|| type.IsSubtypeOf(MapType.Quake)
+				|| type.IsSubtypeOf(MapType.Quake2)) {
+				return 1;
+			} else if (type == MapType.Nightfire
+				|| type.IsSubtypeOf(MapType.FAKK2)) {
+				return 1;
+			} else if (type == MapType.CoD2
+				|| type == MapType.CoD4) {
+				return 4;
+			} else if (type.IsSubtypeOf(MapType.Quake3)) {
+				return 2;
 			}
+
+			return -1;
 		}
 
 		/// <summary>
@@ -452,49 +408,17 @@ namespace LibBSP {
 		/// <param name="version">The version of the planes lump this plane came from.</param>
 		/// <returns>The length of this structure, in bytes.</returns>
 		public static int GetStructLength(MapType type, int version) {
-			int structLength = 0;
-			switch (type) {
-				case MapType.Quake:
-				case MapType.GoldSrc:
-				case MapType.BlueShift:
-				case MapType.Nightfire:
-				case MapType.SiN:
-				case MapType.SoF:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.DMoMaM:
-				case MapType.Vindictus:
-				case MapType.Quake2:
-				case MapType.Daikatana:
-				case MapType.TacticalInterventionEncrypted: {
-					structLength = 20;
-					break;
-				}
-				case MapType.STEF2:
-				case MapType.MOHAA:
-				case MapType.MOHAABT:
-				case MapType.STEF2Demo:
-				case MapType.Raven:
-				case MapType.Quake3:
-				case MapType.ET:
-				case MapType.FAKK2:
-				case MapType.Alice:
-				case MapType.CoD:
-				case MapType.CoD2:
-				case MapType.CoD4:
-				case MapType.Titanfall: {
-					structLength = 16;
-					break;
-				}
+			if (type == MapType.Titanfall
+				|| type.IsSubtypeOf(MapType.Quake3)) {
+				return 16;
+			} else if (type == MapType.Nightfire
+				|| type.IsSubtypeOf(MapType.Quake)
+				|| type.IsSubtypeOf(MapType.Quake2)
+				|| type.IsSubtypeOf(MapType.Source)) {
+				return 20;
 			}
-			return structLength;
+
+			return 0;
 		}
 	}
 }

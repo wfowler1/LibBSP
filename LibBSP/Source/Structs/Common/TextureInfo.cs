@@ -103,66 +103,84 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Gets or sets the lightmap U axis.
+		/// </summary>
+		public Vector3 LightmapUAxis {
+			get {
+				if (MapType.IsSubtypeOf(MapType.Source)) {
+					return Vector3Extensions.ToVector3(Data, 32);
+				}
+
+				return new Vector3(0, 0, 0);
+			}
+			set {
+				if (MapType.IsSubtypeOf(MapType.Source)) {
+					value.GetBytes().CopyTo(Data, 32);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the lightmap V axis.
+		/// </summary>
+		public Vector3 LightmapVAxis {
+			get {
+				if (MapType.IsSubtypeOf(MapType.Source)) {
+					return Vector3Extensions.ToVector3(Data, 48);
+				}
+
+				return new Vector3(0, 0, 0);
+			}
+			set {
+				if (MapType.IsSubtypeOf(MapType.Source)) {
+					value.GetBytes().CopyTo(Data, 48);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the lightmap translation of along the U and V axes.
+		/// </summary>
+		public Vector2 LightmapTranslation {
+			get {
+				if (MapType.IsSubtypeOf(MapType.Source)) {
+					return new Vector2(BitConverter.ToSingle(Data, 44), BitConverter.ToSingle(Data, 60));
+				}
+
+				return new Vector2(0, 0);
+			}
+			set {
+				if (MapType.IsSubtypeOf(MapType.Source)) {
+					BitConverter.GetBytes(value.X()).CopyTo(Data, 44);
+					BitConverter.GetBytes(value.Y()).CopyTo(Data, 60);
+				}
+			}
+		}
+
+		/// <summary>
 		/// Gets or sets the flags for this <see cref="TextureInfo"/>.
 		/// </summary>
 		public int Flags {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus: {
-						return BitConverter.ToInt32(Data, 64);
-					}
-					case MapType.DMoMaM: {
-						return BitConverter.ToInt32(Data, 88);
-					}
-					case MapType.Quake:
-					case MapType.GoldSrc:
-					case MapType.BlueShift:
-					case MapType.Undefined: {
-						return BitConverter.ToInt32(Data, 36);
-					}
-					default: {
-						return -1;
-					}
+				if (MapType == MapType.DMoMaM) {
+					return BitConverter.ToInt32(Data, 88);
+				} else if (MapType.IsSubtypeOf(MapType.Source)) {
+					return BitConverter.ToInt32(Data, 64);
+				} else if (MapType.IsSubtypeOf(MapType.Quake) || MapType == MapType.Undefined) {
+					return BitConverter.ToInt32(Data, 36);
 				}
+
+				return -1;
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus: {
-						bytes.CopyTo(Data, 64);
-						break;
-					}
-					case MapType.DMoMaM: {
-						bytes.CopyTo(Data, 88);
-						break;
-					}
-					case MapType.Quake:
-					case MapType.GoldSrc:
-					case MapType.BlueShift:
-					case MapType.Undefined: {
-						bytes.CopyTo(Data, 36);
-						break;
-					}
+
+				if (MapType == MapType.DMoMaM) {
+					bytes.CopyTo(Data, 88);
+				} else if (MapType.IsSubtypeOf(MapType.Source)) {
+					bytes.CopyTo(Data, 64);
+				} else if (MapType.IsSubtypeOf(MapType.Quake) || MapType == MapType.Undefined) {
+					bytes.CopyTo(Data, 36);
 				}
 			}
 		}
@@ -178,62 +196,25 @@ namespace LibBSP {
 		/// </remarks>
 		public int TextureIndex {
 			get {
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus: {
-						return BitConverter.ToInt32(Data, 68);
-					}
-					case MapType.DMoMaM: {
-						return BitConverter.ToInt32(Data, 92);
-					}
-					case MapType.Quake:
-					case MapType.GoldSrc:
-					case MapType.BlueShift:
-					case MapType.Undefined: {
-						return BitConverter.ToInt32(Data, 32);
-					}
-					default: {
-						return -1;
-					}
+				if (MapType == MapType.DMoMaM) {
+					return BitConverter.ToInt32(Data, 92);
+				} else if (MapType.IsSubtypeOf(MapType.Source)) {
+					return BitConverter.ToInt32(Data, 68);
+				} else if (MapType.IsSubtypeOf(MapType.Quake) || MapType == MapType.Undefined) {
+					return BitConverter.ToInt32(Data, 32);
 				}
+
+				return -1;
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
-				switch (MapType) {
-					case MapType.Source17:
-					case MapType.Source18:
-					case MapType.Source19:
-					case MapType.Source20:
-					case MapType.Source21:
-					case MapType.Source22:
-					case MapType.Source23:
-					case MapType.Source27:
-					case MapType.L4D2:
-					case MapType.TacticalInterventionEncrypted:
-					case MapType.Vindictus: {
-						bytes.CopyTo(Data, 68);
-						break;
-					}
-					case MapType.DMoMaM: {
-						bytes.CopyTo(Data, 92);
-						break;
-					}
-					case MapType.Quake:
-					case MapType.GoldSrc:
-					case MapType.BlueShift:
-					case MapType.Undefined: {
-						bytes.CopyTo(Data, 32);
-						break;
-					}
+
+				if (MapType == MapType.DMoMaM) {
+					bytes.CopyTo(Data, 92);
+				} else if (MapType.IsSubtypeOf(MapType.Source)) {
+					bytes.CopyTo(Data, 68);
+				} else if (MapType.IsSubtypeOf(MapType.Quake) || MapType == MapType.Undefined) {
+					bytes.CopyTo(Data, 32);
 				}
 			}
 		}
@@ -279,6 +260,49 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Creates a new <see cref="TextureInfo"/> by copying the fields in <paramref name="source"/>, using
+		/// <paramref name="parent"/> to get <see cref="LibBSP.MapType"/> and <see cref="LumpInfo.version"/>
+		/// to use when creating the new <see cref="TextureInfo"/>.
+		/// If the <paramref name="parent"/>'s <see cref="BSP"/>'s <see cref="LibBSP.MapType"/> is different from
+		/// the one from <paramref name="source"/>, it does not matter, because fields are copied by name.
+		/// </summary>
+		/// <param name="source">The <see cref="TextureInfo"/> to copy.</param>
+		/// <param name="parent">
+		/// The <see cref="ILump"/> to use as the <see cref="Parent"/> of the new <see cref="TextureInfo"/>.
+		/// Use <c>null</c> to use the <paramref name="source"/>'s <see cref="Parent"/> instead.
+		/// </param>
+		public TextureInfo(TextureInfo source, ILump parent) {
+			Parent = parent;
+			scale = source.scale;
+			rotation = source.rotation;
+
+			if (parent != null && parent.Bsp != null) {
+				if (source.Parent != null && source.Parent.Bsp != null && source.Parent.Bsp.version == parent.Bsp.version && source.LumpVersion == parent.LumpInfo.version) {
+					Data = new byte[source.Data.Length];
+					Array.Copy(source.Data, Data, source.Data.Length);
+					return;
+				} else {
+					Data = new byte[GetStructLength(parent.Bsp.version, parent.LumpInfo.version)];
+				}
+			} else {
+				if (source.Parent != null && source.Parent.Bsp != null) {
+					Data = new byte[GetStructLength(source.Parent.Bsp.version, source.Parent.LumpInfo.version)];
+				} else {
+					Data = new byte[GetStructLength(MapType.Undefined, 0)];
+				}
+			}
+
+			UAxis = source.UAxis;
+			VAxis = source.VAxis;
+			Translation = source.Translation;
+			LightmapUAxis = source.LightmapUAxis;
+			LightmapVAxis = source.LightmapVAxis;
+			LightmapTranslation = source.LightmapTranslation;
+			Flags = source.Flags;
+			TextureIndex = source.TextureIndex;
+		}
+
+		/// <summary>
 		/// Given a <see cref="Plane"/> <c>p</c>, return an optimal set of texture axes for it.
 		/// </summary>
 		/// <param name="p"><see cref="Plane"/> of the surface.</param>
@@ -315,36 +339,17 @@ namespace LibBSP {
 		/// <returns>The length, in <c>byte</c>s, of this struct.</returns>
 		/// <exception cref="ArgumentException">This struct is not valid or is not implemented for the given <paramref name="mapType"/> and <paramref name="lumpVersion"/>.</exception>
 		public static int GetStructLength(MapType mapType, int lumpVersion = 0) {
-			switch (mapType) {
-				case MapType.Nightfire: {
-					return 32;
-				}
-				case MapType.Quake:
-				case MapType.GoldSrc:
-				case MapType.BlueShift:
-				case MapType.Undefined: {
-					return 40;
-				}
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Vindictus: {
-					return 72;
-				}
-				case MapType.DMoMaM: {
-					return 96;
-				}
-				default: {
-					throw new ArgumentException("Lump object " + MethodBase.GetCurrentMethod().DeclaringType.Name + " does not exist in map type " + mapType + " or has not been implemented.");
-				}
+			if (mapType == MapType.DMoMaM) {
+				return 96;
+			} else if (mapType.IsSubtypeOf(MapType.Source)) {
+				return 72;
+			} else if (mapType == MapType.Nightfire) {
+				return 32;
+			} else if (mapType.IsSubtypeOf(MapType.Quake) || mapType == MapType.Undefined) {
+				return 40;
 			}
+
+			throw new ArgumentException("Lump object " + MethodBase.GetCurrentMethod().DeclaringType.Name + " does not exist in map type " + mapType + " or has not been implemented.");
 		}
 
 		/// <summary>
@@ -353,31 +358,14 @@ namespace LibBSP {
 		/// <param name="type">The map type.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
 		public static int GetIndexForLump(MapType type) {
-			switch (type) {
-				case MapType.Quake:
-				case MapType.GoldSrc:
-				case MapType.BlueShift:
-				case MapType.Vindictus:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.DMoMaM: {
-					return 6;
-				}
-				case MapType.Nightfire: {
-					return 17;
-				}
-				default: {
-					return -1;
-				}
+			if (type.IsSubtypeOf(MapType.Quake)
+				|| type.IsSubtypeOf(MapType.Source)) {
+				return 6;
+			} else if (type == MapType.Nightfire) {
+				return 17;
 			}
+
+			return -1;
 		}
 
 	}

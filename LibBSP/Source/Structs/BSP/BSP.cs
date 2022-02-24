@@ -67,121 +67,122 @@ namespace LibBSP {
 		/// <see cref="STEF2Demo"/> <see cref="MOHAA"/> <see cref="MOHAABT"/> <see cref="FAKK2"/> <see cref="Alice"/>
 		/// <see cref="CoD"/> <see cref="CoD2"/> and <see cref="CoD4"/>.
 		/// </summary>
-		Quake3 = 0x03000000,
+		Quake3 = 0x04000000,
 		/// <summary>
 		/// Wolfenstein: Enemy Territory or Return to Castle Wolfenstein
 		/// </summary>
-		ET = 0x03000001,
+		ET = 0x04000001,
 		/// <summary>
 		/// Raven Software (Jedi Outcast, Jedi Academy, Soldier of Fortune 2)
 		/// </summary>
-		Raven = 0x03010000,
+		Raven = 0x04010000,
 		/// <summary>
-		/// Call of Duty or flags including Call of Duty 2 and 4.
+		/// Call of Duty or flags including <see cref="CoD2"/> and <see cref="CoD4"/>.
 		/// </summary>
-		CoD = 0x03020000,
+		CoD = 0x04020000,
 		/// <summary>
 		/// Call of Duty 2
 		/// </summary>
-		CoD2 = 0x03020001,
+		CoD2 = 0x04020001,
 		/// <summary>
 		/// Call of Duty 4
 		/// </summary>
-		CoD4 = 0x03020002,
+		CoD4 = 0x04020002,
 		/// <summary>
 		/// Quake 3 "Ubertools" including <see cref="STEF2"/> <see cref="STEF2Demo"/> <see cref="MOHAA"/>
 		/// <see cref="MOHAABT"/> <see cref="FAKK2"/> and <see cref="Alice"/>.
 		/// </summary>
-		UberTools = 0x03030000,
+		UberTools = 0x04040000,
 		/// <summary>
 		/// Star Trek Elite Force 2. As flags includes <see cref="STEF2Demo"/>.
 		/// </summary>
-		STEF2 = 0x03030100,
+		STEF2 = 0x04040100,
 		/// <summary>
 		/// Star Trek Elite Force 2 Demo version
 		/// </summary>
-		STEF2Demo = 0x03030101,
+		STEF2Demo = 0x04040101,
 		/// <summary>
 		/// Medal of Honor Allied Assault. As flags includes <see cref="MOHAABT"/>.
 		/// </summary>
-		MOHAA = 0x03030200,
+		MOHAA = 0x04040200,
 		/// <summary>
 		/// Medal of Honor Allied Assault Spearhead and BreakThrough expansion packs.
 		/// </summary>
-		MOHAABT = 0x03030201,
+		MOHAABT = 0x04040201,
 		/// <summary>
-		/// Heavy Metal FAKK2
+		/// Heavy Metal FAKK2. As flags includes <see cref="Alice"/>.
 		/// </summary>
-		FAKK2 = 0x03030301,
+		FAKK2 = 0x04040400,
 		/// <summary>
 		/// American McGee's Alice
 		/// </summary>
-		Alice = 0x03030302,
+		Alice = 0x04040401,
 
 		/// <summary>
 		/// 007 Nightfire
 		/// </summary>
-		Nightfire = 0x04000000,
+		Nightfire = 0x08000000,
 
 		/// <summary>
 		/// Source Engine, including <see cref="Source17" /> <see cref="Source18"/> <see cref="Source19"/>
 		/// <see cref="Source20"/> <see cref="DMoMaM"/> <see cref="Vindictus"/> <see cref="Source21"/>
 		/// <see cref="L4D2"/> <see cref="TacticalInterventionEncrypted"/> <see cref="Source22"/>
-		/// <see cref="Source23"/> <see cref="Source27"/> and <see cref="Titanfall"/>.
+		/// <see cref="Source23"/> and <see cref="Source27"/>.
 		/// </summary>
-		Source = 0x05000000,
+		Source = 0x10000000,
 		/// <summary>
 		/// Source Engine v17. Vampire the Masquerade: Bloodlines
 		/// </summary>
-		Source17 = 0x05001100,
+		Source17 = 0x10000100,
 		/// <summary>
 		/// Source Engine v18. Half-Life 2 Beta
 		/// </summary>
-		Source18 = 0x05001200,
+		Source18 = 0x10000200,
 		/// <summary>
 		/// Source Engine v19. Half-Life 2
 		/// </summary>
-		Source19 = 0x05001300,
+		Source19 = 0x10000400,
 		/// <summary>
 		/// Source Engine v20. As flags includes <see cref="DMoMaM"/> and <see cref="Vindictus"/>.
 		/// </summary>
-		Source20 = 0x05001400,
+		Source20 = 0x10000800,
 		/// <summary>
 		/// Dark Messiah of Might &amp; Magic
 		/// </summary>
-		DMoMaM = 0x05001401,
+		DMoMaM = 0x10000801,
 		/// <summary>
 		/// Vindictus
 		/// </summary>
-		Vindictus = 0x05001402,
+		Vindictus = 0x10000802,
 		/// <summary>
 		/// Source Engine v21. As flags includes <see cref="L4D2"/> and <see cref="TacticalInterventionEncrypted"/>.
 		/// </summary>
-		Source21 = 0x05001500,
+		Source21 = 0x10001000,
 		/// <summary>
 		/// Left 4 Dead 2
 		/// </summary>
-		L4D2 = 0x05001501,
+		L4D2 = 0x10001001,
 		/// <summary>
 		/// Tactical Intervention, original encrypted release. Steam version is <see cref="Source22"/>.
 		/// </summary>
-		TacticalInterventionEncrypted = 0x05001502,
+		TacticalInterventionEncrypted = 0x10001002,
 		/// <summary>
 		/// Source Engine v22, Tactical Intervention
 		/// </summary>
-		Source22 = 0x05001600,
+		Source22 = 0x10001100,
 		/// <summary>
 		/// Source Engine v23. DotA 2
 		/// </summary>
-		Source23 = 0x05001700,
+		Source23 = 0x10001200,
 		/// <summary>
 		/// Source Engine v27. Contagion
 		/// </summary>
-		Source27 = 0x05001B00,
+		Source27 = 0x10001400,
+
 		/// <summary>
 		/// rBSP v29. Titanfall
 		/// </summary>
-		Titanfall = 0x05001D00,
+		Titanfall = 0x20000000,
 
 	}
 
@@ -913,72 +914,40 @@ namespace LibBSP {
 		/// <param name="version">The version to get the number of lumps for.</param>
 		/// <returns>The number of lumps used by a BSP of version <paramref name="version"/>.</returns>
 		public static int GetNumLumps(MapType version) {
-			switch (version) {
-				case MapType.Quake:
-				case MapType.GoldSrc:
-				case MapType.BlueShift: {
-					return 15;
-				}
-				case MapType.Quake3:
-				case MapType.ET: {
-					return 17;
-				}
-				case MapType.Raven:
-				case MapType.Nightfire: {
-					return 18;
-				}
-				case MapType.Quake2: {
-					return 19;
-				}
-				case MapType.FAKK2:
-				case MapType.Alice:
-				case MapType.SiN: {
-					return 20;
-				}
-				case MapType.Daikatana: {
-					return 21;
-				}
-				case MapType.SoF: {
-					return 22;
-				}
-				case MapType.MOHAA:
-				case MapType.MOHAABT: {
-					return 28;
-				}
-				case MapType.STEF2:
-				case MapType.STEF2Demo: {
-					return 30;
-				}
-				case MapType.CoD: {
-					return 31;
-				}
-				case MapType.CoD2: {
-					return 39;
-				}
-				case MapType.CoD4: {
-					return 55;
-				}
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.DMoMaM:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.Vindictus: {
-					return 64;
-				}
-				case MapType.Titanfall: {
-					return 128;
-				}
-				default: {
-					return -1;
-				}
+			if (version == MapType.Titanfall) {
+				return 128;
+			} else if (version.IsSubtypeOf(MapType.Source)) {
+				return 64;
+			} else if (version.IsSubtypeOf(MapType.Quake)) {
+				return 15;
+			} else if (version.IsSubtypeOf(MapType.MOHAA)) {
+				return 28;
+			} else if (version.IsSubtypeOf(MapType.STEF2)) {
+				return 30;
+			} else if (version.IsSubtypeOf(MapType.FAKK2)
+				|| version == MapType.SiN) {
+				return 20;
+			} else if (version == MapType.Raven
+				|| version == MapType.Nightfire) {
+				return 18;
+			} else if (version == MapType.Quake2) {
+				return 19;
+			} else if (version == MapType.Daikatana) {
+				return 21;
+			} else if (version == MapType.SoF) {
+				return 22;
+			} else if (version == MapType.CoD) {
+				return 31;
+			} else if (version == MapType.CoD2) {
+				return 39;
+			} else if (version == MapType.CoD4) {
+				return 55;
+			} else if (version == MapType.Quake3
+				|| version == MapType.ET) {
+				return 17;
 			}
+
+			return -1;
 		}
 
 		/// <summary>

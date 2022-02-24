@@ -107,65 +107,36 @@ namespace LibBSP {
 		/// <param name="dataType"><c>out</c> parameter that will contain the data type this version uses.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForMarkSurfacesLump(MapType version, out DataType dataType) {
-			switch (version) {
-				case MapType.Raven:
-				case MapType.Quake3:
-				case MapType.ET: {
-					dataType = DataType.Int32;
-					return 5;
-				}
-				case MapType.FAKK2:
-				case MapType.Alice:
-				case MapType.MOHAA:
-				case MapType.MOHAABT: {
-					dataType = DataType.Int32;
-					return 7;
-				}
-				case MapType.Quake2:
-				case MapType.SiN:
-				case MapType.Daikatana:
-				case MapType.SoF: {
-					dataType = DataType.UInt16;
-					return 9;
-				}
-				case MapType.STEF2:
-				case MapType.STEF2Demo: {
-					dataType = DataType.UInt32;
-					return 9;
-				}
-				case MapType.Quake:
-				case MapType.GoldSrc:
-				case MapType.BlueShift: {
-					dataType = DataType.UInt16;
-					return 11;
-				}
-				case MapType.Nightfire: {
-					dataType = DataType.UInt32;
-					return 12;
-				}
-				case MapType.Vindictus: {
-					dataType = DataType.UInt32;
-					return 16;
-				}
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.DMoMaM: {
-					dataType = DataType.UInt16;
-					return 16;
-				}
-				case MapType.CoD: {
-					dataType = DataType.UInt32;
-					return 23;
-				}
+			if (version == MapType.Nightfire) {
+				dataType = DataType.UInt32;
+				return 12;
+			} else if (version == MapType.Vindictus) {
+				dataType = DataType.UInt32;
+				return 16;
+			} else if (version.IsSubtypeOf(MapType.Quake)) {
+				dataType = DataType.UInt16;
+				return 11;
+			} else if (version == MapType.CoD) {
+				dataType = DataType.UInt32;
+				return 23;
+			} else if (version.IsSubtypeOf(MapType.Quake2)) {
+				dataType = DataType.UInt16;
+				return 9;
+			} else if (version.IsSubtypeOf(MapType.STEF2)) {
+				dataType = DataType.UInt32;
+				return 9;
+			} else if (version.IsSubtypeOf(MapType.FAKK2)
+				|| version.IsSubtypeOf(MapType.MOHAA)) {
+				dataType = DataType.Int32;
+				return 7;
+			} else if (version.IsSubtypeOf(MapType.Source)) {
+				dataType = DataType.UInt16;
+				return 16;
+			} else if (version.IsSubtypeOf(MapType.Quake3)) {
+				dataType = DataType.Int32;
+				return 5;
 			}
+
 			dataType = DataType.Invalid;
 			return -1;
 		}
@@ -177,33 +148,15 @@ namespace LibBSP {
 		/// <param name="dataType"><c>out</c> parameter that will contain data type this version uses.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForSurfEdgesLump(MapType version, out DataType dataType) {
-			switch (version) {
-				case MapType.Quake2:
-				case MapType.SiN:
-				case MapType.Daikatana:
-				case MapType.SoF: {
-					dataType = DataType.Int32;
-					return 12;
-				}
-				case MapType.Quake:
-				case MapType.GoldSrc:
-				case MapType.BlueShift:
-				case MapType.Vindictus:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.DMoMaM: {
-					dataType = DataType.Int32;
-					return 13;
-				}
+			if (version.IsSubtypeOf(MapType.Quake2)) {
+				dataType = DataType.Int32;
+				return 12;
+			} else if (version.IsSubtypeOf(MapType.Quake)
+				|| version.IsSubtypeOf(MapType.Source)) {
+				dataType = DataType.Int32;
+				return 13;
 			}
+
 			dataType = DataType.Invalid;
 			return -1;
 		}
@@ -215,63 +168,35 @@ namespace LibBSP {
 		/// <param name="dataType"><c>out</c> parameter that will contain the data type this version uses.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForMarkBrushesLump(MapType version, out DataType dataType) {
-			switch (version) {
-				case MapType.Quake3:
-				case MapType.ET:
-				case MapType.MOHAA:
-				case MapType.MOHAABT:
-				case MapType.FAKK2:
-				case MapType.Alice: {
-					dataType = DataType.UInt32;
-					return 6;
-				}
-				case MapType.STEF2:
-				case MapType.STEF2Demo: {
-					dataType = DataType.UInt32;
-					return 8;
-				}
-				case MapType.Quake2:
-				case MapType.SiN:
-				case MapType.Daikatana:
-				case MapType.SoF: {
-					dataType = DataType.UInt16;
-					return 10;
-				}
-				case MapType.Nightfire: {
-					dataType = DataType.UInt32;
-					return 13;
-				}
-				case MapType.Vindictus: {
-					dataType = DataType.UInt32;
-					return 17;
-				}
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.DMoMaM: {
-					dataType = DataType.UInt16;
-					return 17;
-				}
-				case MapType.CoD: {
-					dataType = DataType.UInt32;
-					return 22;
-				}
-				case MapType.CoD2: {
-					dataType = DataType.UInt32;
-					return 27;
-				}
-				case MapType.CoD4: {
-					dataType = DataType.UInt32;
-					return 29;
-				}
+			if (version == MapType.Nightfire) {
+				dataType = DataType.UInt32;
+				return 13;
+			} else if (version.IsSubtypeOf(MapType.STEF2)) {
+				dataType = DataType.UInt32;
+				return 8;
+			} else if (version.IsSubtypeOf(MapType.Quake2)) {
+				dataType = DataType.UInt16;
+				return 10;
+			} else if (version == MapType.Vindictus) {
+				dataType = DataType.UInt32;
+				return 17;
+			} else if (version == MapType.CoD) {
+				dataType = DataType.UInt32;
+				return 22;
+			} else if (version == MapType.CoD2) {
+				dataType = DataType.UInt32;
+				return 27;
+			} else if (version == MapType.CoD4) {
+				dataType = DataType.UInt32;
+				return 29;
+			} else if (version.IsSubtypeOf(MapType.Source)) {
+				dataType = DataType.UInt16;
+				return 17;
+			} else if (version.IsSubtypeOf(MapType.Quake3)) {
+				dataType = DataType.UInt32;
+				return 6;
 			}
+
 			dataType = DataType.Invalid;
 			return -1;
 		}
@@ -283,42 +208,30 @@ namespace LibBSP {
 		/// <param name="dataType"><c>out</c> parameter that will contain the data type this version uses.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForIndicesLump(MapType version, out DataType dataType) {
-			switch (version) {
-				case MapType.FAKK2:
-				case MapType.Alice:
-				case MapType.MOHAA:
-				case MapType.MOHAABT: {
-					dataType = DataType.UInt32;
-					return 5;
-				}
-				case MapType.Nightfire: {
-					dataType = DataType.UInt32;
-					return 6;
-				}
-				case MapType.STEF2:
-				case MapType.STEF2Demo: {
-					dataType = DataType.UInt32;
-					return 7;
-				}
-				case MapType.CoD: {
-					dataType = DataType.UInt16;
-					return 8;
-				}
-				case MapType.CoD2: {
-					dataType = DataType.UInt16;
-					return 9;
-				}
-				case MapType.CoD4: {
-					dataType = DataType.UInt16;
-					return 11;
-				}
-				case MapType.Raven:
-				case MapType.Quake3:
-				case MapType.ET: {
-					dataType = DataType.UInt32;
-					return 11;
-				}
+			if (version == MapType.Nightfire) {
+				dataType = DataType.UInt32;
+				return 6;
+			} else if (version == MapType.CoD) {
+				dataType = DataType.UInt16;
+				return 8;
+			} else if (version == MapType.CoD2) {
+				dataType = DataType.UInt16;
+				return 9;
+			} else if (version == MapType.CoD4) {
+				dataType = DataType.UInt16;
+				return 11;
+			} else if (version.IsSubtypeOf(MapType.FAKK2)
+				|| version.IsSubtypeOf(MapType.MOHAA)) {
+				dataType = DataType.UInt32;
+				return 5;
+			} else if (version.IsSubtypeOf(MapType.STEF2)) {
+				dataType = DataType.UInt32;
+				return 7;
+			} else if (version.IsSubtypeOf(MapType.Quake3)) {
+				dataType = DataType.UInt32;
+				return 11;
 			}
+
 			dataType = DataType.Invalid;
 			return -1;
 		}
@@ -330,12 +243,11 @@ namespace LibBSP {
 		/// <param name="dataType"><c>out</c> parameter that will contain the data type this version uses.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForPatchIndicesLump(MapType version, out DataType dataType) {
-			switch (version) {
-				case MapType.CoD: {
-					dataType = DataType.UInt32;
-					return 23;
-				}
+			if (version == MapType.CoD) {
+				dataType = DataType.UInt32;
+				return 23;
 			}
+
 			dataType = DataType.Invalid;
 			return -1;
 		}
@@ -347,12 +259,11 @@ namespace LibBSP {
 		/// <param name="dataType"><c>out</c> parameter that will contain the data type this version uses.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForLeafPatchesLump(MapType version, out DataType dataType) {
-			switch (version) {
-				case MapType.CoD:{
-					dataType = DataType.UInt32;
-					return 26;
-				}
+			if (version == MapType.CoD) {
+				dataType = DataType.UInt32;
+				return 26;
 			}
+
 			dataType = DataType.Invalid;
 			return -1;
 		}
@@ -364,13 +275,11 @@ namespace LibBSP {
 		/// <param name="dataType"><c>out</c> parameter that will contain the data type this version uses.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForLeafStaticModelsLump(MapType version, out DataType dataType) {
-			switch (version) {
-				case MapType.MOHAA:
-				case MapType.MOHAABT: {
-					dataType = DataType.UInt16;
-					return 26;
-				}
+			if (version.IsSubtypeOf(MapType.MOHAA)) {
+				dataType = DataType.UInt16;
+				return 26;
 			}
+
 			dataType = DataType.Invalid;
 			return -1;
 		}
@@ -382,24 +291,12 @@ namespace LibBSP {
 		/// <param name="dataType"><c>out</c> parameter that will contain the data type this version uses.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForTexTableLump(MapType version, out DataType dataType) {
-			switch (version) {
-				case MapType.Vindictus:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.DMoMaM:
-				case MapType.Titanfall: {
-					dataType = DataType.Int32;
-					return 44;
-				}
+			if (version.IsSubtypeOf(MapType.Source)
+				|| version == MapType.Titanfall) {
+				dataType = DataType.Int32;
+				return 44;
 			}
+
 			dataType = DataType.Invalid;
 			return -1;
 		}
@@ -411,23 +308,11 @@ namespace LibBSP {
 		/// <param name="dataType"><c>out</c> parameter that will contain the data type this version uses.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForDisplacementTrianglesLump(MapType version, out DataType dataType) {
-			switch (version) {
-				case MapType.Vindictus:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.DMoMaM: {
-					dataType = DataType.UInt16;
-					return 48;
-				}
+			if (version.IsSubtypeOf(MapType.Source)) {
+				dataType = DataType.UInt16;
+				return 48;
 			}
+
 			dataType = DataType.Invalid;
 			return -1;
 		}

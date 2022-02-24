@@ -55,81 +55,57 @@ namespace LibBSP {
 				throw new IndexOutOfRangeException();
 			}
 
-			switch (version) {
-				case MapType.Quake:
-				case MapType.GoldSrc:
-				case MapType.BlueShift:
-				case MapType.Nightfire: {
-					return GetLumpInfoAtOffset(4 + (8 * index), version);
+			if (version.IsSubtypeOf(MapType.Quake)
+				|| version == MapType.Nightfire) {
+				return GetLumpInfoAtOffset(4 + (8 * index), version);
+			} else if (version.IsSubtypeOf(MapType.STEF2)
+				|| version.IsSubtypeOf(MapType.MOHAA)
+				|| version.IsSubtypeOf(MapType.FAKK2)) {
+				return GetLumpInfoAtOffset(12 + (8 * index), version);
+			} else if (version == MapType.Titanfall) {
+				if (lumpFiles == null) {
+					LoadLumpFiles();
 				}
-				case MapType.Quake2:
-				case MapType.Daikatana:
-				case MapType.SiN:
-				case MapType.SoF:
-				case MapType.Quake3:
-				case MapType.Raven:
-				case MapType.CoD:
-				case MapType.CoD2: {
-					return GetLumpInfoAtOffset(8 + (8 * index), version);
+				if (lumpFiles.ContainsKey(index)) {
+					return lumpFiles[index];
 				}
-				case MapType.STEF2:
-				case MapType.STEF2Demo:
-				case MapType.MOHAA:
-				case MapType.FAKK2: {
-					return GetLumpInfoAtOffset(12 + (8 * index), version);
-				}
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Vindictus:
-				case MapType.DMoMaM: {
-					if (lumpFiles == null) {
-						LoadLumpFiles();
-					}
-					if (lumpFiles.ContainsKey(index)) { return lumpFiles[index]; }
-					return GetLumpInfoAtOffset(8 + (16 * index), version);
-				}
-				case MapType.Titanfall: {
-					if (lumpFiles == null) {
-						LoadLumpFiles();
-					}
-					if (lumpFiles.ContainsKey(index)) { return lumpFiles[index]; }
-					return GetLumpInfoAtOffset((16 * (index + 1)), version);
-				}
-				case MapType.CoD4: {
-					using (FileStream stream = new FileStream(bspFile.FullName, FileMode.Open, FileAccess.Read)) {
-						BinaryReader binaryReader = new BinaryReader(stream);
-						stream.Seek(8, SeekOrigin.Begin);
-						int numlumps = binaryReader.ReadInt32();
-						int offset = (numlumps * 8) + 12;
-						for (int i = 0; i < numlumps; i++) {
-							int id = binaryReader.ReadInt32();
-							int length = binaryReader.ReadInt32();
-							if (id == index) {
-								return new LumpInfo() {
-									offset = offset,
-									length = length
-								};
-							} else {
-								offset += length;
-								while (offset % 4 != 0) { offset++; }
-							}
+				return GetLumpInfoAtOffset((16 * (index + 1)), version);
+			} else if (version == MapType.CoD4) {
+				using (FileStream stream = new FileStream(bspFile.FullName, FileMode.Open, FileAccess.Read)) {
+					BinaryReader binaryReader = new BinaryReader(stream);
+					stream.Seek(8, SeekOrigin.Begin);
+					int numlumps = binaryReader.ReadInt32();
+					int offset = (numlumps * 8) + 12;
+					for (int i = 0; i < numlumps; i++) {
+						int id = binaryReader.ReadInt32();
+						int length = binaryReader.ReadInt32();
+						if (id == index) {
+							return new LumpInfo() {
+								offset = offset,
+								length = length
+							};
+						} else {
+							offset += length;
+							while (offset % 4 != 0) { offset++; }
 						}
-						binaryReader.Close();
 					}
-					return default(LumpInfo);
+					binaryReader.Close();
 				}
-				default: {
-					return default(LumpInfo);
+				return default(LumpInfo);
+			} else if (version.IsSubtypeOf(MapType.Source)) {
+				if (lumpFiles == null) {
+					LoadLumpFiles();
 				}
+				if (lumpFiles.ContainsKey(index)) {
+					return lumpFiles[index];
+				}
+				return GetLumpInfoAtOffset(8 + (16 * index), version);
+			} else if (version.IsSubtypeOf(MapType.Quake2)
+				|| version.IsSubtypeOf(MapType.Quake3)) {
+				return GetLumpInfoAtOffset(8 + (8 * index), version);
 			}
+
+			return default(LumpInfo);
 		}
 
 		/// <summary>
@@ -162,18 +138,7 @@ namespace LibBSP {
 				lumpOffset = BitConverter.ToInt32(input, 4);
 				lumpLength = BitConverter.ToInt32(input, 8);
 				lumpIdent = BitConverter.ToInt32(input, 12);
-				// TODO: This is awful. Let's rework the enum to have internal ways to check engine forks.
-			} else if (version == MapType.Source17 ||
-						 version == MapType.Source18 ||
-						 version == MapType.Source19 ||
-						 version == MapType.Source20 ||
-						 version == MapType.Source21 ||
-						 version == MapType.Source22 ||
-						 version == MapType.Source23 ||
-						 version == MapType.Vindictus ||
-						 version == MapType.DMoMaM ||
-						 version == MapType.TacticalInterventionEncrypted ||
-						 version == MapType.Titanfall) {
+			} else if (version.IsSubtypeOf(MapType.Source)) {
 				lumpOffset = BitConverter.ToInt32(input, 0);
 				lumpLength = BitConverter.ToInt32(input, 4);
 				lumpVersion = BitConverter.ToInt32(input, 8);

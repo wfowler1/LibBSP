@@ -47,29 +47,14 @@ namespace LibBSP {
 			}
 
 			int structLength = 0;
-			switch (bsp.version) {
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.L4D2:
-				case MapType.Source27:
-				case MapType.Titanfall: {
-					structLength = 16;
-					break;
-				}
-				case MapType.Vindictus:
-				case MapType.DMoMaM: {
-					structLength = 20;
-					break;
-				}
-				default: {
-					throw new ArgumentException("Game lump does not exist in map type " + bsp.version + " or has not been implemented.");
-				}
+			if (bsp.version == MapType.DMoMaM
+				|| bsp.version == MapType.Vindictus) {
+				structLength = 20;
+			} else if (bsp.version.IsSubtypeOf(MapType.Source)
+				|| bsp.version == MapType.Titanfall) {
+				structLength = 16;
+			} else {
+				throw new ArgumentException("Game lump does not exist in map type " + bsp.version + " or has not been implemented.");
 			}
 
 			int numGameLumps = BitConverter.ToInt32(data, 0);
@@ -132,26 +117,12 @@ namespace LibBSP {
 		/// <param name="type">The map type.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
 		public static int GetIndexForLump(MapType type) {
-			switch (type) {
-				case MapType.Vindictus:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.DMoMaM:
-				case MapType.Titanfall: {
-					return 35;
-				}
-				default: {
-					return -1;
-				}
+			if (type.IsSubtypeOf(MapType.Source)
+				|| type == MapType.Titanfall) {
+				return 35;
 			}
+
+			return -1;
 		}
 
 		/// <summary>

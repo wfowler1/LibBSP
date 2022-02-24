@@ -58,10 +58,16 @@ namespace LibBSP {
 		/// </summary>
 		public Vector3 Normal {
 			get {
-				return Vector3Extensions.ToVector3(Data);
+				if (MapType.IsSubtypeOf(MapType.Source)) {
+					return Vector3Extensions.ToVector3(Data);
+				}
+
+				return new Vector3(0, 0, 0);
 			}
 			set {
-				value.GetBytes().CopyTo(Data, 0);
+				if (MapType.IsSubtypeOf(MapType.Source)) {
+					value.GetBytes().CopyTo(Data, 0);
+				}
 			}
 		}
 
@@ -70,10 +76,16 @@ namespace LibBSP {
 		/// </summary>
 		public float Magnitude {
 			get {
-				return BitConverter.ToSingle(Data, 12);
+				if (MapType.IsSubtypeOf(MapType.Source)) {
+					return BitConverter.ToSingle(Data, 12);
+				}
+
+				return -1;
 			}
 			set {
-				BitConverter.GetBytes(value).CopyTo(Data, 12);
+				if (MapType.IsSubtypeOf(MapType.Source)) {
+					BitConverter.GetBytes(value).CopyTo(Data, 12);
+				}
 			}
 		}
 
@@ -82,10 +94,16 @@ namespace LibBSP {
 		/// </summary>
 		public float Alpha {
 			get {
-				return BitConverter.ToSingle(Data, 16);
+				if (MapType.IsSubtypeOf(MapType.Source)) {
+					return BitConverter.ToSingle(Data, 16);
+				}
+
+				return -1;
 			}
 			set {
-				BitConverter.GetBytes(value).CopyTo(Data, 16);
+				if (MapType.IsSubtypeOf(MapType.Source)) {
+					BitConverter.GetBytes(value).CopyTo(Data, 16);
+				}
 			}
 		}
 
@@ -164,25 +182,12 @@ namespace LibBSP {
 		/// <returns>The length, in <c>byte</c>s, of this struct.</returns>
 		/// <exception cref="ArgumentException">This struct is not valid or is not implemented for the given <paramref name="mapType"/> and <paramref name="lumpVersion"/>.</exception>
 		public static int GetStructLength(MapType mapType, int lumpVersion = 0) {
-			switch (mapType) {
-				case MapType.Vindictus:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.DMoMaM: {
-					return 20;
-				}
-				default: {
-					throw new ArgumentException("Lump object " + MethodBase.GetCurrentMethod().DeclaringType.Name + " does not exist in map type " + mapType + " or has not been implemented.");
-				}
+			if (mapType.IsSubtypeOf(MapType.Source)) {
+				return 20;
 			}
+
+			throw new ArgumentException("Lump object " + MethodBase.GetCurrentMethod().DeclaringType.Name + " does not exist in map type " + mapType + " or has not been implemented.");
+
 		}
 
 		/// <summary>
@@ -191,25 +196,11 @@ namespace LibBSP {
 		/// <param name="type">The map type.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
 		public static int GetIndexForLump(MapType type) {
-			switch (type) {
-				case MapType.Vindictus:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.DMoMaM: {
-					return 33;
-				}
-				default: {
-					return -1;
-				}
+			if (type.IsSubtypeOf(MapType.Source)) {
+				return 33;
 			}
+
+			return -1;
 		}
 	}
 }

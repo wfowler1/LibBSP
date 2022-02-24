@@ -647,58 +647,29 @@ namespace LibBSP {
 		/// <param name="type">The map type.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForLump(MapType type) {
-			switch (type) {
-				case MapType.Raven:
-				case MapType.Quake3:
-				case MapType.ET:
-				case MapType.Quake:
-				case MapType.GoldSrc:
-				case MapType.Quake2:
-				case MapType.SiN:
-				case MapType.Daikatana:
-				case MapType.SoF:
-				case MapType.Nightfire:
-				case MapType.Vindictus:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.L4D2:
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.DMoMaM:
-				case MapType.Titanfall: {
-					return 0;
-				}
-				case MapType.BlueShift: {
-					return 1;
-				}
-				case MapType.FAKK2:
-				case MapType.Alice:
-				case MapType.MOHAA:
-				case MapType.MOHAABT: {
-					return 14;
-				}
-				case MapType.STEF2:
-				case MapType.STEF2Demo: {
-					return 16;
-				}
-				case MapType.CoD: {
-					return 29;
-				}
-				case MapType.CoD2: {
-					return 37;
-				}
-				case MapType.CoD4: {
-					return 39;
-				}
-				default: {
-					return -1;
-				}
+			if (type == MapType.BlueShift) {
+				return 1;
+			} else if (type.IsSubtypeOf(MapType.Source)
+				|| type.IsSubtypeOf(MapType.Quake)
+				|| type.IsSubtypeOf(MapType.Quake2)) {
+				return 0;
+			} else if (type.IsSubtypeOf(MapType.STEF2)) {
+				return 16;
+			} else if (type.IsSubtypeOf(MapType.FAKK2)
+				|| type.IsSubtypeOf(MapType.MOHAA)) {
+				return 14;
+			} else if (type == MapType.CoD) {
+				return 29;
+			} else if (type == MapType.CoD2) {
+				return 37;
+			} else if (type == MapType.CoD4) {
+				return 39;
+			} else if (type.IsSubtypeOf(MapType.Quake3)
+				|| type == MapType.Nightfire) {
+				return 0;
 			}
+
+			return -1;
 		}
 
 		/// <summary>

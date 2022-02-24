@@ -46,98 +46,57 @@ namespace LibBSP {
 				throw new ArgumentNullException();
 			}
 
-			switch (bsp.version) {
-				case MapType.Nightfire: {
-					structLength = 64;
-					break;
-				}
-				case MapType.Quake3:
-				case MapType.ET:
-				case MapType.Raven:
-				case MapType.CoD:
-				case MapType.CoD2:
-				case MapType.CoD4: {
-					structLength = 72;
-					break;
-				}
-				case MapType.Quake2:
-				case MapType.Daikatana:
-				case MapType.SoF:
-				case MapType.STEF2:
-				case MapType.STEF2Demo:
-				case MapType.FAKK2:
-				case MapType.Alice: {
-					structLength = 76;
-					break;
-				}
-				case MapType.MOHAA:
-				case MapType.MOHAABT: {
-					structLength = 140;
-					break;
-				}
-				case MapType.SiN: {
-					structLength = 180;
-					break;
-				}
-				case MapType.Source17:
-				case MapType.Source18:
-				case MapType.Source19:
-				case MapType.Source20:
-				case MapType.Source21:
-				case MapType.Source22:
-				case MapType.Source23:
-				case MapType.Source27:
-				case MapType.L4D2:
-				case MapType.TacticalInterventionEncrypted:
-				case MapType.Vindictus:
-				case MapType.DMoMaM: {
-					int offset = 0;
-					for (int i = 0; i < data.Length; ++i) {
-						if (data[i] == (byte)0x00) {
-							// They are null-terminated strings, of non-constant length (not padded)
-							byte[] myBytes = new byte[i - offset];
-							Array.Copy(data, offset, myBytes, 0, i - offset);
-							Add(new Texture(myBytes, this));
-							offset = i + 1;
-						}
-					}
-					return;
-				}
-				case MapType.Quake:
-				case MapType.GoldSrc:
-				case MapType.BlueShift: {
-					int numElements = BitConverter.ToInt32(data, 0);
-					structLength = 40;
-					int currentOffset;
-					int width;
-					int height;
-					int power;
-					int mipmapOffset;
-					for (int i = 0; i < numElements; ++i) {
-						byte[] myBytes = new byte[structLength];
-						byte[][] mipmaps = new byte[Texture.NumMipmaps][];
-						currentOffset = BitConverter.ToInt32(data, (i + 1) * 4);
-						if (currentOffset >= 0) {
-							Array.Copy(data, currentOffset, myBytes, 0, structLength);
-							width = BitConverter.ToInt32(myBytes, 16);
-							height = BitConverter.ToInt32(myBytes, 20);
-							power = 1;
-							for (int j = 0; j < mipmaps.Length; ++j) {
-								mipmapOffset = BitConverter.ToInt32(myBytes, 24 + (4 * j));
-								if (mipmapOffset > 0) {
-									mipmaps[j] = new byte[(width / power) * (height / power)];
-									Array.Copy(data, currentOffset + mipmapOffset, mipmaps[j], 0, mipmaps[j].Length);
-								}
-								power *= 2;
+			if (bsp.version.IsSubtypeOf(MapType.Quake)) {
+				int numElements = BitConverter.ToInt32(data, 0);
+				structLength = 40;
+				int currentOffset;
+				int width;
+				int height;
+				int power;
+				int mipmapOffset;
+				for (int i = 0; i < numElements; ++i) {
+					byte[] myBytes = new byte[structLength];
+					byte[][] mipmaps = new byte[Texture.NumMipmaps][];
+					currentOffset = BitConverter.ToInt32(data, (i + 1) * 4);
+					if (currentOffset >= 0) {
+						Array.Copy(data, currentOffset, myBytes, 0, structLength);
+						width = BitConverter.ToInt32(myBytes, 16);
+						height = BitConverter.ToInt32(myBytes, 20);
+						power = 1;
+						for (int j = 0; j < mipmaps.Length; ++j) {
+							mipmapOffset = BitConverter.ToInt32(myBytes, 24 + (4 * j));
+							if (mipmapOffset > 0) {
+								mipmaps[j] = new byte[(width / power) * (height / power)];
+								Array.Copy(data, currentOffset + mipmapOffset, mipmaps[j], 0, mipmaps[j].Length);
 							}
+							power *= 2;
 						}
-						Add(new Texture(myBytes, this, mipmaps));
 					}
-					return;
+					Add(new Texture(myBytes, this, mipmaps));
 				}
-				default: {
-					throw new ArgumentException("Lump object Texture does not exist in map type " + bsp.version + " or has not been implemented.");
+			} else if (bsp.version.IsSubtypeOf(MapType.Source)) {
+				int offset = 0;
+				for (int i = 0; i < data.Length; ++i) {
+					if (data[i] == (byte)0x00) {
+						// They are null-terminated strings, of non-constant length (not padded)
+						byte[] myBytes = new byte[i - offset];
+						Array.Copy(data, offset, myBytes, 0, i - offset);
+						Add(new Texture(myBytes, this));
+						offset = i + 1;
+					}
 				}
+			} else if (bsp.version == MapType.Nightfire) {
+				structLength = 64;
+			} else if (bsp.version == MapType.SiN) {
+				structLength = 180;
+			} else if (bsp.version.IsSubtypeOf(MapType.Quake2)
+				|| bsp.version.IsSubtypeOf(MapType.STEF2)
+				|| bsp.version.IsSubtypeOf(MapType.FAKK2)) {
+				structLength = 76;
+			} else if (bsp.version.IsSubtypeOf(MapType.MOHAA)) {
+				structLength = 140;
+			} else if (bsp.version.IsSubtypeOf(MapType.Quake3)) {
+				structLength = 72;
 			}
 
 			int numObjects = data.Length / structLength;
