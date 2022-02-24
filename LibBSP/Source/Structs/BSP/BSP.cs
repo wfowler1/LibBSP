@@ -60,7 +60,7 @@ namespace LibBSP {
 		/// <summary>
 		/// SiN
 		/// </summary>
-		SiN = 0x02000003,
+		SiN = 0x02000004,
 
 		/// <summary>
 		/// Quake 3 or Quake 3 Engine flags, including <see cref="ET"/> <see cref="Raven"/> <see cref="STEF2"/>
@@ -169,15 +169,15 @@ namespace LibBSP {
 		/// <summary>
 		/// Source Engine v22, Tactical Intervention
 		/// </summary>
-		Source22 = 0x10001100,
+		Source22 = 0x10002000,
 		/// <summary>
 		/// Source Engine v23. DotA 2
 		/// </summary>
-		Source23 = 0x10001200,
+		Source23 = 0x10004000,
 		/// <summary>
 		/// Source Engine v27. Contagion
 		/// </summary>
-		Source27 = 0x10001400,
+		Source27 = 0x10008000,
 
 		/// <summary>
 		/// rBSP v29. Titanfall
