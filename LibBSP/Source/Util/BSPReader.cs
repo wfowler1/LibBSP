@@ -372,7 +372,12 @@ namespace LibBSP {
 					}
 					case 892416050: {
 						// 892416050 reads in ASCII as "2015," the game studio which developed MoHAA
-						current = MapType.MOHAA;
+						int num2 = binaryReader.ReadInt32();
+						if (num2 == 18) {
+							current = MapType.MOHAADemo;
+						} else {
+							current = MapType.MOHAA;
+						}
 						break;
 					}
 					case 1095516485: {

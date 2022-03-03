@@ -223,7 +223,9 @@ namespace LibBSP {
 		/// <param name="type">The map type.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
 		public static int GetIndexForLump(MapType type) {
-			if (type.IsSubtypeOf(MapType.MOHAA)) {
+			if (type == MapType.MOHAADemo) {
+				return 26;
+			} else if (type.IsSubtypeOf(MapType.MOHAA)) {
 				return 25;
 			}
 

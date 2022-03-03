@@ -624,7 +624,8 @@ namespace LibBSP {
 			if (type.IsSubtypeOf(MapType.Quake)
 				|| type.IsSubtypeOf(MapType.Source)
 				|| type == MapType.Nightfire
-				|| type == MapType.Titanfall) {
+				|| type == MapType.Titanfall
+				|| type == MapType.MOHAADemo) {
 				return 14;
 			} else if (type.IsSubtypeOf(MapType.MOHAA)
 				|| type.IsSubtypeOf(MapType.FAKK2)

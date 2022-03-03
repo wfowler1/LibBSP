@@ -90,7 +90,7 @@ namespace LibBSP {
 		CoD4 = 0x04020002,
 		/// <summary>
 		/// Quake 3 "Ubertools" including <see cref="STEF2"/> <see cref="STEF2Demo"/> <see cref="MOHAA"/>
-		/// <see cref="MOHAABT"/> <see cref="FAKK2"/> and <see cref="Alice"/>.
+		/// <see cref="MOHAADemo"/> <see cref="MOHAABT"/> <see cref="FAKK2"/> and <see cref="Alice"/>.
 		/// </summary>
 		UberTools = 0x04040000,
 		/// <summary>
@@ -102,13 +102,17 @@ namespace LibBSP {
 		/// </summary>
 		STEF2Demo = 0x04040101,
 		/// <summary>
-		/// Medal of Honor Allied Assault. As flags includes <see cref="MOHAABT"/>.
+		/// Medal of Honor Allied Assault. As flags includes <see cref="MOHAABT"/> and <see cref="MOHAADemo"/>.
 		/// </summary>
 		MOHAA = 0x04040200,
 		/// <summary>
+		/// Medal of Honor Allied Assault free demo.
+		/// </summary>
+		MOHAADemo = 0x04040201,
+		/// <summary>
 		/// Medal of Honor Allied Assault Spearhead and BreakThrough expansion packs.
 		/// </summary>
-		MOHAABT = 0x04040201,
+		MOHAABT = 0x04040202,
 		/// <summary>
 		/// Heavy Metal FAKK2. As flags includes <see cref="Alice"/>.
 		/// </summary>

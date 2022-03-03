@@ -275,7 +275,10 @@ namespace LibBSP {
 		/// <param name="dataType"><c>out</c> parameter that will contain the data type this version uses.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForLeafStaticModelsLump(MapType version, out DataType dataType) {
-			if (version.IsSubtypeOf(MapType.MOHAA)) {
+			if (version == MapType.MOHAADemo) {
+				dataType = DataType.UInt16;
+				return 27;
+			} else if (version.IsSubtypeOf(MapType.MOHAA)) {
 				dataType = DataType.UInt16;
 				return 26;
 			}

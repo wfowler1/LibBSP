@@ -649,6 +649,8 @@ namespace LibBSP {
 		public static int GetIndexForLump(MapType type) {
 			if (type == MapType.BlueShift) {
 				return 1;
+			} else if (type == MapType.MOHAADemo) {
+				return 15;
 			} else if (type.IsSubtypeOf(MapType.Source)
 				|| type.IsSubtypeOf(MapType.Quake)
 				|| type.IsSubtypeOf(MapType.Quake2)) {

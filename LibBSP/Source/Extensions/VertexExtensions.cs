@@ -249,12 +249,12 @@ namespace LibBSP {
 				v.uv1.GetBytes().CopyTo(bytes, 20);
 				v.uv2.GetBytes().CopyTo(bytes, 28);
 				v.uv3.GetBytes().CopyTo(bytes, 36);
-				BitConverter.GetBytes((float)v.tangent.X()).CopyTo(bytes, 44);
-				BitConverter.GetBytes((float)v.tangent.Y()).CopyTo(bytes, 48);
+				BitConverter.GetBytes(v.tangent.X()).CopyTo(bytes, 44);
+				BitConverter.GetBytes(v.tangent.Y()).CopyTo(bytes, 48);
 				v.normal.GetBytes().CopyTo(bytes, 52);
 				v.color.GetBytes().CopyTo(bytes, 64);
-				BitConverter.GetBytes((float)v.tangent.Z()).CopyTo(bytes, 68);
-				BitConverter.GetBytes((float)v.tangent.W()).CopyTo(bytes, 72);
+				BitConverter.GetBytes(v.tangent.Z()).CopyTo(bytes, 68);
+				BitConverter.GetBytes(v.tangent.W()).CopyTo(bytes, 72);
 				// There's actually another field that I've only ever seen it be FFFFFFFF.
 				bytes[76] = 255;
 				bytes[77] = 255;
