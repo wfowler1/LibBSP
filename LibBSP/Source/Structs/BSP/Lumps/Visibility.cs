@@ -157,6 +157,8 @@ namespace LibBSP {
 				return 4;
 			} else if (type.IsSubtypeOf(MapType.STEF2)) {
 				return 17;
+			} else if (type == MapType.MOHAADemo) {
+				return 16;
 			} else if (type.IsSubtypeOf(MapType.FAKK2)
 				|| type.IsSubtypeOf(MapType.MOHAA)) {
 				return 15;
