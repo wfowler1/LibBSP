@@ -398,7 +398,8 @@ namespace LibBSP {
 		/// </summary>
 		[Index("patchIndices")] public int FirstPatchIndicesIndex {
 			get {
-				if (MapType == MapType.CoD) {
+				if (MapType == MapType.CoD
+					|| MapType == MapType.CoDDemo) {
 					return BitConverter.ToInt32(Data, 32);
 				}
 
@@ -407,7 +408,8 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 
-				if (MapType == MapType.CoD) {
+				if (MapType == MapType.CoD
+					|| MapType == MapType.CoDDemo) {
 					bytes.CopyTo(Data, 32);
 				}
 			}
@@ -418,7 +420,8 @@ namespace LibBSP {
 		/// </summary>
 		[Count("patchIndices")] public int NumPatchIndices {
 			get {
-				if (MapType == MapType.CoD) {
+				if (MapType == MapType.CoD
+					|| MapType == MapType.CoDDemo) {
 					return BitConverter.ToInt32(Data, 36);
 				}
 
@@ -427,7 +430,8 @@ namespace LibBSP {
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
 
-				if (MapType == MapType.CoD) {
+				if (MapType == MapType.CoD
+					|| MapType == MapType.CoDDemo) {
 					bytes.CopyTo(Data, 36);
 				}
 			}
@@ -633,7 +637,8 @@ namespace LibBSP {
 				return 13;
 			} else if (type.IsSubtypeOf(MapType.STEF2)) {
 				return 15;
-			} else if (type == MapType.CoD) {
+			} else if (type == MapType.CoD
+				|| type == MapType.CoDDemo) {
 				return 27;
 			} else if (type == MapType.CoD2) {
 				return 35;

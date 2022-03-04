@@ -77,17 +77,21 @@ namespace LibBSP {
 		/// </summary>
 		Raven = 0x04010000,
 		/// <summary>
-		/// Call of Duty or flags including <see cref="CoD2"/> and <see cref="CoD4"/>.
+		/// Call of Duty or flags including <see cref="CoDDemo"/> <see cref="CoD2"/> and <see cref="CoD4"/>.
 		/// </summary>
 		CoD = 0x04020000,
 		/// <summary>
+		/// Call of Duty demo
+		/// </summary>
+		CoDDemo = 0x04020001,
+		/// <summary>
 		/// Call of Duty 2
 		/// </summary>
-		CoD2 = 0x04020001,
+		CoD2 = 0x04020002,
 		/// <summary>
 		/// Call of Duty 4
 		/// </summary>
-		CoD4 = 0x04020002,
+		CoD4 = 0x04020004,
 		/// <summary>
 		/// Quake 3 "Ubertools" including <see cref="STEF2"/> <see cref="STEF2Demo"/> <see cref="MOHAA"/>
 		/// <see cref="MOHAADemo"/> <see cref="MOHAABT"/> <see cref="FAKK2"/> and <see cref="Alice"/>.
@@ -940,7 +944,7 @@ namespace LibBSP {
 				return 21;
 			} else if (version == MapType.SoF) {
 				return 22;
-			} else if (version == MapType.CoD) {
+			} else if (version == MapType.CoD || version == MapType.CoDDemo) {
 				return 31;
 			} else if (version == MapType.CoD2) {
 				return 39;

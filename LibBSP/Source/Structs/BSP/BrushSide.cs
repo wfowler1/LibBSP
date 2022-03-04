@@ -386,7 +386,7 @@ namespace LibBSP {
 				return 11;
 			} else if (type == MapType.Nightfire) {
 				return 16;
-			} else if (type == MapType.CoD) {
+			} else if (type == MapType.CoD || type == MapType.CoDDemo) {
 				return 3;
 			} else if (type == MapType.CoD2
 				|| type == MapType.CoD4) {

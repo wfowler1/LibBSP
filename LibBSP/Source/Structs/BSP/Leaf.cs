@@ -592,6 +592,7 @@ namespace LibBSP {
 		[Index("patchIndices")] public int FirstPatchIndicesIndex {
 			get {
 				if (MapType == MapType.CoD
+					|| MapType == MapType.CoDDemo
 					|| MapType == MapType.CoD2) {
 					return BitConverter.ToInt32(Data, 8);
 				}
@@ -602,6 +603,7 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 
 				if (MapType == MapType.CoD
+					|| MapType == MapType.CoDDemo
 					|| MapType == MapType.CoD2) {
 					bytes.CopyTo(Data, 8);
 				}
@@ -614,6 +616,7 @@ namespace LibBSP {
 		[Count("patchIndices")] public int NumPatchIndices {
 			get {
 				if (MapType == MapType.CoD
+					|| MapType == MapType.CoDDemo
 					|| MapType == MapType.CoD2) {
 					return BitConverter.ToInt32(Data, 12);
 				}
@@ -624,6 +627,7 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 
 				if (MapType == MapType.CoD
+					|| MapType == MapType.CoDDemo
 					|| MapType == MapType.CoD2) {
 					bytes.CopyTo(Data, 12);
 				}
@@ -753,7 +757,8 @@ namespace LibBSP {
 		public static int GetIndexForLump(MapType type) {
 			if (type == MapType.Nightfire) {
 				return 11;
-			} else if (type == MapType.CoD) {
+			} else if (type == MapType.CoD
+				|| type == MapType.CoDDemo) {
 				return 21;
 			} else if (type == MapType.CoD2) {
 				return 26;

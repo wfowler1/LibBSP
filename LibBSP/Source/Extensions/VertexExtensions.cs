@@ -78,7 +78,7 @@ namespace LibBSP {
 
 			Vertex result = new Vertex();
 
-			if (type == MapType.CoD && version == 1) {
+			if ((type == MapType.CoD || type == MapType.CoDDemo) && version == 1) {
 				// Patch vertex. Set color to white (makes things easier in CoDRadiant) and simply read position.
 				result.color = ColorExtensions.FromArgb(255, 255, 255, 255);
 			} else if (type == MapType.CoD2
@@ -160,7 +160,7 @@ namespace LibBSP {
 				return 4;
 			} else if (type.IsSubtypeOf(MapType.STEF2)) {
 				return 6;
-			} else if (type == MapType.CoD) {
+			} else if (type == MapType.CoD || type == MapType.CoDDemo) {
 				return 7;
 			} else if (type == MapType.CoD2) {
 				return 8;
@@ -190,7 +190,7 @@ namespace LibBSP {
 		/// <param name="type">The map type.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
 		public static int GetIndexForPatchVertsLump(MapType type) {
-			if (type == MapType.CoD) {
+			if (type == MapType.CoD || type == MapType.CoDDemo) {
 				return 25;
 			}
 
@@ -209,7 +209,7 @@ namespace LibBSP {
 				|| type == MapType.Nightfire
 				|| type.IsSubtypeOf(MapType.Source)
 				|| type == MapType.Titanfall
-				|| (type == MapType.CoD && version == 1)) {
+				|| ((type == MapType.CoD || type == MapType.CoDDemo) && version == 1)) {
 				return 12;
 			} else if (type == MapType.CoD2
 				|| type == MapType.CoD4) {
@@ -266,8 +266,8 @@ namespace LibBSP {
 				BitConverter.GetBytes(v.uv2.X()).CopyTo(bytes, 28);
 				v.color.GetBytes().CopyTo(bytes, 32);
 				v.normal.GetBytes().CopyTo(bytes, 36);
-			} else if ((type.IsSubtypeOf(MapType.Quake3) && type != MapType.CoD)
-				|| (type == MapType.CoD && version == 0)) {
+			} else if ((type.IsSubtypeOf(MapType.Quake3) && type != MapType.CoD && type != MapType.CoDDemo)
+				|| ((type == MapType.CoD || type == MapType.CoDDemo) && version == 0)) {
 				v.uv0.GetBytes().CopyTo(bytes, 12);
 				v.uv1.GetBytes().CopyTo(bytes, 20);
 				v.normal.GetBytes().CopyTo(bytes, 28);

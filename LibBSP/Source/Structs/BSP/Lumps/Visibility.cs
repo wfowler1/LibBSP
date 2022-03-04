@@ -162,7 +162,8 @@ namespace LibBSP {
 			} else if (type.IsSubtypeOf(MapType.FAKK2)
 				|| type.IsSubtypeOf(MapType.MOHAA)) {
 				return 15;
-			} else if (type == MapType.CoD) {
+			} else if (type == MapType.CoD
+				|| type == MapType.CoDDemo) {
 				return 28;
 			} else if (type == MapType.CoD2) {
 				return 36;

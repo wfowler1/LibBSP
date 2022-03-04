@@ -116,7 +116,8 @@ namespace LibBSP {
 			} else if (version.IsSubtypeOf(MapType.Quake)) {
 				dataType = DataType.UInt16;
 				return 11;
-			} else if (version == MapType.CoD) {
+			} else if (version == MapType.CoD
+				|| version == MapType.CoDDemo) {
 				dataType = DataType.UInt32;
 				return 23;
 			} else if (version.IsSubtypeOf(MapType.Quake2)) {
@@ -180,7 +181,8 @@ namespace LibBSP {
 			} else if (version == MapType.Vindictus) {
 				dataType = DataType.UInt32;
 				return 17;
-			} else if (version == MapType.CoD) {
+			} else if (version == MapType.CoD
+				|| version == MapType.CoDDemo) {
 				dataType = DataType.UInt32;
 				return 22;
 			} else if (version == MapType.CoD2) {
@@ -211,7 +213,8 @@ namespace LibBSP {
 			if (version == MapType.Nightfire) {
 				dataType = DataType.UInt32;
 				return 6;
-			} else if (version == MapType.CoD) {
+			} else if (version == MapType.CoD
+				|| version == MapType.CoDDemo) {
 				dataType = DataType.UInt16;
 				return 8;
 			} else if (version == MapType.CoD2) {
@@ -243,7 +246,8 @@ namespace LibBSP {
 		/// <param name="dataType"><c>out</c> parameter that will contain the data type this version uses.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForPatchIndicesLump(MapType version, out DataType dataType) {
-			if (version == MapType.CoD) {
+			if (version == MapType.CoD
+				|| version == MapType.CoDDemo) {
 				dataType = DataType.UInt32;
 				return 23;
 			}
@@ -259,7 +263,8 @@ namespace LibBSP {
 		/// <param name="dataType"><c>out</c> parameter that will contain the data type this version uses.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
 		public static int GetIndexForLeafPatchesLump(MapType version, out DataType dataType) {
-			if (version == MapType.CoD) {
+			if (version == MapType.CoD
+				|| version == MapType.CoDDemo) {
 				dataType = DataType.UInt32;
 				return 26;
 			}

@@ -322,6 +322,7 @@ namespace LibBSP {
 			get {
 				if (MapType == MapType.Nightfire
 					|| MapType == MapType.CoD
+					|| MapType == MapType.CoDDemo
 					|| MapType == MapType.CoD2) {
 					return BitConverter.ToInt32(Data, 4);
 				} else if (MapType.IsSubtypeOf(MapType.Quake3)) {
@@ -335,6 +336,7 @@ namespace LibBSP {
 
 				if (MapType == MapType.Nightfire
 					|| MapType == MapType.CoD
+					|| MapType == MapType.CoDDemo
 					|| MapType == MapType.CoD2) {
 					bytes.CopyTo(Data, 4);
 				} else if (MapType.IsSubtypeOf(MapType.Quake3)) {
@@ -640,6 +642,7 @@ namespace LibBSP {
 			get {
 				if (MapType == MapType.Nightfire
 					|| MapType == MapType.CoD
+					|| MapType == MapType.CoDDemo
 					|| MapType == MapType.CoD2) {
 					return BitConverter.ToInt32(Data, 12);
 				} else if (MapType.IsSubtypeOf(MapType.Quake3)) {
@@ -653,6 +656,7 @@ namespace LibBSP {
 
 				if (MapType == MapType.Nightfire
 					|| MapType == MapType.CoD
+					|| MapType == MapType.CoDDemo
 					|| MapType == MapType.CoD2) {
 					bytes.CopyTo(Data, 12);
 				} else if (MapType.IsSubtypeOf(MapType.Quake3)) {
@@ -1497,7 +1501,8 @@ namespace LibBSP {
 			} else if (type.IsSubtypeOf(MapType.STEF2)) {
 				return 5;
 			} else if (type.IsSubtypeOf(MapType.Quake2)
-				|| type == MapType.CoD) {
+				|| type == MapType.CoD
+				|| type == MapType.CoDDemo) {
 				return 6;
 			} else if (type == MapType.Nightfire
 				|| type == MapType.CoD4) {

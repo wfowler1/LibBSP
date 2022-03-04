@@ -363,6 +363,10 @@ namespace LibBSP {
 								current = MapType.ET;
 								break;
 							}
+							case 58: {
+								current = MapType.CoDDemo;
+								break;
+							}
 							case 59: {
 								current = MapType.CoD;
 								break;
