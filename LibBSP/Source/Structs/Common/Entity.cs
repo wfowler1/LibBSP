@@ -231,18 +231,19 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Initializes a new instance of an <see cref="Entity"/> object with no initial properties.
+		/// Initializes a new instance of an <see cref="Entity"/> object with a given parent.
 		/// </summary>
-		public Entity() : base(StringComparer.InvariantCultureIgnoreCase) { }
+		/// <param name="parent">The <see cref="ILump"/> this <see cref="Entity"/> came from.</param>
+		public Entity(ILump parent = null) : base(StringComparer.InvariantCultureIgnoreCase) {
+			Parent = parent;
+		}
 
 		/// <summary>
 		/// Initializes a new instance of an <see cref="Entity"/>, parsing the given <c>byte</c> array into an <see cref="Entity"/> structure.
 		/// </summary>
 		/// <param name="data">Array to parse.</param>
-		/// <param name="type">The map type.</param>
-		/// <param name="version">The version of this lump.</param>
-		public Entity(byte[] data, ILump parent = null) {
-			Parent = parent;
+		/// <param name="parent">The <see cref="ILump"/> this <see cref="Entity"/> came from.</param>
+		public Entity(byte[] data, ILump parent = null) : this(parent) {
 			Data = data;
 		}
 
@@ -250,21 +251,16 @@ namespace LibBSP {
 		/// Initializes a new instance of an <see cref="Entity"/> with the given classname.
 		/// </summary>
 		/// <param name="className">Classname of the new <see cref="Entity"/>.</param>
+		/// <param name="parent">The <see cref="ILump"/> this <see cref="Entity"/> came from.</param>
 		public Entity(string className, ILump parent = null) : this(parent) {
 			Add("classname", className);
-		}
-
-		/// <summary>
-		/// Initializes a new instance of an <see cref="Entity"/> object with a given parent.
-		/// </summary>
-		public Entity(ILump parent) : base(StringComparer.InvariantCultureIgnoreCase) {
-			Parent = parent;
 		}
 
 		/// <summary>
 		/// Initializes a new instance of an <see cref="Entity"/> object, copying the attributes, connections and brushes of the passed <see cref="Entity"/>.
 		/// </summary>
 		/// <param name="copy">The <see cref="Entity"/> to copy.</param>
+		/// <param name="parent">The <see cref="ILump"/> this <see cref="Entity"/> came from.</param>
 		public Entity(Entity copy, ILump parent = null) : base(copy, StringComparer.InvariantCultureIgnoreCase) {
 			connections = new List<EntityConnection>(copy.connections);
 			brushes = new List<MAPBrush>(copy.brushes);
@@ -473,7 +469,8 @@ namespace LibBSP {
 				}
 				output.Append("}\n");
 			}
-			return output + "}";
+
+			return output.Append("}\n").ToString();
 		}
 
 		/// <summary>
