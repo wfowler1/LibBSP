@@ -74,6 +74,7 @@ namespace LibBSP {
 					}
 					Add(new Texture(myBytes, this, mipmaps));
 				}
+				return;
 			} else if (bsp.version.IsSubtypeOf(MapType.Source)) {
 				int offset = 0;
 				for (int i = 0; i < data.Length; ++i) {
@@ -85,6 +86,7 @@ namespace LibBSP {
 						offset = i + 1;
 					}
 				}
+				return;
 			} else if (bsp.version == MapType.Nightfire) {
 				structLength = 64;
 			} else if (bsp.version == MapType.SiN) {
