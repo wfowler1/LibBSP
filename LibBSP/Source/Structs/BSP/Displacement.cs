@@ -444,9 +444,7 @@ namespace LibBSP {
 		/// <returns>The length, in <c>byte</c>s, of this struct.</returns>
 		/// <exception cref="ArgumentException">This struct is not valid or is not implemented for the given <paramref name="mapType"/> and <paramref name="lumpVersion"/>.</exception>
 		public static int GetStructLength(MapType mapType, int lumpVersion = 0) {
-			if (mapType == MapType.Source22) {
-				return 180;
-			} else if (mapType == MapType.Source23) {
+			if (mapType == MapType.Source23) {
 				return 184;
 			} else if (mapType == MapType.Vindictus) {
 				return 232;
