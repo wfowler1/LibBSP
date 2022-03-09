@@ -62,6 +62,24 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Creates a new <see cref="NumList"/> object using another <see cref="NumList"/> to copy.
+		/// </summary>
+		/// <param name="original">The <see cref="NumList"/> to copy.</param>
+		/// <param name="type">The type of number to store.</param>
+		/// <param name="bsp">The parent <see cref="BSP"/> of this <see cref="NumList"/>.</param>
+		/// <param name="lumpInfo">The <see cref="LumpInfo"/> for this lump.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
+		public NumList(NumList original, DataType type, BSP bsp = null, LumpInfo lumpInfo = default(LumpInfo)) {
+			Bsp = bsp;
+			LumpInfo = lumpInfo;
+			Type = type;
+			Data = new byte[original.Count * StructLength];
+			for (int i = 0; i < original.Count; ++i) {
+				this[i] = original[i];
+			}
+		}
+
+		/// <summary>
 		/// Creates an empty <see cref="NumList"/> object.
 		/// </summary>
 		/// <param name="type">The type of number to store.</param>
