@@ -461,7 +461,7 @@ namespace LibBSP {
 				return 8;
 			} else if (type == MapType.CoD
 				|| type == MapType.CoDDemo) {
-				return 25;
+				return 20;
 			} else if (type == MapType.CoD2) {
 				return 20;
 			} else if (type == MapType.CoD4) {
