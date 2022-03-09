@@ -463,7 +463,7 @@ namespace LibBSP {
 				|| type == MapType.CoDDemo) {
 				return 20;
 			} else if (type == MapType.CoD2) {
-				return 20;
+				return 25;
 			} else if (type == MapType.CoD4) {
 				return 27;
 			} else if (type.IsSubtypeOf(MapType.Quake3)) {
