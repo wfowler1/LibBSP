@@ -343,10 +343,6 @@ namespace LibBSP {
 		/// 4 = Closest to Y
 		/// 5 = Closest to Z
 		/// </summary>
-		/// <remarks>
-		/// This more closely resembles the type calculation of zhlt, q2tools seems to use a greater-than-or-equal
-		/// comparison for the "closest to" types whereas we use a greater-than here. The difference should be minimal.
-		/// </remarks>
 		/// <param name="p">This <see cref="Plane"/>.</param>
 		/// <returns>The axial type of this plane.</returns>
 		public static int Type(this Plane p) {
@@ -365,10 +361,10 @@ namespace LibBSP {
 				return 2;
 			}
 
-			if (ax > ay && ax > az) {
+			if (ax >= ay && ax >= az) {
 				return 3;
 			}
-			if (ay > ax && ay > az) {
+			if (ay >= ax && ay >= az) {
 				return 4;
 			}
 			return 5;
