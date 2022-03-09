@@ -29,7 +29,7 @@ namespace LibBSP {
 		public LumpInfo LumpInfo { get; protected set; }
 
 		/// <summary>
-		/// Array of <c>byte</c>s used as the data source for visibility info.
+		/// Array of <c>byte</c>s used as the data source for lightmap info.
 		/// </summary>
 		public byte[] Data { get; protected set; }
 
@@ -72,6 +72,14 @@ namespace LibBSP {
 			}
 
 			return -1;
+		}
+
+		/// <summary>
+		/// Gets all the data in this lump as a byte array.
+		/// </summary>
+		/// <returns>The data.</returns>
+		public byte[] GetBytes() {
+			return Data;
 		}
 
 	}

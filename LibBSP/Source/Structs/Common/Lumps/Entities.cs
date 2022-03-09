@@ -167,5 +167,24 @@ namespace LibBSP {
 		public Entity GetWithName(string targetname) {
 			return Find(entity => { return entity.Name.Equals(targetname, StringComparison.InvariantCultureIgnoreCase); });
 		}
+
+		/// <summary>
+		/// Gets all the data in this lump as a byte array.
+		/// </summary>
+		/// <returns>The data.</returns>
+		public override byte[] GetBytes() {
+			if (Count == 0) {
+				return new byte[] { 0 };
+			}
+
+			StringBuilder sb = new StringBuilder();
+			foreach (Entity ent in this) {
+				sb.Append(ent.ToString());
+			}
+
+			sb.Append((char)0x00);
+
+			return Encoding.ASCII.GetBytes(sb.ToString());
+		}
 	}
 }

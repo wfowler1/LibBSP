@@ -126,6 +126,14 @@ namespace LibBSP {
 			}
 		}
 
+		/// <summary>
+		/// Gets all the data in this lump as a byte array.
+		/// </summary>
+		/// <returns>The data.</returns>
+		public byte[] GetBytes() {
+			return Data;
+		}
+
 		#region IndicesForLumps
 		/// <summary>
 		/// Gets the index for the Mark Surfaces lump in the BSP file for a specific map format, and the type of data the format uses.

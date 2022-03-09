@@ -23,6 +23,8 @@ namespace LibBSP {
 	/// </summary>
 	public class GameLump : Dictionary<GameLumpType, LumpInfo>, ILump {
 
+		public Dictionary<GameLumpType, ILump> gameLumps;
+
 		/// <summary>
 		/// The <see cref="BSP"/> this <see cref="ILump"/> came from.
 		/// </summary>
@@ -61,6 +63,8 @@ namespace LibBSP {
 			}
 
 			int numGameLumps = BitConverter.ToInt32(data, 0);
+			gameLumps = new Dictionary<GameLumpType, ILump>(numGameLumps);
+
 			if (numGameLumps > 0) {
 				int lumpDictionaryOffset = (bsp.version == MapType.DMoMaM) ? 8 : 4;
 				int lowestLumpOffset = int.MaxValue;
@@ -71,6 +75,7 @@ namespace LibBSP {
 					int lumpVersion;
 					int lumpOffset;
 					int lumpLength;
+
 					if (bsp.version == MapType.Vindictus) {
 						lumpFlags = BitConverter.ToInt32(data, (i * structLength) + lumpDictionaryOffset + 4);
 						lumpVersion = BitConverter.ToInt32(data, (i * structLength) + lumpDictionaryOffset + 8);
@@ -82,6 +87,7 @@ namespace LibBSP {
 						lumpOffset = BitConverter.ToInt32(data, (i * structLength) + lumpDictionaryOffset + 8);
 						lumpLength = BitConverter.ToInt32(data, (i * structLength) + lumpDictionaryOffset + 12);
 					}
+
 					LumpInfo info = new LumpInfo {
 						ident = lumpIdent,
 						flags = lumpFlags,
@@ -90,6 +96,7 @@ namespace LibBSP {
 						length = lumpLength,
 						lumpFile = lumpInfo.lumpFile,
 					};
+
 					this[(GameLumpType)info.ident] = info;
 
 					if (info.offset < lowestLumpOffset) {
@@ -140,7 +147,118 @@ namespace LibBSP {
 					lowest = info.offset;
 				}
 			}
+
 			return lowest;
+		}
+
+		/// <summary>
+		/// The <see cref="LibBSP.StaticProps"/> object in the BSP file extracted from this lump, if available.
+		/// </summary>
+		public StaticProps StaticProps {
+			get {
+				if (!gameLumps.ContainsKey(GameLumpType.prps)) {
+					byte[] bytes = GetData(GameLumpType.prps);
+					if (bytes != null) {
+						gameLumps[GameLumpType.prps] = StaticProp.LumpFactory(bytes, Bsp, this[GameLumpType.prps]);
+					}
+				}
+
+				return gameLumps[GameLumpType.prps] as StaticProps;
+			}
+		}
+
+		/// <summary>
+		/// Gets the bytes for a <see cref="GameLumpType"/>, if it exists.
+		/// </summary>
+		/// <param name="lump">The <see cref="GameLumpType"/> to get data for.</param>
+		/// <returns>The data for <paramref name="lump"/>, or <c>null</c> if it does not exist.</returns>
+		public byte[] GetData(GameLumpType lump) {
+			if (ContainsKey(lump)) {
+				LumpInfo info = this[lump];
+				byte[] thisLump;
+				if (gameLumps.ContainsKey(lump)) {
+					thisLump = gameLumps[lump].GetBytes();
+				} else {
+					// GameLump lumps may have their offset specified from either the beginning of the GameLump, or the beginning of the file.
+					if (GetLowestLumpOffset() < LumpInfo.offset) {
+						thisLump = Bsp.reader.ReadLump(new LumpInfo() {
+							ident = info.ident,
+							flags = info.flags,
+							version = info.version,
+							offset = info.offset + LumpInfo.offset,
+							length = info.length
+						});
+					} else {
+						thisLump = Bsp.reader.ReadLump(info);
+					}
+				}
+
+				return thisLump;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// Gets all the data in this lump as a byte array.
+		/// </summary>
+		/// <returns>The data.</returns>
+		public byte[] GetBytes() {
+			if (Count == 0) {
+				return new byte[0];
+			}
+
+			int lumpInfoLength = (Bsp.version == MapType.DMoMaM || Bsp.version == MapType.Vindictus) ? 20 : 16;
+			int lumpDictionaryOffset = (Bsp.version == MapType.DMoMaM) ? 8 : 4;
+			int length = lumpDictionaryOffset + (lumpInfoLength * Count);
+
+			Dictionary<GameLumpType, byte[]> lumpBytes = new Dictionary<GameLumpType, byte[]>(gameLumps.Count);
+			foreach (GameLumpType type in Keys) {
+				if (gameLumps.ContainsKey(type)) {
+					lumpBytes[type] = gameLumps[type].GetBytes();
+				} else {
+					lumpBytes[type] = GetData(type);
+				}
+
+				length += lumpBytes[type].Length;
+			}
+
+			byte[] bytes = new byte[length];
+			BitConverter.GetBytes(lumpBytes.Count).CopyTo(bytes, 0);
+			int lumpNumber = 0;
+			int offset = lumpDictionaryOffset + (lumpBytes.Count * lumpInfoLength);
+			int headerEntryLength = (Bsp.version == MapType.DMoMaM || Bsp.version == MapType.Vindictus) ? 20 : 16;
+
+			foreach (KeyValuePair<GameLumpType, byte[]> pair in lumpBytes) {
+				LumpInfo info = this[pair.Key];
+				info.length = pair.Value.Length;
+				info.offset = offset;
+				if (offset < length) {
+					info.offset += LumpInfo.offset;
+				}
+				this[pair.Key] = info;
+
+				BitConverter.GetBytes(info.ident).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset);
+
+				if (Bsp.version == MapType.Vindictus) {
+					BitConverter.GetBytes(info.flags).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset + 4);
+					BitConverter.GetBytes(info.version).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset + 8);
+					BitConverter.GetBytes(info.offset).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset + 12);
+					BitConverter.GetBytes(info.length).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset + 16);
+				} else {
+					BitConverter.GetBytes((short)info.flags).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset + 4);
+					BitConverter.GetBytes((short)info.version).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset + 6);
+					BitConverter.GetBytes(info.offset).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset + 8);
+					BitConverter.GetBytes(info.length).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset + 12);
+				}
+
+				lumpBytes[pair.Key].CopyTo(bytes, offset);
+
+				offset += lumpBytes[pair.Key].Length;
+				++lumpNumber;
+			}
+
+			return bytes;
 		}
 	}
 }

@@ -9,6 +9,8 @@ namespace LibBSP {
 	/// </summary>
 	public class StaticProps : Lump<StaticProp> {
 
+		public const int ModelNameLength = 128;
+
 		/// <summary>
 		/// Gets or sets the dictionary of prop model names.
 		/// </summary>
@@ -67,8 +69,8 @@ namespace LibBSP {
 				ModelDictionary = new string[BitConverter.ToInt32(data, 0)];
 				offset += 4;
 				for (int i = 0; i < ModelDictionary.Length; ++i) {
-					ModelDictionary[i] = data.ToNullTerminatedString(offset, 128);
-					offset += 128;
+					ModelDictionary[i] = data.ToNullTerminatedString(offset, ModelNameLength);
+					offset += ModelNameLength;
 				}
 				LeafIndices = new short[BitConverter.ToInt32(data, offset)];
 				offset += 4;
@@ -98,6 +100,50 @@ namespace LibBSP {
 			} else {
 				ModelDictionary = new string[0];
 			}
+		}
+
+		/// <summary>
+		/// Gets all the data in this lump as a byte array.
+		/// </summary>
+		/// <returns>The data.</returns>
+		public override byte[] GetBytes() {
+			if (Count == 0) {
+				return new byte[12];
+			}
+
+			int length = 12
+				+ (ModelDictionary.Length * ModelNameLength)
+				+ (LeafIndices.Length * 2)
+				+ (Count * this[0].Data.Length);
+
+			byte[] bytes = new byte[length];
+			int offset = 0;
+			BitConverter.GetBytes(ModelDictionary.Length).CopyTo(bytes, offset);
+			offset += 4;
+
+			for (int i = 0; i < ModelDictionary.Length; ++i) {
+				string name = ModelDictionary[i];
+				if (name.Length > ModelNameLength) {
+					name = name.Substring(0, ModelNameLength);
+				}
+				System.Text.Encoding.ASCII.GetBytes(name).CopyTo(bytes, offset);
+				offset += ModelNameLength;
+			}
+
+			BitConverter.GetBytes(LeafIndices.Length).CopyTo(bytes, offset);
+			offset += 4;
+
+			for (int i = 0; i < LeafIndices.Length; ++i) {
+				BitConverter.GetBytes(LeafIndices[i]).CopyTo(bytes, offset);
+				offset += 2;
+			}
+
+			BitConverter.GetBytes(Count).CopyTo(bytes, offset);
+			offset += 4;
+
+			base.GetBytes().CopyTo(bytes, offset);
+
+			return bytes;
 		}
 	}
 }

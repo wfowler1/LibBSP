@@ -257,7 +257,6 @@ namespace LibBSP {
 		// public SourceOverlays overlays;
 		private Lump<Cubemap> _cubemaps;
 		private GameLump _gameLump;
-		private StaticProps _staticProps;
 
 		/// <summary>
 		/// The <see cref="BSPReader"/> object in use by this <see cref="BSP"/> class.
@@ -827,26 +826,11 @@ namespace LibBSP {
 		/// </summary>
 		public StaticProps staticProps {
 			get {
-				if (_staticProps == null) {
-					if (gameLump != null && gameLump.ContainsKey(GameLumpType.prps)) {
-						LumpInfo info = gameLump[GameLumpType.prps];
-						byte[] thisLump;
-						// GameLump lumps may have their offset specified from either the beginning of the GameLump, or the beginning of the file.
-						if (gameLump.GetLowestLumpOffset() < this[GameLump.GetIndexForLump(version)].offset) {
-							thisLump = reader.ReadLump(new LumpInfo() {
-								ident = info.ident,
-								flags = info.flags,
-								version = info.version,
-								offset = info.offset + this[GameLump.GetIndexForLump(version)].offset,
-								length = info.length
-							});
-						} else {
-							thisLump = reader.ReadLump(info);
-						}
-						_staticProps = StaticProp.LumpFactory(thisLump, this, info);
-					}
+				if (gameLump != null) {
+					return gameLump.StaticProps;
 				}
-				return _staticProps;
+
+				return null;
 			}
 		}
 

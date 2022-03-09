@@ -1,7 +1,28 @@
+#if UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER
+#define UNITY
+#if !UNITY_5_6_OR_NEWER
+#define OLDUNITY
+#endif
+#endif
+
 using System;
 using System.Collections.Generic;
 
 namespace LibBSP {
+#if UNITY
+	using Plane = UnityEngine.Plane;
+	using Vector3 = UnityEngine.Vector3;
+#if !OLDUNITY
+	using Vertex = UnityEngine.UIVertex;
+#endif
+#elif GODOT
+	using Plane = Godot.Plane;
+	using Vector3 = Godot.Vector3;
+#else
+	using Plane = System.Numerics.Plane;
+	using Vector3 = System.Numerics.Vector3;
+#endif
+
 	public class Lump<T> : List<T>, ILump {
 
 		/// <summary>
@@ -10,7 +31,7 @@ namespace LibBSP {
 		public BSP Bsp { get; protected set; }
 
 		/// <summary>
-		/// The <see cref="LumpInfo"/> associated with this <see cref="ILump"/>.
+		/// The <see cref="LibBSP.LumpInfo"/> associated with this <see cref="Lump{T}"/>.
 		/// </summary>
 		public LumpInfo LumpInfo { get; protected set; }
 		
@@ -70,6 +91,51 @@ namespace LibBSP {
 				Array.Copy(data, (i * structLength), bytes, 0, structLength);
 				Add((T)Activator.CreateInstance(typeof(T), new object[] { bytes, this }));
 			}
+		}
+
+		/// <summary>
+		/// Gets all the data in this lump as a byte array.
+		/// </summary>
+		/// <returns>The data.</returns>
+		public virtual byte[] GetBytes() {
+			if (Count == 0) {
+				return new byte[0];
+			}
+
+			if (typeof(ILumpObject).IsAssignableFrom(typeof(T))) {
+				int length = ((ILumpObject)this[0]).Data.Length;
+				byte[] data = new byte[length * Count];
+				for (int i = 0; i < Count; ++i) {
+					((ILumpObject)this[i]).Data.CopyTo(data, length * i);
+				}
+
+				return data;
+			} else if (typeof(T) == typeof(Vertex)) {
+				int length = VertexExtensions.GetStructLength(Bsp.version, LumpInfo.version);
+				byte[] data = new byte[length * Count];
+				for (int i = 0; i < Count; ++i) {
+					((Vertex)(object)this[i]).GetBytes(Bsp.version, LumpInfo.version).CopyTo(data, length * i);
+				}
+
+				return data;
+			} else if (typeof(T) == typeof(Plane)) {
+				int length = PlaneExtensions.GetStructLength(Bsp.version, LumpInfo.version);
+				byte[] data = new byte[length * Count];
+				for (int i = 0; i < Count; ++i) {
+					((Plane)(object)this[i]).GetBytes(Bsp.version, LumpInfo.version).CopyTo(data, length * i);
+				}
+
+				return data;
+			} else if (typeof(T) == typeof(Vector3)) {
+				byte[] data = new byte[12 * Count];
+				for (int i = 0; i < Count; ++i) {
+					((Vector3)(object)this[i]).GetBytes().CopyTo(data, 12 * i);
+				}
+
+				return data;
+			}
+
+			return new byte[0];
 		}
 
 	}

@@ -176,5 +176,13 @@ namespace LibBSP {
 			return -1;
 		}
 
+		/// <summary>
+		/// Gets all the data in this lump as a byte array.
+		/// </summary>
+		/// <returns>The data.</returns>
+		public byte[] GetBytes() {
+			return Data;
+		}
+
 	}
 }

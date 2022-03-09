@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Text;
 
 namespace LibBSP {
 
@@ -144,6 +144,82 @@ namespace LibBSP {
 			}
 			// If we get here, the requested texture didn't exist.
 			return -1;
+		}
+
+		/// <summary>
+		/// Gets all the data in this lump as a byte array.
+		/// </summary>
+		/// <returns>The data.</returns>
+		public override byte[] GetBytes() {
+			if (Count == 0) {
+				return new byte[0];
+			}
+
+			if (Bsp.version.IsSubtypeOf(MapType.Quake2)
+				|| Bsp.version.IsSubtypeOf(MapType.Quake3)
+				|| Bsp.version == MapType.Nightfire) {
+				return base.GetBytes();
+			} else if (Bsp.version.IsSubtypeOf(MapType.Source)) {
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < Count; ++i) {
+					sb.Append(this[i].Name).Append((char)0x00);
+				}
+				return Encoding.ASCII.GetBytes(sb.ToString());
+			} else if (Bsp.version.IsSubtypeOf(MapType.Quake)) {
+				byte[][] textureBytes = new byte[Count][];
+
+				int offset = 0;
+				for (int i = 0; i < Count; ++i) {
+					Texture texture = this[i];
+					if (texture.MipmapFullOffset > 0) {
+						offset = 40;
+						texture.MipmapFullOffset = offset;
+						offset += (int)(texture.Dimensions.X() * texture.Dimensions.Y());
+						texture.MipmapHalfOffset = offset;
+						offset += (int)(texture.Dimensions.X() * texture.Dimensions.Y() / 4);
+						texture.MipmapQuarterOffset = offset;
+						offset += (int)(texture.Dimensions.X() * texture.Dimensions.Y() / 16);
+						texture.MipmapEighthOffset = offset;
+						offset += (int)(texture.Dimensions.X() * texture.Dimensions.Y() / 64);
+
+						byte[] bytes = new byte[offset];
+						offset = 0;
+						texture.Data.CopyTo(bytes, 0);
+						offset += 40;
+						texture.Mipmaps[Texture.FullMipmap].CopyTo(bytes, offset);
+						offset += (int)(texture.Dimensions.X() * texture.Dimensions.Y());
+						texture.Mipmaps[Texture.HalfMipmap].CopyTo(bytes, offset);
+						offset += (int)(texture.Dimensions.X() * texture.Dimensions.Y() / 4);
+						texture.Mipmaps[Texture.QuarterMipmap].CopyTo(bytes, offset);
+						offset += (int)(texture.Dimensions.X() * texture.Dimensions.Y() / 16);
+						texture.Mipmaps[Texture.EighthMipmap].CopyTo(bytes, offset);
+
+						textureBytes[i] = bytes;
+					} else {
+						textureBytes[i] = texture.Data;
+					}
+				}
+
+				byte[] lumpBytes = new byte[(Count + 1) * 4];
+				BitConverter.GetBytes(Count).CopyTo(lumpBytes, 0);
+				offset = lumpBytes.Length;
+				for (int i = 0; i < Count; ++i) {
+					if (this[i].Name.Length == 0 && this[i].MipmapFullOffset == 0) {
+						BitConverter.GetBytes(-1).CopyTo(lumpBytes, (i + 1) * 4);
+					} else {
+						BitConverter.GetBytes(offset).CopyTo(lumpBytes, (i + 1) * 4);
+						byte[] newLumpBytes = new byte[offset + textureBytes[i].Length];
+						lumpBytes.CopyTo(newLumpBytes, 0);
+						textureBytes[i].CopyTo(newLumpBytes, offset);
+						offset = newLumpBytes.Length;
+						lumpBytes = newLumpBytes;
+					}
+				}
+
+				return lumpBytes;
+			}
+
+			return new byte[0];
 		}
 
 	}

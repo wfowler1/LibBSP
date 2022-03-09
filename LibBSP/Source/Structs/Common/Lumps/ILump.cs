@@ -15,5 +15,11 @@ namespace LibBSP {
 		/// </summary>
 		LumpInfo LumpInfo { get; }
 
+		/// <summary>
+		/// Gets all the data in this lump as a byte array.
+		/// </summary>
+		/// <returns>The data.</returns>
+		byte[] GetBytes();
+
 	}
 }
