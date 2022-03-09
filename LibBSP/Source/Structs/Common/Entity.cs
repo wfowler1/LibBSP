@@ -291,7 +291,7 @@ namespace LibBSP {
 			brushes = new List<MAPBrush>();
 			connections = new List<EntityConnection>();
 
-			string[] lines = st.Split('\n');
+			string[] lines = st.SplitUnlessInContainer('\n', '\"');
 
 			int braceCount = 0;
 			bool inConnections = false;
@@ -418,7 +418,7 @@ namespace LibBSP {
 				}
 			}
 			val.Replace("\\\"", "\"");
-			if (key != null && key != "") {
+			if (key != null && isVal) {
 				if (numCommas == 4 || numCommas == 6) {
 					st = st.Replace(',', ConnectionMemberSeparater);
 					string[] connection = val.Split(',');

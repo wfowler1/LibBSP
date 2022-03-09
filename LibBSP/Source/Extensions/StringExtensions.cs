@@ -27,6 +27,7 @@ namespace LibBSP {
 			foreach (char c in st) {
 				if (c == container) {
 					inContainer = !inContainer;
+					current.Append(c);
 					continue;
 				}
 
