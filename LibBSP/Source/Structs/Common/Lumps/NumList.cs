@@ -41,6 +41,8 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data"><c>byte</c> array to parse.</param>
 		/// <param name="type">The type of number to store.</param>
+		/// <param name="bsp">The parent <see cref="BSP"/> of this <see cref="NumList"/>.</param>
+		/// <param name="lumpInfo">The <see cref="LumpInfo"/> for this lump.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
 		public NumList(byte[] data, DataType type, BSP bsp = null, LumpInfo lumpInfo = default(LumpInfo)) {
 			if (data == null) {
