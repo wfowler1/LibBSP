@@ -140,14 +140,10 @@ namespace LibBSP {
 		/// <returns><c>byte</c> array with the components' bytes.</returns>
 		public static byte[] GetBytes(this Vector4 vector) {
 			byte[] ret = new byte[16];
-			byte[] bytes = BitConverter.GetBytes(vector.X());
-			bytes.CopyTo(ret, 0);
-			bytes = BitConverter.GetBytes(vector.Y());
-			bytes.CopyTo(ret, 4);
-			bytes = BitConverter.GetBytes(vector.Z());
-			bytes.CopyTo(ret, 8);
-			bytes = BitConverter.GetBytes(vector.W());
-			bytes.CopyTo(ret, 12);
+			BitConverter.GetBytes(vector.X()).CopyTo(ret, 0);
+			BitConverter.GetBytes(vector.Y()).CopyTo(ret, 4);
+			BitConverter.GetBytes(vector.Z()).CopyTo(ret, 8);
+			BitConverter.GetBytes(vector.W()).CopyTo(ret, 12);
 			return ret;
 		}
 
