@@ -46,6 +46,9 @@ namespace LibBSP {
 				throw new ArgumentNullException();
 			}
 
+			Bsp = bsp;
+			LumpInfo = lumpInfo;
+
 			int structLength = 0;
 			if (bsp.version == MapType.DMoMaM
 				|| bsp.version == MapType.Vindictus) {
@@ -85,6 +88,7 @@ namespace LibBSP {
 						version = lumpVersion,
 						offset = lumpOffset,
 						length = lumpLength,
+						lumpFile = lumpInfo.lumpFile,
 					};
 					this[(GameLumpType)info.ident] = info;
 
