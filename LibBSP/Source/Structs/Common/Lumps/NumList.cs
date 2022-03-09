@@ -33,8 +33,15 @@ namespace LibBSP {
 			Int64 = 7,
 		}
 
-		public byte[] data;
-		public DataType type { get; private set; }
+		/// <summary>
+		/// Array of <c>byte</c>s used as the data source for this <see cref="NumList"/>.
+		/// </summary>
+		public byte[] Data { get; private set; }
+
+		/// <summary>
+		/// The <see cref="DataType"/> this <see cref="NumList"/> stores.
+		/// </summary>
+		public DataType Type { get; private set; }
 
 		/// <summary>
 		/// Creates a new <see cref="NumList"/> object from a <c>byte</c> array.
@@ -50,8 +57,8 @@ namespace LibBSP {
 			}
 			Bsp = bsp;
 			LumpInfo = lumpInfo;
-			this.data = data;
-			this.type = type;
+			Data = data;
+			Type = type;
 		}
 
 		/// <summary>
@@ -59,8 +66,8 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="type">The type of number to store.</param>
 		public NumList(DataType type) {
-			this.data = new byte[0];
-			this.type = type;
+			Data = new byte[0];
+			Type = type;
 		}
 
 		/// <summary>
@@ -78,7 +85,7 @@ namespace LibBSP {
 		/// </summary>
 		public int StructLength {
 			get {
-				switch (type) {
+				switch (Type) {
 					case DataType.Byte:
 					case DataType.SByte: {
 						return sizeof(sbyte);
@@ -330,15 +337,15 @@ namespace LibBSP {
 
 		#region ICollection
 		public void Add(long value) {
-			byte[] temp = new byte[data.Length + StructLength];
-			Array.Copy(data, 0, temp, 0, data.Length);
+			byte[] temp = new byte[Data.Length + StructLength];
+			Array.Copy(Data, 0, temp, 0, Data.Length);
 			byte[] bytes = BitConverter.GetBytes(value);
-			Array.Copy(bytes, 0, temp, data.Length, StructLength);
-			data = temp;
+			Array.Copy(bytes, 0, temp, Data.Length, StructLength);
+			Data = temp;
 		}
 
 		public void Clear() {
-			data = new byte[0];
+			Data = new byte[0];
 		}
 
 		public bool Contains(long value) {
@@ -375,7 +382,7 @@ namespace LibBSP {
 
 		public int Count {
 			get {
-				return data.Length / StructLength;
+				return Data.Length / StructLength;
 			}
 		}
 
@@ -387,12 +394,12 @@ namespace LibBSP {
 
 		public object SyncRoot {
 			get {
-				return data.SyncRoot;
+				return Data.SyncRoot;
 			}
 		}
 
 		public bool IsSynchronized {
-			get { return data.IsSynchronized; }
+			get { return Data.IsSynchronized; }
 		}
 		#endregion
 
@@ -476,44 +483,44 @@ namespace LibBSP {
 		}
 
 		public void Insert(int index, long value) {
-			byte[] temp = new byte[data.Length + StructLength];
-			Array.Copy(data, 0, temp, 0, StructLength * index);
+			byte[] temp = new byte[Data.Length + StructLength];
+			Array.Copy(Data, 0, temp, 0, StructLength * index);
 			byte[] bytes = BitConverter.GetBytes(value);
 			Array.Copy(bytes, 0, temp, StructLength * index, StructLength);
-			Array.Copy(data, StructLength * index, temp, StructLength * (index + 1), data.Length - StructLength * index);
-			data = temp;
+			Array.Copy(Data, StructLength * index, temp, StructLength * (index + 1), Data.Length - StructLength * index);
+			Data = temp;
 		}
 
 		public void RemoveAt(int index) {
-			byte[] temp = new byte[data.Length - StructLength];
-			Array.Copy(data, 0, temp, 0, StructLength * index);
-			Array.Copy(data, StructLength * (index + 1), temp, StructLength * index, data.Length - (StructLength * (index + 1)));
-			data = temp;
+			byte[] temp = new byte[Data.Length - StructLength];
+			Array.Copy(Data, 0, temp, 0, StructLength * index);
+			Array.Copy(Data, StructLength * (index + 1), temp, StructLength * index, Data.Length - (StructLength * (index + 1)));
+			Data = temp;
 		}
 
 		public long this[int index] {
 			get {
-				switch (type) {
+				switch (Type) {
 					case DataType.SByte: {
-						return (sbyte)data[index];
+						return (sbyte)Data[index];
 					}
 					case DataType.Byte: {
-						return data[index];
+						return Data[index];
 					}
 					case DataType.Int16: {
-						return BitConverter.ToInt16(data, index * 2);
+						return BitConverter.ToInt16(Data, index * 2);
 					}
 					case DataType.UInt16: {
-						return BitConverter.ToUInt16(data, index * 2);
+						return BitConverter.ToUInt16(Data, index * 2);
 					}
 					case DataType.Int32: {
-						return BitConverter.ToInt32(data, index * 4);
+						return BitConverter.ToInt32(Data, index * 4);
 					}
 					case DataType.UInt32: {
-						return BitConverter.ToUInt32(data, index * 4);
+						return BitConverter.ToUInt32(Data, index * 4);
 					}
 					case DataType.Int64: {
-						return BitConverter.ToInt64(data, index * 8);
+						return BitConverter.ToInt64(Data, index * 8);
 					}
 					default: {
 						return 0;
@@ -521,32 +528,7 @@ namespace LibBSP {
 				}
 			}
 			set {
-				byte[] bytes = BitConverter.GetBytes(value);
-				switch (type) {
-					case DataType.SByte:
-					case DataType.Byte: {
-						data[index] = bytes[0];
-						break;
-					}
-					case DataType.Int16:
-					case DataType.UInt16: {
-						data[index * 2] = bytes[0];
-						data[(index * 2) + 1] = bytes[1];
-						break;
-					}
-					case DataType.Int32:
-					case DataType.UInt32: {
-						data[index * 4] = bytes[0];
-						data[(index * 4) + 1] = bytes[1];
-						data[(index * 4) + 2] = bytes[2];
-						data[(index * 4) + 3] = bytes[3];
-						break;
-					}
-					case DataType.Int64: {
-						bytes.CopyTo(data, index * 8);
-						break;
-					}
-				}
+				Array.Copy(BitConverter.GetBytes(value), 0, Data, index * StructLength, StructLength);
 			}
 		}
 		#endregion
