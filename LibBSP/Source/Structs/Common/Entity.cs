@@ -463,11 +463,9 @@ namespace LibBSP {
 				output.Append(string.Format("\"{0}\" \"{1}\"\n", pair.Key, pair.Value));
 			}
 			if (connections.Count > 0) {
-				output.Append("connections\n{\n");
 				foreach (EntityConnection c in connections) {
-					output.Append(string.Format("\"{0}\" \"{1},{2},{3},{4},{5},{6},{7}\"\n", c.name, c.target, c.action, c.param, c.delay.ToString(_format), c.fireOnce, c.unknown0, c.unknown1));
+					output.Append(c.ToString(MapType)).Append('\n');
 				}
-				output.Append("}\n");
 			}
 
 			return output.Append("}\n").ToString();
@@ -682,9 +680,30 @@ namespace LibBSP {
 			public string param;
 			public float delay;
 			public int fireOnce;
-			// As I recall, these exist in Dark Messiah only. I have no idea what they are for.
+			// These exist in Dark Messiah only.
 			public string unknown0;
 			public string unknown1;
+
+			/// <summary>
+			/// Get a string representation of this <see cref="EntityConnection"/>.
+			/// </summary>
+			/// <returns>String representation of this <see cref="EntityConnection"/>.</returns>
+			public override string ToString() {
+				return ToString(MapType.Undefined);
+			}
+
+			/// <summary>
+			/// Get a string representation of this <see cref="EntityConnection"/>.
+			/// </summary>
+			/// <param name="mapType">The <see cref="LibBSP.MapType"/> of the map the <see cref="Entity"/> came from.</param>
+			/// <returns>String representation of this <see cref="EntityConnection"/>.</returns>
+			public string ToString(MapType mapType) {
+				if (mapType == MapType.DMoMaM) {
+					return string.Format("\"{0}\" \"{1},{2},{3},{4},{5},{6},{7}\"", name, target, action, param, delay.ToString(_format), fireOnce, unknown0, unknown1);
+				} else {
+					return string.Format("\"{0}\" \"{1},{2},{3},{4},{5}\"", name, target, action, param, delay.ToString(_format), fireOnce);
+				}
+			}
 		}
 
 	}
