@@ -53,16 +53,20 @@ namespace LibBSP {
 				int width;
 				int height;
 				int power;
-				int mipmapOffset;
+				int mipmapOffset = 0;
+				int paletteOffset;
+
 				for (int i = 0; i < numElements; ++i) {
 					byte[] myBytes = new byte[structLength];
 					byte[][] mipmaps = new byte[Texture.NumMipmaps][];
+					byte[] palette = new byte[0];
 					currentOffset = BitConverter.ToInt32(data, (i + 1) * 4);
 					if (currentOffset >= 0) {
 						Array.Copy(data, currentOffset, myBytes, 0, structLength);
 						width = BitConverter.ToInt32(myBytes, 16);
 						height = BitConverter.ToInt32(myBytes, 20);
 						power = 1;
+
 						for (int j = 0; j < mipmaps.Length; ++j) {
 							mipmapOffset = BitConverter.ToInt32(myBytes, 24 + (4 * j));
 							if (mipmapOffset > 0) {
@@ -71,12 +75,21 @@ namespace LibBSP {
 							}
 							power *= 2;
 						}
+
+						if (bsp.version.IsSubtypeOf(MapType.GoldSrc) && mipmapOffset > 0) {
+							paletteOffset = mipmapOffset + (width * height / 64);
+							int numPixels = BitConverter.ToInt16(data, currentOffset + paletteOffset);
+							palette = new byte[numPixels * 3];
+							Array.Copy(data, currentOffset + paletteOffset, palette, 0, palette.Length);
+						}
 					}
-					Add(new Texture(myBytes, this, mipmaps));
+					Add(new Texture(myBytes, this, mipmaps, palette));
 				}
+
 				return;
 			} else if (bsp.version.IsSubtypeOf(MapType.Source)) {
 				int offset = 0;
+
 				for (int i = 0; i < data.Length; ++i) {
 					if (data[i] == (byte)0x00) {
 						// They are null-terminated strings, of non-constant length (not padded)
@@ -86,6 +99,7 @@ namespace LibBSP {
 						offset = i + 1;
 					}
 				}
+
 				return;
 			} else if (bsp.version == MapType.Nightfire) {
 				structLength = 64;
@@ -181,6 +195,13 @@ namespace LibBSP {
 						offset += (int)(texture.Dimensions.X() * texture.Dimensions.Y() / 16);
 						texture.MipmapEighthOffset = offset;
 						offset += (int)(texture.Dimensions.X() * texture.Dimensions.Y() / 64);
+						if (Bsp.version.IsSubtypeOf(MapType.GoldSrc)) {
+							int paletteLength = texture.Palette.Length + 2;
+							while (paletteLength % 4 != 0) {
+								++paletteLength;
+							}
+							offset += paletteLength;
+						}
 
 						byte[] bytes = new byte[offset];
 						offset = 0;
@@ -193,6 +214,12 @@ namespace LibBSP {
 						texture.Mipmaps[Texture.QuarterMipmap].CopyTo(bytes, offset);
 						offset += (int)(texture.Dimensions.X() * texture.Dimensions.Y() / 16);
 						texture.Mipmaps[Texture.EighthMipmap].CopyTo(bytes, offset);
+						if (Bsp.version.IsSubtypeOf(MapType.GoldSrc)) {
+							offset += (int)(texture.Dimensions.X() * texture.Dimensions.Y() / 64);
+							BitConverter.GetBytes((short)texture.Palette.Length).CopyTo(bytes, offset);
+							offset += 2;
+							texture.Palette.CopyTo(bytes, offset);
+						}
 
 						textureBytes[i] = bytes;
 					} else {

@@ -73,6 +73,16 @@ namespace LibBSP {
 			}
 		}
 
+		private byte[] _palette;
+		/// <summary>
+		/// Mipmap image palette for this <see cref="Texture"/>, in GBR24(?).
+		/// </summary>
+		public byte[] Palette {
+			get {
+				return _palette;
+			}
+		}
+
 		/// <summary>
 		/// The <see cref="LibBSP.MapType"/> to use to interpret <see cref="Data"/>.
 		/// </summary>
@@ -318,6 +328,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Gets the number of pixels in the <see cref="Palette"/>.
+		/// </summary>
+		public int PaletteSize {
+			get {
+				return Palette.Length / 3;
+			}
+		}
+
+		/// <summary>
 		/// Gets the offset to the eighth mipmap of this <see cref="Texture"/>.
 		/// </summary>
 		public int MipmapEighthOffset {
@@ -407,7 +426,7 @@ namespace LibBSP {
 		/// <param name="data"><c>byte</c> array to parse.</param>
 		/// <param name="parent">The <see cref="ILump"/> this <see cref="Texture"/> came from.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
-		public Texture(byte[] data, ILump parent) : this(data, parent, null) { }
+		public Texture(byte[] data, ILump parent) : this(data, parent, null, null) { }
 
 		/// <summary>
 		/// Creates a new <see cref="Texture"/> object from a <c>byte</c> array.
@@ -415,8 +434,9 @@ namespace LibBSP {
 		/// <param name="data"><c>byte</c> array to parse.</param>
 		/// <param name="parent">The <see cref="ILump"/> this <see cref="Texture"/> came from.</param>
 		/// <param name="mipmaps">Data for the mipmap levels.</param>
+		/// <param name="palette">Data for the mipmap palette.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
-		public Texture(byte[] data, ILump parent, byte[][] mipmaps) {
+		public Texture(byte[] data, ILump parent, byte[][] mipmaps, byte[] palette) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
@@ -424,6 +444,7 @@ namespace LibBSP {
 			Data = data;
 			Parent = parent;
 			_mipmaps = mipmaps;
+			_palette = palette;
 		}
 
 		/// <summary>
@@ -446,6 +467,7 @@ namespace LibBSP {
 					Data = new byte[source.Data.Length];
 					Array.Copy(source.Data, Data, source.Data.Length);
 					_mipmaps = source.Mipmaps;
+					_palette = source.Palette;
 					return;
 				} else {
 					Data = new byte[GetStructLength(parent.Bsp.version, parent.LumpInfo.version)];
@@ -459,6 +481,7 @@ namespace LibBSP {
 			}
 
 			_mipmaps = source.Mipmaps;
+			_palette = source.Palette;
 			Name = source.Name;
 			Mask = source.Mask;
 			Flags = source.Flags;
