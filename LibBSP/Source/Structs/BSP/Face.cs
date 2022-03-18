@@ -409,7 +409,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets the <see cref="LibBSP.TextureInfo"/> returned by this <see cref="Face"/>.
+		/// Gets the <see cref="LibBSP.TextureInfo"/> referenced by this <see cref="Face"/>.
 		/// </summary>
 		public TextureInfo TextureInfo {
 			get {
@@ -450,6 +450,15 @@ namespace LibBSP {
 					Data[10] = bytes[0];
 					Data[11] = bytes[1];
 				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the <see cref="LibBSP.TextureInfo"/> referenced by this <see cref="Face"/> for lightmaps.
+		/// </summary>
+		public TextureInfo LightmapTextureInfo {
+			get {
+				return Parent.Bsp.texInfo[LightmapTextureInfoIndex];
 			}
 		}
 
