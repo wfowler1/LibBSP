@@ -299,6 +299,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Has the <see cref="Entities"/> lump been loaded yet?
+		/// </summary>
+		public bool EntitiesLoaded {
+			get {
+				return _entities != null;
+			}
+		}
+
+		/// <summary>
 		/// A <see cref="Lump{Plane}"/> of <see cref="Plane"/> objects in the BSP file, if available.
 		/// </summary>
 		public Lump<Plane> planes {
@@ -310,6 +319,15 @@ namespace LibBSP {
 					}
 				}
 				return _planes;
+			}
+		}
+
+		/// <summary>
+		/// Has the <see cref="Plane"/> lump been loaded yet?
+		/// </summary>
+		public bool PlanesLoaded {
+			get {
+				return _planes != null;
 			}
 		}
 
@@ -329,6 +347,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Has the <see cref="Textures"/> lump been loaded yet?
+		/// </summary>
+		public bool TexturesLoaded {
+			get {
+				return _textures != null;
+			}
+		}
+
+		/// <summary>
 		/// A <see cref="Lump{Vertex}"/> of <see cref="Vertex"/> objects in the BSP file representing the vertices of the BSP, if available.
 		/// </summary>
 		public Lump<Vertex> vertices {
@@ -340,6 +367,15 @@ namespace LibBSP {
 					}
 				}
 				return _vertices;
+			}
+		}
+
+		/// <summary>
+		/// Has the <see cref="Vertex"/> lump been loaded yet?
+		/// </summary>
+		public bool VerticesLoaded {
+			get {
+				return _vertices != null;
 			}
 		}
 
@@ -359,6 +395,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Has the normals lump been loaded yet?
+		/// </summary>
+		public bool NormalsLoaded {
+			get {
+				return _normals != null;
+			}
+		}
+
+		/// <summary>
 		/// A <see cref="Lump{Node}"/> of <see cref="Node"/> objects in the BSP file, if available.
 		/// </summary>
 		public Lump<Node> nodes {
@@ -370,6 +415,15 @@ namespace LibBSP {
 					}
 				}
 				return _nodes;
+			}
+		}
+
+		/// <summary>
+		/// Has the <see cref="Node"/> lump been loaded yet?
+		/// </summary>
+		public bool NodesLoaded {
+			get {
+				return _nodes != null;
 			}
 		}
 
@@ -389,6 +443,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Has the <see cref="TextureInfo"/> lump been loaded yet?
+		/// </summary>
+		public bool TextureInfoLoaded {
+			get {
+				return _texInfo != null;
+			}
+		}
+
+		/// <summary>
 		/// A <see cref="Lump{Face}"/> of <see cref="Face"/> objects in the BSP file, if available.
 		/// </summary>
 		public Lump<Face> faces {
@@ -400,6 +463,15 @@ namespace LibBSP {
 					}
 				}
 				return _faces;
+			}
+		}
+
+		/// <summary>
+		/// Has the <see cref="Face"/> lump been loaded yet?
+		/// </summary>
+		public bool FacesLoaded {
+			get {
+				return _faces != null;
 			}
 		}
 
@@ -419,6 +491,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Has the <see cref="Leaf"/> lump been loaded yet?
+		/// </summary>
+		public bool LeavesLoaded {
+			get {
+				return _leaves != null;
+			}
+		}
+
+		/// <summary>
 		/// A <see cref="Lump{Edge}"/> of <see cref="Edge"/> objects in the BSP file, if available.
 		/// </summary>
 		public Lump<Edge> edges {
@@ -430,6 +511,15 @@ namespace LibBSP {
 					}
 				}
 				return _edges;
+			}
+		}
+
+		/// <summary>
+		/// Has the <see cref="Edge"/> lump been loaded yet?
+		/// </summary>
+		public bool EdgesLoaded {
+			get {
+				return _edges != null;
 			}
 		}
 
@@ -449,6 +539,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Has the <see cref="Model"/> lump been loaded yet?
+		/// </summary>
+		public bool ModelsLoaded {
+			get {
+				return _models != null;
+			}
+		}
+
+		/// <summary>
 		/// A <see cref="Lump{Brush}"/> of <see cref="Brush"/> objects in the BSP file, if available.
 		/// </summary>
 		public Lump<Brush> brushes {
@@ -460,6 +559,15 @@ namespace LibBSP {
 					}
 				}
 				return _brushes;
+			}
+		}
+
+		/// <summary>
+		/// Has the <see cref="Brush"/> lump been loaded yet?
+		/// </summary>
+		public bool BrushesLoaded {
+			get {
+				return _brushes != null;
 			}
 		}
 
@@ -479,6 +587,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Has the <see cref="BrushSide"/> lump been loaded yet?
+		/// </summary>
+		public bool BrushSidesLoaded {
+			get {
+				return _brushSides != null;
+			}
+		}
+
+		/// <summary>
 		/// A <see cref="Textures"/> object representing Materials (shaders), if available.
 		/// </summary>
 		public Textures materials {
@@ -490,6 +607,15 @@ namespace LibBSP {
 					}
 				}
 				return _materials;
+			}
+		}
+
+		/// <summary>
+		/// Has the materials lump been loaded yet?
+		/// </summary>
+		public bool MaterialsLoaded {
+			get {
+				return _materials != null;
 			}
 		}
 
@@ -509,6 +635,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Has the <see cref="Visibility"/> lump been loaded yet?
+		/// </summary>
+		public bool VisibilityLoaded {
+			get {
+				return _visibility != null;
+			}
+		}
+
+		/// <summary>
 		/// A <see cref="Lightmaps"/> object holding lightmap data for this <see cref="BSP"/>.
 		/// </summary>
 		public Lightmaps lightmaps {
@@ -520,6 +655,15 @@ namespace LibBSP {
 					}
 				}
 				return _lightmaps;
+			}
+		}
+
+		/// <summary>
+		/// Has the <see cref="Lightmaps"/> lump been loaded yet?
+		/// </summary>
+		public bool LightmapsLoaded {
+			get {
+				return _lightmaps != null;
 			}
 		}
 
@@ -539,6 +683,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Has the original <see cref="Face"/> lump been loaded yet?
+		/// </summary>
+		public bool OriginalFacesLoaded {
+			get {
+				return _originalFaces != null;
+			}
+		}
+
+		/// <summary>
 		/// A <see cref="Lump{TextureData}"/> of <see cref="TextureData"/> objects in the BSP file, if available.
 		/// </summary>
 		public Lump<TextureData> texDatas {
@@ -550,6 +703,15 @@ namespace LibBSP {
 					}
 				}
 				return _texDatas;
+			}
+		}
+
+		/// <summary>
+		/// Has the <see cref="TextureData"/> lump been loaded yet?
+		/// </summary>
+		public bool TextureDataLoaded {
+			get {
+				return _texDatas != null;
 			}
 		}
 
@@ -569,6 +731,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Has the <see cref="Displacement"/> lump been loaded yet?
+		/// </summary>
+		public bool DisplacementsLoaded {
+			get {
+				return _dispInfos != null;
+			}
+		}
+
+		/// <summary>
 		/// The <see cref="Lump{DisplacementVertex}"/> object in the BSP file, if available.
 		/// </summary>
 		public Lump<DisplacementVertex> dispVerts {
@@ -584,6 +755,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Has the <see cref="DisplacementVertex"/> lump been loaded yet?
+		/// </summary>
+		public bool DisplacementVerticesLoaded {
+			get {
+				return _dispVerts != null;
+			}
+		}
+
+		/// <summary>
 		/// A <see cref="Lump{Cubemap}"/> of <see cref="Cubemap"/> objects in the BSP file, if available.
 		/// </summary>
 		public Lump<Cubemap> cubemaps {
@@ -595,6 +775,15 @@ namespace LibBSP {
 					}
 				}
 				return _cubemaps;
+			}
+		}
+
+		/// <summary>
+		/// Has the <see cref="Cubemap"/> lump been loaded yet?
+		/// </summary>
+		public bool CubemapsLoaded {
+			get {
+				return _cubemaps != null;
 			}
 		}
 
@@ -615,6 +804,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Has the MarkSurfaces lump been loaded yet?
+		/// </summary>
+		public bool MarkSurfacesLoaded {
+			get {
+				return _markSurfaces != null;
+			}
+		}
+
+		/// <summary>
 		/// A <see cref="NumList"/> object containing the Surface Edges lump, if available.
 		/// </summary>
 		public NumList surfEdges {
@@ -627,6 +825,15 @@ namespace LibBSP {
 					}
 				}
 				return _surfEdges;
+			}
+		}
+
+		/// <summary>
+		/// Has the Surface Edges lump been loaded yet?
+		/// </summary>
+		public bool SurfaceEdgesLoaded {
+			get {
+				return _surfEdges != null;
 			}
 		}
 
@@ -647,6 +854,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Has the Mark Brushes lump been loaded yet?
+		/// </summary>
+		public bool MarkBrushesLoaded {
+			get {
+				return _markBrushes != null;
+			}
+		}
+
+		/// <summary>
 		/// A <see cref="Lump{StaticModel}"/> of <see cref="StaticModel"/> objects in the BSP file, if available.
 		/// </summary>
 		public Lump<StaticModel> staticModels {
@@ -662,6 +878,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Has the <see cref="StaticModel"/> lump been loaded yet?
+		/// </summary>
+		public bool StaticModelsLoaded {
+			get {
+				return _staticModels != null;
+			}
+		}
+
+		/// <summary>
 		/// A <see cref="Lump{LODTerrain}"/> of <see cref="LODTerrain"/> objects in the BSP file, if available.
 		/// </summary>
 		public Lump<LODTerrain> lodTerrains {
@@ -673,6 +898,15 @@ namespace LibBSP {
 					}
 				}
 				return _lodTerrains;
+			}
+		}
+
+		/// <summary>
+		/// Has the <see cref="LODTerrain"/> lump been loaded yet?
+		/// </summary>
+		public bool LODTerrainsLoaded {
+			get {
+				return _lodTerrains != null;
 			}
 		}
 
@@ -694,6 +928,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Has the Leaf Static Models lump been loaded yet?
+		/// </summary>
+		public bool LeafStaticModelsLoaded {
+			get {
+				return _leafStaticModels != null;
+			}
+		}
+
+		/// <summary>
 		/// A <see cref="Lump{Patch}"/> of <see cref="Patch"/> objects in the BSP file, if available.
 		/// </summary>
 		public Lump<Patch> patches {
@@ -707,7 +950,16 @@ namespace LibBSP {
 				return _patches;
 			}
 		}
-		
+
+		/// <summary>
+		/// Has the <see cref="Patch"/> lump been loaded yet?
+		/// </summary>
+		public bool PatchesLoaded {
+			get {
+				return _patches != null;
+			}
+		}
+
 		/// <summary>
 		/// A <see cref="Lump{Vertex}"/> of <see cref="Vertex"/> objects in the BSP file representing the patch vertices of the BSP, if available.
 		/// </summary>
@@ -723,6 +975,15 @@ namespace LibBSP {
 					}
 				}
 				return _patchVerts;
+			}
+		}
+
+		/// <summary>
+		/// Has the Patch Vertices lump been loaded yet?
+		/// </summary>
+		public bool PatchVertsLoaded {
+			get {
+				return _patchVerts != null;
 			}
 		}
 
@@ -743,6 +1004,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Has the Patch Indices lump been loaded yet?
+		/// </summary>
+		public bool PatchIndicesLoaded {
+			get {
+				return _patchIndices != null;
+			}
+		}
+
+		/// <summary>
 		/// A <see cref="NumList"/> object containing the Leaf Patches lump, if available.
 		/// </summary>
 		public NumList leafPatches {
@@ -755,6 +1025,15 @@ namespace LibBSP {
 					}
 				}
 				return _leafPatches;
+			}
+		}
+
+		/// <summary>
+		/// Has the Leaf Patches lump been loaded yet?
+		/// </summary>
+		public bool LeafPatchesLoaded {
+			get {
+				return _leafPatches != null;
 			}
 		}
 
@@ -775,6 +1054,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Has the Indices lump been loaded yet?
+		/// </summary>
+		public bool IndicesLoaded {
+			get {
+				return _indices != null;
+			}
+		}
+
+		/// <summary>
 		/// A <see cref="NumList"/> object containing the Texture offsets table lump, if available.
 		/// </summary>
 		public NumList texTable {
@@ -787,6 +1075,15 @@ namespace LibBSP {
 					}
 				}
 				return _texTable;
+			}
+		}
+
+		/// <summary>
+		/// Has the Texture Table lump been loaded yet?
+		/// </summary>
+		public bool TextureTableLoaded {
+			get {
+				return _patchIndices != null;
 			}
 		}
 
@@ -807,6 +1104,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Has the Displacement Triangles lump been loaded yet?
+		/// </summary>
+		public bool DisplacementTrianglesLoaded {
+			get {
+				return _displacementTriangles != null;
+			}
+		}
+
+		/// <summary>
 		/// The <see cref="GameLump"/> object in the BSP file containing internal lumps, if available.
 		/// </summary>
 		public GameLump gameLump {
@@ -822,6 +1128,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Has the Patch Indices lump been loaded yet?
+		/// </summary>
+		public bool GameLumpLoaded {
+			get {
+				return _patchIndices != null;
+			}
+		}
+
+		/// <summary>
 		/// The <see cref="StaticProps"/> object in the BSP file extracted from the <see cref="BSP.gameLump"/>, if available.
 		/// </summary>
 		public StaticProps staticProps {
@@ -831,6 +1146,15 @@ namespace LibBSP {
 				}
 
 				return null;
+			}
+		}
+
+		/// <summary>
+		/// Has the Static Props lump been loaded yet?
+		/// </summary>
+		public bool StaticPropsLoaded {
+			get {
+				return GameLumpLoaded && gameLump.StaticPropsLoaded;
 			}
 		}
 

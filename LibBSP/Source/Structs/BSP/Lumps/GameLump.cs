@@ -168,6 +168,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Has the Static Props lump been loaded yet?
+		/// </summary>
+		public bool StaticPropsLoaded {
+			get {
+				return gameLumps.ContainsKey(GameLumpType.prps);
+			}
+		}
+
+		/// <summary>
 		/// Gets the bytes for a <see cref="GameLumpType"/>, if it exists.
 		/// </summary>
 		/// <param name="lump">The <see cref="GameLumpType"/> to get data for.</param>
