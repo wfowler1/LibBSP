@@ -19,17 +19,10 @@ namespace LibBSP {
 		private FileInfo bspFile;
 		private Dictionary<int, LumpInfo> lumpFiles = null;
 
-		private bool _bigEndian = false;
-
 		/// <summary>
 		/// An XOr encryption key for encrypted map formats. Must be read and set.
 		/// </summary>
 		private byte[] key = new byte[0];
-
-		/// <summary>
-		/// Was this map determined to be in big endian format?
-		/// </summary>
-		public bool bigEndian { get { return _bigEndian; } set { _bigEndian = value; } }
 
 		/// <summary>
 		/// Creates a new instance of a <see cref="BSPReader"/> class to read the specified file.
@@ -281,12 +274,12 @@ namespace LibBSP {
 		/// <returns>The <see cref="MapType"/> of this BSP, <see cref="MapType.Undefined"/> if it could not be determined.</returns>
 		public MapType GetVersion() {
 			MapType ret = GetVersion(false);
-			if (ret == MapType.Undefined) {
-				ret = GetVersion(true);
-				if (ret != MapType.Undefined) {
-					_bigEndian = true;
-				}
-			}
+			//if (ret == MapType.Undefined) {
+			//	ret = GetVersion(true);
+			//	if (ret != MapType.Undefined) {
+			//		_bigEndian = true;
+			//	}
+			//}
 			return ret;
 		}
 
