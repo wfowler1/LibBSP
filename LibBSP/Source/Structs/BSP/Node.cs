@@ -41,7 +41,7 @@ namespace LibBSP {
 				if (Parent == null || Parent.Bsp == null) {
 					return MapType.Undefined;
 				}
-				return Parent.Bsp.version;
+				return Parent.Bsp.MapType;
 			}
 		}
 
@@ -62,7 +62,7 @@ namespace LibBSP {
 		/// </summary>
 		public Plane Plane {
 			get {
-				return Parent.Bsp.planes[PlaneIndex];
+				return Parent.Bsp.Planes[PlaneIndex];
 			}
 		}
 
@@ -85,9 +85,9 @@ namespace LibBSP {
 		public ILumpObject Child1 {
 			get {
 				if (Child1Index >= 0) {
-					return Parent.Bsp.nodes[Child1Index];
+					return Parent.Bsp.Nodes[Child1Index];
 				}
-				return Parent.Bsp.leaves[-Child1Index];
+				return Parent.Bsp.Leaves[-Child1Index];
 			}
 		}
 
@@ -129,9 +129,9 @@ namespace LibBSP {
 		public ILumpObject Child2 {
 			get {
 				if (Child2Index >= 0) {
-					return Parent.Bsp.nodes[Child2Index];
+					return Parent.Bsp.Nodes[Child2Index];
 				}
-				return Parent.Bsp.leaves[-Child2Index];
+				return Parent.Bsp.Leaves[-Child2Index];
 			}
 		}
 
@@ -252,7 +252,7 @@ namespace LibBSP {
 		public IEnumerable<Face> Faces {
 			get {
 				for (int i = 0; i < NumFaceIndices; ++i) {
-					yield return Parent.Bsp.faces[FirstFaceIndex + i];
+					yield return Parent.Bsp.Faces[FirstFaceIndex + i];
 				}
 			}
 		}
@@ -260,7 +260,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets or sets the index of the first face reference for this <see cref="Node"/>.
 		/// </summary>
-		[Index("faces")]
+		[Index("Faces")]
 		public int FirstFaceIndex {
 			get {
 				if (MapType.IsSubtypeOf(MapType.Quake)) {
@@ -293,7 +293,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets or sets the count of face references for this <see cref="Node"/>.
 		/// </summary>
-		[Count("faces")]
+		[Count("Faces")]
 		public int NumFaceIndices {
 			get {
 				if (MapType.IsSubtypeOf(MapType.Quake)) {
@@ -375,16 +375,16 @@ namespace LibBSP {
 			Parent = parent;
 
 			if (parent != null && parent.Bsp != null) {
-				if (source.Parent != null && source.Parent.Bsp != null && source.Parent.Bsp.version == parent.Bsp.version && source.LumpVersion == parent.LumpInfo.version) {
+				if (source.Parent != null && source.Parent.Bsp != null && source.Parent.Bsp.MapType == parent.Bsp.MapType && source.LumpVersion == parent.LumpInfo.version) {
 					Data = new byte[source.Data.Length];
 					Array.Copy(source.Data, Data, source.Data.Length);
 					return;
 				} else {
-					Data = new byte[GetStructLength(parent.Bsp.version, parent.LumpInfo.version)];
+					Data = new byte[GetStructLength(parent.Bsp.MapType, parent.LumpInfo.version)];
 				}
 			} else {
 				if (source.Parent != null && source.Parent.Bsp != null) {
-					Data = new byte[GetStructLength(source.Parent.Bsp.version, source.Parent.LumpInfo.version)];
+					Data = new byte[GetStructLength(source.Parent.Bsp.MapType, source.Parent.LumpInfo.version)];
 				} else {
 					Data = new byte[GetStructLength(MapType.Undefined, 0)];
 				}
@@ -413,7 +413,7 @@ namespace LibBSP {
 				throw new ArgumentNullException();
 			}
 
-			return new Lump<Node>(data, GetStructLength(bsp.version, lumpInfo.version), bsp, lumpInfo);
+			return new Lump<Node>(data, GetStructLength(bsp.MapType, lumpInfo.version), bsp, lumpInfo);
 		}
 
 		/// <summary>

@@ -38,7 +38,7 @@ namespace LibBSP {
 				if (Parent == null || Parent.Bsp == null) {
 					return MapType.Undefined;
 				}
-				return Parent.Bsp.version;
+				return Parent.Bsp.MapType;
 			}
 		}
 
@@ -79,7 +79,7 @@ namespace LibBSP {
 			get {
 				int numVertices = NumVertices;
 				for (int i = 0; i < numVertices; ++i) {
-					yield return Parent.Bsp.dispVerts[FirstVertexIndex + i];
+					yield return Parent.Bsp.DisplacementVertices[FirstVertexIndex + i];
 				}
 			}
 		}
@@ -87,7 +87,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets or sets the index of the first <see cref="DisplacementVertex"/> used by this <see cref="Displacement"/>.
 		/// </summary>
-		[Index("dispVerts")] public int FirstVertexIndex {
+		[Index("DisplacementVertices")] public int FirstVertexIndex {
 			get {
 				if (MapType.IsSubtypeOf(MapType.Source)) {
 					return BitConverter.ToInt32(Data, 12);
@@ -108,7 +108,7 @@ namespace LibBSP {
 		public IEnumerable<ushort> Triangles {
 			get {
 				for (int i = 0; i < NumTriangles; ++i) {
-					yield return (ushort)Parent.Bsp.displacementTriangles[FirstTriangleIndex + i];
+					yield return (ushort)Parent.Bsp.DisplacementTriangles[FirstTriangleIndex + i];
 				}
 			}
 		}
@@ -116,7 +116,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets or sets the index of the first Displacement Triangle used by this <see cref="Displacement"/>.
 		/// </summary>
-		[Index("displacementTriangles")] public int FirstTriangleIndex {
+		[Index("DisplacementTriangles")] public int FirstTriangleIndex {
 			get {
 				if (MapType.IsSubtypeOf(MapType.Source)) {
 					return BitConverter.ToInt32(Data, 16);
@@ -152,7 +152,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the number of vertices this <see cref="Displacement"/> uses, based on <see cref="Power"/>.
 		/// </summary>
-		[Count("dispVerts")] public int NumVertices {
+		[Count("DisplacementVertices")] public int NumVertices {
 			get {
 				int numSideVerts = (int)Math.Pow(2, Power) + 1;
 				return numSideVerts * numSideVerts;
@@ -162,7 +162,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the number of triangles this <see cref="Displacement"/> has, based on <see cref="Power"/>.
 		/// </summary>
-		[Count("displacementTriangles")] public int NumTriangles {
+		[Count("DisplacementTriangles")] public int NumTriangles {
 			get {
 				int side = Power * Power;
 				return 2 * side * side;
@@ -228,7 +228,7 @@ namespace LibBSP {
 		/// </summary>
 		public Face Face {
 			get {
-				return Parent.Bsp.faces[FaceIndex];
+				return Parent.Bsp.Faces[FaceIndex];
 			}
 		}
 
@@ -384,16 +384,16 @@ namespace LibBSP {
 			CornerNeighbors = new DisplacementCornerNeighbor[4];
 
 			if (parent != null && parent.Bsp != null) {
-				if (source.Parent != null && source.Parent.Bsp != null && source.Parent.Bsp.version == parent.Bsp.version && source.LumpVersion == parent.LumpInfo.version) {
+				if (source.Parent != null && source.Parent.Bsp != null && source.Parent.Bsp.MapType == parent.Bsp.MapType && source.LumpVersion == parent.LumpInfo.version) {
 					Data = new byte[source.Data.Length];
 					Array.Copy(source.Data, Data, source.Data.Length);
 					return;
 				} else {
-					Data = new byte[GetStructLength(parent.Bsp.version, parent.LumpInfo.version)];
+					Data = new byte[GetStructLength(parent.Bsp.MapType, parent.LumpInfo.version)];
 				}
 			} else {
 				if (source.Parent != null && source.Parent.Bsp != null) {
-					Data = new byte[GetStructLength(source.Parent.Bsp.version, source.Parent.LumpInfo.version)];
+					Data = new byte[GetStructLength(source.Parent.Bsp.MapType, source.Parent.LumpInfo.version)];
 				} else {
 					Data = new byte[GetStructLength(MapType.Undefined, 0)];
 				}
@@ -433,7 +433,7 @@ namespace LibBSP {
 				throw new ArgumentNullException();
 			}
 
-			return new Lump<Displacement>(data, GetStructLength(bsp.version, lumpInfo.version), bsp, lumpInfo);
+			return new Lump<Displacement>(data, GetStructLength(bsp.MapType, lumpInfo.version), bsp, lumpInfo);
 		}
 
 		/// <summary>

@@ -131,13 +131,13 @@ namespace LibBSP {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			int structLength = GetStructLength(bsp.version, lumpInfo.version);
+			int structLength = GetStructLength(bsp.MapType, lumpInfo.version);
 			int numObjects = data.Length / structLength;
 			Lump<Vertex> lump = new Lump<Vertex>(numObjects, bsp, lumpInfo);
 			byte[] bytes = new byte[structLength];
 			for (int i = 0; i < numObjects; ++i) {
 				Array.Copy(data, i * structLength, bytes, 0, structLength);
-				lump.Add(CreateVertex(bytes, bsp.version, lumpInfo.version));
+				lump.Add(CreateVertex(bytes, bsp.MapType, lumpInfo.version));
 			}
 			return lump;
 		}

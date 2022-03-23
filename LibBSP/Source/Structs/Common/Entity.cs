@@ -54,7 +54,7 @@ namespace LibBSP {
 				if (Parent == null || Parent.Bsp == null) {
 					return MapType.Undefined;
 				}
-				return Parent.Bsp.version;
+				return Parent.Bsp.MapType;
 			}
 		}
 

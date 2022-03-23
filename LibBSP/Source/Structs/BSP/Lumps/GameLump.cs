@@ -52,21 +52,21 @@ namespace LibBSP {
 			LumpInfo = lumpInfo;
 
 			int structLength = 0;
-			if (bsp.version == MapType.DMoMaM
-				|| bsp.version == MapType.Vindictus) {
+			if (bsp.MapType == MapType.DMoMaM
+				|| bsp.MapType == MapType.Vindictus) {
 				structLength = 20;
-			} else if (bsp.version.IsSubtypeOf(MapType.Source)
-				|| bsp.version == MapType.Titanfall) {
+			} else if (bsp.MapType.IsSubtypeOf(MapType.Source)
+				|| bsp.MapType == MapType.Titanfall) {
 				structLength = 16;
 			} else {
-				throw new ArgumentException("Game lump does not exist in map type " + bsp.version + " or has not been implemented.");
+				throw new ArgumentException("Game lump does not exist in map type " + bsp.MapType + " or has not been implemented.");
 			}
 
 			int numGameLumps = BitConverter.ToInt32(data, 0);
 			gameLumps = new Dictionary<GameLumpType, ILump>(numGameLumps);
 
 			if (numGameLumps > 0) {
-				int lumpDictionaryOffset = (bsp.version == MapType.DMoMaM) ? 8 : 4;
+				int lumpDictionaryOffset = (bsp.MapType == MapType.DMoMaM) ? 8 : 4;
 				int lowestLumpOffset = int.MaxValue;
 
 				for (int i = 0; i < numGameLumps; ++i) {
@@ -76,7 +76,7 @@ namespace LibBSP {
 					int lumpOffset;
 					int lumpLength;
 
-					if (bsp.version == MapType.Vindictus) {
+					if (bsp.MapType == MapType.Vindictus) {
 						lumpFlags = BitConverter.ToInt32(data, (i * structLength) + lumpDictionaryOffset + 4);
 						lumpVersion = BitConverter.ToInt32(data, (i * structLength) + lumpDictionaryOffset + 8);
 						lumpOffset = BitConverter.ToInt32(data, (i * structLength) + lumpDictionaryOffset + 12);
@@ -190,7 +190,7 @@ namespace LibBSP {
 				} else {
 					// GameLump lumps may have their offset specified from either the beginning of the GameLump, or the beginning of the file.
 					if (GetLowestLumpOffset() < LumpInfo.offset) {
-						thisLump = Bsp.reader.ReadLump(new LumpInfo() {
+						thisLump = Bsp.Reader.ReadLump(new LumpInfo() {
 							ident = info.ident,
 							flags = info.flags,
 							version = info.version,
@@ -198,7 +198,7 @@ namespace LibBSP {
 							length = info.length
 						});
 					} else {
-						thisLump = Bsp.reader.ReadLump(info);
+						thisLump = Bsp.Reader.ReadLump(info);
 					}
 				}
 
@@ -217,8 +217,8 @@ namespace LibBSP {
 				return new byte[0];
 			}
 
-			int lumpInfoLength = (Bsp.version == MapType.DMoMaM || Bsp.version == MapType.Vindictus) ? 20 : 16;
-			int lumpDictionaryOffset = (Bsp.version == MapType.DMoMaM) ? 8 : 4;
+			int lumpInfoLength = (Bsp.MapType == MapType.DMoMaM || Bsp.MapType == MapType.Vindictus) ? 20 : 16;
+			int lumpDictionaryOffset = (Bsp.MapType == MapType.DMoMaM) ? 8 : 4;
 			int length = lumpDictionaryOffset + (lumpInfoLength * Count);
 
 			Dictionary<GameLumpType, byte[]> lumpBytes = new Dictionary<GameLumpType, byte[]>(gameLumps.Count);
@@ -236,7 +236,7 @@ namespace LibBSP {
 			BitConverter.GetBytes(lumpBytes.Count).CopyTo(bytes, 0);
 			int lumpNumber = 0;
 			int offset = lumpDictionaryOffset + (lumpBytes.Count * lumpInfoLength);
-			int headerEntryLength = (Bsp.version == MapType.DMoMaM || Bsp.version == MapType.Vindictus) ? 20 : 16;
+			int headerEntryLength = (Bsp.MapType == MapType.DMoMaM || Bsp.MapType == MapType.Vindictus) ? 20 : 16;
 
 			foreach (KeyValuePair<GameLumpType, byte[]> pair in lumpBytes) {
 				LumpInfo info = this[pair.Key];
@@ -249,7 +249,7 @@ namespace LibBSP {
 
 				BitConverter.GetBytes(info.ident).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset);
 
-				if (Bsp.version == MapType.Vindictus) {
+				if (Bsp.MapType == MapType.Vindictus) {
 					BitConverter.GetBytes(info.flags).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset + 4);
 					BitConverter.GetBytes(info.version).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset + 8);
 					BitConverter.GetBytes(info.offset).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset + 12);

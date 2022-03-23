@@ -39,7 +39,7 @@ namespace LibBSP {
 				if (Parent == null || Parent.Bsp == null) {
 					return MapType.Undefined;
 				}
-				return Parent.Bsp.version;
+				return Parent.Bsp.MapType;
 			}
 		}
 
@@ -164,16 +164,16 @@ namespace LibBSP {
 			Parent = parent;
 
 			if (parent != null && parent.Bsp != null) {
-				if (source.Parent != null && source.Parent.Bsp != null && source.Parent.Bsp.version == parent.Bsp.version && source.LumpVersion == parent.LumpInfo.version) {
+				if (source.Parent != null && source.Parent.Bsp != null && source.Parent.Bsp.MapType == parent.Bsp.MapType && source.LumpVersion == parent.LumpInfo.version) {
 					Data = new byte[source.Data.Length];
 					Array.Copy(source.Data, Data, source.Data.Length);
 					return;
 				} else {
-					Data = new byte[GetStructLength(parent.Bsp.version, parent.LumpInfo.version)];
+					Data = new byte[GetStructLength(parent.Bsp.MapType, parent.LumpInfo.version)];
 				}
 			} else {
 				if (source.Parent != null && source.Parent.Bsp != null) {
-					Data = new byte[GetStructLength(source.Parent.Bsp.version, source.Parent.LumpInfo.version)];
+					Data = new byte[GetStructLength(source.Parent.Bsp.MapType, source.Parent.LumpInfo.version)];
 				} else {
 					Data = new byte[GetStructLength(MapType.Undefined, 0)];
 				}
@@ -199,7 +199,7 @@ namespace LibBSP {
 				throw new ArgumentNullException();
 			}
 
-			return new Lump<StaticModel>(data, GetStructLength(bsp.version, lumpInfo.version), bsp, lumpInfo);
+			return new Lump<StaticModel>(data, GetStructLength(bsp.MapType, lumpInfo.version), bsp, lumpInfo);
 		}
 
 		/// <summary>

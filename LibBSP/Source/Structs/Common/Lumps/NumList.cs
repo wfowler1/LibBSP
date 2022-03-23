@@ -136,12 +136,12 @@ namespace LibBSP {
 
 		#region IndicesForLumps
 		/// <summary>
-		/// Gets the index for the Mark Surfaces lump in the BSP file for a specific map format, and the type of data the format uses.
+		/// Gets the index for the Leaf Faces lump in the BSP file for a specific map format, and the type of data the format uses.
 		/// </summary>
 		/// <param name="version">The map type.</param>
 		/// <param name="dataType"><c>out</c> parameter that will contain the data type this version uses.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
-		public static int GetIndexForMarkSurfacesLump(MapType version, out DataType dataType) {
+		public static int GetIndexForLeafFacesLump(MapType version, out DataType dataType) {
 			if (version == MapType.Nightfire) {
 				dataType = DataType.UInt32;
 				return 12;
@@ -178,12 +178,12 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets the index for the Surface Edges lump in the BSP file for a specific map format, and the type of data the format uses.
+		/// Gets the index for the Face Edges lump in the BSP file for a specific map format, and the type of data the format uses.
 		/// </summary>
 		/// <param name="version">The map type.</param>
 		/// <param name="dataType"><c>out</c> parameter that will contain data type this version uses.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
-		public static int GetIndexForSurfEdgesLump(MapType version, out DataType dataType) {
+		public static int GetIndexForFaceEdgesLump(MapType version, out DataType dataType) {
 			if (version.IsSubtypeOf(MapType.Quake2)) {
 				dataType = DataType.Int32;
 				return 12;
@@ -198,12 +198,12 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets the index for the Mark Brushes lump in the BSP file for a specific map format, and the type of data the format uses.
+		/// Gets the index for the Leaf Brushes lump in the BSP file for a specific map format, and the type of data the format uses.
 		/// </summary>
 		/// <param name="version">The map type.</param>
 		/// <param name="dataType"><c>out</c> parameter that will contain the data type this version uses.</param>
 		/// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
-		public static int GetIndexForMarkBrushesLump(MapType version, out DataType dataType) {
+		public static int GetIndexForLeafBrushesLump(MapType version, out DataType dataType) {
 			if (version == MapType.Nightfire) {
 				dataType = DataType.UInt32;
 				return 13;
@@ -558,5 +558,12 @@ namespace LibBSP {
 			}
 		}
 		#endregion
+
+		/// <summary>
+		/// Removes all items from the list.
+		/// </summary>
+		public void RemoveAll() {
+			Data = new byte[0];
+		}
 	}
 }

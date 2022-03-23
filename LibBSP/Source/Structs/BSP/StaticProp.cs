@@ -41,7 +41,7 @@ namespace LibBSP {
 				if (Parent == null || Parent.Bsp == null) {
 					return MapType.Undefined;
 				}
-				return Parent.Bsp.version;
+				return Parent.Bsp.MapType;
 			}
 		}
 
@@ -1082,7 +1082,7 @@ namespace LibBSP {
 			Parent = parent;
 
 			if (parent != null && parent.Bsp != null) {
-				if (source.Parent != null && source.Parent.Bsp != null && source.Parent.Bsp.version == parent.Bsp.version && source.LumpVersion == parent.LumpInfo.version) {
+				if (source.Parent != null && source.Parent.Bsp != null && source.Parent.Bsp.MapType == parent.Bsp.MapType && source.LumpVersion == parent.LumpInfo.version) {
 					Data = new byte[source.Data.Length];
 					Array.Copy(source.Data, Data, source.Data.Length);
 					return;
@@ -1135,7 +1135,7 @@ namespace LibBSP {
 				throw new ArgumentNullException();
 			}
 
-			return new StaticProps(data, GetStructLength(bsp.version, lumpInfo.version), bsp, lumpInfo);
+			return new StaticProps(data, GetStructLength(bsp.MapType, lumpInfo.version), bsp, lumpInfo);
 		}
 
 		/// <summary>

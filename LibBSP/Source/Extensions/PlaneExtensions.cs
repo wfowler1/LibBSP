@@ -275,7 +275,7 @@ namespace LibBSP {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
-			int structLength = GetStructLength(bsp.version, lumpInfo.version);
+			int structLength = GetStructLength(bsp.MapType, lumpInfo.version);
 			int numObjects = data.Length / structLength;
 			Lump<Plane> lump = new Lump<Plane>(numObjects, bsp, lumpInfo);
 			for (int i = 0; i < numObjects; ++i) {

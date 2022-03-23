@@ -38,7 +38,7 @@ namespace LibBSP {
 				if (Parent == null || Parent.Bsp == null) {
 					return MapType.Undefined;
 				}
-				return Parent.Bsp.version;
+				return Parent.Bsp.MapType;
 			}
 		}
 
@@ -59,14 +59,14 @@ namespace LibBSP {
 		/// </summary>
 		public Node HeadNode {
 			get {
-				return Parent.Bsp.nodes[HeadNodeIndex];
+				return Parent.Bsp.Nodes[HeadNodeIndex];
 			}
 		}
 
 		/// <summary>
 		/// Gets or sets the index of the head <see cref="Node"/> used by this <see cref="Model"/>.
 		/// </summary>
-		[Index("nodes")] public int HeadNodeIndex {
+		[Index("Nodes")] public int HeadNodeIndex {
 			get {
 				if (MapType == MapType.DMoMaM) {
 					return BitConverter.ToInt32(Data, 40);
@@ -173,7 +173,7 @@ namespace LibBSP {
 		public IEnumerable<Leaf> Leaves {
 			get {
 				for (int i = 0; i < NumLeaves; ++i) {
-					yield return Parent.Bsp.leaves[FirstLeafIndex + i];
+					yield return Parent.Bsp.Leaves[FirstLeafIndex + i];
 				}
 			}
 		}
@@ -181,7 +181,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets or sets the index of the first <see cref="Leaf"/> used by this <see cref="Model"/>.
 		/// </summary>
-		[Index("leaves")] public int FirstLeafIndex {
+		[Index("Leaves")] public int FirstLeafIndex {
 			get {
 				if (MapType == MapType.Nightfire) {
 					return BitConverter.ToInt32(Data, 40);
@@ -201,7 +201,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets or sets the count of <see cref="Leaf"/> objects used by this <see cref="Model"/>.
 		/// </summary>
-		[Count("leaves")] public int NumLeaves {
+		[Count("Leaves")] public int NumLeaves {
 			get {
 				if (MapType.IsSubtypeOf(MapType.Quake)) {
 					return BitConverter.ToInt32(Data, 52);
@@ -228,7 +228,7 @@ namespace LibBSP {
 		public IEnumerable<Brush> Brushes {
 			get {
 				for (int i = 0; i < NumBrushes; ++i) {
-					yield return Parent.Bsp.brushes[FirstBrushIndex + i];
+					yield return Parent.Bsp.Brushes[FirstBrushIndex + i];
 				}
 			}
 		}
@@ -236,7 +236,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets or sets the index of the first <see cref="Brush"/> used by this <see cref="Model"/>.
 		/// </summary>
-		[Index("brushes")] public int FirstBrushIndex {
+		[Index("Brushes")] public int FirstBrushIndex {
 			get {
 				if (MapType.IsSubtypeOf(MapType.CoD)) {
 					return BitConverter.ToInt32(Data, 40);
@@ -260,7 +260,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets or sets the count of <see cref="Brush"/> objects referenced by this <see cref="Leaf"/>.
 		/// </summary>
-		[Count("brushes")] public int NumBrushes {
+		[Count("Brushes")] public int NumBrushes {
 			get {
 				if (MapType.IsSubtypeOf(MapType.CoD)) {
 					return BitConverter.ToInt32(Data, 44);
@@ -287,7 +287,7 @@ namespace LibBSP {
 		public IEnumerable<Face> Faces {
 			get {
 				for (int i = 0; i < NumFaces; ++i) {
-					yield return Parent.Bsp.faces[FirstFaceIndex + i];
+					yield return Parent.Bsp.Faces[FirstFaceIndex + i];
 				}
 			}
 		}
@@ -295,7 +295,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets or sets the index of the first <see cref="Face"/> used by this <see cref="Model"/>.
 		/// </summary>
-		[Index("faces")] public int FirstFaceIndex {
+		[Index("Faces")] public int FirstFaceIndex {
 			get {
 				if (MapType == MapType.CoD4) {
 					return BitConverter.ToInt16(Data, 24);
@@ -340,7 +340,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets or sets the count of <see cref="Face"/> objects referenced by this <see cref="Leaf"/>.
 		/// </summary>
-		[Count("faces")] public int NumFaces {
+		[Count("Faces")] public int NumFaces {
 			get {
 				if (MapType == MapType.CoD4) {
 					return BitConverter.ToInt16(Data, 28);
@@ -388,7 +388,7 @@ namespace LibBSP {
 		public IEnumerable<int> PatchIndices {
 			get {
 				for (int i = 0; i < NumPatchIndices; ++i) {
-					yield return (int)Parent.Bsp.leafPatches[FirstPatchIndicesIndex + i];
+					yield return (int)Parent.Bsp.PatchIndices[FirstPatchIndicesIndex + i];
 				}
 			}
 		}
@@ -396,7 +396,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets or sets the index of the first patch index for this <see cref="Model"/>.
 		/// </summary>
-		[Index("patchIndices")] public int FirstPatchIndicesIndex {
+		[Index("PatchIndices")] public int FirstPatchIndicesIndex {
 			get {
 				if (MapType == MapType.CoD
 					|| MapType == MapType.CoDDemo) {
@@ -418,7 +418,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets or sets the count of patch indices referenced by this <see cref="Model"/>.
 		/// </summary>
-		[Count("patchIndices")] public int NumPatchIndices {
+		[Count("PatchIndices")] public int NumPatchIndices {
 			get {
 				if (MapType == MapType.CoD
 					|| MapType == MapType.CoDDemo) {
@@ -544,16 +544,16 @@ namespace LibBSP {
 			Parent = parent;
 
 			if (parent != null && parent.Bsp != null) {
-				if (source.Parent != null && source.Parent.Bsp != null && source.Parent.Bsp.version == parent.Bsp.version && source.LumpVersion == parent.LumpInfo.version) {
+				if (source.Parent != null && source.Parent.Bsp != null && source.Parent.Bsp.MapType == parent.Bsp.MapType && source.LumpVersion == parent.LumpInfo.version) {
 					Data = new byte[source.Data.Length];
 					Array.Copy(source.Data, Data, source.Data.Length);
 					return;
 				} else {
-					Data = new byte[GetStructLength(parent.Bsp.version, parent.LumpInfo.version)];
+					Data = new byte[GetStructLength(parent.Bsp.MapType, parent.LumpInfo.version)];
 				}
 			} else {
 				if (source.Parent != null && source.Parent.Bsp != null) {
-					Data = new byte[GetStructLength(source.Parent.Bsp.version, source.Parent.LumpInfo.version)];
+					Data = new byte[GetStructLength(source.Parent.Bsp.MapType, source.Parent.LumpInfo.version)];
 				} else {
 					Data = new byte[GetStructLength(MapType.Undefined, 0)];
 				}
@@ -589,7 +589,7 @@ namespace LibBSP {
 				throw new ArgumentNullException();
 			}
 			
-			return new Lump<Model>(data, GetStructLength(bsp.version, lumpInfo.version), bsp, lumpInfo);
+			return new Lump<Model>(data, GetStructLength(bsp.MapType, lumpInfo.version), bsp, lumpInfo);
 		}
 
 		/// <summary>

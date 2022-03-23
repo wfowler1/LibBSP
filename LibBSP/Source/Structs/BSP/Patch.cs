@@ -52,7 +52,7 @@ namespace LibBSP {
 				if (Parent == null || Parent.Bsp == null) {
 					return MapType.Undefined;
 				}
-				return Parent.Bsp.version;
+				return Parent.Bsp.MapType;
 			}
 		}
 
@@ -73,7 +73,7 @@ namespace LibBSP {
 		/// </summary>
 		public Texture Shader {
 			get {
-				return Parent.Bsp.textures[ShaderIndex];
+				return Parent.Bsp.Textures[ShaderIndex];
 			}
 		}
 		
@@ -195,7 +195,7 @@ namespace LibBSP {
 		public IEnumerable<Vertex> Vertices {
 			get {
 				for (int i = 0; i < NumVertices; ++i) {
-					yield return Parent.Bsp.patchVerts[FirstVertex + i];
+					yield return Parent.Bsp.PatchVertices[FirstVertex + i];
 				}
 			}
 		}
@@ -203,7 +203,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets or sets the index of the first Patch <see cref="Vertex"/> used by this <see cref="Patch"/>.
 		/// </summary>
-		[Index("patchVerts")] public int FirstVertex {
+		[Index("PatchVertices")] public int FirstVertex {
 			get {
 				switch (MapType) {
 					case MapType.CoD: {
@@ -238,7 +238,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the count of Patch <see cref="Vertex"/>es used by this <see cref="Patch"/>.
 		/// </summary>
-		[Count("patchVerts")] public int NumVertices {
+		[Count("PatchVertices")] public int NumVertices {
 			get {
 				switch (MapType) {
 					case MapType.CoD: {
@@ -278,7 +278,7 @@ namespace LibBSP {
 		public IEnumerable<short> VertexIndices {
 			get {
 				for (int i = 0; i < NumVertexIndices; ++i) {
-					yield return (short)Parent.Bsp.patchIndices[FirstVertexIndex + i];
+					yield return (short)Parent.Bsp.PatchIndices[FirstVertexIndex + i];
 				}
 			}
 		}
@@ -287,7 +287,7 @@ namespace LibBSP {
 		/// If this <see cref="Patch"/> is a terrain, gets the count of Patch <see cref="Vertex"/> indices
 		/// used by this <see cref="Patch"/>.
 		/// </summary>
-		[Count("patchIndices")] public int NumVertexIndices {
+		[Count("PatchIndices")] public int NumVertexIndices {
 			get {
 				switch (MapType) {
 					case MapType.CoD: {
@@ -320,7 +320,7 @@ namespace LibBSP {
 		/// If this <see cref="Patch"/> is a terrain, gets or sets the index of the first Patch <see cref="Vertex"/>
 		/// index used by this <see cref="Patch"/>.
 		/// </summary>
-		[Index("patchIndices")] public int FirstVertexIndex {
+		[Index("PatchIndices")] public int FirstVertexIndex {
 			get {
 				switch (MapType) {
 					case MapType.CoD: {
@@ -379,16 +379,16 @@ namespace LibBSP {
 			Parent = parent;
 
 			if (parent != null && parent.Bsp != null) {
-				if (source.Parent != null && source.Parent.Bsp != null && source.Parent.Bsp.version == parent.Bsp.version && source.LumpVersion == parent.LumpInfo.version) {
+				if (source.Parent != null && source.Parent.Bsp != null && source.Parent.Bsp.MapType == parent.Bsp.MapType && source.LumpVersion == parent.LumpInfo.version) {
 					Data = new byte[source.Data.Length];
 					Array.Copy(source.Data, Data, source.Data.Length);
 					return;
 				} else {
-					Data = new byte[GetStructLength(parent.Bsp.version, parent.LumpInfo.version)];
+					Data = new byte[GetStructLength(parent.Bsp.MapType, parent.LumpInfo.version)];
 				}
 			} else {
 				if (source.Parent != null && source.Parent.Bsp != null) {
-					Data = new byte[GetStructLength(source.Parent.Bsp.version, source.Parent.LumpInfo.version)];
+					Data = new byte[GetStructLength(source.Parent.Bsp.MapType, source.Parent.LumpInfo.version)];
 				} else {
 					Data = new byte[GetStructLength(MapType.Undefined, 0)];
 				}
@@ -422,7 +422,7 @@ namespace LibBSP {
 				throw new ArgumentNullException();
 			}
 
-			return new Lump<Patch>(data, GetStructLength(bsp.version, lumpInfo.version), bsp, lumpInfo);
+			return new Lump<Patch>(data, GetStructLength(bsp.MapType, lumpInfo.version), bsp, lumpInfo);
 		}
 
 		/// <summary>

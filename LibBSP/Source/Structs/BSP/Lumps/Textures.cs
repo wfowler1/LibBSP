@@ -46,7 +46,7 @@ namespace LibBSP {
 				throw new ArgumentNullException();
 			}
 
-			if (bsp.version.IsSubtypeOf(MapType.Quake)) {
+			if (bsp.MapType.IsSubtypeOf(MapType.Quake)) {
 				int numElements = BitConverter.ToInt32(data, 0);
 				structLength = 40;
 				int currentOffset;
@@ -76,7 +76,7 @@ namespace LibBSP {
 							power *= 2;
 						}
 
-						if (bsp.version.IsSubtypeOf(MapType.GoldSrc) && mipmapOffset > 0) {
+						if (bsp.MapType.IsSubtypeOf(MapType.GoldSrc) && mipmapOffset > 0) {
 							paletteOffset = mipmapOffset + (width * height / 64);
 							int numPixels = BitConverter.ToInt16(data, currentOffset + paletteOffset);
 							palette = new byte[numPixels * 3];
@@ -87,7 +87,7 @@ namespace LibBSP {
 				}
 
 				return;
-			} else if (bsp.version.IsSubtypeOf(MapType.Source)) {
+			} else if (bsp.MapType.IsSubtypeOf(MapType.Source)) {
 				int offset = 0;
 
 				for (int i = 0; i < data.Length; ++i) {
@@ -101,17 +101,17 @@ namespace LibBSP {
 				}
 
 				return;
-			} else if (bsp.version == MapType.Nightfire) {
+			} else if (bsp.MapType == MapType.Nightfire) {
 				structLength = 64;
-			} else if (bsp.version == MapType.SiN) {
+			} else if (bsp.MapType == MapType.SiN) {
 				structLength = 180;
-			} else if (bsp.version.IsSubtypeOf(MapType.Quake2)
-				|| bsp.version.IsSubtypeOf(MapType.STEF2)
-				|| bsp.version.IsSubtypeOf(MapType.FAKK2)) {
+			} else if (bsp.MapType.IsSubtypeOf(MapType.Quake2)
+				|| bsp.MapType.IsSubtypeOf(MapType.STEF2)
+				|| bsp.MapType.IsSubtypeOf(MapType.FAKK2)) {
 				structLength = 76;
-			} else if (bsp.version.IsSubtypeOf(MapType.MOHAA)) {
+			} else if (bsp.MapType.IsSubtypeOf(MapType.MOHAA)) {
 				structLength = 140;
-			} else if (bsp.version.IsSubtypeOf(MapType.Quake3)) {
+			} else if (bsp.MapType.IsSubtypeOf(MapType.Quake3)) {
 				structLength = 72;
 			}
 
@@ -169,17 +169,17 @@ namespace LibBSP {
 				return new byte[0];
 			}
 
-			if (Bsp.version.IsSubtypeOf(MapType.Quake2)
-				|| Bsp.version.IsSubtypeOf(MapType.Quake3)
-				|| Bsp.version == MapType.Nightfire) {
+			if (Bsp.MapType.IsSubtypeOf(MapType.Quake2)
+				|| Bsp.MapType.IsSubtypeOf(MapType.Quake3)
+				|| Bsp.MapType == MapType.Nightfire) {
 				return base.GetBytes();
-			} else if (Bsp.version.IsSubtypeOf(MapType.Source)) {
+			} else if (Bsp.MapType.IsSubtypeOf(MapType.Source)) {
 				StringBuilder sb = new StringBuilder();
 				for (int i = 0; i < Count; ++i) {
 					sb.Append(this[i].Name).Append((char)0x00);
 				}
 				return Encoding.ASCII.GetBytes(sb.ToString());
-			} else if (Bsp.version.IsSubtypeOf(MapType.Quake)) {
+			} else if (Bsp.MapType.IsSubtypeOf(MapType.Quake)) {
 				byte[][] textureBytes = new byte[Count][];
 
 				int offset = 0;
@@ -195,7 +195,7 @@ namespace LibBSP {
 						offset += (int)(texture.Dimensions.X() * texture.Dimensions.Y() / 16);
 						texture.MipmapEighthOffset = offset;
 						offset += (int)(texture.Dimensions.X() * texture.Dimensions.Y() / 64);
-						if (Bsp.version.IsSubtypeOf(MapType.GoldSrc)) {
+						if (Bsp.MapType.IsSubtypeOf(MapType.GoldSrc)) {
 							int paletteLength = texture.Palette.Length + 2;
 							while (paletteLength % 4 != 0) {
 								++paletteLength;
@@ -214,7 +214,7 @@ namespace LibBSP {
 						texture.Mipmaps[Texture.QuarterMipmap].CopyTo(bytes, offset);
 						offset += (int)(texture.Dimensions.X() * texture.Dimensions.Y() / 16);
 						texture.Mipmaps[Texture.EighthMipmap].CopyTo(bytes, offset);
-						if (Bsp.version.IsSubtypeOf(MapType.GoldSrc)) {
+						if (Bsp.MapType.IsSubtypeOf(MapType.GoldSrc)) {
 							offset += (int)(texture.Dimensions.X() * texture.Dimensions.Y() / 64);
 							BitConverter.GetBytes((short)texture.Palette.Length).CopyTo(bytes, offset);
 							offset += 2;

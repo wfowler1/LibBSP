@@ -61,7 +61,7 @@ namespace LibBSP {
 				if (Parent == null || Parent.Bsp == null) {
 					return MapType.Undefined;
 				}
-				return Parent.Bsp.version;
+				return Parent.Bsp.MapType;
 			}
 		}
 
@@ -82,7 +82,7 @@ namespace LibBSP {
 		/// </summary>
 		public Plane Plane {
 			get {
-				return Parent.Bsp.planes[PlaneIndex];
+				return Parent.Bsp.Planes[PlaneIndex];
 			}
 		}
 
@@ -187,7 +187,7 @@ namespace LibBSP {
 		public IEnumerable<int> EdgeIndices {
 			get {
 				for (int i = 0; i < NumEdgeIndices; ++i) {
-					yield return (int)Parent.Bsp.surfEdges[FirstEdgeIndexIndex + i];
+					yield return (int)Parent.Bsp.FaceEdges[FirstEdgeIndexIndex + i];
 				}
 			}
 		}
@@ -197,7 +197,7 @@ namespace LibBSP {
 		/// index in this <see cref="Face"/>. A negative index means the <see cref="Edge"/> is used backward
 		/// from its second <see cref="Vertex"/> to first.
 		/// </summary>
-		[Index("edges")] public int FirstEdgeIndexIndex {
+		[Index("Edges")] public int FirstEdgeIndexIndex {
 			get {
 				if (MapType == MapType.Source17) {
 					return BitConverter.ToInt32(Data, 36);
@@ -230,7 +230,7 @@ namespace LibBSP {
 		/// For formats which use <see cref="Edge"/>s, gets or sets the count of <see cref="Edge"/> indices
 		/// in this <see cref="Face"/>.
 		/// </summary>
-		[Count("edges")] public int NumEdgeIndices {
+		[Count("Edges")] public int NumEdgeIndices {
 			get {
 				if (MapType == MapType.Source17) {
 					return BitConverter.ToUInt16(Data, 40);
@@ -266,7 +266,7 @@ namespace LibBSP {
 		/// </summary>
 		public Texture Texture {
 			get {
-				return Parent.Bsp.textures[TextureIndex];
+				return Parent.Bsp.Textures[TextureIndex];
 			}
 		}
 		
@@ -310,7 +310,7 @@ namespace LibBSP {
 		public IEnumerable<Vertex> Vertices {
 			get {
 				for (int i = 0; i < NumVertices; ++i) {
-					yield return Parent.Bsp.vertices[FirstVertexIndex + i];
+					yield return Parent.Bsp.Vertices[FirstVertexIndex + i];
 				}
 			}
 		}
@@ -318,7 +318,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets or sets the index of the first <see cref="Vertex"/> used by this <see cref="Face"/>.
 		/// </summary>
-		[Index("vertices")] public int FirstVertexIndex {
+		[Index("Vertices")] public int FirstVertexIndex {
 			get {
 				if (MapType == MapType.Nightfire
 					|| MapType == MapType.CoD
@@ -348,7 +348,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets or sets the number of <see cref="Vertex"/> objects used by this <see cref="Face"/>.
 		/// </summary>
-		[Count("vertices")] public int NumVertices {
+		[Count("Vertices")] public int NumVertices {
 			get {
 				if (MapType == MapType.Nightfire) {
 					return BitConverter.ToInt32(Data, 8);
@@ -384,7 +384,7 @@ namespace LibBSP {
 		/// </summary>
 		public Texture Material {
 			get {
-				return Parent.Bsp.materials[TextureIndex];
+				return Parent.Bsp.Materials[TextureIndex];
 			}
 		}
 		
@@ -413,7 +413,7 @@ namespace LibBSP {
 		/// </summary>
 		public TextureInfo TextureInfo {
 			get {
-				return Parent.Bsp.texInfo[TextureInfoIndex];
+				return Parent.Bsp.TextureInfo[TextureInfoIndex];
 			}
 		}
 		
@@ -458,7 +458,7 @@ namespace LibBSP {
 		/// </summary>
 		public TextureInfo LightmapTextureInfo {
 			get {
-				return Parent.Bsp.texInfo[LightmapTextureInfoIndex];
+				return Parent.Bsp.TextureInfo[LightmapTextureInfoIndex];
 			}
 		}
 
@@ -547,7 +547,7 @@ namespace LibBSP {
 		/// </summary>
 		public Face OriginalFace {
 			get {
-				return Parent.Bsp.originalFaces[OriginalFaceIndex];
+				return Parent.Bsp.OriginalFaces[OriginalFaceIndex];
 			}
 		}
 
@@ -638,7 +638,7 @@ namespace LibBSP {
 		public IEnumerable<int> Indices {
 			get {
 				for (int i = 0; i < NumIndices; ++i) {
-					yield return (int)Parent.Bsp.indices[FirstIndexIndex + i];
+					yield return (int)Parent.Bsp.Indices[FirstIndexIndex + i];
 				}
 			}
 		}
@@ -647,7 +647,7 @@ namespace LibBSP {
 		/// For formats which use triangle corner indices, gets or sets the index first <see cref="Vertex"/> index
 		/// used by this <see cref="Face"/>.
 		/// </summary>
-		[Index("indices")] public int FirstIndexIndex {
+		[Index("Indices")] public int FirstIndexIndex {
 			get {
 				if (MapType == MapType.Nightfire
 					|| MapType == MapType.CoD
@@ -678,7 +678,7 @@ namespace LibBSP {
 		/// For formats which use triangle corner indices, gets or sets the count of <see cref="Vertex"/> indices
 		/// used by this <see cref="Face"/>.
 		/// </summary>
-		[Count("indices")] public int NumIndices {
+		[Count("Indices")] public int NumIndices {
 			get {
 				if (MapType == MapType.CoD4) {
 					return BitConverter.ToInt16(Data, 18);
@@ -1380,16 +1380,16 @@ namespace LibBSP {
 			Parent = parent;
 
 			if (parent != null && parent.Bsp != null) {
-				if (source.Parent != null && source.Parent.Bsp != null && source.Parent.Bsp.version == parent.Bsp.version && source.LumpVersion == parent.LumpInfo.version) {
+				if (source.Parent != null && source.Parent.Bsp != null && source.Parent.Bsp.MapType == parent.Bsp.MapType && source.LumpVersion == parent.LumpInfo.version) {
 					Data = new byte[source.Data.Length];
 					Array.Copy(source.Data, Data, source.Data.Length);
 					return;
 				} else {
-					Data = new byte[GetStructLength(parent.Bsp.version, parent.LumpInfo.version)];
+					Data = new byte[GetStructLength(parent.Bsp.MapType, parent.LumpInfo.version)];
 				}
 			} else {
 				if (source.Parent != null && source.Parent.Bsp != null) {
-					Data = new byte[GetStructLength(source.Parent.Bsp.version, source.Parent.LumpInfo.version)];
+					Data = new byte[GetStructLength(source.Parent.Bsp.MapType, source.Parent.LumpInfo.version)];
 				} else {
 					Data = new byte[GetStructLength(MapType.Undefined, 0)];
 				}
@@ -1450,7 +1450,7 @@ namespace LibBSP {
 				throw new ArgumentNullException();
 			}
 
-			return new Lump<Face>(data, GetStructLength(bsp.version, lumpInfo.version), bsp, lumpInfo);
+			return new Lump<Face>(data, GetStructLength(bsp.MapType, lumpInfo.version), bsp, lumpInfo);
 		}
 
 		/// <summary>

@@ -111,18 +111,18 @@ namespace LibBSP {
 
 				return data;
 			} else if (typeof(T) == typeof(Vertex)) {
-				int length = VertexExtensions.GetStructLength(Bsp.version, LumpInfo.version);
+				int length = VertexExtensions.GetStructLength(Bsp.MapType, LumpInfo.version);
 				byte[] data = new byte[length * Count];
 				for (int i = 0; i < Count; ++i) {
-					((Vertex)(object)this[i]).GetBytes(Bsp.version, LumpInfo.version).CopyTo(data, length * i);
+					((Vertex)(object)this[i]).GetBytes(Bsp.MapType, LumpInfo.version).CopyTo(data, length * i);
 				}
 
 				return data;
 			} else if (typeof(T) == typeof(Plane)) {
-				int length = PlaneExtensions.GetStructLength(Bsp.version, LumpInfo.version);
+				int length = PlaneExtensions.GetStructLength(Bsp.MapType, LumpInfo.version);
 				byte[] data = new byte[length * Count];
 				for (int i = 0; i < Count; ++i) {
-					((Plane)(object)this[i]).GetBytes(Bsp.version, LumpInfo.version).CopyTo(data, length * i);
+					((Plane)(object)this[i]).GetBytes(Bsp.MapType, LumpInfo.version).CopyTo(data, length * i);
 				}
 
 				return data;

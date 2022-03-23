@@ -198,11 +198,29 @@ namespace LibBSP {
 	/// Struct containing basic information for a lump in a BSP file.
 	/// </summary>
 	public struct LumpInfo {
+		/// <summary>
+		/// ID of this lump.
+		/// </summary>
 		public int ident;
+		/// <summary>
+		/// Lump flags.
+		/// </summary>
 		public int flags;
+		/// <summary>
+		/// Lump version.
+		/// </summary>
 		public int version;
+		/// <summary>
+		/// Lump offset.
+		/// </summary>
 		public int offset;
+		/// <summary>
+		/// Lump length.
+		/// </summary>
 		public int length;
+		/// <summary>
+		/// Lump file.
+		/// </summary>
 		public FileInfo lumpFile;
 	}
 
@@ -212,7 +230,7 @@ namespace LibBSP {
 	/// </summary>
 	public class BSP : Dictionary<int, LumpInfo> {
 
-		private MapType _version;
+		private MapType _mapType;
 
 		// Map structures
 		// Quake 1/GoldSrc
@@ -221,26 +239,26 @@ namespace LibBSP {
 		private Textures _textures;
 		private Lump<Vertex> _vertices;
 		private Lump<Node> _nodes;
-		private Lump<TextureInfo> _texInfo;
+		private Lump<TextureInfo> _textureInfo;
 		private Lump<Face> _faces;
 		private Lump<Leaf> _leaves;
-		private NumList _markSurfaces;
+		private NumList _leafFaces;
 		private Lump<Edge> _edges;
-		private NumList _surfEdges;
+		private NumList _faceEdges;
 		private Lump<Model> _models;
 		private Visibility _visibility;
 		private Lightmaps _lightmaps;
 		// Quake 2
 		private Lump<Brush> _brushes;
 		private Lump<BrushSide> _brushSides;
-		private NumList _markBrushes;
+		private NumList _leafBrushes;
 		// MoHAA
 		private Lump<LODTerrain> _lodTerrains;
 		private Lump<StaticModel> _staticModels;
 		private NumList _leafStaticModels;
 		// CoD
 		private Lump<Patch> _patches;
-		private Lump<Vertex> _patchVerts;
+		private Lump<Vertex> _patchVertices;
 		private NumList _patchIndices;
 		private NumList _leafPatches;
 		// Nightfire
@@ -249,10 +267,10 @@ namespace LibBSP {
 		private Lump<Vertex> _normals;
 		// Source
 		private Lump<Face> _originalFaces;
-		private NumList _texTable;
-		private Lump<TextureData> _texDatas;
-		private Lump<Displacement> _dispInfos;
-		private Lump<DisplacementVertex> _dispVerts;
+		private NumList _textureTable;
+		private Lump<TextureData> _textureData;
+		private Lump<Displacement> _displacements;
+		private Lump<DisplacementVertex> _displacementVertices;
 		private NumList _displacementTriangles;
 		// public SourceOverlays overlays;
 		private Lump<Cubemap> _cubemaps;
@@ -261,45 +279,47 @@ namespace LibBSP {
 		/// <summary>
 		/// The <see cref="BSPReader"/> object in use by this <see cref="BSP"/> class.
 		/// </summary>
-		public BSPReader reader { get; private set; }
+		public BSPReader Reader { get; private set; }
 
 		/// <summary>
 		/// The version of this BSP. Do not change this unless you want to force reading a BSP as a certain format.
 		/// </summary>
-		public MapType version {
+		public MapType MapType {
 			get {
-				if (_version == MapType.Undefined) {
-					_version = reader.GetVersion();
+				if (_mapType == MapType.Undefined) {
+					_mapType = Reader.GetVersion();
 				}
-				return _version;
+
+				return _mapType;
 			}
 			set {
-				_version = value;
+				_mapType = value;
 			}
 		}
 
 		/// <summary>
 		/// Is the BSP file in big endian format?
 		/// </summary>
-		public bool bigEndian { get { return reader.bigEndian; } }
+		public bool BigEndian { get; private set; }
 
 		/// <summary>
-		/// The <see cref="Entities"/> object in the BSP file, if available.
+		/// The <see cref="LibBSP.Entities"/> object in the BSP file, if available.
 		/// </summary>
-		public Entities entities {
+		public Entities Entities {
 			get {
 				if (_entities == null) {
-					int index = Entity.GetIndexForLump(version);
+					int index = Entity.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_entities = Entity.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_entities = Entity.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
+
 				return _entities;
 			}
 		}
 
 		/// <summary>
-		/// Has the <see cref="Entities"/> lump been loaded yet?
+		/// Has the <see cref="LibBSP.Entities"/> lump been loaded yet?
 		/// </summary>
 		public bool EntitiesLoaded {
 			get {
@@ -310,14 +330,15 @@ namespace LibBSP {
 		/// <summary>
 		/// A <see cref="Lump{Plane}"/> of <see cref="Plane"/> objects in the BSP file, if available.
 		/// </summary>
-		public Lump<Plane> planes {
+		public Lump<Plane> Planes {
 			get {
 				if (_planes == null) {
-					int index = PlaneExtensions.GetIndexForLump(version);
+					int index = PlaneExtensions.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_planes = PlaneExtensions.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_planes = PlaneExtensions.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
+
 				return _planes;
 			}
 		}
@@ -332,16 +353,17 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// The <see cref="Textures"/> object in the BSP file, if available.
+		/// The <see cref="LibBSP.Textures"/> object in the BSP file, if available.
 		/// </summary>
-		public Textures textures {
+		public Textures Textures {
 			get {
 				if (_textures == null) {
-					int index = Texture.GetIndexForLump(version);
+					int index = Texture.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_textures = Texture.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_textures = Texture.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
+
 				return _textures;
 			}
 		}
@@ -358,14 +380,15 @@ namespace LibBSP {
 		/// <summary>
 		/// A <see cref="Lump{Vertex}"/> of <see cref="Vertex"/> objects in the BSP file representing the vertices of the BSP, if available.
 		/// </summary>
-		public Lump<Vertex> vertices {
+		public Lump<Vertex> Vertices {
 			get {
 				if (_vertices == null) {
-					int index = VertexExtensions.GetIndexForLump(version);
+					int index = VertexExtensions.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_vertices = VertexExtensions.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_vertices = VertexExtensions.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
+
 				return _vertices;
 			}
 		}
@@ -382,14 +405,15 @@ namespace LibBSP {
 		/// <summary>
 		/// A <see cref="Lump{Vertex}"/> of <see cref="Vertex"/> objects in the BSP file representing the vertex normals of the BSP, if available.
 		/// </summary>
-		public Lump<Vertex> normals {
+		public Lump<Vertex> Normals {
 			get {
 				if (_normals == null) {
-					int index = VertexExtensions.GetIndexForNormalsLump(version);
+					int index = VertexExtensions.GetIndexForNormalsLump(MapType);
 					if (index >= 0) {
-						_normals = VertexExtensions.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_normals = VertexExtensions.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
+
 				return _normals;
 			}
 		}
@@ -404,16 +428,17 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// A <see cref="Lump{Node}"/> of <see cref="Node"/> objects in the BSP file, if available.
+		/// A <see cref="Lump{LibBSP.Node}"/> of <see cref="Node"/> objects in the BSP file, if available.
 		/// </summary>
-		public Lump<Node> nodes {
+		public Lump<Node> Nodes {
 			get {
 				if (_nodes == null) {
-					int index = Node.GetIndexForLump(version);
+					int index = Node.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_nodes = Node.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_nodes = Node.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
+
 				return _nodes;
 			}
 		}
@@ -428,17 +453,18 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// A <see cref="Lump{TextureInfo}"/> of <see cref="TextureInfo"/> objects in the BSP file, if available.
+		/// A <see cref="Lump{LibBSP.TextureInfo}"/> of <see cref="LibBSP.TextureInfo"/> objects in the BSP file, if available.
 		/// </summary>
-		public Lump<TextureInfo> texInfo {
+		public Lump<TextureInfo> TextureInfo {
 			get {
-				if (_texInfo == null) {
-					int index = TextureInfo.GetIndexForLump(version);
+				if (_textureInfo == null) {
+					int index = LibBSP.TextureInfo.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_texInfo = TextureInfo.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_textureInfo = LibBSP.TextureInfo.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
-				return _texInfo;
+
+				return _textureInfo;
 			}
 		}
 
@@ -447,21 +473,22 @@ namespace LibBSP {
 		/// </summary>
 		public bool TextureInfoLoaded {
 			get {
-				return _texInfo != null;
+				return _textureInfo != null;
 			}
 		}
 
 		/// <summary>
-		/// A <see cref="Lump{Face}"/> of <see cref="Face"/> objects in the BSP file, if available.
+		/// A <see cref="Lump{LibBSP.Face}"/> of <see cref="Face"/> objects in the BSP file, if available.
 		/// </summary>
-		public Lump<Face> faces {
+		public Lump<Face> Faces {
 			get {
 				if (_faces == null) {
-					int index = Face.GetIndexForLump(version);
+					int index = Face.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_faces = Face.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_faces = Face.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
+
 				return _faces;
 			}
 		}
@@ -476,16 +503,17 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// A <see cref="Lump{Leaf}"/> of <see cref="Leaf"/> objects in the BSP file, if available.
+		/// A <see cref="Lump{LibBSP.Leaf}"/> of <see cref="Leaf"/> objects in the BSP file, if available.
 		/// </summary>
-		public Lump<Leaf> leaves {
+		public Lump<Leaf> Leaves {
 			get {
 				if (_leaves == null) {
-					int index = Leaf.GetIndexForLump(version);
+					int index = Leaf.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_leaves = Leaf.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_leaves = Leaf.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
+
 				return _leaves;
 			}
 		}
@@ -500,16 +528,17 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// A <see cref="Lump{Edge}"/> of <see cref="Edge"/> objects in the BSP file, if available.
+		/// A <see cref="Lump{LibBSP.Edge}"/> of <see cref="Edge"/> objects in the BSP file, if available.
 		/// </summary>
-		public Lump<Edge> edges {
+		public Lump<Edge> Edges {
 			get {
 				if (_edges == null) {
-					int index = Edge.GetIndexForLump(version);
+					int index = Edge.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_edges = Edge.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_edges = Edge.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
+
 				return _edges;
 			}
 		}
@@ -524,16 +553,17 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// A <see cref="Lump{Model}"/> of <see cref="Model"/> objects in the BSP file, if available.
+		/// A <see cref="Lump{LibBSP.Model}"/> of <see cref="Model"/> objects in the BSP file, if available.
 		/// </summary>
-		public Lump<Model> models {
+		public Lump<Model> Models {
 			get {
 				if (_models == null) {
-					int index = Model.GetIndexForLump(version);
+					int index = Model.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_models = Model.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_models = Model.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
+
 				return _models;
 			}
 		}
@@ -548,16 +578,17 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// A <see cref="Lump{Brush}"/> of <see cref="Brush"/> objects in the BSP file, if available.
+		/// A <see cref="Lump{LibBSP.Brush}"/> of <see cref="Brush"/> objects in the BSP file, if available.
 		/// </summary>
-		public Lump<Brush> brushes {
+		public Lump<Brush> Brushes {
 			get {
 				if (_brushes == null) {
-					int index = Brush.GetIndexForLump(version);
+					int index = Brush.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_brushes = Brush.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_brushes = Brush.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
+
 				return _brushes;
 			}
 		}
@@ -572,16 +603,17 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// A <see cref="Lump{BrushSide}"/> of <see cref="BrushSide"/> objects in the BSP file, if available.
+		/// A <see cref="Lump{LibBSP.BrushSide}"/> of <see cref="BrushSide"/> objects in the BSP file, if available.
 		/// </summary>
-		public Lump<BrushSide> brushSides {
+		public Lump<BrushSide> BrushSides {
 			get {
 				if (_brushSides == null) {
-					int index = BrushSide.GetIndexForLump(version);
+					int index = BrushSide.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_brushSides = BrushSide.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_brushSides = BrushSide.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
+
 				return _brushSides;
 			}
 		}
@@ -596,22 +628,23 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// A <see cref="Textures"/> object representing Materials (shaders), if available.
+		/// A <see cref="LibBSP.Textures"/> object representing Materials (shaders), if available.
 		/// </summary>
-		public Textures materials {
+		public Textures Materials {
 			get {
 				if (_materials == null) {
-					int index = Texture.GetIndexForMaterialLump(version);
+					int index = Texture.GetIndexForMaterialLump(MapType);
 					if (index >= 0) {
-						_materials = Texture.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_materials = Texture.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
+
 				return _materials;
 			}
 		}
 
 		/// <summary>
-		/// Has the materials lump been loaded yet?
+		/// Has the Materials lump been loaded yet?
 		/// </summary>
 		public bool MaterialsLoaded {
 			get {
@@ -620,22 +653,23 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// A <see cref="Visibility"/> object holding leaf visiblity data for this <see cref="BSP"/>.
+		/// A <see cref="LibBSP.Visibility"/> object holding leaf visiblity data for this <see cref="BSP"/>.
 		/// </summary>
-		public Visibility visibility {
+		public Visibility Visibility {
 			get {
 				if (_visibility == null) {
-					int index = Visibility.GetIndexForLump(version);
+					int index = Visibility.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_visibility = new Visibility(reader.ReadLump(this[index]), this, this[index]);
+						_visibility = new Visibility(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
+
 				return _visibility;
 			}
 		}
 
 		/// <summary>
-		/// Has the <see cref="Visibility"/> lump been loaded yet?
+		/// Has the <see cref="LibBSP.Visibility"/> lump been loaded yet?
 		/// </summary>
 		public bool VisibilityLoaded {
 			get {
@@ -644,22 +678,23 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// A <see cref="Lightmaps"/> object holding lightmap data for this <see cref="BSP"/>.
+		/// A <see cref="LibBSP.Lightmaps"/> object holding lightmap data for this <see cref="BSP"/>.
 		/// </summary>
-		public Lightmaps lightmaps {
+		public Lightmaps Lightmaps {
 			get {
 				if (_lightmaps == null) {
-					int index = Lightmaps.GetIndexForLump(version);
+					int index = Lightmaps.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_lightmaps = new Lightmaps(reader.ReadLump(this[index]), this, this[index]);
+						_lightmaps = new Lightmaps(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
+
 				return _lightmaps;
 			}
 		}
 
 		/// <summary>
-		/// Has the <see cref="Lightmaps"/> lump been loaded yet?
+		/// Has the <see cref="LibBSP.Lightmaps"/> lump been loaded yet?
 		/// </summary>
 		public bool LightmapsLoaded {
 			get {
@@ -668,22 +703,23 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// A <see cref="Lump{Face}"/> of <see cref="Face"/> objects in the BSP file representing the Original Faces, if available.
+		/// A <see cref="Lump{LibBSP.Face}"/> of <see cref="Face"/> objects in the BSP file representing the Original Faces, if available.
 		/// </summary>
-		public Lump<Face> originalFaces {
+		public Lump<Face> OriginalFaces {
 			get {
 				if (_originalFaces == null) {
-					int index = Face.GetIndexForOriginalFacesLump(version);
+					int index = Face.GetIndexForOriginalFacesLump(MapType);
 					if (index >= 0) {
-						_originalFaces = Face.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_originalFaces = Face.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
+
 				return _originalFaces;
 			}
 		}
 
 		/// <summary>
-		/// Has the original <see cref="Face"/> lump been loaded yet?
+		/// Has the Original <see cref="Face"/> lump been loaded yet?
 		/// </summary>
 		public bool OriginalFacesLoaded {
 			get {
@@ -692,41 +728,43 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// A <see cref="Lump{TextureData}"/> of <see cref="TextureData"/> objects in the BSP file, if available.
+		/// A <see cref="Lump{LibBSP.TextureData}"/> of <see cref="LibBSP.TextureData"/> objects in the BSP file, if available.
 		/// </summary>
-		public Lump<TextureData> texDatas {
+		public Lump<TextureData> TextureData {
 			get {
-				if (_texDatas == null) {
-					int index = TextureData.GetIndexForLump(version);
+				if (_textureData == null) {
+					int index = LibBSP.TextureData.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_texDatas = TextureData.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_textureData = LibBSP.TextureData.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
-				return _texDatas;
+
+				return _textureData;
 			}
 		}
 
 		/// <summary>
-		/// Has the <see cref="TextureData"/> lump been loaded yet?
+		/// Has the <see cref="LibBSP.TextureData"/> lump been loaded yet?
 		/// </summary>
 		public bool TextureDataLoaded {
 			get {
-				return _texDatas != null;
+				return _textureData != null;
 			}
 		}
 
 		/// <summary>
-		/// A <see cref="Lump{Displacement}"/> of <see cref="Displacement"/> objects in the BSP file, if available.
+		/// A <see cref="Lump{LibBSP.Displacement}"/> of <see cref="Displacement"/> objects in the BSP file, if available.
 		/// </summary>
-		public Lump<Displacement> dispInfos {
+		public Lump<Displacement> Displacements {
 			get {
-				if (_dispInfos == null) {
-					int index = Displacement.GetIndexForLump(version);
+				if (_displacements == null) {
+					int index = Displacement.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_dispInfos = Displacement.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_displacements = Displacement.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
-				return _dispInfos;
+
+				return _displacements;
 			}
 		}
 
@@ -735,22 +773,23 @@ namespace LibBSP {
 		/// </summary>
 		public bool DisplacementsLoaded {
 			get {
-				return _dispInfos != null;
+				return _displacements != null;
 			}
 		}
 
 		/// <summary>
-		/// The <see cref="Lump{DisplacementVertex}"/> object in the BSP file, if available.
+		/// The <see cref="Lump{LibBSP.DisplacementVertex}"/> object in the BSP file, if available.
 		/// </summary>
-		public Lump<DisplacementVertex> dispVerts {
+		public Lump<DisplacementVertex> DisplacementVertices {
 			get {
-				if (_dispVerts == null) {
-					int index = DisplacementVertex.GetIndexForLump(version);
+				if (_displacementVertices == null) {
+					int index = DisplacementVertex.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_dispVerts = DisplacementVertex.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_displacementVertices = DisplacementVertex.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
-				return _dispVerts;
+
+				return _displacementVertices;
 			}
 		}
 
@@ -759,21 +798,22 @@ namespace LibBSP {
 		/// </summary>
 		public bool DisplacementVerticesLoaded {
 			get {
-				return _dispVerts != null;
+				return _displacementVertices != null;
 			}
 		}
 
 		/// <summary>
-		/// A <see cref="Lump{Cubemap}"/> of <see cref="Cubemap"/> objects in the BSP file, if available.
+		/// A <see cref="Lump{LibBSP.Cubemap}"/> of <see cref="Cubemap"/> objects in the BSP file, if available.
 		/// </summary>
-		public Lump<Cubemap> cubemaps {
+		public Lump<Cubemap> Cubemaps {
 			get {
 				if (_cubemaps == null) {
-					int index = Cubemap.GetIndexForLump(version);
+					int index = Cubemap.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_cubemaps = Cubemap.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_cubemaps = Cubemap.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
+
 				return _cubemaps;
 			}
 		}
@@ -788,91 +828,95 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// A <see cref="NumList"/> object containing the Mark Surfaces (Leaf Surfaces) lump, if available.
+		/// A <see cref="NumList"/> object containing the Leaf Faces lump, if available.
 		/// </summary>
-		public NumList markSurfaces {
+		public NumList LeafFaces {
 			get {
-				if (_markSurfaces == null) {
+				if (_leafFaces == null) {
 					NumList.DataType type;
-					int index = NumList.GetIndexForMarkSurfacesLump(version, out type);
+					int index = NumList.GetIndexForLeafFacesLump(MapType, out type);
 					if (index >= 0) {
-						_markSurfaces = NumList.LumpFactory(reader.ReadLump(this[index]), type, this, this[index]);
+						_leafFaces = NumList.LumpFactory(Reader.ReadLump(this[index]), type, this, this[index]);
 					}
 				}
-				return _markSurfaces;
+
+				return _leafFaces;
 			}
 		}
 
 		/// <summary>
-		/// Has the MarkSurfaces lump been loaded yet?
+		/// Has the Leaf Faces lump been loaded yet?
 		/// </summary>
-		public bool MarkSurfacesLoaded {
+		public bool LeafFacesLoaded {
 			get {
-				return _markSurfaces != null;
+				return _leafFaces != null;
 			}
 		}
 
 		/// <summary>
-		/// A <see cref="NumList"/> object containing the Surface Edges lump, if available.
+		/// A <see cref="NumList"/> object containing the Face Edges lump, if available.
 		/// </summary>
-		public NumList surfEdges {
+		public NumList FaceEdges {
 			get {
-				if (_surfEdges == null) {
+				if (_faceEdges == null) {
 					NumList.DataType type;
-					int index = NumList.GetIndexForSurfEdgesLump(version, out type);
+					int index = NumList.GetIndexForFaceEdgesLump(MapType, out type);
 					if (index >= 0) {
-						_surfEdges = NumList.LumpFactory(reader.ReadLump(this[index]), type, this, this[index]);
+						_faceEdges = NumList.LumpFactory(Reader.ReadLump(this[index]), type, this, this[index]);
 					}
 				}
-				return _surfEdges;
+
+				return _faceEdges;
 			}
 		}
 
 		/// <summary>
 		/// Has the Surface Edges lump been loaded yet?
 		/// </summary>
-		public bool SurfaceEdgesLoaded {
+		public bool FaceEdgesLoaded {
 			get {
-				return _surfEdges != null;
+				return _faceEdges != null;
 			}
 		}
 
 		/// <summary>
-		/// A <see cref="NumList"/> object containing the Mark Brushes (Leaf Brushes) lump, if available.
+		/// A <see cref="NumList"/> object containing the Leaf Brushes lump, if available.
 		/// </summary>
-		public NumList markBrushes {
+		public NumList LeafBrushes {
 			get {
-				if (_markBrushes == null) {
+				if (_leafBrushes == null) {
 					NumList.DataType type;
-					int index = NumList.GetIndexForMarkBrushesLump(version, out type);
+					int index = NumList.GetIndexForLeafBrushesLump(MapType, out type);
 					if (index >= 0) {
-						_markBrushes = NumList.LumpFactory(reader.ReadLump(this[index]), type, this, this[index]);
+						_leafBrushes = NumList.LumpFactory(Reader.ReadLump(this[index]), type, this, this[index]);
 					}
 				}
-				return _markBrushes;
+
+				return _leafBrushes;
 			}
 		}
 
 		/// <summary>
-		/// Has the Mark Brushes lump been loaded yet?
+		/// Has the Leaf Brushes lump been loaded yet?
 		/// </summary>
-		public bool MarkBrushesLoaded {
+		public bool LeafBrushesLoaded {
 			get {
-				return _markBrushes != null;
+				return _leafBrushes != null;
 			}
 		}
 
 		/// <summary>
-		/// A <see cref="Lump{StaticModel}"/> of <see cref="StaticModel"/> objects in the BSP file, if available.
+		/// A <see cref="Lump{LibBSP.StaticModel}"/> of <see cref="StaticModel"/> objects in the BSP file, if available.
 		/// </summary>
-		public Lump<StaticModel> staticModels {
+		public Lump<StaticModel> StaticModels {
 			get {
 				if (_staticModels == null) {
-					int index = StaticModel.GetIndexForLump(version);
+					int index = StaticModel.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_staticModels = StaticModel.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_staticModels = StaticModel.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
+
 				return _staticModels;
 			}
 		}
@@ -887,16 +931,17 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// A <see cref="Lump{LODTerrain}"/> of <see cref="LODTerrain"/> objects in the BSP file, if available.
+		/// A <see cref="Lump{LibBSP.LODTerrain}"/> of <see cref="LODTerrain"/> objects in the BSP file, if available.
 		/// </summary>
-		public Lump<LODTerrain> lodTerrains {
+		public Lump<LODTerrain> LODTerrains {
 			get {
 				if (_lodTerrains == null) {
-					int index = LODTerrain.GetIndexForLump(version);
+					int index = LODTerrain.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_lodTerrains = LODTerrain.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_lodTerrains = LODTerrain.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
+
 				return _lodTerrains;
 			}
 		}
@@ -914,15 +959,16 @@ namespace LibBSP {
 		/// A <see cref="NumList"/> object containing the Leaf Static Models lump, if available.
 		/// These are a list of MOHAA static model indices, referenced by leaves.
 		/// </summary>
-		public NumList leafStaticModels {
+		public NumList LeafStaticModels {
 			get {
 				if (_leafStaticModels == null) {
 					NumList.DataType type;
-					int index = NumList.GetIndexForLeafStaticModelsLump(version, out type);
+					int index = NumList.GetIndexForLeafStaticModelsLump(MapType, out type);
 					if (index >= 0) {
-						_leafStaticModels = NumList.LumpFactory(reader.ReadLump(this[index]), type, this, this[index]);
+						_leafStaticModels = NumList.LumpFactory(Reader.ReadLump(this[index]), type, this, this[index]);
 					}
 				}
+
 				return _leafStaticModels;
 			}
 		}
@@ -937,16 +983,17 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// A <see cref="Lump{Patch}"/> of <see cref="Patch"/> objects in the BSP file, if available.
+		/// A <see cref="Lump{LibBSP.Patch}"/> of <see cref="Patch"/> objects in the BSP file, if available.
 		/// </summary>
-		public Lump<Patch> patches {
+		public Lump<Patch> Patches {
 			get {
 				if (_patches == null) {
-					int index = Patch.GetIndexForLump(version);
+					int index = Patch.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_patches = Patch.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_patches = Patch.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
+
 				return _patches;
 			}
 		}
@@ -963,18 +1010,19 @@ namespace LibBSP {
 		/// <summary>
 		/// A <see cref="Lump{Vertex}"/> of <see cref="Vertex"/> objects in the BSP file representing the patch vertices of the BSP, if available.
 		/// </summary>
-		public Lump<Vertex> patchVerts {
+		public Lump<Vertex> PatchVertices {
 			get {
-				if (_patchVerts == null) {
-					int index = VertexExtensions.GetIndexForPatchVertsLump(version);
+				if (_patchVertices == null) {
+					int index = VertexExtensions.GetIndexForPatchVertsLump(MapType);
 					if (index >= 0) {
 						// Hax: CoD maps will read Vertex lump with version 1 as simply Vector3s rather than vertices.
 						LumpInfo lumpInfo = this[index];
 						lumpInfo.version = 1;
-						_patchVerts = VertexExtensions.LumpFactory(reader.ReadLump(this[index]), this, lumpInfo);
+						_patchVertices = VertexExtensions.LumpFactory(Reader.ReadLump(this[index]), this, lumpInfo);
 					}
 				}
-				return _patchVerts;
+
+				return _patchVertices;
 			}
 		}
 
@@ -983,22 +1031,23 @@ namespace LibBSP {
 		/// </summary>
 		public bool PatchVertsLoaded {
 			get {
-				return _patchVerts != null;
+				return _patchVertices != null;
 			}
 		}
 
 		/// <summary>
 		/// A <see cref="NumList"/> object containing the Patch Vertex Indices lump, if available.
 		/// </summary>
-		public NumList patchIndices {
+		public NumList PatchIndices {
 			get {
 				if (_patchIndices == null) {
 					NumList.DataType type;
-					int index = NumList.GetIndexForPatchIndicesLump(version, out type);
+					int index = NumList.GetIndexForPatchIndicesLump(MapType, out type);
 					if (index >= 0) {
-						_patchIndices = NumList.LumpFactory(reader.ReadLump(this[index]), type, this, this[index]);
+						_patchIndices = NumList.LumpFactory(Reader.ReadLump(this[index]), type, this, this[index]);
 					}
 				}
+
 				return _patchIndices;
 			}
 		}
@@ -1015,15 +1064,16 @@ namespace LibBSP {
 		/// <summary>
 		/// A <see cref="NumList"/> object containing the Leaf Patches lump, if available.
 		/// </summary>
-		public NumList leafPatches {
+		public NumList LeafPatches {
 			get {
 				if (_leafPatches == null) {
 					NumList.DataType type;
-					int index = NumList.GetIndexForLeafPatchesLump(version, out type);
+					int index = NumList.GetIndexForLeafPatchesLump(MapType, out type);
 					if (index >= 0) {
-						_leafPatches = NumList.LumpFactory(reader.ReadLump(this[index]), type, this, this[index]);
+						_leafPatches = NumList.LumpFactory(Reader.ReadLump(this[index]), type, this, this[index]);
 					}
 				}
+
 				return _leafPatches;
 			}
 		}
@@ -1040,15 +1090,16 @@ namespace LibBSP {
 		/// <summary>
 		/// A <see cref="NumList"/> object containing the Face Vertex Indices lump, if available.
 		/// </summary>
-		public NumList indices {
+		public NumList Indices {
 			get {
 				if (_indices == null) {
 					NumList.DataType type;
-					int index = NumList.GetIndexForIndicesLump(version, out type);
+					int index = NumList.GetIndexForIndicesLump(MapType, out type);
 					if (index >= 0) {
-						_indices = NumList.LumpFactory(reader.ReadLump(this[index]), type, this, this[index]);
+						_indices = NumList.LumpFactory(Reader.ReadLump(this[index]), type, this, this[index]);
 					}
 				}
+
 				return _indices;
 			}
 		}
@@ -1065,16 +1116,17 @@ namespace LibBSP {
 		/// <summary>
 		/// A <see cref="NumList"/> object containing the Texture offsets table lump, if available.
 		/// </summary>
-		public NumList texTable {
+		public NumList TextureTable {
 			get {
-				if (_texTable == null) {
+				if (_textureTable == null) {
 					NumList.DataType type;
-					int index = NumList.GetIndexForTexTableLump(version, out type);
+					int index = NumList.GetIndexForTexTableLump(MapType, out type);
 					if (index >= 0) {
-						_texTable = NumList.LumpFactory(reader.ReadLump(this[index]), type, this, this[index]);
+						_textureTable = NumList.LumpFactory(Reader.ReadLump(this[index]), type, this, this[index]);
 					}
 				}
-				return _texTable;
+
+				return _textureTable;
 			}
 		}
 
@@ -1083,22 +1135,23 @@ namespace LibBSP {
 		/// </summary>
 		public bool TextureTableLoaded {
 			get {
-				return _patchIndices != null;
+				return _textureTable != null;
 			}
 		}
 
 		/// <summary>
 		/// A <see cref="NumList"/> object containing the Displacement Triangles lump, if available.
 		/// </summary>
-		public NumList displacementTriangles {
+		public NumList DisplacementTriangles {
 			get {
 				if (_displacementTriangles == null) {
 					NumList.DataType type;
-					int index = NumList.GetIndexForDisplacementTrianglesLump(version, out type);
+					int index = NumList.GetIndexForDisplacementTrianglesLump(MapType, out type);
 					if (index >= 0) {
-						_displacementTriangles = NumList.LumpFactory(reader.ReadLump(this[index]), type, this, this[index]);
+						_displacementTriangles = NumList.LumpFactory(Reader.ReadLump(this[index]), type, this, this[index]);
 					}
 				}
+
 				return _displacementTriangles;
 			}
 		}
@@ -1113,16 +1166,17 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// The <see cref="GameLump"/> object in the BSP file containing internal lumps, if available.
+		/// The <see cref="LibBSP.GameLump"/> object in the BSP file containing internal lumps, if available.
 		/// </summary>
-		public GameLump gameLump {
+		public GameLump GameLump {
 			get {
 				if (_gameLump == null) {
-					int index = GameLump.GetIndexForLump(version);
+					int index = GameLump.GetIndexForLump(MapType);
 					if (index >= 0) {
-						_gameLump = GameLump.LumpFactory(reader.ReadLump(this[index]), this, this[index]);
+						_gameLump = GameLump.LumpFactory(Reader.ReadLump(this[index]), this, this[index]);
 					}
 				}
+
 				return _gameLump;
 			}
 		}
@@ -1139,10 +1193,10 @@ namespace LibBSP {
 		/// <summary>
 		/// The <see cref="StaticProps"/> object in the BSP file extracted from the <see cref="BSP.gameLump"/>, if available.
 		/// </summary>
-		public StaticProps staticProps {
+		public StaticProps StaticProps {
 			get {
-				if (gameLump != null) {
-					return gameLump.StaticProps;
+				if (GameLump != null) {
+					return GameLump.StaticProps;
 				}
 
 				return null;
@@ -1154,40 +1208,15 @@ namespace LibBSP {
 		/// </summary>
 		public bool StaticPropsLoaded {
 			get {
-				return GameLumpLoaded && gameLump.StaticPropsLoaded;
+				return GameLumpLoaded && GameLump.StaticPropsLoaded;
 			}
 		}
 
 		/// <summary>
-		/// Gets the path to this BSP file.
-		/// </summary>
-		public string filePath { get; private set; }
-
-		/// <summary>
-		/// Gets the file name of this map.
+		/// Gets the name of this map.
 		/// </summary>
 		public string MapName {
-			get {
-				return Path.GetFileName(filePath);
-			}
-		}
-
-		/// <summary>
-		/// Gets the file name of this map without the ".BSP" extension.
-		/// </summary>
-		public string MapNameNoExtension {
-			get {
-				return Path.GetFileNameWithoutExtension(filePath);
-			}
-		}
-
-		/// <summary>
-		/// Gets the folder path where this map is located.
-		/// </summary>
-		public string Folder {
-			get {
-				return Path.GetDirectoryName(filePath);
-			}
+			get; private set;
 		}
 
 		/// <summary>
@@ -1198,7 +1227,7 @@ namespace LibBSP {
 		public new LumpInfo this[int index] {
 			get {
 				if (!ContainsKey(index)) {
-					base[index] = reader.GetLumpInfo(index, version);
+					base[index] = Reader.GetLumpInfo(index, MapType);
 				}
 				return base[index];
 			}
@@ -1210,8 +1239,9 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="filePath">The path to the .BSP file.</param>
 		public BSP(string filePath) : base(16) {
-			reader = new BSPReader(new FileInfo(filePath));
-			this.filePath = filePath;
+			Reader = new BSPReader(new FileInfo(filePath));
+			MapName = Path.GetFileName(filePath);
+			MapName = MapName.Substring(0, MapName.Length - 4);
 		}
 
 		/// <summary>
@@ -1220,8 +1250,9 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="file">A reference to the .BSP file.</param>
 		public BSP(FileInfo file) : base(16) {
-			reader = new BSPReader(file);
-			filePath = file.FullName;
+			Reader = new BSPReader(file);
+			MapName = Path.GetFileName(file.FullName);
+			MapName = MapName.Substring(0, MapName.Length - 4);
 		}
 
 		/// <summary>

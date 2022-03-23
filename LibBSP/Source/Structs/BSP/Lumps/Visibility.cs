@@ -27,18 +27,18 @@ namespace LibBSP {
 		/// </summary>
 		public int NumClusters {
 			get {
-				if (Bsp.version.IsSubtypeOf(MapType.Quake2)
-					|| Bsp.version.IsSubtypeOf(MapType.Quake3)
-					|| Bsp.version.IsSubtypeOf(MapType.Source)) {
+				if (Bsp.MapType.IsSubtypeOf(MapType.Quake2)
+					|| Bsp.MapType.IsSubtypeOf(MapType.Quake3)
+					|| Bsp.MapType.IsSubtypeOf(MapType.Source)) {
 					return BitConverter.ToInt32(Data, 0);
 				}
 
 				return -1;
 			}
 			set {
-				if (Bsp.version.IsSubtypeOf(MapType.Quake2)
-					|| Bsp.version.IsSubtypeOf(MapType.Quake3)
-					|| Bsp.version.IsSubtypeOf(MapType.Source)) {
+				if (Bsp.MapType.IsSubtypeOf(MapType.Quake2)
+					|| Bsp.MapType.IsSubtypeOf(MapType.Quake3)
+					|| Bsp.MapType.IsSubtypeOf(MapType.Source)) {
 					BitConverter.GetBytes(value).CopyTo(Data, 0);
 				}
 			}
@@ -49,14 +49,14 @@ namespace LibBSP {
 		/// </summary>
 		public int ClusterSize {
 			get {
-				if (Bsp.version.IsSubtypeOf(MapType.Quake3)) {
+				if (Bsp.MapType.IsSubtypeOf(MapType.Quake3)) {
 					return BitConverter.ToInt32(Data, 4);
 				}
 
 				return -1;
 			}
 			set {
-				if (Bsp.version.IsSubtypeOf(MapType.Quake3)) {
+				if (Bsp.MapType.IsSubtypeOf(MapType.Quake3)) {
 					BitConverter.GetBytes(value).CopyTo(Data, 4);
 				}
 			}
@@ -91,8 +91,8 @@ namespace LibBSP {
 				offset = leaf.Visibility;
 			}
 
-			for (int i = 1; i < leaf.Parent.Bsp.leaves.Count; offset++) {
-				if (Data[offset] == 0 && Bsp.version != MapType.Nightfire && !Bsp.version.IsSubtypeOf(MapType.Quake)) {
+			for (int i = 1; i < leaf.Parent.Bsp.Leaves.Count; offset++) {
+				if (Data[offset] == 0 && Bsp.MapType != MapType.Nightfire && !Bsp.MapType.IsSubtypeOf(MapType.Quake)) {
 					i += 8 * Data[offset + 1];
 					if (i > other) {
 						return false;
@@ -119,8 +119,8 @@ namespace LibBSP {
 		/// -1 if this BSP does not use vis clusters.
 		/// </returns>
 		public int GetOffsetForClusterPVS(int cluster) {
-			if (Bsp.version.IsSubtypeOf(MapType.Quake2)
-				|| Bsp.version.IsSubtypeOf(MapType.Source)) {
+			if (Bsp.MapType.IsSubtypeOf(MapType.Quake2)
+				|| Bsp.MapType.IsSubtypeOf(MapType.Source)) {
 				return BitConverter.ToInt32(Data, 4 + (cluster * 8));
 			}
 
@@ -136,8 +136,8 @@ namespace LibBSP {
 		/// -1 if this BSP does not use vis clusters.
 		/// </returns>
 		public int GetOffsetForClusterPAS(int cluster) {
-			if (Bsp.version.IsSubtypeOf(MapType.Quake2)
-				|| Bsp.version.IsSubtypeOf(MapType.Source)) {
+			if (Bsp.MapType.IsSubtypeOf(MapType.Quake2)
+				|| Bsp.MapType.IsSubtypeOf(MapType.Source)) {
 				return BitConverter.ToInt32(Data, 8 + (cluster * 8));
 			}
 
