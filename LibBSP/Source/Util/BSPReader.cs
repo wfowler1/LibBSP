@@ -16,8 +16,12 @@ namespace LibBSP {
 		/// </summary>
 		private const string entityPattern = "\"classname\"";
 
-		private FileInfo bspFile;
 		private Dictionary<int, LumpInfo> lumpFiles = null;
+
+		/// <summary>
+		/// Gets the <see cref="FileInfo"/> for this <see cref="BSPReader"/>, if used.
+		/// </summary>
+		public FileInfo BspFile { get; private set; }
 
 		/// <summary>
 		/// An XOr encryption key for encrypted map formats. Must be read and set.
@@ -32,7 +36,7 @@ namespace LibBSP {
 			if (!File.Exists(file.FullName)) {
 				throw new FileNotFoundException("Unable to open BSP file; file " + file.FullName + " not found.");
 			} else {
-				bspFile = file;
+				BspFile = file;
 			}
 		}
 
@@ -64,7 +68,7 @@ namespace LibBSP {
 				}
 				return GetLumpInfoAtOffset((16 * (index + 1)), version);
 			} else if (version == MapType.CoD4) {
-				using (FileStream stream = new FileStream(bspFile.FullName, FileMode.Open, FileAccess.Read)) {
+				using (FileStream stream = new FileStream(BspFile.FullName, FileMode.Open, FileAccess.Read)) {
 					BinaryReader binaryReader = new BinaryReader(stream);
 					stream.Seek(8, SeekOrigin.Begin);
 					int numlumps = binaryReader.ReadInt32();
@@ -108,11 +112,11 @@ namespace LibBSP {
 		/// <param name="version">The type of BSP to interpret the file as.</param>
 		/// <returns>A <see cref="LumpInfo"/> object containing information about the lump.</returns>
 		private LumpInfo GetLumpInfoAtOffset(int offset, MapType version) {
-			if (bspFile.Length < offset + 16) {
+			if (BspFile.Length < offset + 16) {
 				return default(LumpInfo);
 			}
 			byte[] input;
-			using (FileStream stream = new FileStream(bspFile.FullName, FileMode.Open, FileAccess.Read)) {
+			using (FileStream stream = new FileStream(BspFile.FullName, FileMode.Open, FileAccess.Read)) {
 				BinaryReader binaryReader = new BinaryReader(stream);
 				stream.Seek(offset, SeekOrigin.Begin);
 				input = binaryReader.ReadBytes(16);
@@ -197,7 +201,7 @@ namespace LibBSP {
 		public byte[] ReadLump(int offset, int length, string fileName = null) {
 			byte[] output;
 			if (string.IsNullOrEmpty(fileName)) {
-				fileName = bspFile.FullName;
+				fileName = BspFile.FullName;
 			}
 			using (FileStream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read)) {
 				BinaryReader binaryReader = new BinaryReader(stream);
@@ -214,11 +218,11 @@ namespace LibBSP {
 		private void LoadLumpFiles() {
 			lumpFiles = new Dictionary<int, LumpInfo>();
 			// Scan the BSP's directory for lump files
-			DirectoryInfo dir = bspFile.Directory;
-			List<FileInfo> files = dir.GetFiles(bspFile.Name.Substring(0, bspFile.Name.Length - 4) + "_?_*.lmp").ToList();
+			DirectoryInfo dir = BspFile.Directory;
+			List<FileInfo> files = dir.GetFiles(BspFile.Name.Substring(0, BspFile.Name.Length - 4) + "_?_*.lmp").ToList();
 			// Sort the list by the number on the file
 			files.Sort((f1, f2) => {
-				int startIndex = bspFile.Name.Length - 1;
+				int startIndex = BspFile.Name.Length - 1;
 				int f1EndIndex = f1.Name.LastIndexOf('.');
 				int f2EndIndex = f2.Name.LastIndexOf('.');
 				int f1Position = int.Parse(f1.Name.Substring(startIndex, f1EndIndex - startIndex));
@@ -290,7 +294,7 @@ namespace LibBSP {
 		/// <returns>The <see cref="MapType"/> of this BSP, <see cref="MapType.Undefined"/> if it could not be determined.</returns>
 		private MapType GetVersion(bool bigEndian) {
 			MapType current = MapType.Undefined;
-			using (FileStream stream = new FileStream(bspFile.FullName, FileMode.Open, FileAccess.Read)) {
+			using (FileStream stream = new FileStream(BspFile.FullName, FileMode.Open, FileAccess.Read)) {
 				if (stream.Length < 4) {
 					return current;
 				}
