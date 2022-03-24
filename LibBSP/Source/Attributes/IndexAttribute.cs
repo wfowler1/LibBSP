@@ -7,7 +7,7 @@ namespace LibBSP {
 	/// member this Attribute is applied to can be paired with a member with a <see cref="CountAttribute"/>
 	/// applied to it. The two attributes can the be used to grab a range of objects
 	/// from the specified lump through the
-	/// <see cref="BSP.GetReferencedObjects&lt;T&gt;(System.Object, System.String)"/> method.
+	/// <see cref="BSP.GetReferencedObjects&lt;T&gt;(object, string)"/> method.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 	public class IndexAttribute : Attribute {
