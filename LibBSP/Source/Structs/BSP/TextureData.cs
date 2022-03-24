@@ -75,7 +75,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets the offset into <see cref="BSP.textures"/> for the texture name for this <see cref="TextureData"/>.
+		/// Gets the offset into <see cref="BSP.Textures"/> for the texture name for this <see cref="TextureData"/>.
 		/// </summary>
 		public uint TextureStringOffset {
 			get {
@@ -84,7 +84,7 @@ namespace LibBSP {
 		}
 		
 		/// <summary>
-		/// Gets or sets the index into <see cref="BSP.texTable"/>, which is an offset into <see cref="BSP.textures"/> for
+		/// Gets or sets the index into <see cref="BSP.TextureTable"/>, which is an offset into <see cref="BSP.Textures"/> for
 		/// the texture name for this <see cref="TextureData"/>.
 		/// </summary>
 		public int TextureStringOffsetIndex {

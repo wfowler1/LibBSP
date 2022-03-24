@@ -369,7 +369,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Has the <see cref="Textures"/> lump been loaded yet?
+		/// Has the <see cref="LibBSP.Textures"/> lump been loaded yet?
 		/// </summary>
 		public bool TexturesLoaded {
 			get {
