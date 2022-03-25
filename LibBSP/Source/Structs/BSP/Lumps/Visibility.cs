@@ -23,6 +23,15 @@ namespace LibBSP {
 		public byte[] Data { get; protected set; }
 
 		/// <summary>
+		/// Gets the length of this lump in bytes.
+		/// </summary>
+		public int Length {
+			get {
+				return Data.Length;
+			}
+		}
+
+		/// <summary>
 		/// Gets or sets the number of visibility clusters in this <see cref="Visibility"/> lump.
 		/// </summary>
 		public int NumClusters {

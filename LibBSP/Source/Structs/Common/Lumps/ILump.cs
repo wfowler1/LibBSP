@@ -16,6 +16,11 @@ namespace LibBSP {
 		LumpInfo LumpInfo { get; }
 
 		/// <summary>
+		/// Gets the length of this lump in bytes.
+		/// </summary>
+		int Length { get; }
+
+		/// <summary>
 		/// Gets all the data in this lump as a byte array.
 		/// </summary>
 		/// <returns>The data.</returns>

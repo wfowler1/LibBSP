@@ -36,6 +36,31 @@ namespace LibBSP {
 		public LumpInfo LumpInfo { get; protected set; }
 
 		/// <summary>
+		/// Gets the length of this lump in bytes.
+		/// </summary>
+		public int Length {
+			get {
+				if (Count == 0) {
+					return 4;
+				}
+
+				int lumpInfoLength = (Bsp.MapType == MapType.DMoMaM || Bsp.MapType == MapType.Vindictus) ? 20 : 16;
+				int lumpDictionaryOffset = (Bsp.MapType == MapType.DMoMaM) ? 8 : 4;
+				int length = lumpDictionaryOffset + (lumpInfoLength * Count);
+
+				foreach (GameLumpType type in Keys) {
+					if (gameLumps.ContainsKey(type)) {
+						length += gameLumps[type].Length;
+					} else {
+						length += this[type].length;
+					}
+				}
+
+				return length;
+			}
+		}
+
+		/// <summary>
 		/// Parses the passed <c>byte</c> array into a <see cref="GameLump"/> object.
 		/// </summary>
 		/// <param name="data">Array of <c>byte</c>s to parse.</param>
@@ -214,7 +239,7 @@ namespace LibBSP {
 		/// <returns>The data.</returns>
 		public byte[] GetBytes() {
 			if (Count == 0) {
-				return new byte[0];
+				return new byte[] { 0, 0, 0, 0 };
 			}
 
 			int lumpInfoLength = (Bsp.MapType == MapType.DMoMaM || Bsp.MapType == MapType.Vindictus) ? 20 : 16;

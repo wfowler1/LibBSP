@@ -11,6 +11,54 @@ namespace LibBSP {
 	public class Textures : Lump<Texture> {
 
 		/// <summary>
+		/// Gets the length of this lump in bytes.
+		/// </summary>
+		public override int Length {
+			get {
+				if (Bsp.MapType.IsSubtypeOf(MapType.Quake2)
+					|| Bsp.MapType.IsSubtypeOf(MapType.Quake3)
+					|| Bsp.MapType == MapType.Nightfire) {
+					return base.Length;
+				} else if (Bsp.MapType.IsSubtypeOf(MapType.Source)) {
+					int length = 0;
+
+					for (int i = 0; i < Count; ++i) {
+						length += this[i].Name.Length + 1;
+					}
+
+					return length;
+				} else if (Bsp.MapType.IsSubtypeOf(MapType.Quake)) {
+					int length = 4 + (Count * 40);
+
+					for (int i = 0; i < Count; ++i) {
+						Texture texture = this[i];
+						if (texture.MipmapFullOffset > 0) {
+							int mipLength = 0;
+
+							mipLength += (int)(texture.Dimensions.X() * texture.Dimensions.Y());
+							mipLength += (int)(texture.Dimensions.X() * texture.Dimensions.Y() / 4);
+							mipLength += (int)(texture.Dimensions.X() * texture.Dimensions.Y() / 16);
+							mipLength += (int)(texture.Dimensions.X() * texture.Dimensions.Y() / 64);
+							if (Bsp.MapType.IsSubtypeOf(MapType.GoldSrc)) {
+								int paletteLength = texture.Palette.Length + 2;
+								while (paletteLength % 4 != 0) {
+									++paletteLength;
+								}
+								mipLength += paletteLength;
+							}
+
+							length += mipLength;
+						}
+					}
+
+					return length;
+				}
+
+				return 0;
+			}
+		}
+
+		/// <summary>
 		/// Creates an empty <see cref="Textures"/> object.
 		/// </summary>
 		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
@@ -165,19 +213,20 @@ namespace LibBSP {
 		/// </summary>
 		/// <returns>The data.</returns>
 		public override byte[] GetBytes() {
-			if (Count == 0) {
-				return new byte[0];
-			}
-
 			if (Bsp.MapType.IsSubtypeOf(MapType.Quake2)
 				|| Bsp.MapType.IsSubtypeOf(MapType.Quake3)
 				|| Bsp.MapType == MapType.Nightfire) {
 				return base.GetBytes();
 			} else if (Bsp.MapType.IsSubtypeOf(MapType.Source)) {
 				StringBuilder sb = new StringBuilder();
+				if (Count == 0) {
+					return new byte[] { 0 };
+				}
+
 				for (int i = 0; i < Count; ++i) {
 					sb.Append(this[i].Name).Append((char)0x00);
 				}
+
 				return Encoding.ASCII.GetBytes(sb.ToString());
 			} else if (Bsp.MapType.IsSubtypeOf(MapType.Quake)) {
 				byte[][] textureBytes = new byte[Count][];
@@ -189,12 +238,24 @@ namespace LibBSP {
 						offset = 40;
 						texture.MipmapFullOffset = offset;
 						offset += (int)(texture.Dimensions.X() * texture.Dimensions.Y());
+					}
+					if (texture.MipmapHalfOffset > 0) {
 						texture.MipmapHalfOffset = offset;
 						offset += (int)(texture.Dimensions.X() * texture.Dimensions.Y() / 4);
+					}
+					if (texture.MipmapQuarterOffset > 0) {
 						texture.MipmapQuarterOffset = offset;
 						offset += (int)(texture.Dimensions.X() * texture.Dimensions.Y() / 16);
+					}
+					if (texture.MipmapEighthOffset > 0) {
 						texture.MipmapEighthOffset = offset;
 						offset += (int)(texture.Dimensions.X() * texture.Dimensions.Y() / 64);
+					}
+
+					if (texture.MipmapFullOffset > 0
+						|| texture.MipmapHalfOffset > 0
+						|| texture.MipmapQuarterOffset > 0
+						|| texture.MipmapEighthOffset > 0) {
 						if (Bsp.MapType.IsSubtypeOf(MapType.GoldSrc)) {
 							int paletteLength = texture.Palette.Length + 2;
 							while (paletteLength % 4 != 0) {

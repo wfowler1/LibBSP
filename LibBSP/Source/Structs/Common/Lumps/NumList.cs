@@ -39,6 +39,15 @@ namespace LibBSP {
 		public byte[] Data { get; private set; }
 
 		/// <summary>
+		/// Gets the length of this lump in bytes.
+		/// </summary>
+		public int Length {
+			get {
+				return Data.Length;
+			}
+		}
+
+		/// <summary>
 		/// The <see cref="DataType"/> this <see cref="NumList"/> stores.
 		/// </summary>
 		public DataType Type { get; private set; }
@@ -55,6 +64,7 @@ namespace LibBSP {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}
+
 			Bsp = bsp;
 			LumpInfo = lumpInfo;
 			Data = data;

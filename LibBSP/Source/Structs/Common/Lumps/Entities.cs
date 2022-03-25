@@ -9,6 +9,21 @@ namespace LibBSP {
 	/// Class representing a group of <see cref="Entity"/> objects. Contains helpful methods to handle Entities in the <c>List</c>.
 	/// </summary>
 	[Serializable] public class Entities : Lump<Entity> {
+
+		/// <summary>
+		/// Gets the length of this lump in bytes.
+		/// </summary>
+		public override int Length {
+			get {
+				int length = 1;
+
+				foreach (Entity ent in this) {
+					length += ent.ToString().Length;
+				}
+
+				return length;
+			}
+		}
 		
 		/// <summary>
 		/// Initializes a new empty <see cref="Entities"/> object.

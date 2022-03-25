@@ -34,6 +34,15 @@ namespace LibBSP {
 		public byte[] Data { get; protected set; }
 
 		/// <summary>
+		/// Gets the length of this lump in bytes.
+		/// </summary>
+		public int Length {
+			get {
+				return Data.Length;
+			}
+		}
+
+		/// <summary>
 		/// Parses the passed <c>byte</c> array into a <see cref="Lightmaps"/> object.
 		/// </summary>
 		/// <param name="data">Array of <c>byte</c>s to parse.</param>

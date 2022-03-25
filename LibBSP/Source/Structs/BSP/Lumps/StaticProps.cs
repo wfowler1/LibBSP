@@ -22,6 +22,18 @@ namespace LibBSP {
 		public short[] LeafIndices { get; set; }
 
 		/// <summary>
+		/// Gets the length of this lump in bytes.
+		/// </summary>
+		public override int Length {
+			get {
+				return 12
+				+ (ModelDictionary.Length * ModelNameLength)
+				+ (LeafIndices.Length * 2)
+				+ (Count * this[0].Data.Length);
+			}
+		}
+
+		/// <summary>
 		/// Creates an empty <see cref="StaticProps"/> object.
 		/// </summary>
 		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
@@ -111,10 +123,7 @@ namespace LibBSP {
 				return new byte[12];
 			}
 
-			int length = 12
-				+ (ModelDictionary.Length * ModelNameLength)
-				+ (LeafIndices.Length * 2)
-				+ (Count * this[0].Data.Length);
+			int length = Length;
 
 			byte[] bytes = new byte[length];
 			int offset = 0;
