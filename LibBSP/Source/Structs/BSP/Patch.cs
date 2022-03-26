@@ -14,13 +14,16 @@ using System.Reflection;
 namespace LibBSP {
 #if UNITY
 	using Vector2 = UnityEngine.Vector2;
+	using Vector3 = UnityEngine.Vector3;
 #if !OLDUNITY
 	using Vertex = UnityEngine.UIVertex;
 #endif
 #elif GODOT
 	using Vector2 = Godot.Vector2;
+	using Vector3 = Godot.Vector3;
 #else
 	using Vector2 = System.Numerics.Vector2;
+	using Vector3 = System.Numerics.Vector3;
 #endif
 
 	/// <summary>
@@ -190,9 +193,9 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Enumerates the Patch <see cref="Vertex"/>es referenced by this <see cref="Patch"/>.
+		/// Enumerates the Patch <see cref="Vector3"/>s referenced by this <see cref="Patch"/>.
 		/// </summary>
-		public IEnumerable<Vertex> Vertices {
+		public IEnumerable<Vector3> Vertices {
 			get {
 				for (int i = 0; i < NumVertices; ++i) {
 					yield return Parent.Bsp.PatchVertices[FirstVertex + i];

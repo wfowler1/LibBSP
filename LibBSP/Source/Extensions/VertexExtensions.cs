@@ -78,10 +78,7 @@ namespace LibBSP {
 
 			Vertex result = new Vertex();
 
-			if ((type == MapType.CoD || type == MapType.CoDDemo) && version == 1) {
-				// Patch vertex. Set color to white (makes things easier in CoDRadiant) and simply read position.
-				result.color = ColorExtensions.FromArgb(255, 255, 255, 255);
-			} else if (type == MapType.CoD2
+			if (type == MapType.CoD2
 				|| type == MapType.CoD4) {
 				result.normal = Vector3Extensions.ToVector3(data, 12);
 				result.color = ColorExtensions.FromArgb(data[27], data[24], data[25], data[26]);
@@ -172,32 +169,6 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets the index for the vertex normals lump in the BSP file for a specific map format.
-		/// </summary>
-		/// <param name="type">The map type.</param>
-		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
-		public static int GetIndexForNormalsLump(MapType type) {
-			if (type == MapType.Nightfire) {
-				return 5;
-			}
-
-			return -1;
-		}
-
-		/// <summary>
-		/// Gets the index for the patch vertices lump in the BSP file for a specific map format.
-		/// </summary>
-		/// <param name="type">The map type.</param>
-		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
-		public static int GetIndexForPatchVertsLump(MapType type) {
-			if (type == MapType.CoD || type == MapType.CoDDemo) {
-				return 25;
-			}
-
-			return -1;
-		}
-
-		/// <summary>
 		/// Gets the length of the <see cref="Vertex"/> struct for the given <see cref="MapType"/> and <paramref name="version"/>.
 		/// </summary>
 		/// <param name="type">The type of BSP to get struct length for.</param>
@@ -208,8 +179,7 @@ namespace LibBSP {
 				|| type.IsSubtypeOf(MapType.Quake2)
 				|| type == MapType.Nightfire
 				|| type.IsSubtypeOf(MapType.Source)
-				|| type == MapType.Titanfall
-				|| ((type == MapType.CoD || type == MapType.CoDDemo) && version == 1)) {
+				|| type == MapType.Titanfall) {
 				return 12;
 			} else if (type == MapType.CoD2
 				|| type == MapType.CoD4) {
@@ -266,8 +236,7 @@ namespace LibBSP {
 				BitConverter.GetBytes(v.uv2.X()).CopyTo(bytes, 28);
 				v.color.GetBytes().CopyTo(bytes, 32);
 				v.normal.GetBytes().CopyTo(bytes, 36);
-			} else if ((type.IsSubtypeOf(MapType.Quake3) && type != MapType.CoD && type != MapType.CoDDemo)
-				|| ((type == MapType.CoD || type == MapType.CoDDemo) && version == 0)) {
+			} else if (type.IsSubtypeOf(MapType.Quake3)) {
 				v.uv0.GetBytes().CopyTo(bytes, 12);
 				v.uv1.GetBytes().CopyTo(bytes, 20);
 				v.normal.GetBytes().CopyTo(bytes, 28);

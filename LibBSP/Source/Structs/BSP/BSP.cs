@@ -13,13 +13,16 @@ using System.Reflection;
 namespace LibBSP {
 #if UNITY
 	using Plane = UnityEngine.Plane;
+	using Vector3 = UnityEngine.Vector3;
 #if !OLDUNITY
 	using Vertex = UnityEngine.UIVertex;
 #endif
 #elif GODOT
 	using Plane = Godot.Plane;
+	using Vector3 = Godot.Vector3;
 #else
 	using Plane = System.Numerics.Plane;
+	using Vector3 = System.Numerics.Vector3;
 #endif
 
 	/// <summary>
@@ -382,18 +385,18 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// A <see cref="Lump{Vertex}"/> of <see cref="Vertex"/> objects in the BSP file representing the vertex normals of the BSP, if available.
+		/// A <see cref="Lump{Vector3}"/> of <see cref="Vector3"/> objects in the BSP file representing the vertex normals of the BSP, if available.
 		/// </summary>
-		public Lump<Vertex> Normals {
+		public Lump<Vector3> Normals {
 			get {
-				int index = VertexExtensions.GetIndexForNormalsLump(MapType);
+				int index = Vector3Extensions.GetIndexForNormalsLump(MapType);
 
 				if (index >= 0) {
 					if (!_lumps.ContainsKey(index)) {
-						_lumps.Add(index, VertexExtensions.LumpFactory(Reader.ReadLump(this[index]), this, this[index]));
+						_lumps.Add(index, Vector3Extensions.LumpFactory(Reader.ReadLump(this[index]), this, this[index]));
 					}
 
-					return (Lump<Vertex>)_lumps[index];
+					return (Lump<Vector3>)_lumps[index];
 				}
 
 				return null;
@@ -405,7 +408,7 @@ namespace LibBSP {
 		/// </summary>
 		public bool NormalsLoaded {
 			get {
-				int index = VertexExtensions.GetIndexForNormalsLump(MapType);
+				int index = Vector3Extensions.GetIndexForNormalsLump(MapType);
 				return _lumps.ContainsKey(index);
 			}
 		}
@@ -1083,21 +1086,18 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// A <see cref="Lump{Vertex}"/> of <see cref="Vertex"/> objects in the BSP file representing the patch vertices of the BSP, if available.
+		/// A <see cref="Lump{Vector3}"/> of <see cref="Vector3"/> objects in the BSP file representing the patch vertices of the BSP, if available.
 		/// </summary>
-		public Lump<Vertex> PatchVertices {
+		public Lump<Vector3> PatchVertices {
 			get {
-				int index = VertexExtensions.GetIndexForPatchVertsLump(MapType);
+				int index = Vector3Extensions.GetIndexForPatchVertsLump(MapType);
 
 				if (index >= 0) {
 					if (!_lumps.ContainsKey(index)) {
-						// Hax: CoD maps will read Vertex lump with version 1 as simply Vector3s rather than vertices.
-						LumpInfo lumpInfo = this[index];
-						lumpInfo.version = 1;
-						_lumps.Add(index, VertexExtensions.LumpFactory(Reader.ReadLump(this[index]), this, lumpInfo));
+						_lumps.Add(index, Vector3Extensions.LumpFactory(Reader.ReadLump(this[index]), this, this[index]));
 					}
 
-					return (Lump<Vertex>)_lumps[index];
+					return (Lump<Vector3>)_lumps[index];
 				}
 
 				return null;
@@ -1109,7 +1109,7 @@ namespace LibBSP {
 		/// </summary>
 		public bool PatchVertsLoaded {
 			get {
-				int index = VertexExtensions.GetIndexForPatchVertsLump(MapType);
+				int index = Vector3Extensions.GetIndexForPatchVertsLump(MapType);
 				return _lumps.ContainsKey(index);
 			}
 		}

@@ -194,5 +194,62 @@ namespace LibBSP {
 			return vector.Z;
 #endif
 		}
+
+		/// <summary>
+		/// Factory method to parse a <c>byte</c> array into a <see cref="Lump{Vector3}"/>.
+		/// </summary>
+		/// <param name="data">The data to parse.</param>
+		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
+		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
+		/// <returns>A <see cref="Lump{Vector3}"/>.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
+		public static Lump<Vector3> LumpFactory(byte[] data, BSP bsp, LumpInfo lumpInfo) {
+			if (data == null) {
+				throw new ArgumentNullException();
+			}
+			int structLength = GetStructLength(bsp.MapType, lumpInfo.version);
+			int numObjects = data.Length / structLength;
+			Lump<Vector3> lump = new Lump<Vector3>(numObjects, bsp, lumpInfo);
+			for (int i = 0; i < numObjects; ++i) {
+				lump.Add(ToVector3(data, i * structLength));
+			}
+			return lump;
+		}
+
+		/// <summary>
+		/// Gets the index for the vertex normals lump in the BSP file for a specific map format.
+		/// </summary>
+		/// <param name="type">The map type.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
+		public static int GetIndexForNormalsLump(MapType type) {
+			if (type == MapType.Nightfire) {
+				return 5;
+			}
+
+			return -1;
+		}
+
+		/// <summary>
+		/// Gets the index for the patch vertices lump in the BSP file for a specific map format.
+		/// </summary>
+		/// <param name="type">The map type.</param>
+		/// <returns>Index for this lump, or -1 if the format doesn't have this lump.</returns>
+		public static int GetIndexForPatchVertsLump(MapType type) {
+			if (type == MapType.CoD || type == MapType.CoDDemo) {
+				return 25;
+			}
+
+			return -1;
+		}
+
+		/// <summary>
+		/// Gets the length of the <see cref="Vector3"/> struct for the given <see cref="MapType"/> and <paramref name="version"/>.
+		/// </summary>
+		/// <param name="type">The type of BSP to get struct length for.</param>
+		/// <param name="version">Version of the lump.</param>
+		/// <returns>The length of the struct for the given <see cref="MapType"/> of the given <paramref name="version"/>.</returns>
+		public static int GetStructLength(MapType type, int version) {
+			return 12;
+		}
 	}
 }
