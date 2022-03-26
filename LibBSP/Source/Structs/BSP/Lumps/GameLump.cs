@@ -200,7 +200,7 @@ namespace LibBSP {
 		/// </summary>
 		public bool StaticPropsLoaded {
 			get {
-				return _lumps.ContainsKey(GameLumpType.prps);
+				return LumpLoaded(GameLumpType.prps);
 			}
 		}
 
@@ -230,6 +230,15 @@ namespace LibBSP {
 			}
 
 			return null;
+		}
+
+		/// <summary>
+		/// Has lump <paramref name="type"/> been loaded yet?
+		/// </summary>
+		/// <param name="type">The <see cref="GameLumpType"/> of the lump.</param>
+		/// <returns>Whether lump <paramref name="type"/> has been loaded.</returns>
+		public bool LumpLoaded(GameLumpType type) {
+			return _lumps != null && _lumps.ContainsKey(type);
 		}
 
 		/// <summary>
