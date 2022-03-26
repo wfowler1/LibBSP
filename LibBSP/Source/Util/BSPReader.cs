@@ -41,128 +41,53 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets the information for lump "<paramref name="index"/>" for this BSP file when reading it as "<paramref name="version"/>".
+		/// Gets the data for the <see cref="BSP"/>'s header.
 		/// </summary>
-		/// <param name="index">The numerical index of this lump.</param>
-		/// <param name="version">The type of BSP to interpret the file as.</param>
-		/// <returns>A <see cref="LumpInfo"/> object containing information about the lump.</returns>
-		/// <exception cref="IndexOutOfRangeException">"<paramref name="index"/>" is less than zero, or greater than the number of lumps allowed by "<paramref name="version"/>".</exception>
-		public LumpInfo GetLumpInfo(int index, MapType version) {
-			if (index < 0 || index >= BSP.GetNumLumps(version)) {
-				throw new IndexOutOfRangeException();
-			}
+		/// <param name="mapType">The <see cref="MapType"/> this is.</param>
+		/// <returns><c>byte</c> array containing the header data.</returns>
+		public byte[] GetHeader(MapType mapType) {
+			if (mapType == MapType.CoD4) {
+				int lumpInfoLength = BSPHeader.GetLumpInfoLength(mapType);
+				int magicLength = BSPHeader.GetMagic(mapType).Length;
 
-			if (version.IsSubtypeOf(MapType.Quake)
-				|| version == MapType.Nightfire) {
-				return GetLumpInfoAtOffset(4 + (8 * index), version);
-			} else if (version.IsSubtypeOf(MapType.STEF2)
-				|| version.IsSubtypeOf(MapType.MOHAA)
-				|| version.IsSubtypeOf(MapType.FAKK2)) {
-				return GetLumpInfoAtOffset(12 + (8 * index), version);
-			} else if (version == MapType.Titanfall) {
-				if (lumpFiles == null) {
-					LoadLumpFiles();
-				}
-				if (lumpFiles.ContainsKey(index)) {
-					return lumpFiles[index];
-				}
-				return GetLumpInfoAtOffset((16 * (index + 1)), version);
-			} else if (version == MapType.CoD4) {
+				byte[] bytes;
 				using (FileStream stream = new FileStream(BspFile.FullName, FileMode.Open, FileAccess.Read)) {
 					BinaryReader binaryReader = new BinaryReader(stream);
-					stream.Seek(8, SeekOrigin.Begin);
-					int numlumps = binaryReader.ReadInt32();
-					int offset = (numlumps * 8) + 12;
-					for (int i = 0; i < numlumps; i++) {
-						int id = binaryReader.ReadInt32();
-						int length = binaryReader.ReadInt32();
-						if (id == index) {
-							return new LumpInfo() {
-								offset = offset,
-								length = length
-							};
-						} else {
-							offset += length;
-							while (offset % 4 != 0) { offset++; }
-						}
-					}
+
+					stream.Seek(magicLength, SeekOrigin.Begin);
+					int numLumps = binaryReader.ReadInt32();
+					int length = magicLength + 4 + (lumpInfoLength * numLumps);
+
+					stream.Seek(0, SeekOrigin.Begin);
+					bytes = binaryReader.ReadBytes(length);
 					binaryReader.Close();
 				}
-				return default(LumpInfo);
-			} else if (version.IsSubtypeOf(MapType.Source)) {
-				if (lumpFiles == null) {
-					LoadLumpFiles();
-				}
-				if (lumpFiles.ContainsKey(index)) {
-					return lumpFiles[index];
-				}
-				return GetLumpInfoAtOffset(8 + (16 * index), version);
-			} else if (version.IsSubtypeOf(MapType.Quake2)
-				|| version.IsSubtypeOf(MapType.Quake3)) {
-				return GetLumpInfoAtOffset(8 + (8 * index), version);
-			}
 
-			return default(LumpInfo);
-		}
-
-		/// <summary>
-		/// Gets the lump information at offset "<paramref name="offset"/>" for this BSP file when reading it as "<paramref name="version"/>".
-		/// </summary>
-		/// <param name="offset">The offset of the lump's information.</param>
-		/// <param name="version">The type of BSP to interpret the file as.</param>
-		/// <returns>A <see cref="LumpInfo"/> object containing information about the lump.</returns>
-		private LumpInfo GetLumpInfoAtOffset(int offset, MapType version) {
-			if (BspFile.Length < offset + 16) {
-				return default(LumpInfo);
-			}
-			byte[] input;
-			using (FileStream stream = new FileStream(BspFile.FullName, FileMode.Open, FileAccess.Read)) {
-				BinaryReader binaryReader = new BinaryReader(stream);
-				stream.Seek(offset, SeekOrigin.Begin);
-				input = binaryReader.ReadBytes(16);
-				binaryReader.Close();
-			}
-			if (version == MapType.TacticalInterventionEncrypted) {
-				input = XorWithKeyStartingAtIndex(input, offset);
-			}
-
-			int lumpOffset = 0;
-			int lumpLength = 0;
-			int lumpVersion = 0;
-			int lumpIdent = 0;
-			if (version == MapType.L4D2 || version == MapType.Source27) {
-				lumpVersion = BitConverter.ToInt32(input, 0);
-				lumpOffset = BitConverter.ToInt32(input, 4);
-				lumpLength = BitConverter.ToInt32(input, 8);
-				lumpIdent = BitConverter.ToInt32(input, 12);
-			} else if (version.IsSubtypeOf(MapType.Source)) {
-				lumpOffset = BitConverter.ToInt32(input, 0);
-				lumpLength = BitConverter.ToInt32(input, 4);
-				lumpVersion = BitConverter.ToInt32(input, 8);
-				lumpIdent = BitConverter.ToInt32(input, 12);
-			} else if (version == MapType.CoD || version == MapType.CoD2) {
-				lumpLength = BitConverter.ToInt32(input, 0);
-				lumpOffset = BitConverter.ToInt32(input, 4);
+				return bytes;
 			} else {
-				lumpOffset = BitConverter.ToInt32(input, 0);
-				lumpLength = BitConverter.ToInt32(input, 4);
+				int lumpInfoLength = BSPHeader.GetLumpInfoLength(mapType);
+				int numLumps = BSP.GetNumLumps(mapType);
+				int magicLength = BSPHeader.GetMagic(mapType).Length;
+
+				int length = magicLength + (lumpInfoLength * numLumps);
+				if (mapType.IsSubtypeOf(MapType.UberTools)) {
+					length += 4;
+				}
+
+				byte[] bytes;
+				using (FileStream stream = new FileStream(BspFile.FullName, FileMode.Open, FileAccess.Read)) {
+					BinaryReader binaryReader = new BinaryReader(stream);
+					stream.Seek(0, SeekOrigin.Begin);
+					bytes = binaryReader.ReadBytes(length);
+					binaryReader.Close();
+				}
+
+				if (mapType == MapType.TacticalInterventionEncrypted) {
+					bytes = XorWithKeyStartingAtIndex(bytes);
+				}
+
+				return bytes;
 			}
-
-			/*if (bigEndian) {
-				byte[] bytes = BitConverter.GetBytes(lumpLength);
-				Array.Reverse(bytes);
-				lumpLength = BitConverter.ToInt32(bytes, 0);
-				bytes = BitConverter.GetBytes(lumpOffset);
-				Array.Reverse(bytes);
-				lumpOffset = BitConverter.ToInt32(bytes, 0);
-			}*/
-
-			return new LumpInfo() {
-				offset = lumpOffset,
-				length = lumpLength,
-				version = lumpVersion,
-				ident = lumpIdent
-			};
 		}
 
 		/// <summary>
@@ -248,6 +173,24 @@ namespace LibBSP {
 					br.Close();
 				}
 			}
+		}
+
+		/// <summary>
+		/// Gets the <see cref="LumpInfo"/> for the lump file for lump <paramref name="index"/>,
+		/// if it exists.
+		/// </summary>
+		/// <param name="index">Index of the lump to get lump file <see cref="LumpInfo"/> for.</param>
+		/// <returns><see cref="LumpInfo"/> for lump <paramref name="index"/> if it exists.</returns>
+		public LumpInfo GetLumpFileLumpInfo(int index) {
+			if (lumpFiles == null) {
+				LoadLumpFiles();
+			}
+
+			if (lumpFiles.ContainsKey(index)) {
+				return lumpFiles[index];
+			}
+
+			return default(LumpInfo);
 		}
 
 		/// <summary>
@@ -413,26 +356,17 @@ namespace LibBSP {
 								} else {
 									current = MapType.Source20;
 									// Hack for detecting Vindictus: Look in the GameLump for offset/length/flags outside of ranges we'd expect
-									LumpInfo gameLumpInfo = GetLumpInfo(35, MapType.Source20);
-									stream.Seek(gameLumpInfo.offset, SeekOrigin.Begin);
+									stream.Seek(568, SeekOrigin.Begin);
+									int gameLumpOffset = binaryReader.ReadInt32();
+									stream.Seek(gameLumpOffset, SeekOrigin.Begin);
 									int numGameLumps = binaryReader.ReadInt32();
 									if (numGameLumps > 0) {
 										// Normally this would be the offset and length for the first game lump.
 										// But in Vindictus it's the version indicator for it instead.
-										stream.Seek(gameLumpInfo.offset + 12, SeekOrigin.Begin);
+										stream.Seek(gameLumpOffset + 12, SeekOrigin.Begin);
 										int testOffset = binaryReader.ReadInt32();
-										if (numGameLumps > 1) {
+										if (numGameLumps > 0) {
 											if (testOffset < 24) {
-												current = MapType.Vindictus;
-												break;
-											}
-										} else {
-											// Normally this would be the ident for the second game lump.
-											// But in Vindictus it's the length for the first instead.
-											stream.Seek(gameLumpInfo.offset + 20, SeekOrigin.Begin);
-											int testName = binaryReader.ReadInt32();
-											// A lump ident tends to have a value far above 1090519040, longer than any GameLump should be.
-											if (testOffset < 24 && testName < gameLumpInfo.length) {
 												current = MapType.Vindictus;
 												break;
 											}

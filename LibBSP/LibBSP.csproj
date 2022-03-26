@@ -60,6 +60,7 @@
     <Compile Include="Source\Structs\BSP\Brush.cs" />
     <Compile Include="Source\Structs\BSP\BrushSide.cs" />
     <Compile Include="Source\Structs\BSP\BSP.cs" />
+    <Compile Include="Source\Structs\BSP\BSPHeader.cs" />
     <Compile Include="Source\Structs\BSP\Displacement.cs" />
     <Compile Include="Source\Structs\BSP\Edge.cs" />
     <Compile Include="Source\Structs\BSP\Face.cs" />

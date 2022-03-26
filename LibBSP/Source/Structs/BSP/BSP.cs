@@ -234,12 +234,18 @@ namespace LibBSP {
 	public class BSP : Dictionary<int, LumpInfo> {
 
 		private MapType _mapType;
+		private BSPHeader _header;
 		private Dictionary<int, ILump> _lumps;
 
 		/// <summary>
-		/// The <see cref="BSPReader"/> object in use by this <see cref="BSP"/> class.
+		/// The <see cref="BSPReader"/> in use by this <see cref="BSP"/>.
 		/// </summary>
 		public BSPReader Reader { get; private set; }
+
+		/// <summary>
+		/// The <see cref="BSPHeader"/> for this <see cref="BSP"/>.
+		/// </summary>
+		public BSPHeader Header { get { return _header; } }
 
 		/// <summary>
 		/// The version of this BSP. Do not change this unless you want to force reading a BSP as a certain format.
@@ -1339,7 +1345,7 @@ namespace LibBSP {
 		public new LumpInfo this[int index] {
 			get {
 				if (!ContainsKey(index)) {
-					base[index] = Reader.GetLumpInfo(index, MapType);
+					base[index] = Header.GetLumpInfo(index);
 				}
 				return base[index];
 			}
@@ -1358,6 +1364,7 @@ namespace LibBSP {
 			MapType = mapType;
 
 			_lumps = new Dictionary<int, ILump>(GetNumLumps(MapType));
+			_header = new BSPHeader(this, Reader.GetHeader(MapType));
 		}
 
 		/// <summary>
@@ -1373,6 +1380,7 @@ namespace LibBSP {
 			MapType = mapType;
 
 			_lumps = new Dictionary<int, ILump>(GetNumLumps(MapType));
+			_header = new BSPHeader(this, Reader.GetHeader(MapType));
 		}
 
 		/// <summary>
