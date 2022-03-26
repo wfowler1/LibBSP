@@ -88,7 +88,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Updates header data to reflect the current state of the lumps in <see cref="Bsp"/>.
 		/// </summary>
-		public void UpdateHeader() {
+		public BSPHeader Regenerate() {
 			if (Bsp != null && Bsp.MapType != MapType.Undefined) {
 				int lumpInfoLength = GetLumpInfoLength(Bsp.MapType);
 				int numLumps = BSP.GetNumLumps(Bsp.MapType);
@@ -136,7 +136,7 @@ namespace LibBSP {
 						offset+= 8;
 					}
 
-					Data = newData;
+					return new BSPHeader(Bsp, newData);
 				} else {
 					int offset;
 					byte[] newData;
@@ -176,30 +176,28 @@ namespace LibBSP {
 							BitConverter.GetBytes(lumpOffset).CopyTo(newData, offset + 4);
 							BitConverter.GetBytes(lumpLength).CopyTo(newData, offset + 8);
 							BitConverter.GetBytes(lumpIdent).CopyTo(newData, offset + 12);
-							offset += 16;
 						} else if (Bsp.MapType.IsSubtypeOf(MapType.Source)) {
 							BitConverter.GetBytes(lumpOffset).CopyTo(newData, offset);
 							BitConverter.GetBytes(lumpLength).CopyTo(newData, offset + 4);
 							BitConverter.GetBytes(lumpVersion).CopyTo(newData, offset + 8);
 							BitConverter.GetBytes(lumpIdent).CopyTo(newData, offset + 12);
-							offset += 16;
 						} else if (Bsp.MapType == MapType.CoD || Bsp.MapType == MapType.CoD2) {
 							BitConverter.GetBytes(lumpLength).CopyTo(newData, offset);
 							BitConverter.GetBytes(lumpOffset).CopyTo(newData, offset + 4);
-							offset += 8;
 						} else {
 							BitConverter.GetBytes(lumpOffset).CopyTo(newData, offset);
 							BitConverter.GetBytes(lumpLength).CopyTo(newData, offset + 4);
-							offset += 8;
 						}
 
-						Data = newData;
+						offset += GetLumpInfoLength(Bsp.MapType);
+
 						lumpOffset += lumpLength;
 					}
 
+					return new BSPHeader(Bsp, newData);
 				}
 			} else {
-				Data = new byte[0];
+				return new BSPHeader(Bsp, new byte[0]);
 			}
 		}
 
