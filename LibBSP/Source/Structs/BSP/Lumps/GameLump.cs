@@ -23,7 +23,7 @@ namespace LibBSP {
 	/// </summary>
 	public class GameLump : Dictionary<GameLumpType, LumpInfo>, ILump {
 
-		public Dictionary<GameLumpType, ILump> gameLumps;
+		private Dictionary<GameLumpType, ILump> _lumps;
 
 		/// <summary>
 		/// The <see cref="BSP"/> this <see cref="ILump"/> came from.
@@ -49,8 +49,8 @@ namespace LibBSP {
 				int length = lumpDictionaryOffset + (lumpInfoLength * Count);
 
 				foreach (GameLumpType type in Keys) {
-					if (gameLumps.ContainsKey(type)) {
-						length += gameLumps[type].Length;
+					if (_lumps.ContainsKey(type)) {
+						length += _lumps[type].Length;
 					} else {
 						length += this[type].length;
 					}
@@ -88,7 +88,7 @@ namespace LibBSP {
 			}
 
 			int numGameLumps = BitConverter.ToInt32(data, 0);
-			gameLumps = new Dictionary<GameLumpType, ILump>(numGameLumps);
+			_lumps = new Dictionary<GameLumpType, ILump>(numGameLumps);
 
 			if (numGameLumps > 0) {
 				int lumpDictionaryOffset = (bsp.MapType == MapType.DMoMaM) ? 8 : 4;
@@ -181,14 +181,17 @@ namespace LibBSP {
 		/// </summary>
 		public StaticProps StaticProps {
 			get {
-				if (!gameLumps.ContainsKey(GameLumpType.prps)) {
-					byte[] bytes = GetData(GameLumpType.prps);
-					if (bytes != null) {
-						gameLumps[GameLumpType.prps] = StaticProp.LumpFactory(bytes, Bsp, this[GameLumpType.prps]);
+				GameLumpType type = GameLumpType.prps;
+
+				if (ContainsKey(type)) {
+					if (!_lumps.ContainsKey(type)) {
+						_lumps.Add(type, StaticProp.LumpFactory(ReadLump(this[type]), Bsp, this[type]));
 					}
+
+					return (StaticProps)_lumps[type];
 				}
 
-				return gameLumps[GameLumpType.prps] as StaticProps;
+				return null;
 			}
 		}
 
@@ -197,34 +200,30 @@ namespace LibBSP {
 		/// </summary>
 		public bool StaticPropsLoaded {
 			get {
-				return gameLumps.ContainsKey(GameLumpType.prps);
+				return _lumps.ContainsKey(GameLumpType.prps);
 			}
 		}
 
 		/// <summary>
-		/// Gets the bytes for a <see cref="GameLumpType"/>, if it exists.
+		/// Gets the bytes for a <see cref="LibBSP.LumpInfo"/>, if it exists.
 		/// </summary>
-		/// <param name="lump">The <see cref="GameLumpType"/> to get data for.</param>
-		/// <returns>The data for <paramref name="lump"/>, or <c>null</c> if it does not exist.</returns>
-		public byte[] GetData(GameLumpType lump) {
-			if (ContainsKey(lump)) {
-				LumpInfo info = this[lump];
+		/// <param name="info">The <see cref="LibBSP.LumpInfo"/> to get data for.</param>
+		/// <returns>The data for <paramref name="info"/>, or <c>null</c> if it does not exist.</returns>
+		public byte[] ReadLump(LumpInfo info) {
+			GameLumpType gameLumpType = (GameLumpType)info.ident;
+			if (ContainsKey(gameLumpType)) {
 				byte[] thisLump;
-				if (gameLumps.ContainsKey(lump)) {
-					thisLump = gameLumps[lump].GetBytes();
+				// GameLump lumps may have their offset specified from either the beginning of the GameLump, or the beginning of the file.
+				if (GetLowestLumpOffset() < LumpInfo.offset) {
+					thisLump = Bsp.Reader.ReadLump(new LumpInfo() {
+						ident = info.ident,
+						flags = info.flags,
+						version = info.version,
+						offset = info.offset + LumpInfo.offset,
+						length = info.length
+					});
 				} else {
-					// GameLump lumps may have their offset specified from either the beginning of the GameLump, or the beginning of the file.
-					if (GetLowestLumpOffset() < LumpInfo.offset) {
-						thisLump = Bsp.Reader.ReadLump(new LumpInfo() {
-							ident = info.ident,
-							flags = info.flags,
-							version = info.version,
-							offset = info.offset + LumpInfo.offset,
-							length = info.length
-						});
-					} else {
-						thisLump = Bsp.Reader.ReadLump(info);
-					}
+					thisLump = Bsp.Reader.ReadLump(info);
 				}
 
 				return thisLump;
@@ -246,12 +245,12 @@ namespace LibBSP {
 			int lumpDictionaryOffset = (Bsp.MapType == MapType.DMoMaM) ? 8 : 4;
 			int length = lumpDictionaryOffset + (lumpInfoLength * Count);
 
-			Dictionary<GameLumpType, byte[]> lumpBytes = new Dictionary<GameLumpType, byte[]>(gameLumps.Count);
+			Dictionary<GameLumpType, byte[]> lumpBytes = new Dictionary<GameLumpType, byte[]>(Count);
 			foreach (GameLumpType type in Keys) {
-				if (gameLumps.ContainsKey(type)) {
-					lumpBytes[type] = gameLumps[type].GetBytes();
+				if (_lumps.ContainsKey(type)) {
+					lumpBytes[type] = _lumps[type].GetBytes();
 				} else {
-					lumpBytes[type] = GetData(type);
+					lumpBytes[type] = ReadLump(this[type]);
 				}
 
 				length += lumpBytes[type].Length;
