@@ -902,7 +902,8 @@ namespace LibBSP {
 		/// </summary>
 		public bool LeafFacesLoaded {
 			get {
-				int index = NumList.GetIndexForLeafFacesLump(MapType, out _);
+				NumList.DataType type;
+				int index = NumList.GetIndexForLeafFacesLump(MapType, out type);
 				return _lumps.ContainsKey(index);
 			}
 		}
@@ -932,7 +933,8 @@ namespace LibBSP {
 		/// </summary>
 		public bool FaceEdgesLoaded {
 			get {
-				int index = NumList.GetIndexForFaceEdgesLump(MapType, out _);
+				NumList.DataType type;
+				int index = NumList.GetIndexForFaceEdgesLump(MapType, out type);
 				return _lumps.ContainsKey(index);
 			}
 		}
@@ -962,7 +964,8 @@ namespace LibBSP {
 		/// </summary>
 		public bool LeafBrushesLoaded {
 			get {
-				int index = NumList.GetIndexForLeafBrushesLump(MapType, out _);
+				NumList.DataType type;
+				int index = NumList.GetIndexForLeafBrushesLump(MapType, out type);
 				return _lumps.ContainsKey(index);
 			}
 		}
@@ -1051,7 +1054,8 @@ namespace LibBSP {
 		/// </summary>
 		public bool LeafStaticModelsLoaded {
 			get {
-				int index = NumList.GetIndexForLeafStaticModelsLump(MapType, out _);
+				NumList.DataType type;
+				int index = NumList.GetIndexForLeafStaticModelsLump(MapType, out type);
 				return _lumps.ContainsKey(index);
 			}
 		}
@@ -1139,7 +1143,8 @@ namespace LibBSP {
 		/// </summary>
 		public bool PatchIndicesLoaded {
 			get {
-				int index = NumList.GetIndexForPatchIndicesLump(MapType, out _);
+				NumList.DataType type;
+				int index = NumList.GetIndexForPatchIndicesLump(MapType, out type);
 				return _lumps.ContainsKey(index);
 			}
 		}
@@ -1169,7 +1174,8 @@ namespace LibBSP {
 		/// </summary>
 		public bool LeafPatchesLoaded {
 			get {
-				int index = NumList.GetIndexForLeafPatchesLump(MapType, out _);
+				NumList.DataType type;
+				int index = NumList.GetIndexForLeafPatchesLump(MapType, out type);
 				return _lumps.ContainsKey(index);
 			}
 		}
@@ -1199,7 +1205,8 @@ namespace LibBSP {
 		/// </summary>
 		public bool IndicesLoaded {
 			get {
-				int index = NumList.GetIndexForIndicesLump(MapType, out _);
+				NumList.DataType type;
+				int index = NumList.GetIndexForIndicesLump(MapType, out type);
 				return _lumps.ContainsKey(index);
 			}
 		}
@@ -1229,7 +1236,8 @@ namespace LibBSP {
 		/// </summary>
 		public bool TextureTableLoaded {
 			get {
-				int index = NumList.GetIndexForTexTableLump(MapType, out _);
+				NumList.DataType type;
+				int index = NumList.GetIndexForTexTableLump(MapType, out type);
 				return _lumps.ContainsKey(index);
 			}
 		}
@@ -1259,7 +1267,8 @@ namespace LibBSP {
 		/// </summary>
 		public bool DisplacementTrianglesLoaded {
 			get {
-				int index = NumList.GetIndexForDisplacementTrianglesLump(MapType, out _);
+				NumList.DataType type;
+				int index = NumList.GetIndexForDisplacementTrianglesLump(MapType, out type);
 				return _lumps.ContainsKey(index);
 			}
 		}
