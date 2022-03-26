@@ -242,6 +242,19 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Gets <see cref="ILump"/> <paramref name="type"/> if it is loaded.
+		/// </summary>
+		/// <param name="type">The <see cref="GameLumpType"/> of the lump.</param>
+		/// <returns><see cref="ILump"/> <paramref name="type"/> if it is loaded.</returns>
+		public ILump GetLoadedLump(GameLumpType type) {
+			if (!LumpLoaded(type)) {
+				return null;
+			}
+
+			return _lumps[type];
+		}
+
+		/// <summary>
 		/// Gets all the data in this lump as a byte array.
 		/// </summary>
 		/// <returns>The data.</returns>

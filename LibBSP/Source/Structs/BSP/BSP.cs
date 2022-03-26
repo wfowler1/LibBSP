@@ -1500,5 +1500,18 @@ namespace LibBSP {
 			return _lumps != null && _lumps.ContainsKey(index);
 		}
 
+		/// <summary>
+		/// Gets <see cref="ILump"/> <paramref name="index"/> if it is loaded.
+		/// </summary>
+		/// <param name="index">The index of the lump.</param>
+		/// <returns><see cref="ILump"/> <paramref name="index"/> if it is loaded.</returns>
+		public ILump GetLoadedLump(int index) {
+			if (!LumpLoaded(index)) {
+				return null;
+			}
+
+			return _lumps[index];
+		}
+
 	}
 }
