@@ -96,75 +96,104 @@ namespace LibBSP {
 				int revision = Revision;
 
 				if (Bsp.MapType == MapType.CoD4) {
-					int numActualLumps = BitConverter.ToInt32(Data, 8);
-					int offset = magic.Length + 4;
-					Data = new byte[offset + (lumpInfoLength * numActualLumps)];
+					int numActualLumps = 0;
+					int lumpOffset = magic.Length + 4;
 
-					magic.CopyTo(Data, 0);
-					BitConverter.GetBytes(numActualLumps).CopyTo(Data, 8);
+					Dictionary<int, LumpInfo> lumpInfos = new Dictionary<int, LumpInfo>();
+					for (int i = 0; i < BSP.GetNumLumps(MapType.CoD4); ++i) {
+						LumpInfo lumpInfo = GetLumpInfo(i);
 
-					foreach (KeyValuePair<int, LumpInfo> pair in Bsp) {
-						int lumpLength;
-						ILump lump = Bsp.GetLoadedLump(pair.Key);
-						if (lump != null) {
-							lumpLength = lump.Length;
-						} else {
-							// If the lump is not loaded, it has not changed. Use original length.
-							lumpLength = pair.Value.length;
+						if (lumpInfo.length > 0) {
+							int lumpLength;
+							ILump lump = Bsp.GetLoadedLump(lumpInfo.ident);
+							if (lump != null) {
+								lumpLength = lump.Length;
+							} else {
+								// If the lump is not loaded, it has not changed. Use original length.
+								lumpLength = lumpInfo.length;
+							}
+
+							lumpInfo.offset = lumpOffset;
+							lumpInfo.length = lumpLength;
+							lumpOffset += lumpLength;
+
+							lumpInfos.Add(i, lumpInfo);
+
+							++numActualLumps;
 						}
-
-						BitConverter.GetBytes(pair.Key).CopyTo(Data, offset);
-						BitConverter.GetBytes(lumpLength).CopyTo(Data, offset + 4);
 					}
+
+					byte[] newData = new byte[lumpOffset + (lumpInfoLength * numActualLumps)];
+
+					magic.CopyTo(newData, 0);
+					BitConverter.GetBytes(numActualLumps).CopyTo(newData, 8);
+					int offset = magic.Length + 4;
+
+					foreach (KeyValuePair<int, LumpInfo> pair in lumpInfos) {
+						BitConverter.GetBytes(pair.Key).CopyTo(newData, offset);
+						BitConverter.GetBytes(offset).CopyTo(newData, offset + 4);
+
+						offset+= 8;
+					}
+
+					Data = newData;
 				} else {
 					int offset;
+					byte[] newData;
 					if (Bsp.MapType.IsSubtypeOf(MapType.UberTools)) {
 						offset = magic.Length + 4;
-						Data = new byte[offset + (lumpInfoLength * numLumps)];
+						newData = new byte[offset + (lumpInfoLength * numLumps)];
 						Revision = revision + 1;
 					} else {
 						offset = magic.Length;
-						Data = new byte[offset + (lumpInfoLength * numLumps)];
+						newData = new byte[offset + (lumpInfoLength * numLumps)];
 					}
 
-					magic.CopyTo(Data, 0);
-					int lumpOffset = Data.Length;
+					magic.CopyTo(newData, 0);
+					int lumpOffset = newData.Length;
 
 					for (int i = 0; i < numLumps; ++i) {
 						int lumpLength;
+						int lumpVersion;
+						int lumpIdent;
+
 						ILump lump = Bsp.GetLoadedLump(i);
 						if (lump != null) {
 							lumpLength = lump.Length;
+							lumpVersion = Bsp[i].version;
+							lumpIdent = Bsp[i].ident;
 						} else {
 							// If the lump is not loaded, it has not changed. Use original length.
-							lumpLength = Bsp[i].length;
+							LumpInfo lumpInfo = GetLumpInfo(i);
+							lumpLength = lumpInfo.length;
+							lumpVersion = lumpInfo.version;
+							lumpIdent = lumpInfo.ident;
 						}
 
-						int lumpVersion = Bsp[i].version;
-						int lumpIdent = Bsp[i].ident;
 
 						if (Bsp.MapType == MapType.L4D2 || Bsp.MapType == MapType.Source27) {
-							BitConverter.GetBytes(lumpVersion).CopyTo(Data, offset);
-							BitConverter.GetBytes(lumpOffset).CopyTo(Data, offset + 4);
-							BitConverter.GetBytes(lumpLength).CopyTo(Data, offset + 8);
-							BitConverter.GetBytes(lumpIdent).CopyTo(Data, offset + 12);
+							BitConverter.GetBytes(lumpVersion).CopyTo(newData, offset);
+							BitConverter.GetBytes(lumpOffset).CopyTo(newData, offset + 4);
+							BitConverter.GetBytes(lumpLength).CopyTo(newData, offset + 8);
+							BitConverter.GetBytes(lumpIdent).CopyTo(newData, offset + 12);
 							offset += 16;
 						} else if (Bsp.MapType.IsSubtypeOf(MapType.Source)) {
-							BitConverter.GetBytes(lumpOffset).CopyTo(Data, offset);
-							BitConverter.GetBytes(lumpLength).CopyTo(Data, offset + 4);
-							BitConverter.GetBytes(lumpVersion).CopyTo(Data, offset + 8);
-							BitConverter.GetBytes(lumpIdent).CopyTo(Data, offset + 12);
+							BitConverter.GetBytes(lumpOffset).CopyTo(newData, offset);
+							BitConverter.GetBytes(lumpLength).CopyTo(newData, offset + 4);
+							BitConverter.GetBytes(lumpVersion).CopyTo(newData, offset + 8);
+							BitConverter.GetBytes(lumpIdent).CopyTo(newData, offset + 12);
 							offset += 16;
 						} else if (Bsp.MapType == MapType.CoD || Bsp.MapType == MapType.CoD2) {
-							BitConverter.GetBytes(lumpLength).CopyTo(Data, offset);
-							BitConverter.GetBytes(lumpOffset).CopyTo(Data, offset + 4);
+							BitConverter.GetBytes(lumpLength).CopyTo(newData, offset);
+							BitConverter.GetBytes(lumpOffset).CopyTo(newData, offset + 4);
 							offset += 8;
 						} else {
-							BitConverter.GetBytes(lumpOffset).CopyTo(Data, offset);
-							BitConverter.GetBytes(lumpLength).CopyTo(Data, offset + 4);
+							BitConverter.GetBytes(lumpOffset).CopyTo(newData, offset);
+							BitConverter.GetBytes(lumpLength).CopyTo(newData, offset + 4);
 							offset += 8;
 						}
 
+						Data = newData;
 						lumpOffset += lumpLength;
 					}
 
@@ -208,6 +237,7 @@ namespace LibBSP {
 					int length = BitConverter.ToInt32(Data, offset + 4);
 					if (id == index) {
 						return new LumpInfo() {
+							ident = id,
 							offset = lumpOffset,
 							length = length
 						};
