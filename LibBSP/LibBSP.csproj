@@ -95,6 +95,7 @@
     <Compile Include="Source\Structs\MAP\MAPTerrainEF2.cs" />
     <Compile Include="Source\Structs\MAP\MAPTerrainMoHAA.cs" />
     <Compile Include="Source\Util\BSPReader.cs" />
+    <Compile Include="Source\Util\BSPWriter.cs" />
     <Compile Include="Source\Util\Revision.cs" />
   </ItemGroup>
   <ItemGroup />
