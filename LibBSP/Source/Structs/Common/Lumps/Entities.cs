@@ -33,7 +33,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Initializes a new instance of an <see cref="Entities"/> object copying a passed <c>IEnumerable</c> of <see cref="Entity"/> objects.
 		/// </summary>
-		/// <param name="data">Collection of <see cref="Entity"/> objects to copy.</param>
+		/// <param name="entities">Collection of <see cref="Entity"/> objects to copy.</param>
 		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
 		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
 		public Entities(IEnumerable<Entity> entities, BSP bsp = null, LumpInfo lumpInfo = default(LumpInfo)) : base(entities, bsp, lumpInfo) { }
