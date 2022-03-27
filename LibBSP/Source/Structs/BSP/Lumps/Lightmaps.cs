@@ -31,7 +31,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Array of <c>byte</c>s used as the data source for lightmap info.
 		/// </summary>
-		public byte[] Data { get; protected set; }
+		public byte[] Data { get; set; }
 
 		/// <summary>
 		/// Gets the length of this lump in bytes.
