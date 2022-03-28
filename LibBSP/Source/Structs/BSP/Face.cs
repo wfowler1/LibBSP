@@ -468,7 +468,7 @@ namespace LibBSP {
 		public int LightmapTextureInfoIndex {
 			get {
 				if (MapType == MapType.Nightfire) {
-					return BitConverter.ToInt32(Data, 32);
+					return BitConverter.ToInt32(Data, 36);
 				}
 
 				return -1;
@@ -477,7 +477,7 @@ namespace LibBSP {
 				byte[] bytes = BitConverter.GetBytes(value);
 
 				if (MapType == MapType.Nightfire) {
-					bytes.CopyTo(Data, 32);
+					bytes.CopyTo(Data, 36);
 				}
 			}
 		}
