@@ -21,7 +21,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets the <see cref="FileInfo"/> for this <see cref="BSPReader"/>, if used.
 		/// </summary>
-		public FileInfo BspFile { get; private set; }
+		public FileInfo BspFile { get; set; }
 
 		/// <summary>
 		/// An XOr encryption key for encrypted map formats. Must be read and set.

@@ -32,6 +32,9 @@ namespace LibBSP {
 			}
 
 			WriteAllData(path, header.Data, lumpBytes);
+			_bsp.MapName = Path.GetFileNameWithoutExtension(path);
+			_bsp.UpdateHeader(header);
+			_bsp.Reader.BspFile = new FileInfo(path);
 		}
 
 		/// <summary>

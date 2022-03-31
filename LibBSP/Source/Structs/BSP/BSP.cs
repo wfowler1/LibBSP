@@ -7,6 +7,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -234,7 +235,6 @@ namespace LibBSP {
 	public class BSP : Dictionary<int, LumpInfo> {
 
 		private MapType _mapType;
-		private BSPHeader _header;
 		private Dictionary<int, ILump> _lumps;
 
 		/// <summary>
@@ -245,7 +245,7 @@ namespace LibBSP {
 		/// <summary>
 		/// The <see cref="BSPHeader"/> for this <see cref="BSP"/>.
 		/// </summary>
-		public BSPHeader Header { get { return _header; } }
+		public BSPHeader Header { get; private set; }
 
 		/// <summary>
 		/// The version of this BSP. Do not change this unless you want to force reading a BSP as a certain format.
@@ -1331,11 +1331,9 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Gets the name of this map.
+		/// Gets or sets the name of this map.
 		/// </summary>
-		public string MapName {
-			get; private set;
-		}
+		public string MapName { get; set; }
 
 		/// <summary>
 		/// Gets the <see cref="LumpInfo"/> object associated with the lump with index "<paramref name="index"/>".
@@ -1359,12 +1357,11 @@ namespace LibBSP {
 		/// <param name="mapType">The <see cref="MapType"/> of the BSP, if necessary.</param>
 		public BSP(string filePath, MapType mapType = MapType.Undefined) : base(16) {
 			Reader = new BSPReader(new FileInfo(filePath));
-			MapName = Path.GetFileName(filePath);
-			MapName = MapName.Substring(0, MapName.Length - 4);
+			MapName = Path.GetFileNameWithoutExtension(filePath);
 			MapType = mapType;
 
 			_lumps = new Dictionary<int, ILump>(GetNumLumps(MapType));
-			_header = new BSPHeader(this, Reader.GetHeader(MapType));
+			Header = new BSPHeader(this, Reader.GetHeader(MapType));
 		}
 
 		/// <summary>
@@ -1375,12 +1372,11 @@ namespace LibBSP {
 		/// <param name="mapType">The <see cref="MapType"/> of the BSP, if necessary.</param>
 		public BSP(FileInfo file, MapType mapType = MapType.Undefined) : base(16) {
 			Reader = new BSPReader(file);
-			MapName = Path.GetFileName(file.FullName);
-			MapName = MapName.Substring(0, MapName.Length - 4);
+			MapName = Path.GetFileNameWithoutExtension(file.FullName);
 			MapType = mapType;
 
 			_lumps = new Dictionary<int, ILump>(GetNumLumps(MapType));
-			_header = new BSPHeader(this, Reader.GetHeader(MapType));
+			Header = new BSPHeader(this, Reader.GetHeader(MapType));
 		}
 
 		/// <summary>
@@ -1519,6 +1515,20 @@ namespace LibBSP {
 			}
 
 			return _lumps[index];
+		}
+
+		/// <summary>
+		/// Updates this BSP with the new file header.
+		/// </summary>
+		/// <param name="newHeader">The new header for this BSP.</param>
+		public void UpdateHeader(BSPHeader newHeader) {
+			Header = newHeader;
+
+			int[] keys = Keys.ToArray();
+			for (int i = 0; i < Count; ++i) {
+				int index = keys[i];
+				this[index] = newHeader.GetLumpInfo(index);
+			}
 		}
 
 	}
