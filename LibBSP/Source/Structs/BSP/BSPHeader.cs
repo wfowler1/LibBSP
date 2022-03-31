@@ -212,20 +212,22 @@ namespace LibBSP {
 				throw new IndexOutOfRangeException();
 			}
 
+			int lumpInfoLength = GetLumpInfoLength(Bsp.MapType);
+
 			if (Bsp.MapType.IsSubtypeOf(MapType.Quake)
 				|| Bsp.MapType == MapType.Nightfire) {
-				return GetLumpInfoAtOffset(4 + (8 * index));
+				return GetLumpInfoAtOffset(4 + (lumpInfoLength * index));
 			} else if (Bsp.MapType.IsSubtypeOf(MapType.STEF2)
 				|| Bsp.MapType.IsSubtypeOf(MapType.MOHAA)
 				|| Bsp.MapType.IsSubtypeOf(MapType.FAKK2)) {
-				return GetLumpInfoAtOffset(12 + (8 * index));
+				return GetLumpInfoAtOffset(12 + (lumpInfoLength * index));
 			} else if (Bsp.MapType == MapType.Titanfall) {
 				LumpInfo lumpFileInfo = Bsp.Reader.GetLumpFileLumpInfo(index);
 				if (lumpFileInfo.lumpFile != null) {
 					return lumpFileInfo;
 				}
 
-				return GetLumpInfoAtOffset(16 * (index + 1));
+				return GetLumpInfoAtOffset(lumpInfoLength * (index + 1));
 			} else if (Bsp.MapType == MapType.CoD4) {
 				int numlumps = BitConverter.ToInt32(Data, 8);
 				int offset = 12;
@@ -253,10 +255,10 @@ namespace LibBSP {
 					return lumpFileInfo;
 				}
 
-				return GetLumpInfoAtOffset(8 + (16 * index));
+				return GetLumpInfoAtOffset(8 + (lumpInfoLength * index));
 			} else if (Bsp.MapType.IsSubtypeOf(MapType.Quake2)
 				|| Bsp.MapType.IsSubtypeOf(MapType.Quake3)) {
-				return GetLumpInfoAtOffset(8 + (8 * index));
+				return GetLumpInfoAtOffset(8 + (lumpInfoLength * index));
 			}
 
 			return default(LumpInfo);
