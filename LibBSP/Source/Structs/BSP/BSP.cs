@@ -236,11 +236,23 @@ namespace LibBSP {
 
 		private MapType _mapType;
 		private Dictionary<int, ILump> _lumps;
+		private BSPReader _reader;
 
 		/// <summary>
 		/// The <see cref="BSPReader"/> in use by this <see cref="BSP"/>.
 		/// </summary>
-		public BSPReader Reader { get; private set; }
+		public BSPReader Reader {
+			get {
+				if (_reader == null) {
+					_reader = new BSPReader();
+				}
+
+				return _reader;
+			}
+			private set {
+				_reader = value;
+			}
+		}
 
 		/// <summary>
 		/// The <see cref="BSPHeader"/> for this <see cref="BSP"/>.
