@@ -193,6 +193,9 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				_lumps[GameLumpType.prps] = value;
+			}
 		}
 
 		/// <summary>
@@ -202,6 +205,13 @@ namespace LibBSP {
 			get {
 				return LumpLoaded(GameLumpType.prps);
 			}
+		}
+
+		/// <summary>
+		/// Gets all loaded lumps.
+		/// </summary>
+		public Dictionary<GameLumpType, ILump> Lumps {
+			get { return _lumps; }
 		}
 
 		/// <summary>

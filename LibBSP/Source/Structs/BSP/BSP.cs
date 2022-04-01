@@ -291,6 +291,12 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				int index = Entity.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -319,6 +325,12 @@ namespace LibBSP {
 				}
 
 				return null;
+			}
+			set {
+				int index = PlaneExtensions.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
 			}
 		}
 
@@ -349,6 +361,12 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				int index = Texture.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -377,6 +395,12 @@ namespace LibBSP {
 				}
 
 				return null;
+			}
+			set {
+				int index = VertexExtensions.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
 			}
 		}
 
@@ -407,6 +431,12 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				int index = Vector3Extensions.GetIndexForNormalsLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -435,6 +465,12 @@ namespace LibBSP {
 				}
 
 				return null;
+			}
+			set {
+				int index = Node.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
 			}
 		}
 
@@ -465,6 +501,12 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				int index = LibBSP.TextureInfo.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -493,6 +535,12 @@ namespace LibBSP {
 				}
 
 				return null;
+			}
+			set {
+				int index = Face.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
 			}
 		}
 
@@ -523,6 +571,12 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				int index = Leaf.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -551,6 +605,12 @@ namespace LibBSP {
 				}
 
 				return null;
+			}
+			set {
+				int index = Edge.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
 			}
 		}
 
@@ -581,6 +641,12 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				int index = Model.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -609,6 +675,12 @@ namespace LibBSP {
 				}
 
 				return null;
+			}
+			set {
+				int index = Brush.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
 			}
 		}
 
@@ -639,6 +711,12 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				int index = BrushSide.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -667,6 +745,12 @@ namespace LibBSP {
 				}
 
 				return null;
+			}
+			set {
+				int index = Texture.GetIndexForMaterialLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
 			}
 		}
 
@@ -697,6 +781,12 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				int index = Visibility.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -725,6 +815,12 @@ namespace LibBSP {
 				}
 
 				return null;
+			}
+			set {
+				int index = Lightmaps.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
 			}
 		}
 
@@ -755,6 +851,12 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				int index = Face.GetIndexForOriginalFacesLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -783,6 +885,12 @@ namespace LibBSP {
 				}
 
 				return null;
+			}
+			set {
+				int index = LibBSP.TextureData.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
 			}
 		}
 
@@ -813,6 +921,12 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				int index = Displacement.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -841,6 +955,12 @@ namespace LibBSP {
 				}
 
 				return null;
+			}
+			set {
+				int index = DisplacementVertex.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
 			}
 		}
 
@@ -871,6 +991,12 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				int index = Cubemap.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -900,6 +1026,13 @@ namespace LibBSP {
 				}
 
 				return null;
+			}
+			set {
+				NumList.DataType type;
+				int index = NumList.GetIndexForLeafFacesLump(MapType, out type);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
 			}
 		}
 
@@ -932,6 +1065,13 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				NumList.DataType type;
+				int index = NumList.GetIndexForFaceEdgesLump(MapType, out type);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -963,6 +1103,13 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				NumList.DataType type;
+				int index = NumList.GetIndexForLeafBrushesLump(MapType, out type);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -993,6 +1140,12 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				int index = StaticModel.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -1021,6 +1174,12 @@ namespace LibBSP {
 				}
 
 				return null;
+			}
+			set {
+				int index = LODTerrain.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
 			}
 		}
 
@@ -1053,6 +1212,13 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				NumList.DataType type;
+				int index = NumList.GetIndexForLeafStaticModelsLump(MapType, out type);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -1083,6 +1249,12 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				int index = Patch.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -1111,6 +1283,12 @@ namespace LibBSP {
 				}
 
 				return null;
+			}
+			set {
+				int index = Vector3Extensions.GetIndexForPatchVertsLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
 			}
 		}
 
@@ -1141,6 +1319,13 @@ namespace LibBSP {
 				}
 
 				return null;
+			}
+			set {
+				NumList.DataType type;
+				int index = NumList.GetIndexForPatchIndicesLump(MapType, out type);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
 			}
 		}
 
@@ -1173,6 +1358,13 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				NumList.DataType type;
+				int index = NumList.GetIndexForLeafPatchesLump(MapType, out type);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -1203,6 +1395,13 @@ namespace LibBSP {
 				}
 
 				return null;
+			}
+			set {
+				NumList.DataType type;
+				int index = NumList.GetIndexForIndicesLump(MapType, out type);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
 			}
 		}
 
@@ -1235,6 +1434,13 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				NumList.DataType type;
+				int index = NumList.GetIndexForTexTableLump(MapType, out type);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -1266,6 +1472,13 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				NumList.DataType type;
+				int index = NumList.GetIndexForDisplacementTrianglesLump(MapType, out type);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -1296,6 +1509,12 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				int index = GameLump.GetIndexForLump(MapType);
+				if (index >= 0) {
+					_lumps[index] = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -1319,6 +1538,9 @@ namespace LibBSP {
 
 				return null;
 			}
+			set {
+				GameLump.StaticProps = value;
+			}
 		}
 
 		/// <summary>
@@ -1334,6 +1556,13 @@ namespace LibBSP {
 		/// Gets or sets the name of this map.
 		/// </summary>
 		public string MapName { get; set; }
+
+		/// <summary>
+		/// Gets all loaded lumps.
+		/// </summary>
+		public Dictionary<int, ILump> Lumps {
+			get { return _lumps; }
+		}
 
 		/// <summary>
 		/// Gets the <see cref="LumpInfo"/> object associated with the lump with index "<paramref name="index"/>".
