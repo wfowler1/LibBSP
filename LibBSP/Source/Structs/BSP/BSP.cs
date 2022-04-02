@@ -1594,18 +1594,15 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Creates a new <see cref="BSP"/> instance pointing to the file at <paramref name="filePath"/>. The
-		/// <c>List</c>s in this class will be read and populated when accessed through their properties.
+		/// Creates an empty <see cref="BSP"/> with the given name and MapType.
 		/// </summary>
-		/// <param name="filePath">The path to the .BSP file.</param>
+		/// <param name="name">The name of the BSP.</param>
 		/// <param name="mapType">The <see cref="MapType"/> of the BSP, if necessary.</param>
-		public BSP(string filePath, MapType mapType = MapType.Undefined) : base(16) {
-			Reader = new BSPReader(new FileInfo(filePath));
-			MapName = Path.GetFileNameWithoutExtension(filePath);
+		public BSP(string name, MapType mapType = MapType.Undefined) : base(GetNumLumps(mapType)) {
+			MapName = name;
 			MapType = mapType;
 
 			_lumps = new Dictionary<int, ILump>(GetNumLumps(MapType));
-			Header = new BSPHeader(this, Reader.GetHeader(MapType));
 		}
 
 		/// <summary>
@@ -1614,7 +1611,7 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="file">A reference to the .BSP file.</param>
 		/// <param name="mapType">The <see cref="MapType"/> of the BSP, if necessary.</param>
-		public BSP(FileInfo file, MapType mapType = MapType.Undefined) : base(16) {
+		public BSP(FileInfo file, MapType mapType = MapType.Undefined) : base(GetNumLumps(mapType)) {
 			Reader = new BSPReader(file);
 			MapName = Path.GetFileNameWithoutExtension(file.FullName);
 			MapType = mapType;
@@ -1662,7 +1659,7 @@ namespace LibBSP {
 				return 17;
 			}
 
-			return -1;
+			return 0;
 		}
 
 		/// <summary>
