@@ -96,6 +96,12 @@
     <Compile Include="Source\Structs\MAP\MAPTerrainMoHAA.cs" />
     <Compile Include="Source\Util\BSPReader.cs" />
     <Compile Include="Source\Util\BSPWriter.cs" />
+    <Compile Include="Source\Util\CoDRadiantMapWriter.cs" />
+    <Compile Include="Source\Util\DoomEditMapWriter.cs" />
+    <Compile Include="Source\Util\GearcraftMapWriter.cs" />
+    <Compile Include="Source\Util\HammerMapWriter.cs" />
+    <Compile Include="Source\Util\MoHRadiantMapWriter.cs" />
+    <Compile Include="Source\Util\RadiantMapWriter.cs" />
     <Compile Include="Source\Util\Revision.cs" />
   </ItemGroup>
   <ItemGroup />
