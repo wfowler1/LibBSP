@@ -21,7 +21,7 @@ namespace LibBSP {
 	using Plane = Godot.Plane;
 	using Vector2 = Godot.Vector2;
 	using Vector3 = Godot.Vector3;
-	using Vector4 = Godot.Vector4;
+	using Vector4 = Godot.Quat;
 #else
 	using Plane = System.Numerics.Plane;
 	using Vector2 = System.Numerics.Vector2;

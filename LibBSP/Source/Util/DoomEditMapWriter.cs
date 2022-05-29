@@ -1,9 +1,20 @@
+#if UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER
+#define UNITY
+#if !UNITY_5_6_OR_NEWER
+#define OLDUNITY
+#endif
+#endif
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
 namespace LibBSP {
+#if UNITY && !OLDUNITY
+	using Vertex = UnityEngine.UIVertex;
+#endif
+
 	/// <summary>
 	/// A class that takes an <see cref="Entities"/> object and can convert it into a <c>string</c>,
 	/// to output to a DoomEdit map file.
@@ -95,17 +106,17 @@ namespace LibBSP {
 		/// <param name="sb">A <see cref="StringBuilder"/> object to append processed data from <paramref name="brushside"/> to.</param>
 		private void ParseBrushSide(MAPBrushSide brushside, StringBuilder sb) {
 			sb.Append("  ( ")
-			.Append(brushside.plane.Normal.X.ToString("###0.##########", _format))
+			.Append(brushside.plane.Normal().X().ToString("###0.##########", _format))
 			.Append(" ")
-			.Append(brushside.plane.Normal.Y.ToString("###0.##########", _format))
+			.Append(brushside.plane.Normal().Y().ToString("###0.##########", _format))
 			.Append(" ")
-			.Append(brushside.plane.Normal.Z.ToString("###0.##########", _format))
+			.Append(brushside.plane.Normal().Z().ToString("###0.##########", _format))
 			.Append(" ")
-			.Append(brushside.plane.D.ToString("###0.##########", _format))
+			.Append(brushside.plane.Distance().ToString("###0.##########", _format))
 			.Append(" ) ( ( 1 0 ")
-			.Append(brushside.textureInfo.Translation.X.ToString("###0.##########", _format))
+			.Append(brushside.textureInfo.Translation.X().ToString("###0.##########", _format))
 			.Append(" ) ( 0 1 ")
-			.Append(brushside.textureInfo.Translation.Y.ToString("###0.##########", _format))
+			.Append(brushside.textureInfo.Translation.Y().ToString("###0.##########", _format))
 			.Append(" ) ) \"")
 			.Append(brushside.texture)
 			.Append("\" 0 0 0\r\n");
@@ -120,24 +131,24 @@ namespace LibBSP {
 			sb.Append(" patchDef2\r\n {\r\n  ")
 			.Append(patch.texture)
 			.Append("\r\n  ( ")
-			.Append((int)Math.Round(patch.dims.X))
+			.Append((int)Math.Round(patch.dims.X()))
 			.Append(" ")
-			.Append((int)Math.Round(patch.dims.Y))
+			.Append((int)Math.Round(patch.dims.Y()))
 			.Append(" 0 0 0 )\r\n  (\r\n");
-			for (int i = 0; i < patch.dims.X; ++i) {
+			for (int i = 0; i < patch.dims.X(); ++i) {
 				sb.Append("   (  ");
-				for (int j = 0; j < patch.dims.Y; ++j) {
-					Vertex vertex = patch.points[((int)Math.Round(patch.dims.X) * j) + i];
+				for (int j = 0; j < patch.dims.Y(); ++j) {
+					Vertex vertex = patch.points[((int)Math.Round(patch.dims.X()) * j) + i];
 					sb.Append("( ")
-					.Append(vertex.position.X.ToString("###0.#####", _format))
+					.Append(vertex.position.X().ToString("###0.#####", _format))
 					.Append(" ")
-					.Append(vertex.position.Y.ToString("###0.#####", _format))
+					.Append(vertex.position.Y().ToString("###0.#####", _format))
 					.Append(" ")
-					.Append(vertex.position.Z.ToString("###0.#####", _format))
+					.Append(vertex.position.Z().ToString("###0.#####", _format))
 					.Append(" ")
-					.Append(vertex.uv0.X.ToString("###0.#####", _format))
+					.Append(vertex.uv0.X().ToString("###0.#####", _format))
 					.Append(" ")
-					.Append(vertex.uv0.Y.ToString("###0.#####", _format))
+					.Append(vertex.uv0.Y().ToString("###0.#####", _format))
 					.Append(" ) ");
 				}
 				sb.Append(")\r\n");

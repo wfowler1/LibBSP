@@ -1,9 +1,20 @@
+#if UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_5_3_OR_NEWER
+#define UNITY
+#if !UNITY_5_6_OR_NEWER
+#define OLDUNITY
+#endif
+#endif
+
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Globalization;
 
 namespace LibBSP {
+#if UNITY && !OLDUNITY
+	using Vertex = UnityEngine.UIVertex;
+#endif
+
 	/// <summary>
 	/// A class that takes an <see cref="Entities"/> object and can convert it into a <c>string</c>,
 	/// to output to a MoHRadiant map file.
@@ -99,35 +110,35 @@ namespace LibBSP {
 		/// <param name="sb">A <see cref="StringBuilder"/> object to append processed data from <paramref name="brushside"/> to.</param>
 		private void ParseBrushSide(MAPBrushSide brushside, bool isDetail, StringBuilder sb) {
 			sb.Append("( ")
-			.Append(brushside.vertices[0].X.ToString("###0.######", _format))
+			.Append(brushside.vertices[0].X().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(brushside.vertices[0].Y.ToString("###0.######", _format))
+			.Append(brushside.vertices[0].Y().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(brushside.vertices[0].Z.ToString("###0.######", _format))
+			.Append(brushside.vertices[0].Z().ToString("###0.######", _format))
 			.Append(" ) ( ")
-			.Append(brushside.vertices[1].X.ToString("###0.######", _format))
+			.Append(brushside.vertices[1].X().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(brushside.vertices[1].Y.ToString("###0.######", _format))
+			.Append(brushside.vertices[1].Y().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(brushside.vertices[1].Z.ToString("###0.######", _format))
+			.Append(brushside.vertices[1].Z().ToString("###0.######", _format))
 			.Append(" ) ( ")
-			.Append(brushside.vertices[2].X.ToString("###0.######", _format))
+			.Append(brushside.vertices[2].X().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(brushside.vertices[2].Y.ToString("###0.######", _format))
+			.Append(brushside.vertices[2].Y().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(brushside.vertices[2].Z.ToString("###0.######", _format))
+			.Append(brushside.vertices[2].Z().ToString("###0.######", _format))
 			.Append(" ) ")
 			.Append(brushside.texture)
 			.Append(" ")
-			.Append(brushside.textureInfo.Translation.X.ToString("###0.######", _format))
+			.Append(brushside.textureInfo.Translation.X().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(brushside.textureInfo.Translation.Y.ToString("###0.######", _format))
+			.Append(brushside.textureInfo.Translation.Y().ToString("###0.######", _format))
 			.Append(" ")
 			.Append(brushside.textureInfo.rotation.ToString("###0.00", _format))
 			.Append(" ")
-			.Append(brushside.textureInfo.scale.X.ToString("###0.######", _format))
+			.Append(brushside.textureInfo.scale.X().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(brushside.textureInfo.scale.Y.ToString("###0.######", _format))
+			.Append(brushside.textureInfo.scale.Y().ToString("###0.######", _format))
 			.Append(" ")
 			.Append(brushside.textureInfo.Flags)
 			.Append(" 0 0");
@@ -146,24 +157,24 @@ namespace LibBSP {
 			sb.Append(" {\r\n  patchDef2\r\n  {\r\n")
 			.Append(patch.texture)
 			.Append("\r\n( ")
-			.Append((int)Math.Round(patch.dims.X))
+			.Append((int)Math.Round(patch.dims.X()))
 			.Append(" ")
-			.Append((int)Math.Round(patch.dims.Y))
+			.Append((int)Math.Round(patch.dims.Y()))
 			.Append(" 0 0 0 )\r\n(\r\n");
-			for (int i = 0; i < patch.dims.X; ++i) {
+			for (int i = 0; i < patch.dims.X(); ++i) {
 				sb.Append("( ");
-				for (int j = 0; j < patch.dims.Y; ++j) {
-					Vertex vertex = patch.points[((int)Math.Round(patch.dims.X) * j) + i];
+				for (int j = 0; j < patch.dims.Y(); ++j) {
+					Vertex vertex = patch.points[((int)Math.Round(patch.dims.X()) * j) + i];
 					sb.Append("( ")
-					.Append(vertex.position.X.ToString("###0.#####", _format))
+					.Append(vertex.position.X().ToString("###0.#####", _format))
 					.Append(" ")
-					.Append(vertex.position.Y.ToString("###0.#####", _format))
+					.Append(vertex.position.Y().ToString("###0.#####", _format))
 					.Append(" ")
-					.Append(vertex.position.Z.ToString("###0.#####", _format))
+					.Append(vertex.position.Z().ToString("###0.#####", _format))
 					.Append(" ")
-					.Append(vertex.uv0.X.ToString("###0.#####", _format))
+					.Append(vertex.uv0.X().ToString("###0.#####", _format))
 					.Append(" ")
-					.Append(vertex.uv0.Y.ToString("###0.#####", _format))
+					.Append(vertex.uv0.Y().ToString("###0.#####", _format))
 					.Append(" ) ");
 				}
 				sb.Append(")\r\n");
@@ -178,17 +189,17 @@ namespace LibBSP {
 		/// <param name="sb">A <c>StringBuilder</c> object to append processed data from <paramref name="terrain"/> to.</param>
 		private void ParseTerrain(MAPTerrainMoHAA terrain, StringBuilder sb) {
 			sb.Append(" {\r\n  terrainDef\r\n  {\r\n   ")
-			.Append(terrain.size.X)
+			.Append(terrain.size.X())
 			.Append(" ")
-			.Append(terrain.size.Y)
+			.Append(terrain.size.Y())
 			.Append(" ")
 			.Append(terrain.flags)
 			.Append("\r\n   ")
-			.Append(terrain.origin.X.ToString("###0.000000"))
+			.Append(terrain.origin.X().ToString("###0.000000"))
 			.Append(" ")
-			.Append(terrain.origin.Y.ToString("###0.000000"))
+			.Append(terrain.origin.Y().ToString("###0.000000"))
 			.Append(" ")
-			.Append(terrain.origin.Z.ToString("###0.000000"))
+			.Append(terrain.origin.Z().ToString("###0.000000"))
 			.Append("\r\n\t\t{\r\n");
 			foreach (MAPTerrainMoHAA.Partition partition in terrain.partitions) {
 				sb.Append("\t\t\t")

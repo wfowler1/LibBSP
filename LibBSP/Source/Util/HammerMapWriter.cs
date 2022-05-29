@@ -124,45 +124,45 @@ namespace LibBSP {
 			sb.Append("\t\tside\r\n\t\t{\r\n\t\t\t\"id\" \"")
 			.Append(_nextID)
 			.Append("\"\r\n\t\t\t\"plane\" \"(")
-			.Append(brushside.vertices[0].X.ToString("###0.######", _format))
+			.Append(brushside.vertices[0].X().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(brushside.vertices[0].Y.ToString("###0.######", _format))
+			.Append(brushside.vertices[0].Y().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(brushside.vertices[0].Z.ToString("###0.######", _format))
+			.Append(brushside.vertices[0].Z().ToString("###0.######", _format))
 			.Append(") (")
-			.Append(brushside.vertices[1].X.ToString("###0.######", _format))
+			.Append(brushside.vertices[1].X().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(brushside.vertices[1].Y.ToString("###0.######", _format))
+			.Append(brushside.vertices[1].Y().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(brushside.vertices[1].Z.ToString("###0.######", _format))
+			.Append(brushside.vertices[1].Z().ToString("###0.######", _format))
 			.Append(") (")
-			.Append(brushside.vertices[2].X.ToString("###0.######", _format))
+			.Append(brushside.vertices[2].X().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(brushside.vertices[2].Y.ToString("###0.######", _format))
+			.Append(brushside.vertices[2].Y().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(brushside.vertices[2].Z.ToString("###0.######", _format))
+			.Append(brushside.vertices[2].Z().ToString("###0.######", _format))
 			.Append(")\"\r\n\t\t\t\"material\" \"")
 			.Append(brushside.texture)
 			.Append("\"\r\n\t\t\t\"uaxis\" \"[")
-			.Append(brushside.textureInfo.UAxis.X.ToString("###0.######", _format))
+			.Append(brushside.textureInfo.UAxis.X().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(brushside.textureInfo.UAxis.Y.ToString("###0.######", _format))
+			.Append(brushside.textureInfo.UAxis.Y().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(brushside.textureInfo.UAxis.Z.ToString("###0.######", _format))
+			.Append(brushside.textureInfo.UAxis.Z().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(brushside.textureInfo.Translation.X.ToString("###0.######", _format))
+			.Append(brushside.textureInfo.Translation.X().ToString("###0.######", _format))
 			.Append("] ")
-			.Append(brushside.textureInfo.scale.X.ToString("###0.####", _format))
+			.Append(brushside.textureInfo.scale.X().ToString("###0.####", _format))
 			.Append("\"\r\n\t\t\t\"vaxis\" \"[")
-			.Append(brushside.textureInfo.VAxis.X.ToString("###0.######", _format))
+			.Append(brushside.textureInfo.VAxis.X().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(brushside.textureInfo.VAxis.Y.ToString("###0.######", _format))
+			.Append(brushside.textureInfo.VAxis.Y().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(brushside.textureInfo.VAxis.Z.ToString("###0.######", _format))
+			.Append(brushside.textureInfo.VAxis.Z().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(brushside.textureInfo.Translation.Y.ToString("###0.######", _format))
+			.Append(brushside.textureInfo.Translation.Y().ToString("###0.######", _format))
 			.Append("] ")
-			.Append(brushside.textureInfo.scale.Y.ToString("###0.####", _format))
+			.Append(brushside.textureInfo.scale.Y().ToString("###0.####", _format))
 			.Append("\"\r\n\t\t\t\"rotation\" \"")
 			.Append(brushside.textureInfo.rotation.ToString("###0.####", _format))
 			.Append("\"\r\n\t\t\t\"lightmapscale\" \"")
@@ -175,15 +175,14 @@ namespace LibBSP {
 		}
 
 		private void ParseDisplacement(MAPDisplacement displacement, StringBuilder sb) {
-			int numVertices = displacement.power * displacement.power;
 			sb.Append("\t\t\tdispinfo\r\n\t\t\t{\r\n\t\t\t\t\"power\" \"")
 			.Append(displacement.power)
 			.Append("\"\r\n\t\t\t\t\"startposition\" \"[")
-			.Append(displacement.start.X.ToString("###0.######", _format))
+			.Append(displacement.start.X().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(displacement.start.Y.ToString("###0.######", _format))
+			.Append(displacement.start.Y().ToString("###0.######", _format))
 			.Append(" ")
-			.Append(displacement.start.Z.ToString("###0.######", _format))
+			.Append(displacement.start.Z().ToString("###0.######", _format))
 			.Append("]\"\r\n\t\t\t\t\"elevation\" \"0\"\r\n\t\t\t\t\"subdiv\" \"0\"\r\n\t\t\t\tnormals\r\n\t\t\t\t{\r\n");
 			for (int i = 0; i < displacement.normals.GetLength(0); ++i) {
 				sb.Append("\t\t\t\t\t\"row")
@@ -193,11 +192,11 @@ namespace LibBSP {
 					if (j > 0) {
 						sb.Append(" ");
 					}
-					sb.Append(displacement.normals[i, j].X.ToString("###0.######", _format));
+					sb.Append(displacement.normals[i, j].X().ToString("###0.######", _format));
 					sb.Append(" ");
-					sb.Append(displacement.normals[i, j].Y.ToString("###0.######", _format));
+					sb.Append(displacement.normals[i, j].Y().ToString("###0.######", _format));
 					sb.Append(" ");
-					sb.Append(displacement.normals[i, j].Z.ToString("###0.######", _format));
+					sb.Append(displacement.normals[i, j].Z().ToString("###0.######", _format));
 				}
 				sb.Append("\"\r\n");
 			}
