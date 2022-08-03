@@ -12,6 +12,9 @@ namespace LibBSP {
 #elif GODOT
 	using Vector2 = Godot.Vector2;
 	using Vector3 = Godot.Vector3;
+#elif NEOAXIS
+	using Vector2 = NeoAxis.Vector2F;
+	using Vector3 = NeoAxis.Vector3F;
 #else
 	using Vector2 = System.Numerics.Vector2;
 	using Vector3 = System.Numerics.Vector3;

@@ -13,6 +13,8 @@ using System.Globalization;
 namespace LibBSP {
 #if UNITY && !OLDUNITY
 	using Vertex = UnityEngine.UIVertex;
+#elif NEOAXIS
+	using Vertex = NeoAxis.StandardVertex;
 #endif
 
 	/// <summary>
@@ -159,23 +161,23 @@ namespace LibBSP {
 				for (int j = 0; j < patch.dims.Y(); ++j) {
 					Vertex vertex = patch.points[((int)Math.Round(patch.dims.X()) * j) + i];
 					sb.Append("( ")
-					.Append(vertex.position.X().ToString("###0.#####", _format))
+					.Append(vertex.Position().X().ToString("###0.#####", _format))
 					.Append(" ")
-					.Append(vertex.position.Y().ToString("###0.#####", _format))
+					.Append(vertex.Position().Y().ToString("###0.#####", _format))
 					.Append(" ")
-					.Append(vertex.position.Z().ToString("###0.#####", _format))
+					.Append(vertex.Position().Z().ToString("###0.#####", _format))
 					.Append(" ")
-					.Append(vertex.uv0.X().ToString("###0.#####", _format))
+					.Append(vertex.Uv0().X().ToString("###0.#####", _format))
 					.Append(" ")
-					.Append(vertex.uv0.Y().ToString("###0.#####", _format))
+					.Append(vertex.Uv0().Y().ToString("###0.#####", _format))
 					.Append(" ")
-					.Append(vertex.color.R().ToString(_format))
+					.Append(vertex.Color().R().ToString(_format))
 					.Append(" ")
-					.Append(vertex.color.G().ToString(_format))
+					.Append(vertex.Color().G().ToString(_format))
 					.Append(" ")
-					.Append(vertex.color.B().ToString(_format))
+					.Append(vertex.Color().B().ToString(_format))
 					.Append(" ")
-					.Append(vertex.color.A().ToString(_format))
+					.Append(vertex.Color().A().ToString(_format))
 					.Append(" 0 ) ");
 				}
 				sb.Append(")\r\n");

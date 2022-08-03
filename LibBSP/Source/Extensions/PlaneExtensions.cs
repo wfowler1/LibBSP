@@ -12,6 +12,10 @@ namespace LibBSP {
 #elif GODOT
 	using Plane = Godot.Plane;
 	using Vector3 = Godot.Vector3;
+#elif NEOAXIS
+	using Plane = NeoAxis.PlaneF;
+	using Vector3 = NeoAxis.Vector3F;
+	using Ray = NeoAxis.RayF;
 #else
 	using Plane = System.Numerics.Plane;
 	using Vector3 = System.Numerics.Vector3;
@@ -86,14 +90,20 @@ namespace LibBSP {
 		/// <param name="direction">The direction of the ray.</param>
 		/// <returns>Point of intersection if the ray intersects "<paramref name="p"/>", (NaN, NaN, NaN) otherwise.</returns>
 		public static Vector3 Intersection(this Plane plane, Vector3 origin, Vector3 direction) {
+#if NEOAXIS
+			if (plane.Intersects(new Ray(origin, direction), out Vector3 intersectionPoint)) {
+				return intersectionPoint;
+			}
+#else
 			float enter;
 			direction = direction.GetNormalized();
 			bool intersected = plane.Raycast(origin, direction, out enter);
 			if (intersected || enter != 0) {
 				return origin + (enter * direction);
-			} else {
-				return new Vector3(float.NaN, float.NaN, float.NaN);
 			}
+#endif
+
+			return new Vector3(float.NaN, float.NaN, float.NaN);
 		}
 
 		/// <summary>
@@ -111,6 +121,8 @@ namespace LibBSP {
 		public static bool Raycast(this Plane plane, Vector3 origin, Vector3 direction, out float enter) {
 #if UNITY
 			return plane.Raycast(new Ray(origin, direction), out enter);
+#elif NEOAXIS
+			return plane.Intersects(new Ray(origin, direction), out enter);
 #else
 			direction = direction.GetNormalized();
 			float denom = direction.Dot(plane.Normal());
@@ -207,6 +219,8 @@ namespace LibBSP {
 		public static float GetDistanceToPoint(this Plane plane, Vector3 point) {
 #if GODOT
 			return plane.Normal.Dot(point) + plane.D;
+#elif NEOAXIS
+			return plane.GetDistance(point);
 #else
 			return Plane.DotCoordinate(plane, point);
 #endif
@@ -256,6 +270,8 @@ namespace LibBSP {
 			Plane plane = new Plane(point1, point3, point2);
 			plane.D *= -1;
 			return plane;
+#elif NEOAXIS
+			return Plane.FromPoints(point1, point2, point3);
 #else
 			return Plane.CreateFromVertices(point1, point2, point3);
 #endif

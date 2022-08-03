@@ -11,6 +11,8 @@ namespace LibBSP {
 	using Vector3 = UnityEngine.Vector3;
 #elif GODOT
 	using Vector3 = Godot.Vector3;
+#elif NEOAXIS
+	using Vector3 = NeoAxis.Vector3F;
 #else
 	using Vector3 = System.Numerics.Vector3;
 #endif

@@ -22,6 +22,12 @@ namespace LibBSP {
 	using Vector2 = Godot.Vector2;
 	using Vector3 = Godot.Vector3;
 	using Vector4 = Godot.Quat;
+#elif NEOAXIS
+	using Plane = NeoAxis.PlaneF;
+	using Vector2 = NeoAxis.Vector2F;
+	using Vector3 = NeoAxis.Vector3F;
+	using Vector4 = NeoAxis.Vector4F;
+	using Vertex = NeoAxis.StandardVertex;
 #else
 	using Plane = System.Numerics.Plane;
 	using Vector2 = System.Numerics.Vector2;

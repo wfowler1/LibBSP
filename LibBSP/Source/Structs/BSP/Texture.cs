@@ -8,13 +8,12 @@ using System.Text;
 namespace LibBSP {
 #if UNITY
 	using Vector2 = UnityEngine.Vector2;
-	using Vector3 = UnityEngine.Vector3;
 #elif GODOT
 	using Vector2 = Godot.Vector2;
-	using Vector3 = Godot.Vector3;
+#elif NEOAXIS
+	using Vector2 = NeoAxis.Vector2F;
 #else
 	using Vector2 = System.Numerics.Vector2;
-	using Vector3 = System.Numerics.Vector3;
 #endif
 
 	/// <summary>

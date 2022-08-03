@@ -10,6 +10,8 @@ namespace LibBSP {
 	using Plane = UnityEngine.Plane;
 #elif GODOT
 	using Plane = Godot.Plane;
+#elif NEOAXIS
+	using Plane = NeoAxis.PlaneF;
 #else
 	using Plane = System.Numerics.Plane;
 #endif

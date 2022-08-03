@@ -13,6 +13,9 @@ namespace LibBSP {
 #elif GODOT
 	using Color = Godot.Color;
 	using Vector3 = Godot.Vector3;
+#elif NEOAXIS
+	using Color = NeoAxis.ColorByte;
+	using Vector3 = NeoAxis.Vector3F;
 #else
 	using Color = System.Drawing.Color;
 	using Vector3 = System.Numerics.Vector3;

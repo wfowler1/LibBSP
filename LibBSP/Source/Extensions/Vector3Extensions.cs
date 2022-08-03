@@ -9,6 +9,8 @@ namespace LibBSP {
 	using Vector3 = UnityEngine.Vector3;
 #elif GODOT
 	using Vector3 = Godot.Vector3;
+#elif NEOAXIS
+	using Vector3 = NeoAxis.Vector3F;
 #else
 	using Vector3 = System.Numerics.Vector3;
 #endif
@@ -56,11 +58,7 @@ namespace LibBSP {
 		/// <param name="other">The <see cref="Vector3"/> to get the distance to squared.</param>
 		/// <returns>The distance from this <see cref="Vector3"/> to <paramref name="other"/> squared.</returns>
 		public static float DistanceSquaredTo(this Vector3 vector, Vector3 other) {
-#if UNITY
-			return (vector - other).sqrMagnitude;
-#else
-			return Vector3.DistanceSquared(vector, other);
-#endif
+			return MagnitudeSquared(vector - other);
 		}
 #endif
 

@@ -7,7 +7,7 @@
 #endif
 #endif
 
-#if !UNITY || OLDUNITY
+#if !NEOAXIS && (!UNITY || OLDUNITY)
 
 using System;
 

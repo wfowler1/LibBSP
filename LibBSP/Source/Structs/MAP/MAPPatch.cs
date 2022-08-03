@@ -13,6 +13,7 @@ namespace LibBSP {
 #if UNITY
 	using Vector2 = UnityEngine.Vector2;
 	using Vector3 = UnityEngine.Vector3;
+	using Vector4 = UnityEngine.Vector4;
 	using Color = UnityEngine.Color32;
 #if !OLDUNITY
 	using Vertex = UnityEngine.UIVertex;
@@ -20,10 +21,18 @@ namespace LibBSP {
 #elif GODOT
 	using Vector2 = Godot.Vector2;
 	using Vector3 = Godot.Vector3;
+	using Vector4 = Godot.Vector4;
 	using Color = Godot.Color;
+#elif NEOAXIS
+	using Vector2 = NeoAxis.Vector2F;
+	using Vector3 = NeoAxis.Vector3F;
+	using Vector4 = NeoAxis.Vector4F;
+	using Color = NeoAxis.ColorByte;
+	using Vertex = NeoAxis.StandardVertex;
 #else
 	using Vector2 = System.Numerics.Vector2;
 	using Vector3 = System.Numerics.Vector3;
+	using Vector4 = System.Numerics.Vector4;
 	using Color = System.Drawing.Color;
 #endif
 
@@ -62,11 +71,7 @@ namespace LibBSP {
 						for (int j = 0; j < dims.Y(); ++j) {
 							Vector3 point = new Vector3(float.Parse(line[2 + (j * 7)], _format), float.Parse(line[3 + (j * 7)], _format), float.Parse(line[4 + (j * 7)], _format));
 							Vector2 uv = new Vector2(float.Parse(line[5 + (j * 7)], _format), float.Parse(line[6 + (j * 7)], _format));
-							Vertex vertex = new Vertex() {
-								position = point,
-								uv0 = uv,
-								color = ColorExtensions.FromArgb(255, 255, 255, 255),
-							};
+							Vertex vertex = VertexExtensions.CreateVertex(point, new Vector3(0, 0, -1), ColorExtensions.FromArgb(255, 255, 255, 255), uv, new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector4(1, 0, 0, -1));
 							vertices.Add(vertex);
 						}
 					}
@@ -81,11 +86,7 @@ namespace LibBSP {
 							Vector3 point = new Vector3(float.Parse(line[2 + (j * 12)], _format), float.Parse(line[3 + (j * 12)], _format), float.Parse(line[4 + (j * 12)], _format));
 							Vector2 uv = new Vector2(float.Parse(line[5 + (j * 12)], _format), float.Parse(line[6 + (j * 12)], _format));
 							Color color = ColorExtensions.FromArgb(byte.Parse(line[7 + (j * 12)]), byte.Parse(line[8 + (j * 12)]), byte.Parse(line[9 + (j * 12)]), byte.Parse(line[10 + (j * 12)]));
-							Vertex vertex = new Vertex() {
-								position = point,
-								uv0 = uv,
-								color = color,
-							};
+							Vertex vertex = VertexExtensions.CreateVertex(point, new Vector3(0, 0, -1), color, uv, new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector4(1, 0, 0, -1));
 							vertices.Add(vertex);
 						}
 					}

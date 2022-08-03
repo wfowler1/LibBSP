@@ -14,6 +14,8 @@ namespace LibBSP {
 #if !OLDUNITY
 	using Vertex = UnityEngine.UIVertex;
 #endif
+#elif NEOAXIS
+	using Vertex = NeoAxis.StandardVertex;
 #endif
 
 	/// <summary>

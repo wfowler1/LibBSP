@@ -7,6 +7,8 @@ namespace LibBSP {
 	using Color = UnityEngine.Color32;
 #elif GODOT
 	using Color = Godot.Color;
+#elif NEOAXIS
+	using Color = NeoAxis.ColorByte;
 #else
 	using Color = System.Drawing.Color;
 #endif
@@ -29,6 +31,8 @@ namespace LibBSP {
 			return new Color((byte)r, (byte)g, (byte)b, (byte)a);
 #elif GODOT
 			return new Color((byte)r << 24 | (byte)g << 16 | (byte)b << 8 | (byte)a);
+#elif NEOAXIS
+			return new Color(r, g, b, a);
 #else
 			return Color.FromArgb(a, r, g, b);
 #endif
@@ -51,6 +55,11 @@ namespace LibBSP {
 			bytes[1] = (byte)color.g8;
 			bytes[2] = (byte)color.b8;
 			bytes[3] = (byte)color.a8;
+#elif NEOAXIS
+			bytes[0] = color.Red;
+			bytes[1] = color.Green;
+			bytes[2] = color.Blue;
+			bytes[3] = color.Alpha;
 #else
 			bytes[0] = color.R;
 			bytes[1] = color.G;
@@ -70,6 +79,8 @@ namespace LibBSP {
 			return color.a;
 #elif GODOT
 			return (byte)color.a8;
+#elif NEOAXIS
+			return color.Alpha;
 #else
 			return color.A;
 #endif
@@ -85,6 +96,8 @@ namespace LibBSP {
 			return color.r;
 #elif GODOT
 			return (byte)color.r8;
+#elif NEOAXIS
+			return color.Red;
 #else
 			return color.R;
 #endif
@@ -100,6 +113,8 @@ namespace LibBSP {
 			return color.g;
 #elif GODOT
 			return (byte)color.g8;
+#elif NEOAXIS
+			return color.Green;
 #else
 			return color.G;
 #endif
@@ -115,6 +130,8 @@ namespace LibBSP {
 			return color.b;
 #elif GODOT
 			return (byte)color.b8;
+#elif NEOAXIS
+			return color.Blue;
 #else
 			return color.B;
 #endif
