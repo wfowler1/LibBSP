@@ -10,7 +10,7 @@ namespace LibBSP {
 		/// <summary>
 		/// The <see cref="BSP"/> this <see cref="ILump"/> came from.
 		/// </summary>
-		public BSP Bsp { get; protected set; }
+		public BSP Bsp { get; set; }
 
 		/// <summary>
 		/// The <see cref="LibBSP.LumpInfo"/> associated with this <see cref="ILump"/>.
@@ -78,7 +78,7 @@ namespace LibBSP {
 		/// <param name="bsp">The <see cref="BSP"/> this lump came from.</param>
 		/// <param name="lumpInfo">The <see cref="LumpInfo"/> associated with this lump.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="data"/> was <c>null</c>.</exception>
-		public Visibility(byte[] data, BSP bsp, LumpInfo lumpInfo = default(LumpInfo)) {
+		public Visibility(byte[] data, BSP bsp = null, LumpInfo lumpInfo = default(LumpInfo)) {
 			if (data == null) {
 				throw new ArgumentNullException();
 			}

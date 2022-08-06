@@ -12,7 +12,7 @@ namespace LibBSP {
 		/// <summary>
 		/// The <see cref="BSP"/> this <see cref="ILump"/> came from.
 		/// </summary>
-		public BSP Bsp { get; protected set; }
+		public BSP Bsp { get; set; }
 
 		/// <summary>
 		/// The <see cref="LumpInfo"/> associated with this <see cref="ILump"/>.

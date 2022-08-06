@@ -28,7 +28,7 @@ namespace LibBSP {
 		/// <summary>
 		/// The <see cref="BSP"/> this <see cref="ILump"/> came from.
 		/// </summary>
-		public BSP Bsp { get; protected set; }
+		public BSP Bsp { get; set; }
 
 		/// <summary>
 		/// The <see cref="LibBSP.LumpInfo"/> associated with this <see cref="ILump"/>.
@@ -195,6 +195,7 @@ namespace LibBSP {
 			}
 			set {
 				_lumps[GameLumpType.prps] = value;
+				value.Bsp = Bsp;
 			}
 		}
 

@@ -40,7 +40,7 @@ namespace LibBSP {
 		/// <summary>
 		/// The <see cref="BSP"/> this <see cref="ILump"/> came from.
 		/// </summary>
-		public BSP Bsp { get; protected set; }
+		public BSP Bsp { get; set; }
 
 		/// <summary>
 		/// The <see cref="LibBSP.LumpInfo"/> associated with this <see cref="Lump{T}"/>.
@@ -138,35 +138,36 @@ namespace LibBSP {
 			byte[] data;
 
 			if (Count > 0) {
-				if (typeof(ILumpObject).IsAssignableFrom(typeof(T))) {
+				Type type = typeof(T);
+				if (typeof(ILumpObject).IsAssignableFrom(type)) {
 					int length = ((ILumpObject)this[0]).Data.Length;
 					data = new byte[length * Count];
 					for (int i = 0; i < Count; ++i) {
 						((ILumpObject)this[i]).Data.CopyTo(data, length * i);
 					}
-				} else if (typeof(T) == typeof(Vertex)) {
+				} else if (type == typeof(Vertex)) {
 					int length = VertexExtensions.GetStructLength(Bsp.MapType, LumpInfo.version);
 					data = new byte[length * Count];
 					for (int i = 0; i < Count; ++i) {
 						((Vertex)(object)this[i]).GetBytes(Bsp.MapType, LumpInfo.version).CopyTo(data, length * i);
 					}
-				} else if (typeof(T) == typeof(Plane)) {
+				} else if (type == typeof(Plane)) {
 					int length = PlaneExtensions.GetStructLength(Bsp.MapType, LumpInfo.version);
 					data = new byte[length * Count];
 					for (int i = 0; i < Count; ++i) {
 						((Plane)(object)this[i]).GetBytes(Bsp.MapType, LumpInfo.version).CopyTo(data, length * i);
 					}
-				} else if (typeof(T) == typeof(Vector2)) {
+				} else if (type == typeof(Vector2)) {
 					data = new byte[8 * Count];
 					for (int i = 0; i < Count; ++i) {
 						((Vector2)(object)this[i]).GetBytes().CopyTo(data, 8 * i);
 					}
-				} else if (typeof(T) == typeof(Vector3)) {
+				} else if (type == typeof(Vector3)) {
 					data = new byte[12 * Count];
 					for (int i = 0; i < Count; ++i) {
 						((Vector3)(object)this[i]).GetBytes().CopyTo(data, 12 * i);
 					}
-				} else if (typeof(T) == typeof(Vector4)) {
+				} else if (type == typeof(Vector4)) {
 					data = new byte[16 * Count];
 					for (int i = 0; i < Count; ++i) {
 						((Vector4)(object)this[i]).GetBytes().CopyTo(data, 16 * i);
