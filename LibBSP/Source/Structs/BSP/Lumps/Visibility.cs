@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace LibBSP {
 
@@ -191,6 +193,66 @@ namespace LibBSP {
 		/// <returns>The data.</returns>
 		public byte[] GetBytes() {
 			return Data;
+		}
+
+		/// <summary>
+		/// Decompresses the data in the PVS for one <see cref="Leaf"/> cluster.
+		/// </summary>
+		/// <param name="data">The data to decompress.</param>
+		/// <returns>Decompressed data.</returns>
+		public byte[] Decompress(byte[] data) {
+			List<byte> decompressed = new List<byte>();
+
+			for (int i = 0; i < data.Length; ++i) {
+				if (data[i] == 0) {
+					i++;
+					for (int j = 0; j < data[i]; ++j) {
+						decompressed.Add(0);
+					}
+				} else {
+					decompressed.Add(data[i]);
+				}
+			}
+
+			return decompressed.ToArray();
+		}
+
+		/// <summary>
+		/// Compresses the data in the PVS for one <see cref="Leaf"/> cluster.
+		/// </summary>
+		/// <param name="data">The data to compress.</param>
+		/// <returns>Compressed data.</returns>
+		public byte[] Compress(byte[] data) {
+			byte[] compressed = new byte[data.Length];
+			int writeOffset = 0;
+
+			uint zeroCount = 0;
+			for (int i = 0; i < data.Length; ++i) {
+				if (data[i] == 0) {
+					++zeroCount;
+				}
+
+				if (data[i] != 0 || i == data.Length - 1) {
+					if (zeroCount > 0) {
+						while (zeroCount > byte.MaxValue) {
+							compressed[writeOffset++] = 0;
+							compressed[writeOffset++] = byte.MaxValue;
+							zeroCount -= byte.MaxValue;
+						}
+						compressed[writeOffset++] = 0;
+						compressed[writeOffset++] = (byte)zeroCount;
+						zeroCount = 0;
+					}
+
+					if (i < data.Length && data[i] != 0) {
+						compressed[writeOffset++] = data[i];
+					}
+				}
+			}
+
+			byte[] output = new byte[writeOffset];
+			Array.Copy(compressed, 0, output, 0, writeOffset);
+			return output;
 		}
 
 	}
