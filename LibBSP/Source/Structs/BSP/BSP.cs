@@ -1642,6 +1642,7 @@ namespace LibBSP {
 			MapType = mapType;
 
 			_lumps = new Dictionary<int, ILump>(GetNumLumps(MapType));
+			Header = new BSPHeader(this, new byte[0]);
 		}
 
 		/// <summary>
