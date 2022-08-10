@@ -1627,7 +1627,7 @@ namespace LibBSP {
 				}
 				return base[index];
 			}
-			private set {
+			set {
 				base[index] = value;
 			}
 		}
