@@ -49,7 +49,11 @@ namespace LibBSP {
 				if (lump != null) {
 					bytes = lump.GetBytes();
 				} else {
-					bytes = _bsp.Reader.ReadLump(_bsp.Header.GetLumpInfo(i));
+					if (_bsp.Reader.BspFile != null && _bsp.Reader.BspFile.Exists) {
+						bytes = _bsp.Reader.ReadLump(_bsp.Header.GetLumpInfo(i));
+					} else {
+						bytes = new byte[0];
+					}
 				}
 				lumpBytes[i] = bytes;
 			}
