@@ -53,18 +53,21 @@ namespace LibBSP {
 		public virtual int Length {
 			get {
 				if (Count > 0) {
-					if (typeof(ILumpObject).IsAssignableFrom(typeof(T))) {
+					Type type = typeof(T);
+					if (typeof(ILumpObject).IsAssignableFrom(type)) {
 						return ((ILumpObject)this[0]).Data.Length * Count;
-					} else if (typeof(T) == typeof(Vertex)) {
+					} else if (type == typeof(Vertex)) {
 						return VertexExtensions.GetStructLength(Bsp.MapType, LumpInfo.version) * Count;
-					} else if (typeof(T) == typeof(Plane)) {
+					} else if (type == typeof(Plane)) {
 						return PlaneExtensions.GetStructLength(Bsp.MapType, LumpInfo.version) * Count;
-					} else if (typeof(T) == typeof(Vector2)) {
+					} else if (type == typeof(Vector2)) {
 						return 8 * Count;
-					} else if (typeof(T) == typeof(Vector3)) {
+					} else if (type == typeof(Vector3)) {
 						return 12 * Count;
-					} else if (typeof(T) == typeof(Vector4)) {
+					} else if (type == typeof(Vector4)) {
 						return 16 * Count;
+					} else if (type == typeof(byte)) {
+						return Count;
 					}
 				}
 
@@ -172,6 +175,8 @@ namespace LibBSP {
 					for (int i = 0; i < Count; ++i) {
 						((Vector4)(object)this[i]).GetBytes().CopyTo(data, 16 * i);
 					}
+				} else if (type == typeof(byte)) {
+					data = (byte[])(object)ToArray();
 				} else {
 					data = new byte[0];
 				}
