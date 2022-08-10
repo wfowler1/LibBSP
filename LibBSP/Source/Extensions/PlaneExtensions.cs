@@ -395,13 +395,10 @@ namespace LibBSP {
 			if (type == MapType.BlueShift) {
 				return 0;
 			} else if (type.IsSubtypeOf(MapType.Source)
-				|| type.IsSubtypeOf(MapType.STEF2)
-				|| type.IsSubtypeOf(MapType.MOHAA)
 				|| type.IsSubtypeOf(MapType.Quake)
-				|| type.IsSubtypeOf(MapType.Quake2)) {
-				return 1;
-			} else if (type == MapType.Nightfire
-				|| type.IsSubtypeOf(MapType.FAKK2)) {
+				|| type.IsSubtypeOf(MapType.Quake2)
+				|| type.IsSubtypeOf(MapType.UberTools)
+				|| type == MapType.Nightfire) {
 				return 1;
 			} else if (type == MapType.CoD2
 				|| type == MapType.CoD4) {
