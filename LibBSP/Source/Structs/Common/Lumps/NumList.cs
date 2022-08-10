@@ -93,9 +93,10 @@ namespace LibBSP {
 		/// Creates an empty <see cref="NumList"/> object.
 		/// </summary>
 		/// <param name="type">The type of number to store.</param>
-		public NumList(DataType type) {
-			Data = new byte[0];
+		public NumList(DataType type, BSP bsp = null) {
+			Bsp = bsp;
 			Type = type;
+			Data = new byte[0];
 		}
 
 		/// <summary>
