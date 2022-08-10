@@ -87,6 +87,10 @@ namespace LibBSP {
 				throw new ArgumentException("Game lump does not exist in map type " + bsp.MapType + " or has not been implemented.");
 			}
 
+			if (data.Length < 4) {
+				data = new byte[4];
+			}
+
 			int numGameLumps = BitConverter.ToInt32(data, 0);
 			_lumps = new Dictionary<GameLumpType, ILump>(numGameLumps);
 
