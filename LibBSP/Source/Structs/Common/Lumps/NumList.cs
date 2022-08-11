@@ -93,7 +93,9 @@ namespace LibBSP {
 		/// Creates an empty <see cref="NumList"/> object.
 		/// </summary>
 		/// <param name="type">The type of number to store.</param>
-		public NumList(DataType type, BSP bsp = null) {
+		/// <param name="bsp">The parent <see cref="BSP"/> of this <see cref="NumList"/>.</param>
+		/// <param name="lumpInfo">The <see cref="LumpInfo"/> for this lump.</param>
+		public NumList(DataType type, BSP bsp = null, LumpInfo lumpInfo = default(LumpInfo)) {
 			Bsp = bsp;
 			Type = type;
 			Data = new byte[0];
@@ -104,6 +106,8 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="data"><c>byte</c> array to parse.</param>
 		/// <param name="type">The type of number to store.</param>
+		/// <param name="bsp">The parent <see cref="BSP"/> of this <see cref="NumList"/>.</param>
+		/// <param name="lumpInfo">The <see cref="LumpInfo"/> for this lump.</param>
 		/// <returns>The resulting <see cref="NumList"/>.</returns>
 		public static NumList LumpFactory(byte[] data, DataType type, BSP bsp = null, LumpInfo lumpInfo = default(LumpInfo)) {
 			return new NumList(data, type, bsp, lumpInfo);
