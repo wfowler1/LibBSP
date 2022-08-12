@@ -103,15 +103,16 @@ namespace LibBSP {
 					for (int i = 0; i < BSP.GetNumLumps(MapType.CoD4); ++i) {
 						LumpInfo lumpInfo = GetLumpInfo(i);
 
-						if (lumpInfo.length > 0) {
-							int lumpLength;
-							ILump lump = Bsp.GetLoadedLump(lumpInfo.ident);
-							if (lump != null) {
-								lumpLength = lump.Length;
-							} else {
-								// If the lump is not loaded, it has not changed. Use original length.
-								lumpLength = lumpInfo.length;
-							}
+						int lumpLength;
+						ILump lump = Bsp.GetLoadedLump(lumpInfo.ident);
+						if (lump != null) {
+							lumpLength = lump.Length;
+						} else {
+							// If the lump is not loaded, it has not changed. Use original length.
+							lumpLength = lumpInfo.length;
+						}
+
+						if (lumpLength > 0) {
 
 							lumpInfo.offset = lumpOffset;
 							lumpInfo.length = lumpLength;
@@ -170,22 +171,29 @@ namespace LibBSP {
 							lumpIdent = lumpInfo.ident;
 						}
 
-
 						if (Bsp.MapType == MapType.L4D2 || Bsp.MapType == MapType.Source27) {
 							BitConverter.GetBytes(lumpVersion).CopyTo(newData, offset);
-							BitConverter.GetBytes(lumpOffset).CopyTo(newData, offset + 4);
+							if (lumpLength > 0) {
+								BitConverter.GetBytes(lumpOffset).CopyTo(newData, offset + 4);
+							}
 							BitConverter.GetBytes(lumpLength).CopyTo(newData, offset + 8);
 							BitConverter.GetBytes(lumpIdent).CopyTo(newData, offset + 12);
 						} else if (Bsp.MapType.IsSubtypeOf(MapType.Source)) {
-							BitConverter.GetBytes(lumpOffset).CopyTo(newData, offset);
+							if (lumpLength > 0) {
+								BitConverter.GetBytes(lumpOffset).CopyTo(newData, offset);
+							}
 							BitConverter.GetBytes(lumpLength).CopyTo(newData, offset + 4);
 							BitConverter.GetBytes(lumpVersion).CopyTo(newData, offset + 8);
 							BitConverter.GetBytes(lumpIdent).CopyTo(newData, offset + 12);
 						} else if (Bsp.MapType == MapType.CoD || Bsp.MapType == MapType.CoD2) {
 							BitConverter.GetBytes(lumpLength).CopyTo(newData, offset);
-							BitConverter.GetBytes(lumpOffset).CopyTo(newData, offset + 4);
+							if (lumpLength > 0) {
+								BitConverter.GetBytes(lumpOffset).CopyTo(newData, offset + 4);
+							}
 						} else {
-							BitConverter.GetBytes(lumpOffset).CopyTo(newData, offset);
+							if (lumpLength > 0) {
+								BitConverter.GetBytes(lumpOffset).CopyTo(newData, offset);
+							}
 							BitConverter.GetBytes(lumpLength).CopyTo(newData, offset + 4);
 						}
 
