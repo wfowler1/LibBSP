@@ -141,8 +141,9 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="key">Attribute to match.</param>
 		/// <param name="value">Desired value of attribute.</param>
-		public void RemoveAllWithAttribute(string key, string value) {
-			RemoveAll(entity => { return entity[key].Equals(value, StringComparison.InvariantCultureIgnoreCase); });
+		/// <returns>The number of entities removed from the lump.</returns>
+		public int RemoveAllWithAttribute(string key, string value) {
+			return RemoveAll(entity => { return entity[key].Equals(value, StringComparison.InvariantCultureIgnoreCase); });
 		}
 
 		/// <summary>
