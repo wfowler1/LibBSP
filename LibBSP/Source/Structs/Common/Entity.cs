@@ -110,7 +110,7 @@ namespace LibBSP {
 				return new Vector3(vec.X(), vec.Y(), vec.Z());
 			}
 			set {
-				this["origin"] = value.X() + " " + value.Y() + " " + value.Z();
+				this["origin"] = value.X().ToString(_format) + " " + value.Y().ToString(_format) + " " + value.Z().ToString(_format);
 			}
 		}
 
@@ -123,7 +123,7 @@ namespace LibBSP {
 				return new Vector3(vec.X(), vec.Y(), vec.Z());
 			}
 			set {
-				this["angles"] = value.X() + " " + value.Y() + " " + value.Z();
+				this["angles"] = value.X().ToString(_format) + " " + value.Y().ToString(_format) + " " + value.Z().ToString(_format);
 			}
 		}
 
