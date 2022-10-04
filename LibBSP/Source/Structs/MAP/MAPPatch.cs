@@ -43,7 +43,7 @@ namespace LibBSP {
 
 		private static IFormatProvider _format = CultureInfo.CreateSpecificCulture("en-US");
 
-		public Vertex[] points;
+		public Vector3[] points;
 		public Vector2 dims;
 		public string texture;
 
