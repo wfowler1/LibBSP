@@ -1640,9 +1640,9 @@ namespace LibBSP {
 		public BSP(string name, MapType mapType = MapType.Undefined) : base(GetNumLumps(mapType)) {
 			MapName = name;
 			MapType = mapType;
+			Header = new BSPHeader(this, new byte[0]);
 
 			_lumps = new Dictionary<int, ILump>(GetNumLumps(MapType));
-			Header = new BSPHeader(this, new byte[0]);
 		}
 
 		/// <summary>
@@ -1655,9 +1655,9 @@ namespace LibBSP {
 			Reader = new BSPReader(file);
 			MapName = Path.GetFileNameWithoutExtension(file.FullName);
 			MapType = mapType;
+			Header = new BSPHeader(this, Reader.GetHeader(MapType));
 
 			_lumps = new Dictionary<int, ILump>(GetNumLumps(MapType));
-			Header = new BSPHeader(this, Reader.GetHeader(MapType));
 		}
 
 		/// <summary>
