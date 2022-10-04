@@ -11,13 +11,16 @@ using System.Text;
 using System.Globalization;
 
 namespace LibBSP {
-#if UNITY && !OLDUNITY
+#if UNITY
 	using Vector3 = UnityEngine.Vector3;
+#elif GODOT
+	using Vector3 = Godot.Vector3;
 #elif NEOAXIS
 	using Vector3 = NeoAxis.Vector3F;
 #else
 	using Vector3 = System.Numerics.Vector3;
 #endif
+
 	/// <summary>
 	/// A class that takes an <see cref="Entities"/> object and can convert it into a <c>string</c>,
 	/// to output to a CoDRadiant map file.
