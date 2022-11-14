@@ -101,7 +101,7 @@ namespace LibBSP {
 			return new Vertex {
 				Position = position,
 				Normal = normal,
-				Color = new NeoAxis.ColorValue(color),
+				Color = new NeoAxis.ColorValue(color.Red / 255f, color.Green / 255f, color.Blue / 255f, color.Alpha / 255f),
 				TexCoord0 = uv0,
 				TexCoord1 = uv1,
 				TexCoord2 = uv2,
@@ -213,7 +213,7 @@ namespace LibBSP {
 		/// <returns>The color of this <see cref="Vertex"/>.</returns>
 		public static Color Color(this Vertex vertex) {
 #if NEOAXIS
-			return new Color(vertex.Color);
+			return new Color((int)(vertex.Color.Red * 255f), (int)(vertex.Color.Green * 255f), (int)(vertex.Color.Blue * 255f), (int)(vertex.Color.Alpha * 255f));
 #else
 			return vertex.color;
 #endif
