@@ -3,7 +3,6 @@
 #endif
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace LibBSP {
@@ -21,8 +20,14 @@ namespace LibBSP {
 	using Vector3 = System.Numerics.Vector3;
 #endif
 
+	/// <summary>
+	/// Holds all data for an Overlay from Source engine.
+	/// </summary>
 	public struct Overlay : ILumpObject {
 
+		/// <summary>
+		/// Number of <see cref="Face"/>s referenced by an <see cref="Overlay"/>.
+		/// </summary>
 		public const int NumOverlayFaces = 64;
 
 		/// <summary>
