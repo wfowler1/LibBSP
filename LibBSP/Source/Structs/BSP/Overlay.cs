@@ -121,15 +121,15 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets or sets the face count and render order of this <see cref="Overlay"/>.
 		/// </summary>
-		public int FaceCountAndRenderOrder {
+		public uint FaceCountAndRenderOrder {
 			get {
 				if (MapType == MapType.Vindictus) {
-					return BitConverter.ToInt32(Data, 8);
+					return BitConverter.ToUInt32(Data, 8);
 				} else if (MapType.IsSubtypeOf(MapType.Source)) {
-					return BitConverter.ToInt16(Data, 6);
+					return BitConverter.ToUInt16(Data, 6);
 				}
 
-				return -1;
+				return 0;
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);
