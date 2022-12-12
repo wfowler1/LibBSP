@@ -146,7 +146,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets or sets the face count of this <see cref="Overlay"/>.
 		/// </summary>
-		public int FaceCount {
+		public uint FaceCount {
 			get {
 				return FaceCountAndRenderOrder & 0x00003FFF;
 			}
@@ -158,7 +158,7 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets or sets the render order of this <see cref="Overlay"/>.
 		/// </summary>
-		public int RenderOrder {
+		public uint RenderOrder {
 			get {
 				return FaceCountAndRenderOrder >> 14;
 			}
