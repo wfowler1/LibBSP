@@ -91,7 +91,7 @@ namespace LibBSP {
 		}
 
 		/// <summary>
-		/// Can <see cref=Leaf"/> <paramref name="leaf"/> see the <see cref="Leaf"/> or cluster at index <paramref name="other"/>.
+		/// Can <see cref="Leaf"/> <paramref name="leaf"/> see the <see cref="Leaf"/> or cluster at index <paramref name="other"/>.
 		/// </summary>
 		/// <param name="leaf">The <see cref="Leaf"/>.</param>
 		/// <param name="other">The index of the other <see cref="Leaf"/> or cluster to determine visibility for.</param>
