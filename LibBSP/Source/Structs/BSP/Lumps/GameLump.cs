@@ -61,6 +61,11 @@ namespace LibBSP {
 		}
 
 		/// <summary>
+		/// Are the offsets of the internal lumps relative to the start of this <see cref="GameLump"/>?
+		/// </summary>
+		public bool lumpOffsetsRelativeToGameLumpOffset = false;
+
+		/// <summary>
 		/// Parses the passed <c>byte</c> array into a <see cref="GameLump"/> object.
 		/// </summary>
 		/// <param name="data">Array of <c>byte</c>s to parse.</param>
@@ -131,6 +136,10 @@ namespace LibBSP {
 					if (info.offset < lowestLumpOffset) {
 						lowestLumpOffset = info.offset;
 					}
+				}
+
+				if (lowestLumpOffset < lumpInfo.offset + (numGameLumps * structLength) + lumpDictionaryOffset) {
+					lumpOffsetsRelativeToGameLumpOffset = true;
 				}
 			}
 		}
@@ -272,59 +281,59 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets all the data in this lump as a byte array.
 		/// </summary>
+		/// <param name="lumpOffset">The offset of the beginning of this lump.</param>
 		/// <returns>The data.</returns>
-		public byte[] GetBytes() {
+		public byte[] GetBytes(int lumpOffset) {
 			if (Count == 0) {
 				return new byte[] { 0, 0, 0, 0 };
 			}
 
 			int lumpInfoLength = (Bsp.MapType == MapType.DMoMaM || Bsp.MapType == MapType.Vindictus) ? 20 : 16;
 			int lumpDictionaryOffset = (Bsp.MapType == MapType.DMoMaM) ? 8 : 4;
-			int length = lumpDictionaryOffset + (lumpInfoLength * Count);
+			int lumpLength = lumpDictionaryOffset + (lumpInfoLength * Count);
 
 			Dictionary<GameLumpType, byte[]> lumpBytes = new Dictionary<GameLumpType, byte[]>(Count);
 			foreach (GameLumpType type in Keys) {
 				if (_lumps.ContainsKey(type)) {
-					lumpBytes[type] = _lumps[type].GetBytes();
+					lumpBytes[type] = _lumps[type].GetBytes(lumpLength);
 				} else {
 					lumpBytes[type] = ReadLump(this[type]);
 				}
 
-				length += lumpBytes[type].Length;
+				lumpLength += lumpBytes[type].Length;
 			}
 
-			byte[] bytes = new byte[length];
+			byte[] bytes = new byte[lumpLength];
 			BitConverter.GetBytes(lumpBytes.Count).CopyTo(bytes, 0);
 			int lumpNumber = 0;
-			int offset = lumpDictionaryOffset + (lumpBytes.Count * lumpInfoLength);
-			int headerEntryLength = (Bsp.MapType == MapType.DMoMaM || Bsp.MapType == MapType.Vindictus) ? 20 : 16;
+			int internalOffset = lumpDictionaryOffset + (lumpBytes.Count * lumpInfoLength);
 
 			foreach (KeyValuePair<GameLumpType, byte[]> pair in lumpBytes) {
 				LumpInfo info = this[pair.Key];
 				info.length = pair.Value.Length;
-				info.offset = offset;
-				if (offset < length) {
-					info.offset += LumpInfo.offset;
+				info.offset = internalOffset;
+				if (!lumpOffsetsRelativeToGameLumpOffset) {
+					info.offset += lumpOffset;
 				}
 				this[pair.Key] = info;
 
-				BitConverter.GetBytes(info.ident).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset);
+				BitConverter.GetBytes(info.ident).CopyTo(bytes, (lumpNumber * lumpInfoLength) + lumpDictionaryOffset);
 
 				if (Bsp.MapType == MapType.Vindictus) {
-					BitConverter.GetBytes(info.flags).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset + 4);
-					BitConverter.GetBytes(info.version).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset + 8);
-					BitConverter.GetBytes(info.offset).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset + 12);
-					BitConverter.GetBytes(info.length).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset + 16);
+					BitConverter.GetBytes(info.flags).CopyTo(bytes, (lumpNumber * lumpInfoLength) + lumpDictionaryOffset + 4);
+					BitConverter.GetBytes(info.version).CopyTo(bytes, (lumpNumber * lumpInfoLength) + lumpDictionaryOffset + 8);
+					BitConverter.GetBytes(info.offset).CopyTo(bytes, (lumpNumber * lumpInfoLength) + lumpDictionaryOffset + 12);
+					BitConverter.GetBytes(info.length).CopyTo(bytes, (lumpNumber * lumpInfoLength) + lumpDictionaryOffset + 16);
 				} else {
-					BitConverter.GetBytes((short)info.flags).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset + 4);
-					BitConverter.GetBytes((short)info.version).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset + 6);
-					BitConverter.GetBytes(info.offset).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset + 8);
-					BitConverter.GetBytes(info.length).CopyTo(bytes, (lumpNumber * headerEntryLength) + lumpDictionaryOffset + 12);
+					BitConverter.GetBytes((short)info.flags).CopyTo(bytes, (lumpNumber * lumpInfoLength) + lumpDictionaryOffset + 4);
+					BitConverter.GetBytes((short)info.version).CopyTo(bytes, (lumpNumber * lumpInfoLength) + lumpDictionaryOffset + 6);
+					BitConverter.GetBytes(info.offset).CopyTo(bytes, (lumpNumber * lumpInfoLength) + lumpDictionaryOffset + 8);
+					BitConverter.GetBytes(info.length).CopyTo(bytes, (lumpNumber * lumpInfoLength) + lumpDictionaryOffset + 12);
 				}
 
-				lumpBytes[pair.Key].CopyTo(bytes, offset);
+				lumpBytes[pair.Key].CopyTo(bytes, internalOffset);
 
-				offset += lumpBytes[pair.Key].Length;
+				internalOffset += lumpBytes[pair.Key].Length;
 				++lumpNumber;
 			}
 

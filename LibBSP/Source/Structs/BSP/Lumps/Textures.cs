@@ -211,8 +211,9 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets all the data in this lump as a byte array.
 		/// </summary>
+		/// <param name="lumpOffset">The offset of the beginning of this lump.</param>
 		/// <returns>The data.</returns>
-		public override byte[] GetBytes() {
+		public override byte[] GetBytes(int lumpOffset = 0) {
 			if (Bsp.MapType.IsSubtypeOf(MapType.Quake2)
 				|| Bsp.MapType.IsSubtypeOf(MapType.Quake3)
 				|| Bsp.MapType == MapType.Nightfire) {

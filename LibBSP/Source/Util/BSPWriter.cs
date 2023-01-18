@@ -24,16 +24,16 @@ namespace LibBSP {
 		/// </summary>
 		/// <param name="path">The file path to write the <see cref="BSP"/> to.</param>
 		public void WriteBSP(string path) {
-			BSPHeader header = _bsp.Header.Regenerate();
-			byte[][] lumpBytes = GetLumpsBytes();
-
 			if (File.Exists(path)) {
 				File.Delete(path);
 			}
 
-			WriteAllData(path, header.Data, lumpBytes);
-			_bsp.MapName = Path.GetFileNameWithoutExtension(path);
+			byte[][] lumpBytes = GetLumpsBytes();
+			BSPHeader header = _bsp.Header.Regenerate();
 			_bsp.UpdateHeader(header);
+			_bsp.MapName = Path.GetFileNameWithoutExtension(path);
+
+			WriteAllData(path, header.Data, lumpBytes);
 			_bsp.Reader.BspFile = new FileInfo(path);
 		}
 
@@ -43,11 +43,20 @@ namespace LibBSP {
 		/// <returns>Each lump's data as a byte array.</returns>
 		private byte[][] GetLumpsBytes() {
 			byte[][] lumpBytes = new byte[_numLumps][];
+			int currentOffset = _bsp.Header.Length;
+
 			for (int i = 0; i < _numLumps; i++) {
-				ILump lump = _bsp.GetLoadedLump(i);
+				ILump lump;
+				if (i == GameLump.GetIndexForLump(_bsp.MapType)) {
+					// If this is the GameLump, ensure it is loaded to update its internal offsets
+					lump = _bsp.GameLump;
+				} else {
+					lump = _bsp.GetLoadedLump(i);
+				}
+				
 				byte[] bytes;
 				if (lump != null) {
-					bytes = lump.GetBytes();
+					bytes = lump.GetBytes(currentOffset);
 				} else {
 					if (_bsp.Reader.BspFile != null && _bsp.Reader.BspFile.Exists) {
 						bytes = _bsp.Reader.ReadLump(_bsp.Header.GetLumpInfo(i));
@@ -55,7 +64,9 @@ namespace LibBSP {
 						bytes = new byte[0];
 					}
 				}
+
 				lumpBytes[i] = bytes;
+				currentOffset += bytes.Length;
 			}
 
 			return lumpBytes;

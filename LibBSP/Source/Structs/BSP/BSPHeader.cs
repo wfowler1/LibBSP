@@ -55,6 +55,16 @@ namespace LibBSP {
 			get; set;
 		}
 
+		public int Length {
+			get {
+				if (Data == null) {
+					return 0;
+				}
+
+				return Data.Length;
+			}
+		}
+
 		/// <summary>
 		/// Gets or sets the revision of the BSP if its type is <see cref="MapType.UberTools"/>.
 		/// </summary>

@@ -86,8 +86,9 @@ namespace LibBSP {
 		/// <summary>
 		/// Gets all the data in this lump as a byte array.
 		/// </summary>
+		/// <param name="lumpOffset">The offset of the beginning of this lump.</param>
 		/// <returns>The data.</returns>
-		public byte[] GetBytes() {
+		public byte[] GetBytes(int lumpOffset = 0) {
 			return Data;
 		}
 
