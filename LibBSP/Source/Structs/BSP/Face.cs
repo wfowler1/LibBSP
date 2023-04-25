@@ -1349,7 +1349,7 @@ namespace LibBSP {
 					return BitConverter.ToInt16(Data, 52);
 				}
 
-				return -1;
+				return 0;
 			}
 			set {
 				byte[] bytes = BitConverter.GetBytes(value);

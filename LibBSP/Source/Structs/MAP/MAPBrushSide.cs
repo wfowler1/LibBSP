@@ -39,6 +39,8 @@ namespace LibBSP {
 		public string material;
 		public float lgtScale;
 		public float lgtRot;
+		public int smoothingGroups;
+		public int id;
 		public MAPDisplacement displacement;
 
 		/// <summary>

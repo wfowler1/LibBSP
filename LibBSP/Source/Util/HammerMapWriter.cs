@@ -122,7 +122,7 @@ namespace LibBSP {
 		/// <param name="sb">A <see cref="StringBuilder"/> object to append processed data from <paramref name="brushside"/> to.</param>
 		private void ParseBrushSide(MAPBrushSide brushside, StringBuilder sb) {
 			sb.Append("\t\tside\r\n\t\t{\r\n\t\t\t\"id\" \"")
-			.Append(_nextID)
+			.Append(brushside.id)
 			.Append("\"\r\n\t\t\t\"plane\" \"(")
 			.Append(brushside.vertices[0].X().ToString("###0.######", _format))
 			.Append(" ")
@@ -167,7 +167,9 @@ namespace LibBSP {
 			.Append(brushside.textureInfo.rotation.ToString("###0.####", _format))
 			.Append("\"\r\n\t\t\t\"lightmapscale\" \"")
 			.Append(brushside.lgtScale.ToString("###0.####", _format))
-			.Append("\"\r\n\t\t\t\"smoothing_groups\" \"0\"\r\n");
+			.Append("\"\r\n\t\t\t\"smoothing_groups\" \"")
+			.Append(brushside.smoothingGroups.ToString(_format))
+			.Append("\"\r\n");
 			if (brushside.displacement != null) {
 				ParseDisplacement(brushside.displacement, sb);
 			}
