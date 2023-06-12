@@ -315,9 +315,8 @@ namespace LibBSP
                     }
                     switch (num)
                     {
-                        case 1347633737:
+                        case BSPHeader.IBSPHeader:
                         {
-                            // 1347633737 reads in ASCII as "IBSP"
                             // Versions: CoD, CoD2, CoD4, Quake 2, Daikatana, Quake 3 (RtCW), Soldier of Fortune
                             int num2 = binaryReader.ReadInt32();
                             if (bigEndian)
@@ -396,9 +395,9 @@ namespace LibBSP
                             }
                             break;
                         }
-                        case 892416050:
+                        case BSPHeader.MOHAAHeader:
                         {
-                            // 892416050 reads in ASCII as "2015," the game studio which developed MoHAA
+                            // MoHAA
                             int num2 = binaryReader.ReadInt32();
                             if (num2 == 18)
                             {
@@ -410,15 +409,15 @@ namespace LibBSP
                             }
                             break;
                         }
-                        case 1095516485:
+                        case BSPHeader.EALAHeader:
                         {
-                            // 1095516485 reads in ASCII as "EALA," the ones who developed MoHAA Spearhead and Breakthrough
+                            // MoHAA Spearhead and Breakthrough
                             current = MapType.MOHAABT;
                             break;
                         }
-                        case 1347633750:
+                        case BSPHeader.VBSPHeader:
                         {
-                            // 1347633750 reads in ASCII as "VBSP." Indicates Source engine.
+                            // Source engine.
                             // Some source games handle this as 2 shorts.
                             // TODO: Big endian?
                             // Formats: Source 17-23 and 27, DMoMaM, Vindictus
@@ -511,9 +510,9 @@ namespace LibBSP
                             }
                             break;
                         }
-                        case 1347633746:
+                        case BSPHeader.RBSPHeader:
                         {
-                            // Reads in ASCII as "RBSP". Raven software's modification of Q3BSP, or Ritual's modification of Q2.
+                            // Raven software's modification of Q3BSP, or Ritual's modification of Q2.
                             // Formats: Raven, SiN
                             current = MapType.Raven;
                             for (int i = 0; i < 17; i++)
@@ -542,21 +541,20 @@ namespace LibBSP
                             }
                             break;
                         }
-                        case 556942917:
+                        case BSPHeader.EF2Header:
                         {
                             // "EF2!"
                             current = MapType.STEF2;
                             break;
                         }
-                        case 1347633778:
+                        case BSPHeader.rBSPHeader:
                         {
-                            // "rBSP". Respawn's format for Titanfall
+                            // Titanfall
                             current = MapType.Titanfall;
                             break;
                         }
-                        case 1263223110:
+                        case BSPHeader.FAKKHeader:
                         {
-                            // "FAKK"
                             // Formats: STEF2 demo, Heavy Metal FAKK2, American McGee's Alice
                             int num2 = binaryReader.ReadInt32();
                             if (bigEndian)
@@ -633,7 +631,7 @@ namespace LibBSP
                             key = binaryReader.ReadBytes(32);
                             stream.Seek(0, SeekOrigin.Begin);
                             int num2 = BitConverter.ToInt32(XorWithKeyStartingAtIndex(binaryReader.ReadBytes(4)), 0);
-                            if (num2 == 1347633750)
+                            if (num2 == BSPHeader.VBSPHeader)
                             {
                                 current = MapType.TacticalInterventionEncrypted;
                             }
