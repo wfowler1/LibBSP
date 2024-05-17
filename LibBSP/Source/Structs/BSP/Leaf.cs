@@ -987,8 +987,7 @@ namespace LibBSP
             {
                 return 64;
             }
-            else if (mapType == MapType.Source18
-                || mapType == MapType.Source19
+            else if (mapType == MapType.Source19
                 || mapType == MapType.Vindictus)
             {
                 return 56;
