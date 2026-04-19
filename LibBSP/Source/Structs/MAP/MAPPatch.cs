@@ -19,15 +19,16 @@ namespace LibBSP
 #if !OLDUNITY
     using Vertex = UnityEngine.UIVertex;
 #endif
-#elif GODOT3
+#elif GODOT
     using Vector2 = Godot.Vector2;
     using Vector3 = Godot.Vector3;
+#if GODOT3
     using Vector4 = Godot.Quat;
 #elif GODOT4
-    using Vector2 = Godot.Vector2;
-    using Vector3 = Godot.Vector3;
     using Vector4 = Godot.Vector4;
-elif NEOAXIS
+#endif
+    using Color = Godot.Color;
+#elif NEOAXIS
     using Vector2 = NeoAxis.Vector2F;
     using Vector3 = NeoAxis.Vector3F;
     using Vector4 = NeoAxis.Vector4F;
