@@ -178,7 +178,12 @@ namespace LibBSP
         /// <returns>Index for this lump, or -1 if the format doesn't have this lump or it's not implemented.</returns>
         public static int GetIndexForLeafFacesLump(MapType version, out DataType dataType)
         {
-            if (version == MapType.Nightfire)
+            if (version == MapType.BSP2)
+            {
+                dataType = DataType.UInt32;
+                return 11;
+            }
+            else if (version == MapType.Nightfire)
             {
                 dataType = DataType.UInt32;
                 return 12;

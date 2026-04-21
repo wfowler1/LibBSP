@@ -315,6 +315,11 @@ namespace LibBSP
                     }
                     switch (num)
                     {
+                        case BSPHeader.BSP2Header:
+                            {
+                                current = MapType.BSP2;
+                                break;
+                            }
                         case BSPHeader.IBSPHeader:
                         {
                             // Versions: CoD, CoD2, CoD4, Quake 2, Daikatana, Quake 3 (RtCW), Soldier of Fortune

@@ -53,6 +53,10 @@ namespace LibBSP
         /// Half-Life Blue Shift
         /// </summary>
         BlueShift = 0x01010001,
+        /// <summary>
+        /// Quake BSP2
+        /// </summary>
+        BSP2 = 0x01000001,
 
         /// <summary>
         /// Quake 2 or Quake 2 Engine flags, including <see cref="Daikatana"/> <see cref="SoF"/>

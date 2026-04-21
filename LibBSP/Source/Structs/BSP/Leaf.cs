@@ -223,7 +223,11 @@ namespace LibBSP
         {
             get
             {
-                if (MapType == MapType.SoF)
+                if (MapType == MapType.BSP2)
+                {
+                    return new Vector3(BitConverter.ToSingle(Data, 8), BitConverter.ToSingle(Data, 12), BitConverter.ToSingle(Data, 16));
+                }
+                else if (MapType == MapType.SoF)
                 {
                     return new Vector3(BitConverter.ToInt16(Data, 10), BitConverter.ToInt16(Data, 12), BitConverter.ToInt16(Data, 14));
                 }
@@ -250,7 +254,13 @@ namespace LibBSP
             }
             set
             {
-                if (MapType == MapType.SoF)
+                if (MapType == MapType.BSP2)
+                {
+    				BitConverter.GetBytes((float)value.X()).CopyTo(Data, 8);
+    				BitConverter.GetBytes((float)value.Y()).CopyTo(Data, 12);
+    				BitConverter.GetBytes((float)value.Z()).CopyTo(Data, 16);
+                }
+                else if (MapType == MapType.SoF)
                 {
                     BitConverter.GetBytes((short)value.X()).CopyTo(Data, 10);
                     BitConverter.GetBytes((short)value.Y()).CopyTo(Data, 12);
@@ -290,7 +300,11 @@ namespace LibBSP
         {
             get
             {
-                if (MapType == MapType.SoF)
+                if (MapType == MapType.BSP2)
+                {
+                    return new Vector3(BitConverter.ToSingle(Data, 20), BitConverter.ToSingle(Data, 24), BitConverter.ToSingle(Data, 28));
+                }
+                else if (MapType == MapType.SoF)
                 {
                     return new Vector3(BitConverter.ToInt16(Data, 16), BitConverter.ToInt16(Data, 18), BitConverter.ToInt16(Data, 20));
                 }
@@ -317,7 +331,13 @@ namespace LibBSP
             }
             set
             {
-                if (MapType == MapType.SoF)
+                if (MapType == MapType.BSP2)
+                {
+				    BitConverter.GetBytes((float)value.X()).CopyTo(Data, 20);
+				    BitConverter.GetBytes((float)value.Y()).CopyTo(Data, 24);
+				    BitConverter.GetBytes((float)value.Z()).CopyTo(Data, 28);
+                }
+                else if (MapType == MapType.SoF)
                 {
                     BitConverter.GetBytes((short)value.X()).CopyTo(Data, 16);
                     BitConverter.GetBytes((short)value.Y()).CopyTo(Data, 18);
@@ -530,7 +550,11 @@ namespace LibBSP
         {
             get
             {
-                if (MapType == MapType.SoF)
+                if (MapType == MapType.BSP2)
+                {
+                    return (int)BitConverter.ToUInt32(Data, 32);
+                }
+                else if (MapType == MapType.SoF)
                 {
                     return BitConverter.ToUInt16(Data, 22);
                 }
@@ -556,7 +580,11 @@ namespace LibBSP
             {
                 byte[] bytes = BitConverter.GetBytes(value);
 
-                if (MapType == MapType.SoF)
+                if (MapType == MapType.BSP2)
+                {
+ 					BitConverter.GetBytes((uint)value).CopyTo(Data, 32);
+                }
+                else if (MapType == MapType.SoF)
                 {
                     Data[22] = bytes[0];
                     Data[23] = bytes[1];
@@ -588,7 +616,11 @@ namespace LibBSP
         {
             get
             {
-                if (MapType == MapType.SoF)
+                if (MapType == MapType.BSP2)
+                {
+                    return (int)BitConverter.ToUInt32(Data, 36);
+                }
+                else if (MapType == MapType.SoF)
                 {
                     return BitConverter.ToUInt16(Data, 24);
                 }
@@ -614,7 +646,11 @@ namespace LibBSP
             {
                 byte[] bytes = BitConverter.GetBytes(value);
 
-                if (MapType == MapType.SoF)
+                if (MapType == MapType.BSP2)
+                {
+					BitConverter.GetBytes((uint)value).CopyTo(Data, 36);
+                }
+                else if (MapType == MapType.SoF)
                 {
                     Data[24] = bytes[0];
                     Data[25] = bytes[1];
@@ -645,7 +681,11 @@ namespace LibBSP
         {
             get
             {
-                if (MapType.IsSubtypeOf(MapType.Quake))
+                if (MapType.IsSubtypeOf(MapType.BSP2))
+                {
+                    return Data[40];
+                }
+                else if (MapType.IsSubtypeOf(MapType.Quake))
                 {
                     return Data[24];
                 }
@@ -654,7 +694,11 @@ namespace LibBSP
             }
             set
             {
-                if (MapType.IsSubtypeOf(MapType.Quake))
+                if (MapType == MapType.BSP2)
+                {
+                    Data[40] = value;
+                }
+                else if (MapType.IsSubtypeOf(MapType.Quake))
                 {
                     Data[24] = value;
                 }
@@ -668,7 +712,11 @@ namespace LibBSP
         {
             get
             {
-                if (MapType.IsSubtypeOf(MapType.Quake))
+                if (MapType.IsSubtypeOf(MapType.BSP2))
+                {
+                    return Data[41];
+                }
+                else if (MapType.IsSubtypeOf(MapType.Quake))
                 {
                     return Data[25];
                 }
@@ -677,7 +725,11 @@ namespace LibBSP
             }
             set
             {
-                if (MapType.IsSubtypeOf(MapType.Quake))
+                if (MapType == MapType.BSP2)
+                {
+                   	Data[41] = value;
+                }
+                else if (MapType.IsSubtypeOf(MapType.Quake))
                 {
                     Data[25] = value;
                 }
@@ -691,7 +743,11 @@ namespace LibBSP
         {
             get
             {
-                if (MapType.IsSubtypeOf(MapType.Quake))
+                if (MapType.IsSubtypeOf(MapType.BSP2))
+                {
+                    return Data[42];
+                }
+                else if (MapType.IsSubtypeOf(MapType.Quake))
                 {
                     return Data[26];
                 }
@@ -700,7 +756,11 @@ namespace LibBSP
             }
             set
             {
-                if (MapType.IsSubtypeOf(MapType.Quake))
+                if (MapType == MapType.BSP2)
+                {
+                   	Data[42] = value;
+                }
+                else if (MapType.IsSubtypeOf(MapType.Quake))
                 {
                     Data[26] = value;
                 }
@@ -714,7 +774,11 @@ namespace LibBSP
         {
             get
             {
-                if (MapType.IsSubtypeOf(MapType.Quake))
+                if (MapType.IsSubtypeOf(MapType.BSP2))
+                {
+                    return Data[43];
+                }
+                else if (MapType.IsSubtypeOf(MapType.Quake))
                 {
                     return Data[27];
                 }
@@ -723,7 +787,11 @@ namespace LibBSP
             }
             set
             {
-                if (MapType.IsSubtypeOf(MapType.Quake))
+                if (MapType == MapType.BSP2)
+                {
+                   	Data[43] = value;
+                }
+                else if (MapType.IsSubtypeOf(MapType.Quake))
                 {
                     Data[27] = value;
                 }
@@ -975,7 +1043,11 @@ namespace LibBSP
         /// <exception cref="ArgumentException">This struct is not valid or is not implemented for the given <paramref name="mapType"/> and <paramref name="lumpVersion"/>.</exception>
         public static int GetStructLength(MapType mapType, int lumpVersion = 0)
         {
-            if (mapType == MapType.CoD4)
+            if (mapType == MapType.BSP2)
+            {
+                return 44;
+            }
+            else if (mapType == MapType.CoD4)
             {
                 return 24;
             }

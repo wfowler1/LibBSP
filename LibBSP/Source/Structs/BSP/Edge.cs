@@ -83,7 +83,11 @@ namespace LibBSP
         {
             get
             {
-                if (MapType == MapType.Vindictus)
+                if (MapType.IsSubtypeOf(MapType.BSP2))
+                {
+                    return (int)BitConverter.ToUInt32(Data, 0);
+                }
+                else if (MapType == MapType.Vindictus)
                 {
                     return BitConverter.ToInt32(Data, 0);
                 }
@@ -99,8 +103,11 @@ namespace LibBSP
             set
             {
                 byte[] bytes = BitConverter.GetBytes(value);
-
-                if (MapType == MapType.Vindictus)
+				if (MapType.IsSubtypeOf(MapType.BSP2))
+                {
+					BitConverter.GetBytes((uint)value).CopyTo(Data, 0);
+                }
+				else if (MapType == MapType.Vindictus)
                 {
                     bytes.CopyTo(Data, 0);
                 }
@@ -132,7 +139,11 @@ namespace LibBSP
         {
             get
             {
-                if (MapType == MapType.Vindictus)
+                if (MapType.IsSubtypeOf(MapType.BSP2))
+                {
+                    return (int)BitConverter.ToUInt32(Data, 4);
+                }
+                else if (MapType == MapType.Vindictus)
                 {
                     return BitConverter.ToInt32(Data, 4);
                 }
@@ -149,7 +160,11 @@ namespace LibBSP
             {
                 byte[] bytes = BitConverter.GetBytes(value);
 
-                if (MapType == MapType.Vindictus)
+                if (MapType.IsSubtypeOf(MapType.BSP2))
+                {
+					BitConverter.GetBytes((uint)value).CopyTo(Data, 4);
+				}
+                else if (MapType == MapType.Vindictus)
                 {
                     BitConverter.GetBytes(value).CopyTo(Data, 4);
                 }
@@ -252,7 +267,11 @@ namespace LibBSP
         /// <exception cref="ArgumentException">This struct is not valid or is not implemented for the given <paramref name="mapType"/> and <paramref name="lumpVersion"/>.</exception>
         public static int GetStructLength(MapType mapType, int lumpVersion = 0)
         {
-            if (mapType == MapType.Vindictus)
+            if (mapType.IsSubtypeOf(MapType.BSP2))
+            {
+                return 8;
+            }
+            else if (mapType == MapType.Vindictus)
             {
                 return 8;
             }

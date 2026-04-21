@@ -9,7 +9,10 @@ namespace LibBSP
     /// </summary>
     public struct BSPHeader
     {
-
+        /// <summary>
+        /// "BSP2" represented as int32.
+        /// </summary>
+        public const int BSP2Header = 844124994;
         /// <summary>
         /// "IBSP" represented as int32.
         /// </summary>
@@ -421,7 +424,11 @@ namespace LibBSP
                 case MapType.Quake:
                 {
                     return BitConverter.GetBytes(29);
-                }
+                    }
+                case MapType.BSP2:
+                    {
+                        return BitConverter.GetBytes(BSP2Header);
+                    }
                 case MapType.GoldSrc:
                 case MapType.BlueShift:
                 {
